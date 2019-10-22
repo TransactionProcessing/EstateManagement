@@ -22,20 +22,20 @@ jobs:
         dotnet-version: 3.0.100
 
     - name: Restore Nuget Packages
-      run: dotnet restore EstateManagment.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+      run: dotnet restore EstateManagement.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
 
     - name: Build Code
-      run: dotnet build EstateManagment.sln --configuration Release
+      run: dotnet build EstateManagement.sln --configuration Release
 
     - name: Run Unit Tests
       run: |
         echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateManagment.BusinessLogic.Tests\EstateManagment.BusinessLogic.Tests.csproj"
-        dotnet test "EstateManagment.EstateAggregate.Tests\EstateManagment.EstateAggregate.Tests.csproj"
-        dotnet test "EstateManagment.Tests\EstateManagment.Tests.csproj"
+        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj"
+        dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj"
+        dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj"
 
     - name: Build Docker Image
-      run: docker build . --file EstateManagmentApi/Dockerfile --tag estatemanagment:latest
+      run: docker build . --file EstateManagementApi/Dockerfile --tag estatemanagement:latest
 
     - name: Run Integration Tests
       run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj"
