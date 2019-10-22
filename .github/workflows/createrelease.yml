@@ -25,22 +25,22 @@ jobs:
         dotnet-version: 3.0.100
 
     - name: Restore Nuget Packages
-      run: dotnet restore EstateManagment.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+      run: dotnet restore EstateManagement.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
 
     - name: Build Code
-      run: dotnet build EstateManagment.sln --configuration Release
+      run: dotnet build EstateManagement.sln --configuration Release
 
     - name: Run Unit Tests
       run: |
         echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateManagment.BusinessLogic.Tests\EstateManagment.BusinessLogic.Tests.csproj"
-        dotnet test "EstateManagment.EstateAggregate.Tests\EstateManagment.EstateAggregate.Tests.csproj"
-        dotnet test "EstateManagment.Tests\EstateManagment.Tests.csproj"
+        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj"
+        dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj"
+        dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj"
 
     - name: Build Docker Images
       run: |
-        docker build . --file EstateManagmentApi/Dockerfile --tag stuartferguson/estatemanagment:latest
-        docker build . --file EstateManagmentApi/Dockerfile --tag stuartferguson/estatemanagment:${{ steps.get_version.outputs.VERSION }}
+        docker build . --file EstateManagementApi/Dockerfile --tag stuartferguson/estatemanagement:latest
+        docker build . --file EstateManagementApi/Dockerfile --tag stuartferguson/estatemanagement:${{ steps.get_version.outputs.VERSION }}
 
     - name: Run Integration Tests
       run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj"
@@ -48,11 +48,11 @@ jobs:
     - name: Publish Images to Docker Hub
       run: |
         docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
-        docker push stuartferguson/estatemanagment:latest
-        docker push stuartferguson/estatemanagment:${{ steps.get_version.outputs.VERSION }}
+        docker push stuartferguson/estatemanagement:latest
+        docker push stuartferguson/estatemanagement:${{ steps.get_version.outputs.VERSION }}
 
     - name: Publish API
-      run: dotnet publish "EstateManagmentApi\EstateManagment.csproj" --configuration Release --output publishOutput
+      run: dotnet publish "EstateManagementApi\EstateManagement.csproj" --configuration Release --output publishOutput
 
     - name: Setup .NET Core 2.0
       uses: actions/setup-dotnet@v1
@@ -100,5 +100,5 @@ jobs:
     
     - name: Build and Publish Nuget Packages
       run: |
-        dotnet pack "EstateManagment.Client\EstateManagment.Client.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets
-        dotnet nuget push Nugets/EstateManagment.Client.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet pack "EstateManagement.Client\EstateManagement.Client.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets
+        dotnet nuget push Nugets/EstateManagement.Client.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
