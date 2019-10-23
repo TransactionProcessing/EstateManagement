@@ -38,4 +38,4 @@ jobs:
       run: docker build . --file EstateManagementApi/Dockerfile --tag estatemanagement:latest
 
     - name: Run Integration Tests
-      run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj"
+      run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj" --filter Category=PRTest
