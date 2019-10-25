@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.EstateAggregate.Tests
 {
     using System;
+    using EstateManagement.Testing;
     using Shouldly;
     using Xunit;
 

@@ -6,6 +6,7 @@ namespace EstateManagement.EstateAggregate.Tests
 {
     using Estate.DomainEvents;
     using Shouldly;
+    using Testing;
     using Xunit;
 
     public class DomainEventTests

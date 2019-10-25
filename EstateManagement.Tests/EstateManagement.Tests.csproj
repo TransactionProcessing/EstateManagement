@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateManagement.BusinessLogic\EstateManagement.BusinessLogic.csproj" />
+    <ProjectReference Include="..\EstateManagement.Testing\EstateManagement.Testing.csproj" />
     <ProjectReference Include="..\EstateManagement\EstateManagement.csproj" />
   </ItemGroup>
 

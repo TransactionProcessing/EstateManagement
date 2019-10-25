@@ -7,6 +7,7 @@ namespace EstateManagement
     using System.Threading.Tasks;
     using BusinessLogic.CommandHandlers;
     using BusinessLogic.EventHandling;
+    using BusinessLogic.Manger;
     using Common;
     using EventStore.ClientAPI;
     using Lamar;
@@ -20,6 +21,7 @@ namespace EstateManagement
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Models.Factories;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using NLog.Extensions.Logging;
@@ -233,6 +235,9 @@ namespace EstateManagement
             this.For<ICommandRouter>().Use<CommandRouter>().Singleton();
             this.For<IAggregateRepository<EstateAggregate.EstateAggregate>>()
                 .Use<AggregateRepository<EstateAggregate.EstateAggregate>>().Singleton();
+            this.For<IEstateManagmentManager>().Use<EstateManagementManager>();
+            this.For<IModelFactory>().Use<ModelFactory>();
+            this.For<Factories.IModelFactory>().Use<Factories.ModelFactory>();
         }
     }
 

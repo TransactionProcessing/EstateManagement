@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="Manger\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
@@ -18,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EstateManagement.DataTransferObjects\EstateManagement.DataTransferObjects.csproj" />
     <ProjectReference Include="..\EstateManagement.EstateAggregate\EstateManagement.EstateAggregate.csproj" />
+    <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
   </ItemGroup>
 
 </Project>

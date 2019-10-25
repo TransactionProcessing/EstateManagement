@@ -6,5 +6,5 @@ Background:
 @PRTest
 Scenario: Create Estate
 	When I create the following estates
-	| EstateName   |
+	| EstateName    |
 	| Test Estate 1 |
