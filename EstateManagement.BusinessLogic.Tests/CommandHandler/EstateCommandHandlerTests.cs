@@ -5,12 +5,12 @@
     using System.Threading.Tasks;
     using CommandHandlers;
     using Commands;
-    using Common;
     using EstateAggregate;
     using Moq;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
     using Shouldly;
+    using Testing;
     using Xunit;
 
     public class EstateCommandHandlerTests

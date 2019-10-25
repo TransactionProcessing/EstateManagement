@@ -8,6 +8,7 @@
     using Common;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
+    using EstateManagement.Testing;
     using Newtonsoft.Json;
     using Shouldly;
     using Xunit;

@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateManagement.EstateAggregate\EstateManagement.EstateAggregate.csproj" />
+    <ProjectReference Include="..\EstateManagement.Testing\EstateManagement.Testing.csproj" />
   </ItemGroup>
 
 </Project>
