@@ -54,49 +54,49 @@ jobs:
     - name: Publish API
       run: dotnet publish "EstateManagement\EstateManagement.csproj" --configuration Release --output publishOutput
 
-    #- name: Setup .NET Core 2.0
-    #  uses: actions/setup-dotnet@v1
-    #  with:
-    #    dotnet-version: 2.0.0
+    - name: Setup .NET Core 2.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.0.0
 
-    #- name: Extract Octopus Tools
-    #  run: |
-    #    mkdir /opt/octo
-    #    cd /opt/octo
-    #    wget -O /opt/octo/octopus.zip https://download.octopusdeploy.com/octopus-tools/6.12.0/OctopusTools.6.12.0.portable.zip
-    #    unzip /opt/octo/octopus.zip
-    #    chmod +x /opt/octo/Octo
+    - name: Extract Octopus Tools
+      run: |
+        mkdir /opt/octo
+        cd /opt/octo
+        wget -O /opt/octo/octopus.zip https://download.octopusdeploy.com/octopus-tools/6.12.0/OctopusTools.6.12.0.portable.zip
+        unzip /opt/octo/octopus.zip
+        chmod +x /opt/octo/Octo
 
-    #- name: Pack Files for Octopus
-    #  run: >-
-    #    /opt/octo/Octo pack
-    #    --outFolder /home/runner/work/EstateManagement/EstateManagement
-    #    --basePath /home/runner/work/EstateManagement/EstateManagement/publishOutput
-    #    --id EstateManagement
-    #    --version ${{ steps.get_version.outputs.VERSION }}
-    #    --format zip
-    #    --verbose
-    #    --logLevel=verbose
+    - name: Pack Files for Octopus
+      run: >-
+        /opt/octo/Octo pack
+        --outFolder /home/runner/work/EstateManagement/EstateManagement
+        --basePath /home/runner/work/EstateManagement/EstateManagement/publishOutput
+        --id EstateManagement
+        --version ${{ steps.get_version.outputs.VERSION }}
+        --format zip
+        --verbose
+        --logLevel=verbose
 
-    #- name: Push Package to Octopus
-    #  run: >-
-    #    /opt/octo/Octo push
-    #    --server http://sferguson.ddns.net:9001
-    #    --apiKey API-KSYYUGOWXYLZAQNJAAJJDNPAYC
-    #    --package /home/runner/work/EstateManagement/EstateManagement/EstateManagement.${{ steps.get_version.outputs.VERSION }}.zip
-    #    --overwrite-mode IgnoreIfExists
+    - name: Push Package to Octopus
+      run: >-
+        /opt/octo/Octo push
+        --server http://sferguson.ddns.net:9001
+        --apiKey API-KSYYUGOWXYLZAQNJAAJJDNPAYC
+        --package /home/runner/work/EstateManagement/EstateManagement/EstateManagement.${{ steps.get_version.outputs.VERSION }}.zip
+        --overwrite-mode IgnoreIfExists
     
-    #- name: Create & Deploy Release in Octopus
-    #  run: >-
-    #    /opt/octo/Octo create-release
-    #    --server http://sferguson.ddns.net:9001
-    #    --apiKey API-KSYYUGOWXYLZAQNJAAJJDNPAYC
-    #    --project Estate Management
-    #    --version ${{ steps.get_version.outputs.VERSION }}
-    #    --channel Default
-    #    --deployTo Development
-    #    --waitfordeployment
-    #    --deploymenttimeout 00:05:00
+    - name: Create & Deploy Release in Octopus
+      run: >-
+        /opt/octo/Octo create-release
+        --server http://sferguson.ddns.net:9001
+        --apiKey API-KSYYUGOWXYLZAQNJAAJJDNPAYC
+        --project Estate Management
+        --version ${{ steps.get_version.outputs.VERSION }}
+        --channel Default
+        --deployTo Development
+        --waitfordeployment
+        --deploymenttimeout 00:05:00
     
     - name: Build and Publish Nuget Packages
       run: |
