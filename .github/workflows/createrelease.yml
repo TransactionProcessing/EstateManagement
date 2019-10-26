@@ -86,6 +86,21 @@ jobs:
         --package /home/runner/work/EstateManagement/EstateManagement/EstateManagement.${{ steps.get_version.outputs.VERSION }}.zip
         --overwrite-mode IgnoreIfExists
     
+    - name: Get Release
+      id: getrelease
+      uses: octokit/request-action@v1.x
+      with:
+          route: GET /repos/StuartFerguson/Testing/releases/tags/${{ steps.get_version.outputs.VERSION }}
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build Release Notes
+      id: buildreleasenotes
+      uses: gr2m/get-json-paths-action@v1.x
+      with:
+          json: ${{ steps.getrelease.outputs.data }}
+          releasenote: "body"
+    
     - name: Create & Deploy Release in Octopus
       run: >-
         /opt/octo/Octo create-release
@@ -97,6 +112,7 @@ jobs:
         --deployTo Development
         --waitfordeployment
         --deploymenttimeout 00:05:00
+        --releasenotes "${{ steps.buildreleasenotes.outputs.RELEASENOTE }}" 
     
     - name: Build and Publish Nuget Packages
       run: |
