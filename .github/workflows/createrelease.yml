@@ -107,7 +107,7 @@ jobs:
         /opt/octo/Octo create-release
         --server http://sferguson.ddns.net:9001
         --apiKey API-UTN58QCF8HSATACNUBY41XPUC
-        --project Estate Management
+        --project "Estate Management"
         --version ${{ steps.get_version.outputs.VERSION }}
         --channel Default
         --deployTo Development
