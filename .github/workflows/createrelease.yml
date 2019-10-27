@@ -112,7 +112,7 @@ jobs:
         --deployTo Development
         --waitfordeployment
         --deploymenttimeout 00:05:00
-        --releasenotes "${{ steps.buildreleasenotes.outputs.RELEASENOTE }}" 
+        --releasenotes "${{ steps.buildreleasenotes.outputs.releasenote }}" 
     
     - name: Build and Publish Nuget Packages
       run: |
