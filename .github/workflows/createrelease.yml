@@ -91,7 +91,7 @@ jobs:
       id: getrelease
       uses: octokit/request-action@v1.x
       with:
-          route: GET /repos/StuartFerguson/Testing/releases/tags/${{ steps.get_version.outputs.VERSION }}
+          route: GET /repos/StuartFerguson/EstateManagement/releases/tags/${{ steps.get_version.outputs.VERSION }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
