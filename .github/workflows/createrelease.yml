@@ -39,6 +39,7 @@ jobs:
 
     - name: Build Docker Images
       run: |
+        docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest
         docker build . --file EstateManagement/Dockerfile --tag stuartferguson/estatemanagement:latest
         docker build . --file EstateManagement/Dockerfile --tag stuartferguson/estatemanagement:${{ steps.get_version.outputs.VERSION }}
 
