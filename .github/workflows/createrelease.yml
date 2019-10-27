@@ -83,7 +83,7 @@ jobs:
       run: >-
         /opt/octo/Octo push
         --server http://sferguson.ddns.net:9001
-        --apiKey API-KSYYUGOWXYLZAQNJAAJJDNPAYC
+        --apiKey API-UTN58QCF8HSATACNUBY41XPUC
         --package /home/runner/work/EstateManagement/EstateManagement/EstateManagement.${{ steps.get_version.outputs.VERSION }}.zip
         --overwrite-mode IgnoreIfExists
     
@@ -106,7 +106,7 @@ jobs:
       run: >-
         /opt/octo/Octo create-release
         --server http://sferguson.ddns.net:9001
-        --apiKey API-KSYYUGOWXYLZAQNJAAJJDNPAYC
+        --apiKey API-UTN58QCF8HSATACNUBY41XPUC
         --project Estate Management
         --version ${{ steps.get_version.outputs.VERSION }}
         --channel Default
