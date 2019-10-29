@@ -1,4 +1,4 @@
-name: Build and Test Pull Requests
+name: Test Workflow
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
     - name: Run Unit Tests
       run: |
         echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/
+        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj" /p:CollectCoverage=true  /p:CoverletOutput=../
         dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json"
         dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" --collect:"XPlat Code Coverage" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="opencover"
         
@@ -38,4 +38,4 @@ jobs:
       uses: codecov/codecov-action@v1.0.3
       with:
           token: f5dc5fe3-93d9-4e0d-ba2e-5cd657ac1ffe #required
-          file: ./coverage.json #optional    
+          file: ./CoverageResults/coverage.json #optional    
