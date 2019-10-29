@@ -38,4 +38,4 @@ jobs:
       uses: codecov/codecov-action@v1.0.3
       with:
           token: f5dc5fe3-93d9-4e0d-ba2e-5cd657ac1ffe #required
-          file: ./CoverageResults/coverage.json #optional    
+          #file: ./CoverageResults/coverage.json #optional    
