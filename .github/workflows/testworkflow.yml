@@ -1,1 +1,41 @@
+name: Build and Test Pull Requests
 
+on:
+  push:
+    branches:
+    - task/#17_cicodecoverage
+
+jobs:
+  build:
+    name: "Test Workflow"
+    env:
+        ASPNETCORE_ENVIRONMENT: "Production"
+
+    runs-on: ubuntu-16.04
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+
+    - name: Restore Nuget Packages
+      run: dotnet restore EstateManagement.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+
+    - name: Build Code
+      run: dotnet build EstateManagement.sln --configuration Release
+
+    - name: Run Unit Tests
+      run: |
+        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/
+        dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json"
+        dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" --collect:"XPlat Code Coverage" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="opencover"
+        
+    - name: Upload Code Coverage
+      uses: codecov/codecov-action@v1.0.3
+      with:
+          token: f5dc5fe3-93d9-4e0d-ba2e-5cd657ac1ffe #required
+          file: ./coverage.xml #optional    
