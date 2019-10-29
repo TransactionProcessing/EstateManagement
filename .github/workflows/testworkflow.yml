@@ -37,5 +37,5 @@ jobs:
     - name: Upload Code Coverage
       uses: codecov/codecov-action@v1.0.3
       with:
-          token: f5dc5fe3-93d9-4e0d-ba2e-5cd657ac1ffe #required
+          token: 1e3c769b-a5db-4322-8428-09395a807bd2 #required
           #file: ./CoverageResults/coverage.json #optional    
