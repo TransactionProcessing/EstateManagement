@@ -30,9 +30,9 @@ jobs:
     - name: Run Unit Tests
       run: |
         echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj" /p:CollectCoverage=true  /p:CoverletOutput=../
-        dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json"
-        dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" --collect:"XPlat Code Coverage" /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="opencover"
+        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj" --settings "EstateManagement.BusinessLogic.Tests\coverletArgs.runsettings"
+        dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" --settings "EstateManagement.EstateAggregate.Tests\coverletArgs.runsettings"
+        dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" --collect:"XPlat Code Coverage" --settings "EstateManagement.Tests\coverletArgs.runsettings"
         
     - name: Upload Code Coverage
       uses: codecov/codecov-action@v1.0.3
