@@ -2,7 +2,7 @@ name: Nightly Build
 
 on:
   schedule:
-  - cron: "31 15 * * *"
+  - cron: "35 15 * * *"
 
 jobs:
   build:
@@ -33,12 +33,13 @@ jobs:
         dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
         dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov3.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
 
-    - name: Setup Node
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '10.x' 
-    - run: npm i lcov-result-merger
-    - run: lcov-result-merger 'lcov*.info' 'lcov.info' 
+    - name: Setup Node.js for use with actions
+      uses: actions/setup-node@v1.1.0
+    
+    - name: Combine Coverage
+      run: |
+        npm i lcov-result-merger
+        run lcov-result-merger 'lcov*.info' 'lcov.info' 
 
     - name: Upload Code Coverage
       uses: coverallsapp/github-action@master
