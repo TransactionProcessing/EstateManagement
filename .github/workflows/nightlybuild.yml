@@ -2,7 +2,7 @@ name: Nightly Build
 
 on:
   schedule:
-  - cron: "29 15 * * *"
+  - cron: "31 15 * * *"
 
 jobs:
   build:
@@ -37,7 +37,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x' 
-
     - run: npm i lcov-result-merger
     - run: lcov-result-merger 'lcov*.info' 'lcov.info' 
 
