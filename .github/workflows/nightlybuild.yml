@@ -2,7 +2,7 @@ name: Nightly Build
 
 on:
   schedule:
-  - cron: "05 11 * * *"
+  - cron: "25 11 * * *"
 
 jobs:
   build:
@@ -33,11 +33,23 @@ jobs:
         dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
         dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov3.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
         
-    - name: Upload Code Coverage
+    - name: Upload Code Coverage BusinessLogic
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: lconv*.info
+          path-to-lcov: lconv1.info
+ 
+    - name: Upload Code Coverage EstateAggregate
+      uses: coverallsapp/github-action@master
+      with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: lconv2.info
+
+    - name: Upload Code Coverage EstateManagement
+      uses: coverallsapp/github-action@master
+      with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: lconv3.info
               
     - name: Build Docker Image
       run: docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest
