@@ -2,7 +2,7 @@ name: Nightly Build
 
 on:
   schedule:
-  - cron: "55 11 * * *"
+  - cron: "25 15 * * *"
 
 jobs:
   build:
@@ -32,33 +32,19 @@ jobs:
         dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
         dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
         dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov3.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        
-    - name: Upload Code Coverage BusinessLogic
-      uses: coverallsapp/github-action@master
-      with:
-          github-token: ${{ secrets.github_token }}
-          parallel: true
-          path-to-lcov: lcov1.info
- 
-    - name: Upload Code Coverage EstateAggregate
-      uses: coverallsapp/github-action@master
-      with:
-          github-token: ${{ secrets.github_token }}
-          parallel: true
-          path-to-lcov: lcov2.info
 
-    - name: Upload Code Coverage EstateManagement
+    - name: Combine Coverage Files
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x' 
+    - run: npm i lcov-result-merger
+    - run: lcov-result-merger 'lcov*.info' 'lcov.info' 
+
+    - name: Upload Code Coverage
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
-          parallel: true
-          path-to-lcov: lcov3.info
-
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+          path-to-lcov: lcov.info    
 
     - name: Build Docker Image
       run: docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest
