@@ -2,7 +2,7 @@ name: Nightly Build
 
 on:
   schedule:
-  - cron: "44 16 * * *"
+  - cron: "48 16 * * *"
 
 jobs:
   build:
@@ -39,7 +39,7 @@ jobs:
     - name: Combine Coverage
       run: |
         npm i lcov-result-merger
-        ./node_modiules/lcov-result-merger/bin/lcov-result-merger.js 'lcov*.info' 'lcov.info' 
+        ./node_modules/lcov-result-merger/bin/lcov-result-merger.js '*.info' 'lcov.info' 
 
     - name: Upload Code Coverage
       uses: coverallsapp/github-action@master
