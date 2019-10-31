@@ -2,7 +2,7 @@ name: Nightly Build
 
 on:
   schedule:
-  - cron: "40 11 * * *"
+  - cron: "55 11 * * *"
 
 jobs:
   build:
@@ -37,20 +37,29 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
+          parallel: true
           path-to-lcov: lcov1.info
  
     - name: Upload Code Coverage EstateAggregate
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
+          parallel: true
           path-to-lcov: lcov2.info
 
     - name: Upload Code Coverage EstateManagement
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
+          parallel: true
           path-to-lcov: lcov3.info
-              
+
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
+
     - name: Build Docker Image
       run: docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest
 
