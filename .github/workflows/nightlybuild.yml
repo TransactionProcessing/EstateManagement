@@ -37,19 +37,19 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: lconv1.info
+          path-to-lcov: lcov1.info
  
     - name: Upload Code Coverage EstateAggregate
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: lconv2.info
+          path-to-lcov: lcov2.info
 
     - name: Upload Code Coverage EstateManagement
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: lconv3.info
+          path-to-lcov: lcov3.info
               
     - name: Build Docker Image
       run: docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest
