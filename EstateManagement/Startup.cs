@@ -133,10 +133,10 @@ namespace EstateManagement
 
             ConfigurationReader.Initialise(Startup.Configuration);
 
-            app.AddExceptionHandler();
             app.AddRequestLogging();
             app.AddResponseLogging();
-
+            app.AddExceptionHandler();
+            
             app.UseRouting();
 
             app.UseAuthorization();

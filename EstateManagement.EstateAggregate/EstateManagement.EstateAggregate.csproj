@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shared" Version="0.0.2" />
-    <PackageReference Include="Shared.DomainDrivenDesign" Version="0.0.2" />
-    <PackageReference Include="Shared.EventStore" Version="0.0.2" />
+    <PackageReference Include="Shared" Version="0.0.3.1" />
+    <PackageReference Include="Shared.DomainDrivenDesign" Version="0.0.3.1" />
+    <PackageReference Include="Shared.EventStore" Version="0.0.3.1" />
   </ItemGroup>
 
   <ItemGroup>

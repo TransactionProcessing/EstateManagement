@@ -22,10 +22,10 @@
 
             builder.ConfigureServices((builderContext, services) =>
             {
-                if (commandRouterMock != null)
-                {
-                    services.AddSingleton(commandRouterMock.Object);
-                }
+                //if (commandRouterMock != null)
+                //{
+                //    services.AddSingleton(commandRouterMock.Object);
+                //}
 
                 services.AddMvc(options =>
                 {
