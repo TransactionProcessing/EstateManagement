@@ -9,7 +9,11 @@
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using EstateManagement.Testing;
+    using Lamar;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
     using Newtonsoft.Json;
+    using Shared.DomainDrivenDesign.CommandHandling;
     using Shouldly;
     using Xunit;
 
@@ -32,11 +36,21 @@
             this.WebApplicationFactory = webApplicationFactory;
         }
 
-        [Fact(Skip = "Lamar")]
+        [Fact]
         public async Task GolfClubAdministratorController_POST_GolfClubAdministrator_GolfClubAdministratorIsReturned()
         {
             // 1. Arrange
             HttpClient client = this.WebApplicationFactory.CreateClient();
+            var container = Startup.Container;
+
+            Mock<ICommandRouter> commandRouterMock = new Mock<ICommandRouter>(MockBehavior.Strict);
+
+            commandRouterMock.Setup(c => c.Route(It.IsAny<ICommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            ServiceCollection services = new ServiceCollection();
+            services.AddSingleton(commandRouterMock.Object);
+
+            container.Configure(services);
 
             CreateEstateRequest createEstateRequest = TestData.CreateEstateRequest;
             String uri = "api/estates/";

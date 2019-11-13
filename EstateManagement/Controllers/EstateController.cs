@@ -50,7 +50,7 @@
         /// <param name="commandRouter">The command router.</param>
         /// <param name="estateManagmentManager">The estate managment manager.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateController(CommandRouter commandRouter,
+        public EstateController(ICommandRouter commandRouter,
                                 IEstateManagmentManager estateManagmentManager,
                                 IModelFactory modelFactory)
         {

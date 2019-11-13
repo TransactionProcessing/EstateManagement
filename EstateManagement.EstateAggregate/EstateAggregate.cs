@@ -85,6 +85,18 @@
         }
 
         /// <summary>
+        /// Gets the metadata.
+        /// </summary>
+        /// <returns></returns>
+        protected override Object GetMetadata()
+        {
+            return new
+                   {
+                       EstateId = this.AggregateId
+                   };
+        }
+
+        /// <summary>
         /// Plays the event.
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>

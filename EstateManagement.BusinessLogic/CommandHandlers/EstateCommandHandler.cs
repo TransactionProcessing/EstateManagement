@@ -1,5 +1,6 @@
 ﻿namespace EstateManagement.BusinessLogic.CommandHandlers
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Commands;
@@ -45,7 +46,15 @@
 
             estateAggregate.Register(command.Name);
 
-            await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+            try
+            {
+                await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
+            
         }
 
         #endregion
