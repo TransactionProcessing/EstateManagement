@@ -11,6 +11,8 @@
     /// </summary>
     public interface IEstateClient
     {
+        #region Methods
+
         /// <summary>
         /// Creates the estate.
         /// </summary>
@@ -23,6 +25,19 @@
                                                 CancellationToken cancellationToken);
 
         /// <summary>
+        /// Creates the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createMerchantRequest">The create merchant request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<CreateMerchantResponse> CreateMerchant(String accessToken,
+                                                    Guid estateId,
+                                                    CreateMerchantRequest createMerchantRequest,
+                                                    CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the estate.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -32,5 +47,7 @@
         Task<EstateResponse> GetEstate(String accessToken,
                                        Guid estateId,
                                        CancellationToken cancellationToken);
+
+        #endregion
     }
 }

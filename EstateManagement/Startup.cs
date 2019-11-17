@@ -8,6 +8,7 @@ namespace EstateManagement
     using BusinessLogic.CommandHandlers;
     using BusinessLogic.EventHandling;
     using BusinessLogic.Manger;
+    using BusinessLogic.Services;
     using Common;
     using EventStore.ClientAPI;
     using Lamar;
@@ -129,7 +130,6 @@ namespace EstateManagement
             ILogger logger = loggerFactory.CreateLogger("EstateManagement");
 
             Logger.Initialise(logger);
-            //Logger.LogInformation("Hello from Logger.");
 
             ConfigurationReader.Initialise(Startup.Configuration);
 
@@ -235,6 +235,9 @@ namespace EstateManagement
             this.For<ICommandRouter>().Use<CommandRouter>().Singleton();
             this.For<IAggregateRepository<EstateAggregate.EstateAggregate>>()
                 .Use<AggregateRepository<EstateAggregate.EstateAggregate>>().Singleton();
+            this.For<IAggregateRepository<MerchantAggregate.MerchantAggregate>>()
+                .Use<AggregateRepository<MerchantAggregate.MerchantAggregate>>().Singleton();
+            this.For<IMerchantDomainService>().Use<MerchantDomainService>().Singleton();
             this.For<IEstateManagmentManager>().Use<EstateManagementManager>();
             this.For<IModelFactory>().Use<ModelFactory>();
             this.For<Factories.IModelFactory>().Use<Factories.ModelFactory>();

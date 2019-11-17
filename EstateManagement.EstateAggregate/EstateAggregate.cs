@@ -70,10 +70,10 @@
         }
 
         /// <summary>
-        /// Registers the specified name.
+        /// Creates the specified estate name.
         /// </summary>
         /// <param name="estateName">Name of the estate.</param>
-        public void Register(String estateName)
+        public void Create(String estateName)
         {
             Guard.ThrowIfNullOrEmpty(estateName, typeof(ArgumentNullException), "Estate name must be provided when registering a new estate");
 
@@ -88,6 +88,7 @@
         /// Gets the metadata.
         /// </summary>
         /// <returns></returns>
+        [ExcludeFromCodeCoverage]
         protected override Object GetMetadata()
         {
             return new

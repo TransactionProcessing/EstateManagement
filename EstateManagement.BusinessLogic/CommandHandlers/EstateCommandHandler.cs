@@ -1,6 +1,5 @@
 ﻿namespace EstateManagement.BusinessLogic.CommandHandlers
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Commands;
@@ -14,12 +13,27 @@
     /// <seealso cref="Shared.DomainDrivenDesign.CommandHandling.ICommandHandler" />
     public class EstateCommandHandler : ICommandHandler
     {
+        #region Fields
+
+        /// <summary>
+        /// The estate aggregate repository
+        /// </summary>
         private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EstateCommandHandler"/> class.
+        /// </summary>
+        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         public EstateCommandHandler(IAggregateRepository<EstateAggregate> estateAggregateRepository)
         {
             this.EstateAggregateRepository = estateAggregateRepository;
         }
+
+        #endregion
 
         #region Methods
 
@@ -44,17 +58,9 @@
         {
             EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
 
-            estateAggregate.Register(command.Name);
+            estateAggregate.Create(command.Name);
 
-            try
-            {
-                await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
-            }
-            catch(Exception e)
-            {
-                throw;
-            }
-            
+            await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }
 
         #endregion
