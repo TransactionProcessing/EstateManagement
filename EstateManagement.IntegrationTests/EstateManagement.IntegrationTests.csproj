@@ -30,4 +30,20 @@
     <ProjectReference Include="..\EstateManagement.Client\EstateManagement.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Merchant\Merchant.feature.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Merchant.feature</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Merchant\Merchant.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Merchant.feature.cs</LastGenOutput>
+      <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
+    </SpecFlowFeatureFiles>
+  </ItemGroup>
+
 </Project>

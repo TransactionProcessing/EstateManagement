@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Controllers
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.CommandHandlers;
@@ -14,10 +15,7 @@
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.Exceptions;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+    [ExcludeFromCodeCoverage]
     [Route(EstateController.ControllerRoute)]
     [ApiController]
     [ApiVersion("1.0")]

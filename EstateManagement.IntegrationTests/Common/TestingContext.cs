@@ -8,10 +8,12 @@
         public TestingContext()
         {
             this.Estates = new Dictionary<String, Guid>();
+            this.Merchants = new Dictionary<String, Guid>();
         }
 
         public DockerHelper DockerHelper { get; set; }
 
         public Dictionary<String, Guid> Estates { get; set; }
+        public Dictionary<String, Guid> Merchants { get; set; }
     }
 }

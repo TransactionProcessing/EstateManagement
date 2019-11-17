@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using BusinessLogic.Commands;
     using CommandHandlers;
     using Commands;
     using EstateAggregate;
@@ -16,7 +17,7 @@
     public class EstateCommandHandlerTests
     {
         [Fact]
-        public void CommandRouter_CreateEstateCommand_IsRouted()
+        public void EstateCommandHandler_CreateEstateCommand_IsHandled()
         {
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());

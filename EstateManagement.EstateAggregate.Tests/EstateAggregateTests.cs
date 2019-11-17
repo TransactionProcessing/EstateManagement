@@ -16,10 +16,10 @@
         }
 
         [Fact]
-        public void EstateAggregate_Register_IsCreated()
+        public void EstateAggregate_Create_IsCreated()
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
-            aggregate.Register(TestData.EstateName);
+            aggregate.Create(TestData.EstateName);
 
             aggregate.AggregateId.ShouldBe(TestData.EstateId);
             aggregate.EstateName.ShouldBe(TestData.EstateName);
@@ -29,26 +29,26 @@
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void EstateAggregate_Register_InvalidEstateName_ErrorThrown(String estateName)
+        public void EstateAggregate_Create_InvalidEstateName_ErrorThrown(String estateName)
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             ArgumentNullException exception = Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.Register(estateName);
+                                                    aggregate.Create(estateName);
                                                 });
             
             exception.Message.ShouldContain("Estate name must be provided when registering a new estate");
         }
 
         [Fact]
-        public void EstateAggregate_Register_EstateAlreadyCreated_ErrorThrown()
+        public void EstateAggregate_Create_EstateAlreadyCreated_ErrorThrown()
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
-            aggregate.Register(TestData.EstateName);
+            aggregate.Create(TestData.EstateName);
 
             InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
                                                                                   {
-                                                                                      aggregate.Register(TestData.EstateName);
+                                                                                      aggregate.Create(TestData.EstateName);
                                                                                   });
 
             exception.Message.ShouldContain($"Estate with name {TestData.EstateName} has already been created");

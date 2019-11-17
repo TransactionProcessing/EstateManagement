@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Commands;
     using EstateAggregate;
+    using Services;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
 
@@ -13,19 +14,37 @@
     /// <seealso cref="Shared.DomainDrivenDesign.CommandHandling.ICommandRouter" />
     public class CommandRouter : ICommandRouter
     {
+        #region Fields
+
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
         private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
 
         /// <summary>
+        /// The merchant domain service
+        /// </summary>
+        private readonly IMerchantDomainService MerchantDomainService;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CommandRouter" /> class.
         /// </summary>
         /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
-        public CommandRouter(IAggregateRepository<EstateAggregate> estateAggregateRepository)
+        /// <param name="merchantDomainService">The merchant domain service.</param>
+        public CommandRouter(IAggregateRepository<EstateAggregate> estateAggregateRepository,
+                             IMerchantDomainService merchantDomainService)
         {
             this.EstateAggregateRepository = estateAggregateRepository;
+            this.MerchantDomainService = merchantDomainService;
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Routes the specified command.
@@ -49,5 +68,17 @@
         {
             return new EstateCommandHandler(this.EstateAggregateRepository);
         }
+
+        /// <summary>
+        /// Creates the handler.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        private ICommandHandler CreateHandler(CreateMerchantCommand command)
+        {
+            return new MerchantCommandHandler(this.MerchantDomainService);
+        }
+
+        #endregion
     }
 }
