@@ -37,7 +37,7 @@
         }
 
         [Fact(Skip="Issue with Lamar")]
-        public async Task GolfClubAdministratorController_POST_GolfClubAdministrator_GolfClubAdministratorIsReturned()
+        public async Task EstateController_POST_CreateEstate_CreateEstateResponseIsReturned()
         {
             // 1. Arrange
             HttpClient client = this.WebApplicationFactory.CreateClient();

@@ -1,16 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shared" Version="0.0.3" />
+    <PackageReference Include="Shared" Version="0.0.3.1" />
     <PackageReference Include="Shared.EventStore" Version="0.0.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" />
+    <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
   </ItemGroup>
 
 </Project>
