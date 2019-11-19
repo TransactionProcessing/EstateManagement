@@ -238,7 +238,7 @@ namespace EstateManagement
             this.For<IAggregateRepository<MerchantAggregate.MerchantAggregate>>()
                 .Use<AggregateRepository<MerchantAggregate.MerchantAggregate>>().Singleton();
             this.For<IMerchantDomainService>().Use<MerchantDomainService>().Singleton();
-            this.For<IEstateManagmentManager>().Use<EstateManagementManager>();
+            this.For<IEstateManagementManager>().Use<EstateManagementManager>();
             this.For<IModelFactory>().Use<ModelFactory>();
             this.For<Factories.IModelFactory>().Use<Factories.ModelFactory>();
         }

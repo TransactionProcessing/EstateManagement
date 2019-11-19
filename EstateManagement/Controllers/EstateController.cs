@@ -29,9 +29,9 @@
         private readonly ICommandRouter CommandRouter;
 
         /// <summary>
-        /// The estate managment manager
+        /// The estate management manager
         /// </summary>
-        private readonly IEstateManagmentManager EstateManagmentManager;
+        private readonly IEstateManagementManager EstateManagementManager;
 
         /// <summary>
         /// The model factory
@@ -43,17 +43,17 @@
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EstateController"/> class.
+        /// Initializes a new instance of the <see cref="EstateController" /> class.
         /// </summary>
         /// <param name="commandRouter">The command router.</param>
-        /// <param name="estateManagmentManager">The estate managment manager.</param>
+        /// <param name="estateManagementManager">The estate management manager.</param>
         /// <param name="modelFactory">The model factory.</param>
         public EstateController(ICommandRouter commandRouter,
-                                IEstateManagmentManager estateManagmentManager,
+                                IEstateManagementManager estateManagementManager,
                                 IModelFactory modelFactory)
         {
             this.CommandRouter = commandRouter;
-            this.EstateManagmentManager = estateManagmentManager;
+            this.EstateManagementManager = estateManagementManager;
             this.ModelFactory = modelFactory;
         }
 
@@ -100,7 +100,7 @@
         public async Task<IActionResult> GetEstate([FromRoute] Guid estateId,
                                                    CancellationToken cancellationToken)
         {
-            Estate estate = await this.EstateManagmentManager.GetEstate(estateId, cancellationToken);
+            Estate estate = await this.EstateManagementManager.GetEstate(estateId, cancellationToken);
 
             if (estate == null)
             {

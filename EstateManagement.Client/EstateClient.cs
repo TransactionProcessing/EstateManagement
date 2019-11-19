@@ -176,6 +176,48 @@
             return response;
         }
 
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<MerchantResponse> GetMerchant(String accessToken,
+                                                    Guid estateId,
+                                                    Guid merchantId,
+                                                    CancellationToken cancellationToken)
+        {
+            MerchantResponse response = null;
+
+            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}";
+
+            try
+            {
+                // Add the access token to the client headers
+                //this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<MerchantResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting merchant Id {merchantId} in estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         #endregion
     }
 }

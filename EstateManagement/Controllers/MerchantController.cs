@@ -10,7 +10,9 @@
     using DataTransferObjects.Responses;
     using Factories;
     using Microsoft.AspNetCore.Mvc;
+    using Models.Merchant;
     using Shared.DomainDrivenDesign.CommandHandling;
+    using Shared.Exceptions;
 
     /// <summary>
     /// 
@@ -30,9 +32,9 @@
         private readonly ICommandRouter CommandRouter;
 
         /// <summary>
-        /// The estate managment manager
+        /// The estate management manager
         /// </summary>
-        private readonly IEstateManagmentManager EstateManagmentManager;
+        private readonly IEstateManagementManager EstateManagementManager;
 
         /// <summary>
         /// The model factory
@@ -47,14 +49,14 @@
         /// Initializes a new instance of the <see cref="EstateController" /> class.
         /// </summary>
         /// <param name="commandRouter">The command router.</param>
-        /// <param name="estateManagmentManager">The estate managment manager.</param>
+        /// <param name="estateManagementManager">The estate management manager.</param>
         /// <param name="modelFactory">The model factory.</param>
         public MerchantController(ICommandRouter commandRouter,
-                                  IEstateManagmentManager estateManagmentManager,
+                                  IEstateManagementManager estateManagementManager,
                                   IModelFactory modelFactory)
         {
             this.CommandRouter = commandRouter;
-            this.EstateManagmentManager = estateManagmentManager;
+            this.EstateManagementManager = estateManagementManager;
             this.ModelFactory = modelFactory;
         }
 
@@ -105,6 +107,20 @@
                                     AddressId = command.AddressId,
                                     ContactId = command.ContactId
                                 });
+        }
+
+        [HttpGet]
+        [Route("{merchantId}")]
+        public async Task<IActionResult> GetMerchant([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
+        {
+            Merchant merchant = await this.EstateManagementManager.GetMerchant(estateId, merchantId, cancellationToken);
+
+            if (merchant == null)
+            {
+                throw new NotFoundException($"Merchant not found with estate Id {estateId} and merchant Id {merchantId}");
+            }
+
+            return this.Ok(this.ModelFactory.ConvertFrom(merchant));
         }
 
         #endregion

@@ -1,10 +1,15 @@
 ﻿namespace EstateManagement.Testing
 {
     using System;
+    using System.Collections.Generic;
     using BusinessLogic.Commands;
     using DataTransferObjects.Requests;
     using EstateAggregate;
+    using MerchantAggregate;
     using Models;
+    using Models.Merchant;
+    using Address = Models.Merchant.Address;
+    using Contact = Models.Merchant.Contact;
 
     public class TestData
     {
@@ -90,5 +95,110 @@
         }
 
         #endregion
+
+        public static MerchantAggregate CreatedMerchantAggregate()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            return merchantAggregate;
+        }
+
+        public static MerchantAggregate MerchantAggregateWithAddress()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddAddress(TestData.MerchantAddressId, TestData.MerchantAddressLine1, TestData.MerchantAddressLine2, 
+                                         TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown, 
+                                         TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+
+            return merchantAggregate;
+        }
+
+        public static MerchantAggregate MerchantAggregateWithContact()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
+                                         TestData.MerchantContactEmailAddress);
+
+            return merchantAggregate;
+        }
+
+        public static Merchant MerchantModelWithAddressesAndContacts = new Merchant
+                                                                       {
+                                                                           MerchantId = TestData.MerchantId,
+                                                                           MerchantName = TestData.MerchantName,
+                                                                           EstateId = TestData.EstateId,
+                                                                           Addresses = new List<Address>
+                                                                                       {
+                                                                                           new Address
+                                                                                           {
+                                                                                               Town = TestData.MerchantTown,
+                                                                                               AddressLine4 = TestData.MerchantAddressLine4,
+                                                                                               AddressId = TestData.MerchantAddressId,
+                                                                                               Region = TestData.MerchantRegion,
+                                                                                               Country = TestData.MerchantCountry,
+                                                                                               AddressLine1 = TestData.MerchantAddressLine1,
+                                                                                               AddressLine2 = TestData.MerchantAddressLine2,
+                                                                                               AddressLine3 = TestData.MerchantAddressLine3,
+                                                                                               PostalCode = TestData.MerchantPostalCode
+                                                                                           }
+                                                                                       },
+                                                                           Contacts = new List<Contact>
+                                                                                      {
+                                                                                          new Contact
+                                                                                          {
+                                                                                              ContactId = TestData.MerchantContactId,
+                                                                                              ContactName = TestData.MerchantContactName,
+                                                                                              ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
+                                                                                              ContactEmailAddress = TestData.MerchantContactEmailAddress
+                                                                                          }
+                                                                                      }
+                                                                       };
+
+        public static Merchant MerchantModelWithNullAddressesAndWithContacts = new Merchant
+        {
+            MerchantId = TestData.MerchantId,
+            MerchantName = TestData.MerchantName,
+            EstateId = TestData.EstateId,
+            Addresses = null,
+            Contacts = new List<Contact>
+                                                                                      {
+                                                                                          new Contact
+                                                                                          {
+                                                                                              ContactId = TestData.MerchantContactId,
+                                                                                              ContactName = TestData.MerchantContactName,
+                                                                                              ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
+                                                                                              ContactEmailAddress = TestData.MerchantContactEmailAddress
+                                                                                          }
+                                                                                      }
+        };
+
+        public static Merchant MerchantModelWithAddressesAndNullContacts = new Merchant
+                                                                           {
+                                                                               MerchantId = TestData.MerchantId,
+                                                                               MerchantName = TestData.MerchantName,
+                                                                               EstateId = TestData.EstateId,
+                                                                               Addresses = new List<Address>
+                                                                                           {
+                                                                                               new Address
+                                                                                               {
+                                                                                                   Town = TestData.MerchantTown,
+                                                                                                   AddressLine4 = TestData.MerchantAddressLine4,
+                                                                                                   AddressId = TestData.MerchantAddressId,
+                                                                                                   Region = TestData.MerchantRegion,
+                                                                                                   Country = TestData.MerchantCountry,
+                                                                                                   AddressLine1 = TestData.MerchantAddressLine1,
+                                                                                                   AddressLine2 = TestData.MerchantAddressLine2,
+                                                                                                   AddressLine3 = TestData.MerchantAddressLine3,
+                                                                                                   PostalCode = TestData.MerchantPostalCode
+                                                                                               }
+                                                                                           },
+                                                                               Contacts = null
+                                                                           };
     }
 }

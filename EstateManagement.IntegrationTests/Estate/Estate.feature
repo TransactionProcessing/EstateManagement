@@ -1,5 +1,5 @@
 ﻿@base @shared
-Feature: CreateEstate
+Feature: Estate
 
 Background: 
 

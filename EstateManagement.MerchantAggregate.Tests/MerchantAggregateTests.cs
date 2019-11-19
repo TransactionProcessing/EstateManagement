@@ -4,7 +4,9 @@ using System.Text;
 
 namespace EstateManagement.MerchantAggregate.Tests
 {
+    using System.Linq;
     using System.Threading.Tasks;
+    using Models.Merchant;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -51,6 +53,19 @@ namespace EstateManagement.MerchantAggregate.Tests
             aggregate.AddAddress(TestData.MerchantAddressId, TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
                                  TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
                                  TestData.MerchantRegion, TestData.MerchantPostalCode,TestData.MerchantCountry);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Addresses.ShouldHaveSingleItem();
+            Address addressModel = merchantModel.Addresses.Single();
+            addressModel.AddressId.ShouldBe(TestData.MerchantAddressId);
+            addressModel.AddressLine1.ShouldBe(TestData.MerchantAddressLine1);
+            addressModel.AddressLine2.ShouldBe(TestData.MerchantAddressLine2);
+            addressModel.AddressLine3.ShouldBe(TestData.MerchantAddressLine3);
+            addressModel.AddressLine4.ShouldBe(TestData.MerchantAddressLine4);
+            addressModel.Town.ShouldBe(TestData.MerchantTown);
+            addressModel.Region.ShouldBe(TestData.MerchantRegion);
+            addressModel.PostalCode.ShouldBe(TestData.MerchantPostalCode);
+            addressModel.Country.ShouldBe(TestData.MerchantCountry);
         }
 
         [Fact]
@@ -81,6 +96,14 @@ namespace EstateManagement.MerchantAggregate.Tests
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
                                  TestData.MerchantContactEmailAddress);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Contacts.ShouldHaveSingleItem();
+            Contact contactModel = merchantModel.Contacts.Single();
+            contactModel.ContactId.ShouldBe(TestData.MerchantContactId);
+            contactModel.ContactName.ShouldBe(TestData.MerchantContactName);
+            contactModel.ContactEmailAddress.ShouldBe(TestData.MerchantContactEmailAddress);
+            contactModel.ContactPhoneNumber.ShouldBe(TestData.MerchantContactPhoneNumber);
         }
 
         [Fact]

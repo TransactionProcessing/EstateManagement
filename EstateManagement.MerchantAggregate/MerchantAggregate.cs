@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using Merchant.DomainEvents;
+    using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.General;
@@ -93,6 +95,48 @@
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <returns></returns>
+        public Merchant GetMerchant()
+        {
+            Merchant merchantModel = new Merchant();
+
+            merchantModel.EstateId = this.EstateId;
+            merchantModel.MerchantId = this.AggregateId;
+            merchantModel.MerchantName = this.Name;
+
+            if (this.Addresses.Any())
+            {
+                this.Addresses.ForEach(a => merchantModel.Addresses.Add(new Models.Merchant.Address
+                                                                        {
+                                                                            AddressId = a.AddressId,
+                                                                            Town = a.Town,
+                                                                            Region = a.Region,
+                                                                            PostalCode = a.PostalCode,
+                                                                            Country = a.Country,
+                                                                            AddressLine1 = a.AddressLine1,
+                                                                            AddressLine4 = a.AddressLine4,
+                                                                            AddressLine3 = a.AddressLine3,
+                                                                            AddressLine2 = a.AddressLine2
+                                                                        }));
+            }
+
+            if (this.Contacts.Any())
+            {
+                this.Contacts.ForEach(c => merchantModel.Contacts.Add(new Models.Merchant.Contact
+                                                                      {
+                                                                          ContactId = c.ContactId,
+                                                                          ContactPhoneNumber = c.ContactPhoneNumber,
+                                                                          ContactEmailAddress = c.ContactEmailAddress,
+                                                                          ContactName = c.ContactName
+                                                                      }));
+            }
+
+            return merchantModel;
+        }
 
         /// <summary>
         /// Adds the address.

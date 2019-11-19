@@ -102,11 +102,14 @@ namespace EstateManagement.IntegrationTests.Merchant
         [Xunit.SkippableFactAttribute(DisplayName="Create Merchant")]
         [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
         [Xunit.TraitAttribute("Description", "Create Merchant")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateMerchant()
         {
-            string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Merchant", null, ((string[])(null)));
-#line 9
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Merchant", null, new string[] {
+                        "PRTest"});
+#line 10
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -147,7 +150,7 @@ this.FeatureBackground();
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
-#line 10
+#line 11
  testRunner.When("I create the following merchants", ((string)(null)), table3, "When ");
 #line hidden
             }

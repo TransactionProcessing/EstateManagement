@@ -1,7 +1,10 @@
 ﻿namespace EstateManagement.Factories
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using DataTransferObjects.Responses;
     using Models;
+    using Models.Merchant;
 
     /// <summary>
     /// 
@@ -28,6 +31,54 @@
                                             };
 
             return estateResponse;
+        }
+
+        public MerchantResponse ConvertFrom(Merchant merchant)
+        {
+            if (merchant == null)
+            {
+                return null;
+            }
+
+            MerchantResponse merchantResponse = new MerchantResponse
+                                                {
+                                                    EstateId = merchant.EstateId,
+                                                    MerchantId = merchant.MerchantId,
+                                                    MerchantName = merchant.MerchantName,
+                                                };
+
+            if (merchant.Addresses != null && merchant.Addresses.Any())
+            {
+                merchantResponse.Addresses = new List<AddressResponse>();
+
+                merchant.Addresses.ForEach(a => merchantResponse.Addresses.Add(new AddressResponse
+                                                                               {
+                                                                                   AddressId = a.AddressId,
+                                                                                   Town = a.Town,
+                                                                                   Region = a.Region,
+                                                                                   PostalCode = a.PostalCode,
+                                                                                   Country = a.Country,
+                                                                                   AddressLine1 = a.AddressLine1,
+                                                                                   AddressLine2 = a.AddressLine2,
+                                                                                   AddressLine3 = a.AddressLine3,
+                                                                                   AddressLine4 = a.AddressLine4
+                                                                               }));
+            }
+
+            if (merchant.Contacts != null && merchant.Contacts.Any())
+            {
+                merchantResponse.Contacts = new List<ContactResponse>();
+
+                merchant.Contacts.ForEach(c => merchantResponse.Contacts.Add(new ContactResponse()
+                                                                               {
+                                                                                   ContactId = c.ContactId,
+                                                                                   ContactPhoneNumber = c.ContactPhoneNumber,
+                                                                                   ContactEmailAddress = c.ContactEmailAddress,
+                                                                                   ContactName = c.ContactName
+                                                                               }));
+            }
+
+            return merchantResponse;
         }
     }
 }

@@ -48,7 +48,20 @@ namespace EstateManagement.IntegrationTests.Shared
                 
                 // Cache the estate id
                 this.TestingContext.Estates.Add(estateName, response.EstateId);
+            }
 
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+
+                KeyValuePair<String, Guid> estateItem= this.TestingContext.Estates.SingleOrDefault(e => e.Key == estateName);
+
+                estateItem.Key.ShouldNotBeNullOrEmpty();
+                estateItem.Value.ShouldNotBe(Guid.Empty);
+
+                EstateResponse estate = await this.TestingContext.DockerHelper.EstateClient.GetEstate(String.Empty, estateItem.Value, CancellationToken.None).ConfigureAwait(false);
+
+                estate.EstateName.ShouldBe(estateName);
             }
         }
 
@@ -88,7 +101,27 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Cache the merchant id
                 this.TestingContext.Merchants.Add(merchantName, response.MerchantId);
+            }
 
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+
+                KeyValuePair<String, Guid> estateItem = this.TestingContext.Estates.SingleOrDefault(e => e.Key == estateName);
+
+                estateItem.Key.ShouldNotBeNullOrEmpty();
+                estateItem.Value.ShouldNotBe(Guid.Empty);
+
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+
+                KeyValuePair<String, Guid> merchantItem = this.TestingContext.Merchants.SingleOrDefault(m => m.Key == merchantName);
+
+                merchantItem.Key.ShouldNotBeNullOrEmpty();
+                merchantItem.Value.ShouldNotBe(Guid.Empty);
+
+                MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(String.Empty, estateItem.Value, merchantItem.Value, CancellationToken.None).ConfigureAwait(false);
+
+                merchant.MerchantName.ShouldBe(merchantName);
             }
         }
 
