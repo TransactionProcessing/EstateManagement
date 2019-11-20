@@ -11,6 +11,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Models.Factories;
     using Moq;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -26,7 +27,10 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
             modelFactory.Setup(m => m.ConvertFrom(It.IsAny<EstateAggregate>())).Returns(TestData.EstateModel);
 
-            EstateManagementManager estateManagementManager = new EstateManagementManager(estateAggregateRepository.Object, modelFactory.Object);
+            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
+            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
+
+            EstateManagementManager estateManagementManager = new EstateManagementManager(aggregateRepositoryManager.Object, modelFactory.Object);
 
             var estateModel =  await estateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
 

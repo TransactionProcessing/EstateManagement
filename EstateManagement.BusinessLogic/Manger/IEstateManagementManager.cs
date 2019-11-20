@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using Models;
 
-    public interface IEstateManagmentManager
+    public interface IEstateManagementManager
     {
         #region Methods
 

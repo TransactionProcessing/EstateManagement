@@ -31,7 +31,7 @@
         /// <summary>
         /// The estate managment manager
         /// </summary>
-        private readonly IEstateManagmentManager EstateManagmentManager;
+        private readonly IEstateManagementManager EstateManagmentManager;
 
         /// <summary>
         /// The model factory
@@ -49,7 +49,7 @@
         /// <param name="estateManagmentManager">The estate managment manager.</param>
         /// <param name="modelFactory">The model factory.</param>
         public EstateController(ICommandRouter commandRouter,
-                                IEstateManagmentManager estateManagmentManager,
+                                IEstateManagementManager estateManagmentManager,
                                 IModelFactory modelFactory)
         {
             this.CommandRouter = commandRouter;
@@ -72,7 +72,7 @@
         public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequest createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
-            Guid estateId = Guid.NewGuid();
+            Guid estateId = createEstateRequest.EstateId;
 
             // Create the command
             CreateEstateCommand command = CreateEstateCommand.Create(estateId, createEstateRequest.EstateName);

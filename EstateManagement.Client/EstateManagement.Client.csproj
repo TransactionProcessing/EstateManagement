@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ClientProxyBase" Version="0.0.3.1" />
+    <PackageReference Include="ClientProxyBase" Version="0.0.4.1" />
   </ItemGroup>
 
   <ItemGroup>

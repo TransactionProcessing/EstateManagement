@@ -7,19 +7,20 @@
     using Models;
     using Models.Factories;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="EstateManagement.BusinessLogic.Manger.IEstateManagmentManager" />
-    public class EstateManagementManager : IEstateManagmentManager
+    /// <seealso cref="IEstateManagementManager" />
+    public class EstateManagementManager : IEstateManagementManager
     {
         #region Fields
 
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
+        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
         /// <summary>
         /// The model factory
@@ -31,14 +32,14 @@
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EstateManagementManager"/> class.
+        /// Initializes a new instance of the <see cref="EstateManagementManager" /> class.
         /// </summary>
-        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
+        /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementManager(IAggregateRepository<EstateAggregate> estateAggregateRepository,
+        public EstateManagementManager(IAggregateRepositoryManager aggregateRepositoryManager,
                                        IModelFactory modelFactory)
         {
-            this.EstateAggregateRepository = estateAggregateRepository;
+            this.AggregateRepositoryManager = aggregateRepositoryManager;
             this.ModelFactory = modelFactory;
         }
 
@@ -56,7 +57,8 @@
                                             CancellationToken cancellationToken)
         {
             // Get the estate from the aggregate repository
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
 
             Estate estateModel = this.ModelFactory.ConvertFrom(estateAggregate);
 

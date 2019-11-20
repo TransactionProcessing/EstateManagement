@@ -7,6 +7,7 @@
     using Services;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
 
     /// <summary>
     /// 
@@ -17,9 +18,9 @@
         #region Fields
 
         /// <summary>
-        /// The estate aggregate repository
+        /// The aggregate repository manager
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
+        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
         /// <summary>
         /// The merchant domain service
@@ -33,12 +34,12 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandRouter" /> class.
         /// </summary>
-        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
+        /// <param name="estateAggregateRepositoryManager">The estate aggregate repository.</param>
         /// <param name="merchantDomainService">The merchant domain service.</param>
-        public CommandRouter(IAggregateRepository<EstateAggregate> estateAggregateRepository,
+        public CommandRouter(IAggregateRepositoryManager estateAggregateRepositoryManager,
                              IMerchantDomainService merchantDomainService)
         {
-            this.EstateAggregateRepository = estateAggregateRepository;
+            this.AggregateRepositoryManager = estateAggregateRepositoryManager;
             this.MerchantDomainService = merchantDomainService;
         }
 
@@ -66,7 +67,7 @@
         /// <returns></returns>
         private ICommandHandler CreateHandler(CreateEstateCommand command)
         {
-            return new EstateCommandHandler(this.EstateAggregateRepository);
+            return new EstateCommandHandler(this.AggregateRepositoryManager);
         }
 
         /// <summary>
