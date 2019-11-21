@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
     using Estate.DomainEvents;
+    using Models;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.General;
@@ -82,6 +83,20 @@
             EstateCreatedEvent estateCreatedEvent = EstateCreatedEvent.Create(this.AggregateId, estateName);
 
             this.ApplyAndPend(estateCreatedEvent);
+        }
+
+        /// <summary>
+        /// Gets the estate.
+        /// </summary>
+        /// <returns></returns>
+        public Estate GetEstate()
+        {
+            Estate estateModel = new Estate();
+
+            estateModel.EstateId = this.AggregateId;
+            estateModel.Name = this.EstateName;
+
+            return estateModel;
         }
 
         /// <summary>

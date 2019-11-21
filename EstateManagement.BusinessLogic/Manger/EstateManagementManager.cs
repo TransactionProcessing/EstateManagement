@@ -64,7 +64,7 @@
             IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
             EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
 
-            Estate estateModel = this.ModelFactory.ConvertFrom(estateAggregate);
+            Estate estateModel = estateAggregate.GetEstate();
 
             return estateModel;
         }
