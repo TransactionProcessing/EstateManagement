@@ -80,7 +80,8 @@
                                       Guid merchantId,
                                       CancellationToken cancellationToken)
         {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
+            MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
             Merchant merchantModel = merchantAggregate.GetMerchant();
 
