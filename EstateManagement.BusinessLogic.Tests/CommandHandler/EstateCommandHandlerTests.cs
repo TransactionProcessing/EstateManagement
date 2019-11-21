@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Commands;
+    using BusinessLogic.Services;
     using CommandHandlers;
     using Commands;
     using EstateAggregate;
@@ -20,14 +21,8 @@
         [Fact]
         public void EstateCommandHandler_CreateEstateCommand_IsHandled()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
-            estateAggregateRepository.Setup(e => e.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
-            ICommandHandler handler = new EstateCommandHandler(aggregateRepositoryManager.Object);
+            Mock<IEstateDomainService> estateDomainService = new Mock<IEstateDomainService>();
+            ICommandHandler handler = new EstateCommandHandler(estateDomainService.Object);
 
             CreateEstateCommand command = TestData.CreateEstateCommand;
 

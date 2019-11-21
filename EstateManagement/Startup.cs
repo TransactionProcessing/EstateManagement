@@ -170,6 +170,7 @@ namespace EstateManagement
             services.AddSingleton<ICommandRouter,CommandRouter>();
             services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate>, AggregateRepository<EstateAggregate.EstateAggregate>>();
             services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate>, AggregateRepository<MerchantAggregate.MerchantAggregate>>();
+            services.AddSingleton<IEstateDomainService, EstateDomainService>();
             services.AddSingleton<IMerchantDomainService, MerchantDomainService>();
             services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
             services.AddSingleton<IModelFactory, ModelFactory>();
