@@ -6,6 +6,7 @@
     using EstateAggregate;
     using MerchantAggregate;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
 
     /// <summary>
     /// 
@@ -16,29 +17,21 @@
         #region Fields
 
         /// <summary>
-        /// The estate aggregate repository
+        /// The aggregate repository manager
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
-
-        /// <summary>
-        /// The merchant aggregate repository
-        /// </summary>
-        private readonly IAggregateRepository<MerchantAggregate> MerchantAggregateRepository;
+        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MerchantDomainService"/> class.
+        /// Initializes a new instance of the <see cref="MerchantDomainService" /> class.
         /// </summary>
-        /// <param name="merchantAggregateRepository">The merchant aggregate repository.</param>
-        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
-        public MerchantDomainService(IAggregateRepository<MerchantAggregate> merchantAggregateRepository,
-                                     IAggregateRepository<EstateAggregate> estateAggregateRepository)
+        /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
+        public MerchantDomainService(IAggregateRepositoryManager aggregateRepositoryManager)
         {
-            this.MerchantAggregateRepository = merchantAggregateRepository;
-            this.EstateAggregateRepository = estateAggregateRepository;
+            this.AggregateRepositoryManager = aggregateRepositoryManager;
         }
 
         #endregion
@@ -84,10 +77,13 @@
                                          String contactEmailAddress,
                                          CancellationToken cancellationToken)
         {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
+
+            MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
             if (estateAggregate.IsCreated == false)
             {
                 throw new InvalidOperationException($"Estate Id {estateId} has not been created");
@@ -104,7 +100,7 @@
             // Add the contact
             merchantAggregate.AddContact(contactId, contactName, contactPhoneNumber, contactEmailAddress);
 
-            await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+            await merchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
         #endregion

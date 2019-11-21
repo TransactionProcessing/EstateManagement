@@ -13,6 +13,7 @@
     using Services;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -26,8 +27,11 @@
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
             estateAggregateRepository.Setup(e => e.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
+            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
+            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
+
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
-            ICommandRouter router = new CommandRouter(estateAggregateRepository.Object, merchantDomainService.Object);
+            ICommandRouter router = new CommandRouter(aggregateRepositoryManager.Object, merchantDomainService.Object);
 
             CreateEstateCommand command = TestData.CreateEstateCommand;
 
@@ -43,6 +47,9 @@
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
             estateAggregateRepository.Setup(e => e.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
+            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
 
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             merchantDomainService.Setup(e => e.CreateMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<String>(), It.IsAny<Guid>(),
@@ -60,7 +67,7 @@
                                                               It.IsAny<String>(),
                                                               It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            ICommandRouter router = new CommandRouter(estateAggregateRepository.Object, merchantDomainService.Object);
+            ICommandRouter router = new CommandRouter(aggregateRepositoryManager.Object, merchantDomainService.Object);
 
             CreateMerchantCommand command = TestData.CreateMerchantCommand;
 

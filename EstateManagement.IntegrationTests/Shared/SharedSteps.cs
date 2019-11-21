@@ -38,6 +38,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 CreateEstateRequest createEstateRequest = new CreateEstateRequest
                                                           {
+                                                              EstateId = Guid.NewGuid(),
                                                               EstateName = estateName
                                                           };
 

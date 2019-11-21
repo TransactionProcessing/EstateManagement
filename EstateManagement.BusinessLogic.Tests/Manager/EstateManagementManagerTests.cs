@@ -14,12 +14,14 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Models.Merchant;
     using Moq;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
     using Xunit;
 
     public class EstateManagementManagerTests
     {
+        private readonly Mock<IAggregateRepositoryManager> AggregateRepositoryManager;
         private readonly Mock<IAggregateRepository<EstateAggregate>> EstateAggregateRepository;
         private readonly Mock<IAggregateRepository<MerchantAggregate>> MerchantAggregateRepository;
 
@@ -29,12 +31,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
         public EstateManagementManagerTests()
         {
+            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate>>();
             this.ModelFactory = new Mock<IModelFactory>();
 
-            this.EstateManagementManager = new EstateManagementManager(this.EstateAggregateRepository.Object, this.MerchantAggregateRepository.Object,
-                                                                       this.ModelFactory.Object);
+            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(this.EstateAggregateRepository.Object);
+            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(this.MerchantAggregateRepository.Object);
+
+            this.EstateManagementManager = new EstateManagementManager(aggregateRepositoryManager.Object, this.ModelFactory.Object);
         }
 
         [Fact]
@@ -44,7 +49,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.ModelFactory.Setup(m => m.ConvertFrom(It.IsAny<EstateAggregate>())).Returns(TestData.EstateModel);
 
             Estate estateModel =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
-
+            
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(TestData.EstateModel.EstateId);
             estateModel.Name.ShouldBe(TestData.EstateModel.Name);

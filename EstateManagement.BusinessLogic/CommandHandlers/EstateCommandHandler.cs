@@ -6,6 +6,7 @@
     using EstateAggregate;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
 
     /// <summary>
     /// 
@@ -16,21 +17,21 @@
         #region Fields
 
         /// <summary>
-        /// The estate aggregate repository
+        /// The aggregate repository manager
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
+        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EstateCommandHandler"/> class.
+        /// Initializes a new instance of the <see cref="EstateCommandHandler" /> class.
         /// </summary>
-        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
-        public EstateCommandHandler(IAggregateRepository<EstateAggregate> estateAggregateRepository)
+        /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
+        public EstateCommandHandler(IAggregateRepositoryManager aggregateRepositoryManager)
         {
-            this.EstateAggregateRepository = estateAggregateRepository;
+            this.AggregateRepositoryManager = aggregateRepositoryManager;
         }
 
         #endregion
@@ -56,11 +57,12 @@
         private async Task HandleCommand(CreateEstateCommand command,
                                          CancellationToken cancellationToken)
         {
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
-
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(command.EstateId);
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
+            
             estateAggregate.Create(command.Name);
 
-            await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+            await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }
 
         #endregion

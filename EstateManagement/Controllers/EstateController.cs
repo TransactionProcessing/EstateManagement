@@ -72,7 +72,7 @@
         public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequest createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
-            Guid estateId = Guid.NewGuid();
+            Guid estateId = createEstateRequest.EstateId;
 
             // Create the command
             CreateEstateCommand command = CreateEstateCommand.Create(estateId, createEstateRequest.EstateName);

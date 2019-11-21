@@ -10,6 +10,7 @@
     using Moq;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -22,7 +23,11 @@
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
             estateAggregateRepository.Setup(e => e.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            ICommandHandler handler = new EstateCommandHandler(estateAggregateRepository.Object);
+
+            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
+            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
+
+            ICommandHandler handler = new EstateCommandHandler(aggregateRepositoryManager.Object);
 
             CreateEstateCommand command = TestData.CreateEstateCommand;
 

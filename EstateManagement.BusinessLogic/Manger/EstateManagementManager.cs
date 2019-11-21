@@ -9,6 +9,7 @@
     using Models.Factories;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
 
     /// <summary>
     /// 
@@ -21,7 +22,7 @@
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
+        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
         private readonly IAggregateRepository<MerchantAggregate> MerchantAggregateRepository;
 
@@ -37,15 +38,12 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateManagementManager" /> class.
         /// </summary>
-        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
-        /// <param name="merchantAggregateRepository">The merchant aggregate repository.</param>
+        /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementManager(IAggregateRepository<EstateAggregate> estateAggregateRepository,
-                                       IAggregateRepository<MerchantAggregate> merchantAggregateRepository,
+        public EstateManagementManager(IAggregateRepositoryManager aggregateRepositoryManager,
                                        IModelFactory modelFactory)
         {
-            this.EstateAggregateRepository = estateAggregateRepository;
-            this.MerchantAggregateRepository = merchantAggregateRepository;
+            this.AggregateRepositoryManager = aggregateRepositoryManager;
             this.ModelFactory = modelFactory;
         }
 
@@ -63,7 +61,8 @@
                                             CancellationToken cancellationToken)
         {
             // Get the estate from the aggregate repository
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
 
             Estate estateModel = this.ModelFactory.ConvertFrom(estateAggregate);
 
@@ -81,7 +80,8 @@
                                       Guid merchantId,
                                       CancellationToken cancellationToken)
         {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
+            MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
             Merchant merchantModel = merchantAggregate.GetMerchant();
 

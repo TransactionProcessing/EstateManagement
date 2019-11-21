@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <DebugType>None</DebugType>
+    <DebugType>Full</DebugType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -13,6 +13,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="Shared.EventStore" Version="0.0.4.1" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">

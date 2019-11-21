@@ -3,7 +3,7 @@ namespace EstateManagement
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using Lamar.Microsoft.DependencyInjection;
+    //using Lamar.Microsoft.DependencyInjection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
@@ -27,7 +27,7 @@ namespace EstateManagement
                                                                   .AddEnvironmentVariables().Build();
 
             IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
-                hostBuilder.UseLamar().ConfigureWebHostDefaults(webBuilder =>
+                hostBuilder.ConfigureWebHostDefaults(webBuilder =>
                                           {
                                               webBuilder.UseStartup<Startup>();
                                               webBuilder.UseConfiguration(config);
