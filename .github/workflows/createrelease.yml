@@ -37,12 +37,13 @@ jobs:
         dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj"
         dotnet test "EstateManagement.MerchantAggregate.Tests\EstateManagement.MerchantAggregate.Tests.csproj"
         dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj"
-
-    - name: Build Docker Images
-      run: |
-        docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest
-        docker build . --file EstateManagement/Dockerfile --tag stuartferguson/estatemanagement:latest
-        docker build . --file EstateManagement/Dockerfile --tag stuartferguson/estatemanagement:${{ steps.get_version.outputs.VERSION }}
+        
+    - name: Build Docker Images 
+      run: | 
+        docker build . --file EstateManagement/Dockerfile 
+                       --tag estatemanagement:latest 
+                       --tag stuartferguson/estatemanagement:latest 
+                       --tag stuartferguson/estatemanagement:${{ steps.get_version.outputs.VERSION }}         
 
     - name: Run Integration Tests
       run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj"

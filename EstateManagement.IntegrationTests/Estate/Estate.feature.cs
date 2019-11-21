@@ -21,7 +21,7 @@ namespace EstateManagement.IntegrationTests.Estate
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Xunit.TraitAttribute("Category", "base")]
     [Xunit.TraitAttribute("Category", "shared")]
-    public partial class CreateEstateFeature : Xunit.IClassFixture<CreateEstateFeature.FixtureData>, System.IDisposable
+    public partial class EstateFeature : Xunit.IClassFixture<EstateFeature.FixtureData>, System.IDisposable
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -32,10 +32,10 @@ namespace EstateManagement.IntegrationTests.Estate
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "CreateEstate.feature"
+#line 1 "Estate.feature"
 #line hidden
         
-        public CreateEstateFeature(CreateEstateFeature.FixtureData fixtureData, InternalSpecFlow.XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public EstateFeature(EstateFeature.FixtureData fixtureData, InternalSpecFlow.XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
@@ -44,7 +44,7 @@ namespace EstateManagement.IntegrationTests.Estate
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "CreateEstate", null, ProgrammingLanguage.CSharp, new string[] {
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Estate", null, ProgrammingLanguage.CSharp, new string[] {
                         "base",
                         "shared"});
             testRunner.OnFeatureStart(featureInfo);
@@ -93,7 +93,7 @@ namespace EstateManagement.IntegrationTests.Estate
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Create Estate")]
-        [Xunit.TraitAttribute("FeatureTitle", "CreateEstate")]
+        [Xunit.TraitAttribute("FeatureTitle", "Estate")]
         [Xunit.TraitAttribute("Description", "Create Estate")]
         [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateEstate()
@@ -143,12 +143,12 @@ this.FeatureBackground();
             
             public FixtureData()
             {
-                CreateEstateFeature.FeatureSetup();
+                EstateFeature.FeatureSetup();
             }
             
             void System.IDisposable.Dispose()
             {
-                CreateEstateFeature.FeatureTearDown();
+                EstateFeature.FeatureTearDown();
             }
         }
     }
