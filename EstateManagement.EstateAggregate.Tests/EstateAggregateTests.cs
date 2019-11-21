@@ -2,6 +2,7 @@
 {
     using System;
     using EstateManagement.Testing;
+    using Models;
     using Shouldly;
     using Xunit;
 
@@ -52,6 +53,18 @@
                                                                                   });
 
             exception.Message.ShouldContain($"Estate with name {TestData.EstateName} has already been created");
+        }
+
+        [Fact]
+        public void EstateAggregate_GetEstate_EstateIsReturned()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+
+            Estate model = aggregate.GetEstate();
+
+            model.EstateId.ShouldBe(TestData.EstateId);
+            model.Name.ShouldBe(TestData.EstateName);
         }
     }
 }

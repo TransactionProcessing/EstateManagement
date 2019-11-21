@@ -46,7 +46,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         public async Task EstateManagementManager_GetEstate_EstateIsReturned()
         {
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-            this.ModelFactory.Setup(m => m.ConvertFrom(It.IsAny<EstateAggregate>())).Returns(TestData.EstateModel);
 
             Estate estateModel =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
             

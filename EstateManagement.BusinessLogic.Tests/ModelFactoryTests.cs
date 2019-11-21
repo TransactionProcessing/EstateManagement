@@ -13,30 +13,6 @@ namespace EstateManagement.BusinessLogic.Tests
 
     public class ModelFactoryTests
     {
-        [Fact]
-        public void ModelFactory_EstateAggregate_IsConverted()
-        {
-            EstateAggregate estateAggregate = TestData.CreatedEstateAggregate();
-
-            ModelFactory modelFactory = new ModelFactory();
-
-            Estate model = modelFactory.ConvertFrom(estateAggregate);
-
-            model.ShouldNotBeNull();
-            model.EstateId.ShouldBe(estateAggregate.AggregateId);
-            model.Name.ShouldBe(estateAggregate.EstateName);
-        }
-
-        [Fact]
-        public void ModelFactory_EstateAggregate_NullInput_IsConverted()
-        {
-            EstateAggregate estateAggregate = null;
-
-            ModelFactory modelFactory = new ModelFactory();
-
-            Estate model = modelFactory.ConvertFrom(estateAggregate);
-
-            model.ShouldBeNull();
-        }
+        
     }
 }
