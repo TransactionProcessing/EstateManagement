@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Commands;
     using EstateAggregate;
+    using Services;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
@@ -14,12 +15,9 @@
     /// <seealso cref="Shared.DomainDrivenDesign.CommandHandling.ICommandHandler" />
     public class EstateCommandHandler : ICommandHandler
     {
-        #region Fields
+        private readonly IEstateDomainService EstateDomainService;
 
-        /// <summary>
-        /// The aggregate repository manager
-        /// </summary>
-        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
+        #region Fields
 
         #endregion
 
@@ -28,10 +26,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateCommandHandler" /> class.
         /// </summary>
-        /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
-        public EstateCommandHandler(IAggregateRepositoryManager aggregateRepositoryManager)
+        /// <param name="estateDomainService">The estate domain service.</param>
+        public EstateCommandHandler(IEstateDomainService estateDomainService)
         {
-            this.AggregateRepositoryManager = aggregateRepositoryManager;
+            this.EstateDomainService = estateDomainService;
         }
 
         #endregion
@@ -57,12 +55,7 @@
         private async Task HandleCommand(CreateEstateCommand command,
                                          CancellationToken cancellationToken)
         {
-            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(command.EstateId);
-            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
-            
-            estateAggregate.Create(command.Name);
-
-            await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+            await this.EstateDomainService.CreateEstate(command.EstateId, command.Name, cancellationToken);
         }
 
         #endregion
