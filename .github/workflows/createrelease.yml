@@ -39,7 +39,7 @@ jobs:
         dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj"
         
     - name: Build Docker Images 
-      run: | 
+      run: >-
         docker build . --file EstateManagement/Dockerfile 
                        --tag estatemanagement:latest 
                        --tag stuartferguson/estatemanagement:latest 
