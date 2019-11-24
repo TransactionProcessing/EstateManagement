@@ -1,5 +1,6 @@
 ﻿namespace EstateManagement.Tests.Common
 {
+    using System.Linq;
     using System.Net.Http;
     using System.Text;
     using System.Threading;
@@ -22,17 +23,17 @@
 
             builder.ConfigureServices((builderContext, services) =>
             {
-                //if (commandRouterMock != null)
-                //{
-                //    services.AddSingleton(commandRouterMock.Object);
-                //}
+                if (commandRouterMock != null)
+                {
+                    services.AddSingleton<ICommandRouter>(commandRouterMock.Object);
+                }
 
                 services.AddMvc(options =>
                 {
                     options.Filters.Add(new AllowAnonymousFilter());
                 })
                         .AddApplicationPart(typeof(Startup).Assembly);
-            }).UseStartup<Startup>();
+            });
             ;
         }
 

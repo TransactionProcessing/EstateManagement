@@ -36,38 +36,27 @@
             this.WebApplicationFactory = webApplicationFactory;
         }
 
-        [Fact(Skip="Issue with Lamar")]
+        [Fact]
         public async Task EstateController_POST_CreateEstate_CreateEstateResponseIsReturned()
         {
-            // 1. Arrange
-            //HttpClient client = this.WebApplicationFactory.CreateClient();
-            //var container = Startup.Container;
+            HttpClient client = this.WebApplicationFactory.CreateClient();
 
-            //Mock<ICommandRouter> commandRouterMock = new Mock<ICommandRouter>(MockBehavior.Strict);
+            CreateEstateRequest createEstateRequest = TestData.CreateEstateRequest;
+            String uri = "api/estates/";
+            StringContent content = Helpers.CreateStringContent(createEstateRequest);
+            client.DefaultRequestHeaders.Add("api-version", "1.0");
+            // 2. Act
+            HttpResponseMessage response = await client.PostAsync(uri, content, CancellationToken.None);
 
-            //commandRouterMock.Setup(c => c.Route(It.IsAny<ICommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            // 3. Assert
+            response.StatusCode.ShouldBe(HttpStatusCode.Created);
 
-            //ServiceCollection services = new ServiceCollection();
-            //services.AddSingleton(commandRouterMock.Object);
+            String responseAsJson = await response.Content.ReadAsStringAsync();
+            responseAsJson.ShouldNotBeNullOrEmpty();
 
-            //container.Configure(services);
-
-            //CreateEstateRequest createEstateRequest = TestData.CreateEstateRequest;
-            //String uri = "api/estates/";
-            //StringContent content = Helpers.CreateStringContent(createEstateRequest);
-            //client.DefaultRequestHeaders.Add("api-version", "1.0");
-            //// 2. Act
-            //HttpResponseMessage response = await client.PostAsync(uri, content, CancellationToken.None);
-
-            //// 3. Assert
-            //response.StatusCode.ShouldBe(HttpStatusCode.Created);
-
-            //String responseAsJson = await response.Content.ReadAsStringAsync();
-            //responseAsJson.ShouldNotBeNullOrEmpty();
-
-            //CreateEstateResponse responseObject = JsonConvert.DeserializeObject<CreateEstateResponse>(responseAsJson);
-            //responseObject.ShouldNotBeNull();
-            //responseObject.EstateId.ShouldNotBe(Guid.Empty);
+            CreateEstateResponse responseObject = JsonConvert.DeserializeObject<CreateEstateResponse>(responseAsJson);
+            responseObject.ShouldNotBeNull();
+            responseObject.EstateId.ShouldNotBe(Guid.Empty);
         }
 
         #endregion

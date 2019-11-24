@@ -4,21 +4,28 @@ namespace EstateManagement
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
+    using Autofac;
+    using Autofac.Extensions.DependencyInjection;
     using BusinessLogic.CommandHandlers;
     using BusinessLogic.EventHandling;
     using BusinessLogic.Manger;
     using BusinessLogic.Services;
     using Common;
+    using Controllers;
     using EventStore.ClientAPI;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
+    using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Versioning;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -44,21 +51,13 @@ namespace EstateManagement
         public Startup(IWebHostEnvironment webHostEnvironment)
         {
             IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(webHostEnvironment.ContentRootPath)
-                                                                      .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                                                                      .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                                                                       .AddJsonFile($"appsettings.{webHostEnvironment.EnvironmentName}.json", optional: true).AddEnvironmentVariables();
 
             Startup.Configuration = builder.Build();
             Startup.WebHostEnvironment = webHostEnvironment;
         }
-
-        /// <summary>
-        /// Gets or sets the container.
-        /// </summary>
-        /// <value>
-        /// The container.
-        /// </value>
-        public static IServiceProvider Container { get; set; }
-
+        
         public static IConfigurationRoot Configuration { get; set; }
 
         public static IWebHostEnvironment WebHostEnvironment { get; set; }
@@ -67,17 +66,79 @@ namespace EstateManagement
         public void ConfigureServices(IServiceCollection services)
         {
             this.ConfigureMiddlewareServices(services);
-            this.ConfigureApplicationServices(services);
-            services.AddControllers().AddNewtonsoftJson(options =>
-                                                        {
-                                                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                                                            options.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
-                                                            options.SerializerSettings.Formatting = Formatting.Indented;
-                                                            options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-                                                            options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                                                        });
 
-            Startup.GetConfiguredContainer(services, Startup.WebHostEnvironment);
+            services.AddSingleton<ICommandRouter, CommandRouter>();
+            services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            ConfigurationReader.Initialise(Startup.Configuration);
+            String connString = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString");
+            String connectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
+            Int32 httpPort = Startup.Configuration.GetValue<Int32>("EventStoreSettings:HttpPort");
+
+            Boolean useConnectionStringConfig = Boolean.Parse(ConfigurationReader.GetValue("AppSettings", "UseConnectionStringConfig"));
+            EventStoreConnectionSettings settings = EventStoreConnectionSettings.Create(connString, connectionName, httpPort);
+            builder.RegisterInstance(settings);
+
+            Func<EventStoreConnectionSettings, IEventStoreConnection> eventStoreConnectionFunc = (connectionSettings) =>
+                                                                                                 {
+                                                                                                     return EventStoreConnection.Create(connectionSettings.ConnectionString);
+                                                                                                 };
+
+            builder.RegisterInstance<Func<EventStoreConnectionSettings, IEventStoreConnection>>(eventStoreConnectionFunc);
+
+            Func<String, IEventStoreContext> eventStoreContextFunc = (connectionString) =>
+                                                                     {
+                                                                         EventStoreConnectionSettings connectionSettings = EventStoreConnectionSettings.Create(connectionString, connectionName, httpPort);
+
+                                                                         IEventStoreContext context = new EventStoreContext(connectionSettings, eventStoreConnectionFunc);
+                                                                         
+                                                                         return context;
+                                                                     };
+
+            builder.RegisterInstance<Func<String, IEventStoreContext>>(eventStoreContextFunc);
+
+            if (useConnectionStringConfig)
+            {
+                String connectionStringConfigurationConnString = ConfigurationReader.GetConnectionString("ConnectionStringConfiguration");
+                builder.Register(c => new ConnectionStringConfigurationContext(connectionStringConfigurationConnString)).InstancePerDependency();
+                builder.RegisterType<ConnectionStringConfigurationRepository>().As<IConnectionStringConfigurationRepository>().SingleInstance();
+                builder.RegisterType<EventStoreContextManager>().As<IEventStoreContextManager>().UsingConstructor(typeof(Func<String,IEventStoreContext>), typeof(IConnectionStringConfigurationRepository)) .SingleInstance();
+            }
+            else
+            {
+                builder.RegisterType<EventStoreContextManager>().As<IEventStoreContextManager>().UsingConstructor(typeof(IEventStoreContext)).SingleInstance();
+                // TODO: Once we have a Read Model
+                //this.RegisterType<Vme.Repositories.IConnectionStringRepository, ConfigReaderConnectionStringRepository>().Singleton();
+            }
+
+            Dictionary<String, String[]> handlerEventTypesToSilentlyHandle = new Dictionary<String, String[]>();
+
+            if (Startup.Configuration != null)
+            {
+                IConfigurationSection section = Startup.Configuration.GetSection("AppSettings:HandlerEventTypesToSilentlyHandle");
+
+                if (section != null)
+                {
+                    Startup.Configuration.GetSection("AppSettings:HandlerEventTypesToSilentlyHandle").Bind(handlerEventTypesToSilentlyHandle);
+                }
+            }
+
+            DomainEventTypesToSilentlyHandle eventTypesToSilentlyHandle = new DomainEventTypesToSilentlyHandle(handlerEventTypesToSilentlyHandle);
+
+            //Can we create a static method in this class that returns IContainer?
+            builder.RegisterInstance<DomainEventTypesToSilentlyHandle>(eventTypesToSilentlyHandle).SingleInstance();
+
+            builder.RegisterType<EventStoreContext>().As<IEventStoreContext>();
+            builder.RegisterType<AggregateRepositoryManager>().As<IAggregateRepositoryManager>().SingleInstance();
+            builder.RegisterType<AggregateRepository<EstateAggregate.EstateAggregate>>().As<IAggregateRepository<EstateAggregate.EstateAggregate>>().SingleInstance();
+            builder.RegisterType<AggregateRepository<MerchantAggregate.MerchantAggregate>>().As<IAggregateRepository<MerchantAggregate.MerchantAggregate>>().SingleInstance();
+            builder.RegisterType<EstateDomainService>().As<IEstateDomainService>().SingleInstance();
+            builder.RegisterType<MerchantDomainService>().As<IMerchantDomainService>().SingleInstance();
+            builder.RegisterType<ModelFactory>().As<IModelFactory>().SingleInstance();
+            builder.RegisterType<Factories.ModelFactory>().As<Factories.IModelFactory>().SingleInstance();
         }
 
         private void ConfigureMiddlewareServices(IServiceCollection services)
@@ -114,68 +175,18 @@ namespace EstateManagement
             });
 
             services.AddSwaggerExamplesFromAssemblyOf<SwaggerJsonConverter>();
-        }
 
-        private void ConfigureApplicationServices(IServiceCollection services)
-        {
-            ConfigurationReader.Initialise(Startup.Configuration);
+            services.AddControllers().AddNewtonsoftJson(options =>
+                                                        {
+                                                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                                                            options.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
+                                                            options.SerializerSettings.Formatting = Formatting.Indented;
+                                                            options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                                                            options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                                                        });
 
-            String connString = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString");
-            String connectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
-            Int32 httpPort = Startup.Configuration.GetValue<Int32>("EventStoreSettings:HttpPort");
-
-            Boolean useConnectionStringConfig = Boolean.Parse(ConfigurationReader.GetValue("AppSettings","UseConnectionStringConfig"));
-
-            EventStoreConnectionSettings settings = EventStoreConnectionSettings.Create(connString, connectionName, httpPort);
-            services.AddSingleton(settings);
-
-            Func<EventStoreConnectionSettings, IEventStoreConnection> eventStoreConnectionFunc = (connectionSettings) =>
-                                                                                                 {
-                                                                                                     return EventStoreConnection.Create(connectionSettings.ConnectionString);
-                                                                                                 };
-
-            Func<String, IEventStoreContext> eventStoreContextFunc = (connectionString) =>
-                                                                     {
-                                                                         EventStoreConnectionSettings connectionSettings = EventStoreConnectionSettings.Create(connectionString, connectionName, httpPort);
-
-                                                                         services.AddSingleton<IEventStoreContext, EventStoreContext>(c => new EventStoreContext(connectionSettings, eventStoreConnectionFunc));
-
-                                                                         var context = services.BuildServiceProvider().GetService<IEventStoreContext>();
-                                                                         return context;
-                                                                     };
-
-            services.AddSingleton<Func<EventStoreConnectionSettings, IEventStoreConnection>>(eventStoreConnectionFunc);
-            services.AddSingleton<Func<String, IEventStoreContext>>(eventStoreContextFunc);
-            services.AddSingleton<IEventStoreContext, EventStoreContext>();
-
-            if (useConnectionStringConfig)
-            {
-                String connectionStringConfigurationConnString = ConfigurationReader.GetConnectionString("ConnectionStringConfiguration");
-                services.AddTransient<ConnectionStringConfigurationContext>(c => new ConnectionStringConfigurationContext(connectionStringConfigurationConnString));
-                services.AddSingleton<IConnectionStringConfigurationRepository, ConnectionStringConfigurationRepository>();
-
-                services.AddTransient<Func<ConnectionStringConfigurationContext>>(cont => () => cont.GetService<ConnectionStringConfigurationContext>());
-
-                IConnectionStringConfigurationRepository repository = services.BuildServiceProvider().GetService<IConnectionStringConfigurationRepository>();
-                services.AddSingleton<IEventStoreContextManager, EventStoreContextManager>(m => new EventStoreContextManager(eventStoreContextFunc, repository));
-            }
-            else
-            {
-                services.AddSingleton<IEventStoreContextManager, EventStoreContextManager>();
-                // TODO: Once we have a Read Model
-                //this.RegisterType<Vme.Repositories.IConnectionStringRepository, ConfigReaderConnectionStringRepository>().Singleton();
-            }
-
-            services.AddSingleton<IAggregateRepositoryManager, AggregateRepositoryManager>();
-            services.AddSingleton<ICommandRouter,CommandRouter>();
-            services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate>, AggregateRepository<EstateAggregate.EstateAggregate>>();
-            services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate>, AggregateRepository<MerchantAggregate.MerchantAggregate>>();
-            services.AddSingleton<IEstateDomainService, EstateDomainService>();
-            services.AddSingleton<IMerchantDomainService, MerchantDomainService>();
-            services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
-            services.AddSingleton<IModelFactory, ModelFactory>();
-            services.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
-
+            Assembly assembly = this.GetType().GetTypeInfo().Assembly;
+            services.AddMvcCore().AddApplicationPart(assembly).AddControllersAsServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -236,30 +247,6 @@ namespace EstateManagement
             }
         }
 
-        public static IServiceProvider GetConfiguredContainer(IServiceCollection services,
-                                                        IWebHostEnvironment webHostEnvironment)
-        {
-            Dictionary<String, String[]> handlerEventTypesToSilentlyHandle = new Dictionary<String, String[]>();
-
-            if (Startup.Configuration != null)
-            {
-                IConfigurationSection section = Startup.Configuration.GetSection("AppSettings:HandlerEventTypesToSilentlyHandle");
-
-                if (section != null)
-                {
-                    Startup.Configuration.GetSection("AppSettings:HandlerEventTypesToSilentlyHandle").Bind(handlerEventTypesToSilentlyHandle);
-                }
-            }
-
-            DomainEventTypesToSilentlyHandle eventTypesToSilentlyHandle = new DomainEventTypesToSilentlyHandle(handlerEventTypesToSilentlyHandle);
-
-            //Can we create a static method in this class that returns IContainer?
-            services.AddSingleton<IDomainEventTypesToSilentlyHandle>(eventTypesToSilentlyHandle);
-
-            Startup.Container = services.BuildServiceProvider();
-
-            return Startup.Container;
-        }
     }
     
     [ExcludeFromCodeCoverage]
