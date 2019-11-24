@@ -25,7 +25,7 @@
         {
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(he => he.EnvironmentName).Returns("Development");
-            hostingEnvironment.Setup(he => he.ContentRootPath).Returns("C:\\Temp");
+            hostingEnvironment.Setup(he => he.ContentRootPath).Returns("/home");
             hostingEnvironment.Setup(he => he.ApplicationName).Returns("Test Application");
 
             IServiceCollection services = new ServiceCollection();
