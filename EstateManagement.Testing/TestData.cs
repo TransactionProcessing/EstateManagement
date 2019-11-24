@@ -23,6 +23,7 @@
 
         public static CreateEstateRequest CreateEstateRequest = new CreateEstateRequest
                                                                 {
+                                                                    EstateId = Guid.NewGuid(),
                                                                     EstateName = TestData.EstateName
                                                                 };
 

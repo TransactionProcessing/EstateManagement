@@ -3,6 +3,7 @@ namespace EstateManagement
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using Autofac.Extensions.DependencyInjection;
     //using Lamar.Microsoft.DependencyInjection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -32,7 +33,7 @@ namespace EstateManagement
                                               webBuilder.UseStartup<Startup>();
                                               webBuilder.UseConfiguration(config);
                                               webBuilder.UseKestrel();
-                                          });
+                                          }).UseServiceProviderFactory(new AutofacServiceProviderFactory());
             return hostBuilder;
         }
             
