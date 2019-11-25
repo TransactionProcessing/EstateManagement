@@ -38,6 +38,19 @@
                                                     CancellationToken cancellationToken);
 
         /// <summary>
+        /// Adds the operator.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createOperatorRequest">The create operator request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<CreateOperatorResponse> CreateOperator(String accessToken,
+                            Guid estateId,
+                            CreateOperatorRequest createOperatorRequest,
+                            CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the estate.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

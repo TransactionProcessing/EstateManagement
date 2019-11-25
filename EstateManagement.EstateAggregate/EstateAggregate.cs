@@ -1,7 +1,9 @@
 ﻿namespace EstateManagement.EstateAggregate
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using Estate.DomainEvents;
     using Models;
     using Shared.DomainDrivenDesign.EventSourcing;
@@ -14,6 +16,15 @@
     /// <seealso cref="Shared.DomainDrivenDesign.EventStore.Aggregate" />
     public class EstateAggregate : Aggregate
     {
+        #region Fields
+
+        /// <summary>
+        /// The operators
+        /// </summary>
+        private readonly List<Operator> Operators;
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -23,6 +34,7 @@
         public EstateAggregate()
         {
             // Nothing here
+            this.Operators = new List<Operator>();
         }
 
         /// <summary>
@@ -34,6 +46,7 @@
             Guard.ThrowIfInvalidGuid(aggregateId, "Aggregate Id cannot be an Empty Guid");
 
             this.AggregateId = aggregateId;
+            this.Operators = new List<Operator>();
         }
 
         #endregion
@@ -59,6 +72,29 @@
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Adds the operator.
+        /// </summary>
+        /// <param name="operatorId">The operator identifier.</param>
+        /// <param name="operatorName">Name of the operator.</param>
+        /// <param name="requireCustomMerchantNumber">if set to <c>true</c> [require custom merchant number].</param>
+        /// <param name="requireCustomTerminalNumber">if set to <c>true</c> [require custom terminal number].</param>
+        public void AddOperator(Guid operatorId,
+                                String operatorName,
+                                Boolean requireCustomMerchantNumber,
+                                Boolean requireCustomTerminalNumber)
+        {
+            Guard.ThrowIfNullOrEmpty(operatorName, typeof(ArgumentNullException), "Operator name must be provided when adding a new operator");
+
+            this.CheckEstateHasBeenCreated();
+            this.CheckOperatorHasNotAlreadyBeenCreated(operatorId, operatorName);
+
+            OperatorAddedToEstateEvent operatorAddedToEstateEvent =
+                OperatorAddedToEstateEvent.Create(this.AggregateId, operatorId, operatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
+
+            this.ApplyAndPend(operatorAddedToEstateEvent);
+        }
 
         /// <summary>
         /// Creates the specified aggregate identifier.
@@ -96,6 +132,22 @@
             estateModel.EstateId = this.AggregateId;
             estateModel.Name = this.EstateName;
 
+            if (this.Operators.Any())
+            {
+                estateModel.Operators =new List<Models.Operator>();
+
+                foreach (Operator @operator in this.Operators)
+                {
+                    estateModel.Operators.Add(new Models.Operator
+                                              {
+                                                  OperatorId = @operator.OperatorId,
+                                                  Name = @operator.Name,
+                                                  RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber,
+                                                  RequireCustomTerminalNumber = @operator.RequireCustomterminalNumber
+                        });
+                }
+            }
+
             return estateModel;
         }
 
@@ -121,6 +173,14 @@
             this.PlayEvent((dynamic)domainEvent);
         }
 
+        private void CheckEstateHasBeenCreated()
+        {
+            if (this.IsCreated == false)
+            {
+                throw new InvalidOperationException("Estate has not been created");
+            }
+        }
+
         /// <summary>
         /// Checks the estate has not already been created.
         /// </summary>
@@ -134,6 +194,34 @@
         }
 
         /// <summary>
+        /// Checks the operator has not already been created.
+        /// </summary>
+        /// <param name="operatorId">The operator identifier.</param>
+        /// <param name="operatorName">Name of the operator.</param>
+        /// <exception cref="System.InvalidOperationException">
+        /// Duplicate operator details are not allowed, an operator already exists on this estate with Id [{operatorId}]
+        /// or
+        /// Duplicate operator details are not allowed, an operator already exists on this estate with Name [{operatorName}]
+        /// </exception>
+        private void CheckOperatorHasNotAlreadyBeenCreated(Guid operatorId,
+                                                           String operatorName)
+        {
+            Operator operatorWithId = this.Operators.SingleOrDefault(o => o.OperatorId == operatorId);
+
+            if (operatorWithId != null)
+            {
+                throw new InvalidOperationException($"Duplicate operator details are not allowed, an operator already exists on this estate with Id [{operatorId}]");
+            }
+
+            Operator operatorWithName = this.Operators.SingleOrDefault(o => o.Name == operatorName);
+
+            if (operatorWithName != null)
+            {
+                throw new InvalidOperationException($"Duplicate operator details are not allowed, an operator already exists on this estate with Name [{operatorName}]");
+            }
+        }
+
+        /// <summary>
         /// Plays the event.
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
@@ -141,6 +229,20 @@
         {
             this.EstateName = domainEvent.EstateName;
             this.IsCreated = true;
+        }
+
+        /// <summary>
+        /// Operators the added to estate event.
+        /// </summary>
+        /// <param name="domainEvent">The domain event.</param>
+        private void PlayEvent(OperatorAddedToEstateEvent domainEvent)
+        {
+            Operator @operator = Operator.Create(domainEvent.OperatorId,
+                                                 domainEvent.Name,
+                                                 domainEvent.RequireCustomMerchantNumber,
+                                                 domainEvent.RequireCustomMerchantNumber);
+
+            this.Operators.Add(@operator);
         }
 
         #endregion

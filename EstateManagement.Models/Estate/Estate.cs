@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
@@ -26,6 +27,14 @@
         /// The name.
         /// </value>
         public String Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the operators.
+        /// </summary>
+        /// <value>
+        /// The operators.
+        /// </value>
+        public List<Operator> Operators { get; set; }
 
         #endregion
     }

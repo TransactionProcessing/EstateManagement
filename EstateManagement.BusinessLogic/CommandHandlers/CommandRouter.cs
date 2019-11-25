@@ -77,6 +77,16 @@
             return new MerchantCommandHandler(this.MerchantDomainService);
         }
 
+        /// <summary>
+        /// Creates the handler.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        private ICommandHandler CreateHandler(AddOperatorToEstateCommand command)
+        {
+            return new EstateCommandHandler(this.EstateDomainService);
+        }
+
         #endregion
     }
 }

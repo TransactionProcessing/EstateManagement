@@ -66,6 +66,37 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When(@"I create the following operators")]
+        public async Task WhenICreateTheFollowingOperators(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+                Boolean requireCustomMerchantNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
+                Boolean requireCustomTerminalNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
+
+                CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
+                                                              {
+                                                                  Name = operatorName,
+                                                                  RequireCustomMerchantNumber = requireCustomMerchantNumber,
+                                                                  RequireCustomTerminalNumber = requireCustomTerminalNumber
+                                                              };
+
+                // lookup the estate id based on the name in the table
+                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+                Guid estateId = this.TestingContext.Estates.Single(e => e.Key == estateName).Value;
+
+                CreateOperatorResponse response = await this.TestingContext.DockerHelper.EstateClient.CreateOperator(String.Empty, estateId, createOperatorRequest, CancellationToken.None).ConfigureAwait(false);
+
+                response.ShouldNotBeNull();
+                response.EstateId.ShouldNotBe(Guid.Empty);
+                response.OperatorId.ShouldNotBe(Guid.Empty);
+
+                // Cache the estate id
+                this.TestingContext.Operators.Add(operatorName, response.OperatorId);
+            }
+        }
+
         [When(@"I create the following merchants")]
         public async Task WhenICreateTheFollowingMerchants(Table table)
         {
