@@ -55,6 +55,30 @@
             await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }
 
+        /// <summary>
+        /// Creates the operator.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="operatorId">The operator identifier.</param>
+        /// <param name="operatorName">Name of the operator.</param>
+        /// <param name="requireCustomMerchantNumber">if set to <c>true</c> [require custom merchant number].</param>
+        /// <param name="requireCustomTerminalNumber">if set to <c>true</c> [require custom terminal number].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public async Task AddOperatorToEstate(Guid estateId,
+                                         Guid operatorId,
+                                         String operatorName,
+                                         Boolean requireCustomMerchantNumber,
+                                         Boolean requireCustomTerminalNumber,
+                                         CancellationToken cancellationToken)
+        {
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+
+            estateAggregate.AddOperator(operatorId, operatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
+
+            await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+        }
+
         #endregion
     }
 }

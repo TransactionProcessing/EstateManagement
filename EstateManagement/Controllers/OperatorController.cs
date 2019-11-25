@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace EstateManagement.Controllers
+{
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
+    using BusinessLogic.Commands;
+    using DataTransferObjects.Requests;
+    using DataTransferObjects.Responses;
+    using Microsoft.AspNetCore.Mvc;
+    using Shared.DomainDrivenDesign.CommandHandling;
+
+    [ExcludeFromCodeCoverage]
+    [Route(OperatorController.ControllerRoute)]
+    [ApiController]
+    [ApiVersion("1.0")]
+    public class OperatorController : ControllerBase
+    {
+        private readonly ICommandRouter CommandRouter;
+
+        public OperatorController(ICommandRouter commandRouter)
+        {
+            this.CommandRouter = commandRouter;
+        }
+
+        /// <summary>
+        /// Creates the operator.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createOperatorRequest">The create operator request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
+        {
+            Guid operatorId = Guid.NewGuid();
+
+            // Create the command
+            AddOperatorToEstateCommand command = AddOperatorToEstateCommand.Create(estateId, operatorId,
+                                                                         createOperatorRequest.Name,
+                                                                         createOperatorRequest.RequireCustomMerchantNumber.Value,
+                                                                         createOperatorRequest.RequireCustomTerminalNumber.Value);
+
+            // Route the command
+            await this.CommandRouter.Route(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{OperatorController.ControllerRoute}/{operatorId}",
+                                new CreateOperatorResponse
+                                {
+                                    EstateId = estateId,
+                                    OperatorId = operatorId
+                                });
+        }
+
+        #region Others
+
+        /// <summary>
+        /// The controller name
+        /// </summary>
+        public const String ControllerName = "operators";
+
+        /// <summary>
+        /// The controller route
+        /// </summary>
+        private const String ControllerRoute = "api/estates/{estateid}/" + OperatorController.ControllerName;
+
+        #endregion
+    }
+}

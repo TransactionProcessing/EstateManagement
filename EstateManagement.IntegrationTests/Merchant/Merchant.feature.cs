@@ -85,12 +85,12 @@ namespace EstateManagement.IntegrationTests.Merchant
         {
 #line 4
 #line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "Test Estate 1"});
 #line 5
- testRunner.Given("I have created the following estates", ((string)(null)), table2, "Given ");
+ testRunner.Given("I have created the following estates", ((string)(null)), table4, "Given ");
 #line hidden
         }
         
@@ -132,7 +132,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -141,7 +141,7 @@ this.FeatureBackground();
                             "ContactName",
                             "EmailAddress",
                             "EstateName"});
-                table3.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -151,7 +151,7 @@ this.FeatureBackground();
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
 #line 11
- testRunner.When("I create the following merchants", ((string)(null)), table3, "When ");
+ testRunner.When("I create the following merchants", ((string)(null)), table5, "When ");
 #line hidden
             }
             this.ScenarioCleanup();

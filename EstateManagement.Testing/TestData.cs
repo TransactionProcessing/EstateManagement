@@ -201,5 +201,23 @@
                                                                                            },
                                                                                Contacts = null
                                                                            };
+
+        public static Guid OperatorId = Guid.Parse("6A63DA8B-4621-4731-90B1-A9D09B130D4B");
+
+        public static Guid OperatorId2 = Guid.Parse("8E5741AA-66EC-42D9-BE0F-AA106B41AED1");
+
+        public static String OperatorName = "Test Operator 1";
+
+        public static Boolean RequireCustomMerchantNumberTrue = true;
+        
+        public static Boolean RequireCustomMerchantNumberFalse = false;
+
+        public static Boolean RequireCustomTerminalNumberTrue = true;
+
+        public static Boolean RequireCustomTerminalNumberFalse = false;
+
+        public static AddOperatorToEstateCommand CreateOperatorCommand = AddOperatorToEstateCommand.Create(TestData.EstateId, TestData.OperatorId,
+                                                                                                 TestData.OperatorName,TestData.RequireCustomMerchantNumberFalse,
+                                                                                                 TestData.RequireCustomTerminalNumberFalse);
     }
 }

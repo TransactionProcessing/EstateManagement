@@ -18,7 +18,6 @@
     [ExcludeFromCodeCoverage]
     [Route(EstateController.ControllerRoute)]
     [ApiController]
-    [Controller]
     [ApiVersion("1.0")]
     public class EstateController : ControllerBase
     {

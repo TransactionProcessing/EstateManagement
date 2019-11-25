@@ -36,5 +36,28 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                    CancellationToken.None);
             });
         }
+
+        [Fact]
+        public async Task EstateDomainService_AddOperatorEstate_OperatorIsAdded()
+        {
+            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
+            estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+            estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
+            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
+
+            EstateDomainService domainService = new EstateDomainService(aggregateRepositoryManager.Object);
+
+            Should.NotThrow(async () =>
+                            {
+                                await domainService.AddOperatorToEstate(TestData.EstateId,
+                                                                 TestData.OperatorId,
+                                                                 TestData.OperatorName,
+                                                                 TestData.RequireCustomMerchantNumberFalse,
+                                                                 TestData.RequireCustomTerminalNumberFalse,
+                                                                 CancellationToken.None);
+                            });
+        }
     }
 }

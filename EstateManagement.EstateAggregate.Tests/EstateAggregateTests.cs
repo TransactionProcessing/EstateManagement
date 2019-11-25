@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.EstateAggregate.Tests
 {
     using System;
+    using System.Linq;
     using EstateManagement.Testing;
     using Models;
     using Shouldly;
@@ -56,7 +57,7 @@
         }
 
         [Fact]
-        public void EstateAggregate_GetEstate_EstateIsReturned()
+        public void EstateAggregate_GetEstate_NoOperators_EstateIsReturned()
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
@@ -65,6 +66,79 @@
 
             model.EstateId.ShouldBe(TestData.EstateId);
             model.Name.ShouldBe(TestData.EstateName);
+            model.Operators.ShouldBeNull();
+        }
+
+        [Fact]
+        public void EstateAggregate_GetEstate_WithAnOperator_EstateIsReturned()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+
+            Estate model = aggregate.GetEstate();
+
+            model.EstateId.ShouldBe(TestData.EstateId);
+            model.Name.ShouldBe(TestData.EstateName);
+            model.Operators.ShouldHaveSingleItem();
+            
+            Operator @operator =model.Operators.Single();
+            @operator.OperatorId.ShouldBe(TestData.OperatorId);
+            @operator.Name.ShouldBe(TestData.OperatorName);
+            @operator.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumberFalse);
+            @operator.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumberFalse);
+        }
+
+        [Fact]
+        public void EstateAggregate_AddOperatorToEstate_OperatorIsAdded()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+
+            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+        }
+
+        [Fact]
+        public void EstateAggregate_AddOperatorToEstate_EstateNotCreated_ErrorThrown()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+                                                                                  {
+                                                                                      aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+                                                                                  });
+
+            exception.Message.ShouldContain("Estate has not been created");
+        }
+
+        [Fact]
+        public void EstateAggregate_AddOperatorToEstate_OperatorWithIdAlreadyAdded_ErrorThrown()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+                                                                                  {
+                                                                                      aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+                                                                                  });
+
+            exception.Message.ShouldContain($"Duplicate operator details are not allowed, an operator already exists on this estate with Id [{TestData.OperatorId}]");
+        }
+
+        [Fact]
+        public void EstateAggregate_AddOperatorToEstate_OperatorWithNameAlreadyAdded_ErrorThrown()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+                                                                                  {
+                                                                                      aggregate.AddOperator(TestData.OperatorId2, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+                                                                                  });
+
+            exception.Message.ShouldContain($"Duplicate operator details are not allowed, an operator already exists on this estate with Name [{TestData.OperatorName}]");
         }
     }
 }

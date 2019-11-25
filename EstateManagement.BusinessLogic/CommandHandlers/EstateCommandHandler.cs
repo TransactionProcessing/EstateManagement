@@ -58,6 +58,16 @@
             await this.EstateDomainService.CreateEstate(command.EstateId, command.Name, cancellationToken);
         }
 
+        private async Task HandleCommand(AddOperatorToEstateCommand command, CancellationToken cancellationToken)
+        {
+            await this.EstateDomainService.AddOperatorToEstate(command.EstateId,
+                                                               command.OperatorId,
+                                                               command.Name,
+                                                               command.RequireCustomMerchantNumber,
+                                                               command.RequireCustomTerminalNumber,
+                                                               cancellationToken);
+        }
+
         #endregion
     }
 }

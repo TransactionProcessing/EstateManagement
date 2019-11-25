@@ -50,5 +50,24 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             createMerchantCommand.ContactPhoneNumber.ShouldBe(TestData.MerchantContactPhoneNumber);
             createMerchantCommand.ContactEmailAddress.ShouldBe(TestData.MerchantContactEmailAddress);
         }
+
+        [Fact]
+        public void CreateOperatorCommand_CanBeCreated_IsCreated()
+        {
+            AddOperatorToEstateCommand createOperatorCommand = AddOperatorToEstateCommand.Create(TestData.EstateId,
+                                                                                       TestData.OperatorId,
+                                                                                       TestData.OperatorName,
+                                                                                       TestData.RequireCustomMerchantNumberTrue,
+                                                                                       TestData.RequireCustomTerminalNumberTrue);
+
+            createOperatorCommand.ShouldNotBeNull();
+            createOperatorCommand.CommandId.ShouldNotBe(Guid.Empty);
+            createOperatorCommand.EstateId.ShouldBe(TestData.EstateId);
+            createOperatorCommand.OperatorId.ShouldBe(TestData.OperatorId);
+            createOperatorCommand.Name.ShouldBe(TestData.OperatorName);
+            createOperatorCommand.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumberTrue);
+            createOperatorCommand.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumberTrue);
+
+        }
     }
 }

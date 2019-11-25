@@ -40,6 +40,7 @@
         {
             Mock<IEstateDomainService> estateDomainService = new Mock<IEstateDomainService>();
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            
             merchantDomainService.Setup(e => e.CreateMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<String>(), It.IsAny<Guid>(),
                                                               It.IsAny<String>(),
                                                               It.IsAny<String>(),
@@ -64,6 +65,21 @@
                                 await router.Route(command, CancellationToken.None);
                             });
 
+        }
+
+        [Fact]
+        public void CommandRouter_CreateOperatorCommand_IsRouted()
+        {
+            Mock<IEstateDomainService> estateDomainService = new Mock<IEstateDomainService>();
+            Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            ICommandRouter router = new CommandRouter(estateDomainService.Object, merchantDomainService.Object);
+
+            AddOperatorToEstateCommand command = TestData.CreateOperatorCommand;
+
+            Should.NotThrow(async () =>
+                            {
+                                await router.Route(command, CancellationToken.None);
+                            });
         }
     }
 }
