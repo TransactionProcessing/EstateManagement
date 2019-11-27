@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
     /// <summary>
     /// 
@@ -49,6 +50,23 @@
                             String contactPhoneNumber,
                             String contactEmailAddress,
                             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Assigns the operator to merchant.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="operatorId">The operator identifier.</param>
+        /// <param name="merchantNumber">The merchant number.</param>
+        /// <param name="terminalNumber">The terminal number.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task AssignOperatorToMerchant(Guid estateId,
+                                      Guid merchantId,
+                                      Guid operatorId,
+                                      String merchantNumber,
+                                      String terminalNumber,
+                                      CancellationToken cancellationToken);
 
         #endregion
     }

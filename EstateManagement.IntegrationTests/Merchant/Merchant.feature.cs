@@ -92,6 +92,19 @@ namespace EstateManagement.IntegrationTests.Merchant
 #line 5
  testRunner.Given("I have created the following estates", ((string)(null)), table4, "Given ");
 #line hidden
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                        "EstateName",
+                        "OperatorName",
+                        "RequireCustomMerchantNumber",
+                        "RequireCustomTerminalNumber"});
+            table5.AddRow(new string[] {
+                        "Test Estate 1",
+                        "Test Operator 1",
+                        "True",
+                        "True"});
+#line 8
+ testRunner.Given("I have created the following operators", ((string)(null)), table5, "Given ");
+#line hidden
         }
         
         void System.IDisposable.Dispose()
@@ -102,14 +115,11 @@ namespace EstateManagement.IntegrationTests.Merchant
         [Xunit.SkippableFactAttribute(DisplayName="Create Merchant")]
         [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
         [Xunit.TraitAttribute("Description", "Create Merchant")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateMerchant()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Merchant", null, new string[] {
-                        "PRTest"});
-#line 10
+            string[] tagsOfScenario = ((string[])(null));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Merchant", null, ((string[])(null)));
+#line 12
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -132,7 +142,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -141,7 +151,7 @@ this.FeatureBackground();
                             "ContactName",
                             "EmailAddress",
                             "EstateName"});
-                table5.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -150,8 +160,79 @@ this.FeatureBackground();
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
-#line 11
- testRunner.When("I create the following merchants", ((string)(null)), table5, "When ");
+#line 13
+ testRunner.When("I create the following merchants", ((string)(null)), table6, "When ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Assign Operator To Merchant")]
+        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
+        [Xunit.TraitAttribute("Description", "Assign Operator To Merchant")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
+        public virtual void AssignOperatorToMerchant()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Assign Operator To Merchant", null, new string[] {
+                        "PRTest"});
+#line 18
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "AddressLine1",
+                            "Town",
+                            "Region",
+                            "Country",
+                            "ContactName",
+                            "EmailAddress",
+                            "EstateName"});
+                table7.AddRow(new string[] {
+                            "Test Merchant 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant1.co.uk",
+                            "Test Estate 1"});
+#line 19
+ testRunner.Given("I create the following merchants", ((string)(null)), table7, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OperatorName",
+                            "MerchantName",
+                            "MerchantNumber",
+                            "TerminalNumber"});
+                table8.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 1",
+                            "00000001",
+                            "10000001"});
+#line 22
+ testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table8, "When ");
 #line hidden
             }
             this.ScenarioCleanup();

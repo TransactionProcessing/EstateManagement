@@ -13,6 +13,7 @@
         {
             this.Addresses = new List<Address>();
             this.Contacts = new List<Contact>();
+            this.Operators=new List<Operator>();
         }
 
         #endregion
@@ -58,6 +59,14 @@
         /// The name of the merchant.
         /// </value>
         public String MerchantName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the operators.
+        /// </summary>
+        /// <value>
+        /// The operators.
+        /// </value>
+        public List<Operator> Operators { get; set; }
 
         #endregion
     }

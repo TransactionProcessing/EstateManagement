@@ -10,6 +10,7 @@
     using DataTransferObjects.Responses;
     using Factories;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.CodeAnalysis.Operations;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.Exceptions;
@@ -109,6 +110,14 @@
                                 });
         }
 
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException">Merchant not found with estate Id {estateId} and merchant Id {merchantId}</exception>
         [HttpGet]
         [Route("{merchantId}")]
         public async Task<IActionResult> GetMerchant([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
@@ -121,6 +130,37 @@
             }
 
             return this.Ok(this.ModelFactory.ConvertFrom(merchant));
+        }
+
+        /// <summary>
+        /// Assigns the operator.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="assignOperatorRequest">The assign operator request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{merchantId}/operators")]
+        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        AssignOperatorRequest assignOperatorRequest,
+                                                        CancellationToken cancellationToken)
+        {
+            AssignOperatorToMerchantCommand command = AssignOperatorToMerchantCommand.Create(estateId, merchantId,assignOperatorRequest.OperatorId,
+                                                                                             assignOperatorRequest.MerchantNumber, assignOperatorRequest.TerminalNumber);
+
+            // Route the command
+            await this.CommandRouter.Route(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new AssignOperatorResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    OperatorId = assignOperatorRequest.OperatorId
+                                });
         }
 
         #endregion

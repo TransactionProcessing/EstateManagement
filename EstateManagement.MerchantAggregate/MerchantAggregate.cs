@@ -28,6 +28,11 @@
         /// </summary>
         private readonly List<Contact> Contacts;
 
+        /// <summary>
+        /// The operators
+        /// </summary>
+        private readonly List<Operator> Operators;
+
         #endregion
 
         #region Constructors
@@ -41,6 +46,7 @@
             // Nothing here
             this.Addresses = new List<Address>();
             this.Contacts = new List<Contact>();
+            this.Operators = new List<Operator>();
         }
 
         /// <summary>
@@ -54,6 +60,7 @@
             this.AggregateId = aggregateId;
             this.Addresses = new List<Address>();
             this.Contacts = new List<Contact>();
+            this.Operators = new List<Operator>();
         }
 
         #endregion
@@ -133,6 +140,17 @@
                                                                           ContactEmailAddress = c.ContactEmailAddress,
                                                                           ContactName = c.ContactName
                                                                       }));
+            }
+
+            if (this.Operators.Any())
+            {
+                this.Operators.ForEach(o => merchantModel.Operators.Add(new Models.Merchant.Operator
+                                                                        {
+                                                                            OperatorId = o.OperatorId,
+                                                                            Name = o.Name,
+                                                                            TerminalNumber = o.TerminalNumber,
+                                                                            MerchantNumber = o.MerchantNumber
+                                                                        }));
             }
 
             return merchantModel;
@@ -250,6 +268,19 @@
         }
 
         /// <summary>
+        /// Ensures the operator has not already been assigned.
+        /// </summary>
+        /// <param name="operatorId">The operator identifier.</param>
+        /// <exception cref="InvalidOperationException">Operator {operatorId} has already been assigned to merchant</exception>
+        private void EnsureOperatorHasNotAlreadyBeenAssigned(Guid operatorId)
+        {
+            if (this.Operators.Any(o => o.OperatorId == operatorId))
+            {
+                throw new InvalidOperationException($"Operator {operatorId} has already been assigned to merchant");
+            }
+        }
+
+        /// <summary>
         /// Gets the metadata.
         /// </summary>
         /// <returns></returns>
@@ -319,5 +350,27 @@
         }
 
         #endregion
+
+        public void AssignOperator(Guid operatorId,
+                                   String operatorName,
+                                   String merchantNumber,
+                                   String terminalNumber)
+        {
+            this.EnsureMerchantHasBeenCreated();
+            this.EnsureOperatorHasNotAlreadyBeenAssigned(operatorId);
+
+            OperatorAssignedToMerchantEvent operatorAssignedToMerchantEvent = OperatorAssignedToMerchantEvent.Create(this.AggregateId, this.EstateId, operatorId, operatorName, merchantNumber, terminalNumber);
+
+            this.ApplyAndPend(operatorAssignedToMerchantEvent);
+        }
+
+        private void PlayEvent(OperatorAssignedToMerchantEvent operatorAssignedToMerchantEvent)
+        {
+            Operator @operator = Operator.Create(operatorAssignedToMerchantEvent.OperatorId, operatorAssignedToMerchantEvent.Name,
+                                                 operatorAssignedToMerchantEvent.MerchantNumber,
+                                                 operatorAssignedToMerchantEvent.TerminalNumber);
+
+            this.Operators.Add(@operator);
+        }
     }
 }
