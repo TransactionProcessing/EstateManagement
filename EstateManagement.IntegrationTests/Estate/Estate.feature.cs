@@ -95,14 +95,11 @@ namespace EstateManagement.IntegrationTests.Estate
         [Xunit.SkippableFactAttribute(DisplayName="Create Estate")]
         [Xunit.TraitAttribute("FeatureTitle", "Estate")]
         [Xunit.TraitAttribute("Description", "Create Estate")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateEstate()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Estate", null, new string[] {
-                        "PRTest"});
-#line 7
+            string[] tagsOfScenario = ((string[])(null));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Estate", null, ((string[])(null)));
+#line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -129,7 +126,7 @@ this.FeatureBackground();
                             "EstateName"});
                 table1.AddRow(new string[] {
                             "Test Estate 1"});
-#line 8
+#line 7
  testRunner.When("I create the following estates", ((string)(null)), table1, "When ");
 #line hidden
             }
@@ -139,10 +136,13 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Create Operator")]
         [Xunit.TraitAttribute("FeatureTitle", "Estate")]
         [Xunit.TraitAttribute("Description", "Create Operator")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateOperator()
         {
-            string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Operator", null, ((string[])(null)));
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Operator", null, new string[] {
+                        "PRTest"});
 #line 12
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

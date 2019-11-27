@@ -119,5 +119,45 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             exception.Message.ShouldContain($"Merchant has not been created");
         }
+
+        [Fact]
+        public void MerchantAggregate_AssignOperator_OperatorIsAssigned()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AssignOperator(TestData.OperatorId,TestData.OperatorName,TestData.OperatorMerchantNumber,TestData.OperatorTerminalNumber);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Operators.ShouldHaveSingleItem();
+            Operator operatorModel = merchantModel.Operators.Single();
+            operatorModel.OperatorId.ShouldBe(TestData.OperatorId);
+            operatorModel.Name.ShouldBe(TestData.OperatorName);
+            operatorModel.MerchantNumber.ShouldBe(TestData.OperatorMerchantNumber);
+            operatorModel.TerminalNumber.ShouldBe(TestData.OperatorTerminalNumber);
+        }
+
+        [Fact]
+        public void MerchantAggregate_AssignOperator_MerchantNotCreated_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+                                                    });
+        }
+
+        [Fact]
+        public void MerchantAggregate_AssignOperator_OperatorAlreadyAssigned_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+                                                    });
+        }
     }
 }

@@ -69,5 +69,24 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             createOperatorCommand.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumberTrue);
 
         }
+
+        [Fact]
+        public void AssignOperatorToMerchantCommand_CanBeCreated_IsCreated()
+        {
+            AssignOperatorToMerchantCommand assignOperatorToMerchantCommand = AssignOperatorToMerchantCommand.Create(TestData.EstateId,
+                                                                                                                     TestData.MerchantId,
+                                                                                                                     TestData.OperatorId,
+                                                                                                                     TestData.OperatorMerchantNumber,
+                                                                                                                     TestData.OperatorTerminalNumber);
+
+            assignOperatorToMerchantCommand.ShouldNotBeNull();
+            assignOperatorToMerchantCommand.CommandId.ShouldNotBe(Guid.Empty);
+            assignOperatorToMerchantCommand.EstateId.ShouldBe(TestData.EstateId);
+            assignOperatorToMerchantCommand.MerchantId.ShouldBe(TestData.MerchantId);
+            assignOperatorToMerchantCommand.OperatorId.ShouldBe(TestData.OperatorId);
+            assignOperatorToMerchantCommand.MerchantNumber.ShouldBe(TestData.OperatorMerchantNumber);
+            assignOperatorToMerchantCommand.TerminalNumber.ShouldBe(TestData.OperatorTerminalNumber);
+            
+        }
     }
 }

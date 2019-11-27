@@ -71,5 +71,29 @@ namespace EstateManagement.MerchantAggregate.Tests
             contactAddedEvent.ContactPhoneNumber.ShouldBe(TestData.MerchantContactPhoneNumber);
             contactAddedEvent.ContactEmailAddress.ShouldBe(TestData.MerchantContactEmailAddress);
         }
+
+        [Fact]
+        public void OperatorAssignedToMerchantEvent_CanBeCreated_IsCreated()
+        {
+            OperatorAssignedToMerchantEvent operatorAssignedToMerchantEvent =
+                OperatorAssignedToMerchantEvent.Create(TestData.MerchantId,
+                                                       TestData.EstateId,
+                                                       TestData.OperatorId,
+                                                       TestData.OperatorName,
+                                                       TestData.OperatorMerchantNumber,
+                                                       TestData.OperatorTerminalNumber);
+
+            operatorAssignedToMerchantEvent.ShouldNotBeNull();
+            operatorAssignedToMerchantEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            operatorAssignedToMerchantEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
+            operatorAssignedToMerchantEvent.EventId.ShouldNotBe(Guid.Empty);
+            operatorAssignedToMerchantEvent.EstateId.ShouldBe(TestData.EstateId);
+            operatorAssignedToMerchantEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            operatorAssignedToMerchantEvent.OperatorId.ShouldBe(TestData.OperatorId);
+            operatorAssignedToMerchantEvent.Name.ShouldBe(TestData.OperatorName);
+            operatorAssignedToMerchantEvent.MerchantNumber.ShouldBe(TestData.OperatorMerchantNumber);
+            operatorAssignedToMerchantEvent.TerminalNumber.ShouldBe(TestData.OperatorTerminalNumber);
+
+        }
     }
 }

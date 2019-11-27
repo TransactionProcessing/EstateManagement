@@ -26,5 +26,20 @@
                             });
 
         }
+
+        [Fact]
+        public void MerchantCommandHandler_AssignOperatorToMerchantCommand_IsHandled()
+        {
+            Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            ICommandHandler handler = new MerchantCommandHandler(merchantDomainService.Object);
+
+            AssignOperatorToMerchantCommand command = TestData.AssignOperatorToMerchantCommand;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(command, CancellationToken.None);
+                            });
+
+        }
     }
 }

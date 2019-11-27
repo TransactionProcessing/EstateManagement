@@ -81,5 +81,20 @@
                                 await router.Route(command, CancellationToken.None);
                             });
         }
+
+        [Fact]
+        public void CommandRouter_AssignOperatorToMerchantCommand_IsRouted()
+        {
+            Mock<IEstateDomainService> estateDomainService = new Mock<IEstateDomainService>();
+            Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            ICommandRouter router = new CommandRouter(estateDomainService.Object, merchantDomainService.Object);
+
+            AssignOperatorToMerchantCommand command = TestData.AssignOperatorToMerchantCommand;
+
+            Should.NotThrow(async () =>
+                            {
+                                await router.Route(command, CancellationToken.None);
+                            });
+        }
     }
 }

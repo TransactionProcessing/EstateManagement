@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EstateManagement.IntegrationTests.Shared
 {
+    using System.ComponentModel.Design;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -66,6 +67,7 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [Given(@"I have created the following operators")]
         [When(@"I create the following operators")]
         public async Task WhenICreateTheFollowingOperators(Table table)
         {
@@ -97,6 +99,7 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [Given("I create the following merchants")]
         [When(@"I create the following merchants")]
         public async Task WhenICreateTheFollowingMerchants(Table table)
         {
@@ -133,6 +136,15 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Cache the merchant id
                 this.TestingContext.Merchants.Add(merchantName, response.MerchantId);
+                if (this.TestingContext.EstateMerchants.ContainsKey(estateId))
+                {
+                    List<Guid> merchantIdList = this.TestingContext.EstateMerchants[estateId];
+                    merchantIdList.Add(response.MerchantId);
+                }
+                else
+                {
+                    this.TestingContext.EstateMerchants.Add(estateId, new List<Guid> {response.MerchantId});
+                }
             }
 
             foreach (TableRow tableRow in table.Rows)
@@ -154,6 +166,37 @@ namespace EstateManagement.IntegrationTests.Shared
                 MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(String.Empty, estateItem.Value, merchantItem.Value, CancellationToken.None).ConfigureAwait(false);
 
                 merchant.MerchantName.ShouldBe(merchantName);
+            }
+        }
+
+        [When(@"I assign the following  operator to the merchants")]
+        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = this.TestingContext.Merchants[merchantName];
+
+                // Lookup the operator id
+                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+                Guid operatorId = this.TestingContext.Operators[operatorName];
+
+                // Now find the estate Id
+                Guid estateId = this.TestingContext.EstateMerchants.Where(e => e.Value.Contains(merchantId)).Single().Key;
+
+                AssignOperatorRequest assignOperatorRequest = new AssignOperatorRequest
+                                                              {
+                                                                  OperatorId = operatorId,
+                                                                  MerchantNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
+                                                                  TerminalNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
+                                                              };
+
+                AssignOperatorResponse assignOperatorResponse = await this.TestingContext.DockerHelper.EstateClient.AssignOperatorToMerchant(String.Empty, estateId, merchantId, assignOperatorRequest, CancellationToken.None).ConfigureAwait(false);
+                
+                assignOperatorResponse.EstateId.ShouldBe(estateId);
+                assignOperatorResponse.MerchantId.ShouldBe(merchantId);
+                assignOperatorResponse.OperatorId.ShouldBe(operatorId);
             }
         }
 

@@ -76,6 +76,22 @@
                                                             cancellationToken);
         }
 
+        /// <summary>
+        /// Handles the command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        private async Task HandleCommand(AssignOperatorToMerchantCommand command,
+                                         CancellationToken cancellationToken)
+        {
+            await this.MerchantDomainService.AssignOperatorToMerchant(command.EstateId,
+                                                                      command.MerchantId,
+                                                                      command.OperatorId,
+                                                                      command.MerchantNumber,
+                                                                      command.TerminalNumber,
+                                                                      cancellationToken);
+        }
+
         #endregion
     }
 }

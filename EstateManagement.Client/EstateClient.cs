@@ -264,6 +264,54 @@
             return response;
         }
 
+        /// <summary>
+        /// Assigns the operator to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="assignOperatorRequest">The assign operator request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<AssignOperatorResponse> AssignOperatorToMerchant(String accessToken,
+                                                   Guid estateId,
+                                                   Guid merchantId,
+                                                   AssignOperatorRequest assignOperatorRequest,
+                                                   CancellationToken cancellationToken)
+        {
+            AssignOperatorResponse response = null;
+
+            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}/operators";
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(assignOperatorRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                //this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<AssignOperatorResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error assigning operator Id {assignOperatorRequest.OperatorId} to merchant Id {merchantId} for estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         #endregion
     }
 }

@@ -74,6 +74,21 @@
                                            Guid merchantId,
                                            CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Assigns the operator to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="assignOperatorRequest">The assign operator request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AssignOperatorResponse> AssignOperatorToMerchant(String accessToken,
+                                      Guid estateId,
+                                      Guid merchantId,
+                                      AssignOperatorRequest assignOperatorRequest,
+                                      CancellationToken cancellationToken);
+
         #endregion
     }
 }

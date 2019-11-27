@@ -95,6 +95,16 @@
             return estateAggregate;
         }
 
+        public static EstateAggregate EstateAggregateWithOperator(Boolean requireCustomMerchantNumber = false, Boolean requireCustomTerminalNumber = false)
+        {
+            EstateAggregate estateAggregate = EstateAggregate.Create(TestData.EstateId);
+
+            estateAggregate.Create(TestData.EstateName);
+            estateAggregate.AddOperator(TestData.OperatorId,TestData.OperatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
+
+            return estateAggregate;
+        }
+
         #endregion
 
         public static MerchantAggregate CreatedMerchantAggregate()
@@ -125,6 +135,16 @@
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             merchantAggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
                                          TestData.MerchantContactEmailAddress);
+
+            return merchantAggregate;
+        }
+
+        public static MerchantAggregate MerchantAggregateWithOperator()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
 
             return merchantAggregate;
         }
@@ -219,5 +239,15 @@
         public static AddOperatorToEstateCommand CreateOperatorCommand = AddOperatorToEstateCommand.Create(TestData.EstateId, TestData.OperatorId,
                                                                                                  TestData.OperatorName,TestData.RequireCustomMerchantNumberFalse,
                                                                                                  TestData.RequireCustomTerminalNumberFalse);
+
+        public static String OperatorMerchantNumber = "00000001";
+
+        public static String OperatorTerminalNumber = "00000001";
+
+        public static AssignOperatorToMerchantCommand AssignOperatorToMerchantCommand = AssignOperatorToMerchantCommand.Create(TestData.EstateId,
+                                                                                                                               TestData.MerchantId,
+                                                                                                                               TestData.MerchantId,
+                                                                                                                               TestData.OperatorMerchantNumber,
+                                                                                                                               TestData.OperatorTerminalNumber);
     }
 }
