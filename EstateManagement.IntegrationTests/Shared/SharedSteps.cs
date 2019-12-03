@@ -11,6 +11,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using Common;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
+    using EstateManagement.DataTransferObjects.Requests;
     using Shouldly;
     using TechTalk.SpecFlow;
 
