@@ -146,6 +146,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                          .WithEnvironment("ASPNETCORE_ENVIRONMENT=IntegrationTest",
                                                                           $"ServiceOptions:PublicOrigin=http://{this.SecurityServiceContainerName}:5001",
                                                                           $"ServiceOptions:IssuerUrl=http://{this.SecurityServiceContainerName}:5001")
+                                                         .WithCredential("https://www.docker.com", "stuartferguson", "Sc0tland")
                                                          .UseImage("stuartferguson/securityservice").ExposePort(5001).UseNetwork(new List<INetworkService>
                                                                                                                   {
                                                                                                                       this.TestNetwork
