@@ -1,10 +1,12 @@
 ﻿namespace EstateManagement.Tests.Common
 {
+    using System;
     using System.Linq;
     using System.Net.Http;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using MediatR;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Authorization;
     using Microsoft.AspNetCore.Mvc.Testing;
@@ -19,13 +21,13 @@
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             // Setup my mocks in here
-            Mock<ICommandRouter> commandRouterMock = this.CreateCommandRouterMock();
+            Mock<IMediator> mediatorMock = this.CreateMediatorMock();
 
             builder.ConfigureServices((builderContext, services) =>
             {
-                if (commandRouterMock != null)
+                if (mediatorMock != null)
                 {
-                    services.AddSingleton<ICommandRouter>(commandRouterMock.Object);
+                    services.AddSingleton<IMediator>(mediatorMock.Object);
                 }
 
                 services.AddMvc(options =>
@@ -37,13 +39,13 @@
             ;
         }
 
-        private Mock<ICommandRouter> CreateCommandRouterMock()
+        private Mock<IMediator> CreateMediatorMock()
         {
-            Mock<ICommandRouter> commandRouterMock = new Mock<ICommandRouter>(MockBehavior.Strict);
+            Mock<IMediator> mediatorMock = new Mock<IMediator>(MockBehavior.Strict);
 
-            commandRouterMock.Setup(c => c.Route(It.IsAny<ICommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mediatorMock.Setup(c => c.Send(It.IsAny<IRequest<String>>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult("Hello"));
 
-            return commandRouterMock;
+            return mediatorMock;
         }
 
     }

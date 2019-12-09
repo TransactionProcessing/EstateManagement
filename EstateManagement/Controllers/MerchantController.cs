@@ -4,16 +4,20 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
-    using BusinessLogic.Commands;
     using BusinessLogic.Manger;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using Factories;
+    using MediatR;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.CodeAnalysis.Operations;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.Exceptions;
+    using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
+    using CreateMerchantRequestDTO = DataTransferObjects.Requests.CreateMerchantRequest;
+    using AssignOperatorToMerchantRequest = BusinessLogic.Requests.AssignOperatorToMerchantRequest;
+    using AssignOperatorRequestDTO = DataTransferObjects.Requests.AssignOperatorRequest;
 
     /// <summary>
     /// 
@@ -28,9 +32,9 @@
         #region Fields
 
         /// <summary>
-        /// The command router
+        /// The mediator
         /// </summary>
-        private readonly ICommandRouter CommandRouter;
+        private readonly IMediator Mediator;
 
         /// <summary>
         /// The estate management manager
@@ -49,14 +53,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateController" /> class.
         /// </summary>
-        /// <param name="commandRouter">The command router.</param>
+        /// <param name="mediator">The mediator.</param>
         /// <param name="estateManagementManager">The estate management manager.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public MerchantController(ICommandRouter commandRouter,
+        public MerchantController(IMediator mediator,
                                   IEstateManagementManager estateManagementManager,
                                   IModelFactory modelFactory)
         {
-            this.CommandRouter = commandRouter;
+            this.Mediator = mediator;
             this.EstateManagementManager = estateManagementManager;
             this.ModelFactory = modelFactory;
         }
@@ -75,13 +79,13 @@
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> CreateMerchant([FromRoute] Guid estateId,
-                                                        [FromBody] CreateMerchantRequest createMerchantRequest,
+                                                        [FromBody] CreateMerchantRequestDTO createMerchantRequest,
                                                         CancellationToken cancellationToken)
         {
             Guid merchantId = Guid.NewGuid();
 
             // Create the command
-            CreateMerchantCommand command = CreateMerchantCommand.Create(estateId,
+            CreateMerchantRequest command = CreateMerchantRequest.Create(estateId,
                                                                          merchantId,
                                                                          createMerchantRequest.Name,
                                                                          createMerchantRequest.Address.AddressLine1,
@@ -97,7 +101,7 @@
                                                                          createMerchantRequest.Contact.EmailAddress);
 
             // Route the command
-            await this.CommandRouter.Route(command, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
             // return the result
             return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
@@ -144,14 +148,14 @@
         [Route("{merchantId}/operators")]
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
                                                         [FromRoute] Guid merchantId,
-                                                        AssignOperatorRequest assignOperatorRequest,
+                                                        AssignOperatorRequestDTO assignOperatorRequest,
                                                         CancellationToken cancellationToken)
         {
-            AssignOperatorToMerchantCommand command = AssignOperatorToMerchantCommand.Create(estateId, merchantId,assignOperatorRequest.OperatorId,
+            AssignOperatorToMerchantRequest command = AssignOperatorToMerchantRequest.Create(estateId, merchantId,assignOperatorRequest.OperatorId,
                                                                                              assignOperatorRequest.MerchantNumber, assignOperatorRequest.TerminalNumber);
 
             // Route the command
-            await this.CommandRouter.Route(command, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
             // return the result
             return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",

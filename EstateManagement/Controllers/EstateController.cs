@@ -4,16 +4,21 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
-    using BusinessLogic.CommandHandlers;
-    using BusinessLogic.Commands;
     using BusinessLogic.Manger;
+    using DataTransferObjects;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using Factories;
+    using MediatR;
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.Exceptions;
+    using EstateManagement.BusinessLogic.Requests;
+    using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
+    using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
+    using CreateEstateUserRequest = BusinessLogic.Requests.CreateEstateUserRequest;
+    using CreateEstateUserRequestDTO = DataTransferObjects.Requests.CreateEstateUserRequest;
 
     [ExcludeFromCodeCoverage]
     [Route(EstateController.ControllerRoute)]
@@ -24,9 +29,9 @@
         #region Fields
 
         /// <summary>
-        /// The command router
+        /// The mediator
         /// </summary>
-        private readonly ICommandRouter CommandRouter;
+        private readonly IMediator Mediator;
 
         /// <summary>
         /// The estate management manager
@@ -45,14 +50,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateController" /> class.
         /// </summary>
-        /// <param name="commandRouter">The command router.</param>
+        /// <param name="mediator">The mediator.</param>
         /// <param name="estateManagementManager">The estate management manager.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateController(ICommandRouter commandRouter,
+        public EstateController(IMediator mediator,
                                 IEstateManagementManager estateManagementManager,
                                 IModelFactory modelFactory)
         {
-            this.CommandRouter = commandRouter;
+            this.Mediator = mediator;
             this.EstateManagementManager = estateManagementManager;
             this.ModelFactory = modelFactory;
         }
@@ -69,16 +74,16 @@
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequest createEstateRequest,
+        public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequestDTO createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
             Guid estateId = createEstateRequest.EstateId;
 
             // Create the command
-            CreateEstateCommand command = CreateEstateCommand.Create(estateId, createEstateRequest.EstateName);
+            CreateEstateRequest request = CreateEstateRequest.Create(estateId, createEstateRequest.EstateName);
 
             // Route the command
-            await this.CommandRouter.Route(command, cancellationToken);
+            await this.Mediator.Send(request, cancellationToken);
 
             // return the result
             return this.Created($"{EstateController.ControllerRoute}/{estateId}",
@@ -110,6 +115,30 @@
             return this.Ok(this.ModelFactory.ConvertFrom(estate));
         }
 
+        [HttpPost]
+        [Route("{estateId}/users")]
+        public async Task<IActionResult> CreateEstateUser([FromRoute] Guid estateId,
+                                                          [FromBody] CreateEstateUserRequestDTO createEstateUserRequest,
+                                                          CancellationToken cancellationToken)
+        {
+            // Create the command
+            CreateEstateUserRequest request = CreateEstateUserRequest.Create(estateId, createEstateUserRequest.EmailAddress,
+                                                                             createEstateUserRequest.Password,
+                                                                             createEstateUserRequest.GivenName,
+                                                                             createEstateUserRequest.MiddleName,
+                                                                             createEstateUserRequest.FamilyName);
+
+            // Route the command
+            Guid userId = await this.Mediator.Send(request, cancellationToken);
+
+            // return the result
+            return this.Created($"{EstateController.ControllerRoute}/{estateId}/users/{userId}",
+                                new CreateEstateUserResponse
+                                {
+                                    EstateId = estateId,
+                                    UserId = userId
+                                });
+        }
         #endregion
 
         #region Others

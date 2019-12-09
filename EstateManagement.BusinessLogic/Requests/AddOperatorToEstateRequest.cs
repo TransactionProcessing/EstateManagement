@@ -1,31 +1,28 @@
-﻿namespace EstateManagement.BusinessLogic.Commands
-{
-    using System;
-    using Shared.DomainDrivenDesign.CommandHandling;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Shared.DomainDrivenDesign.CommandHandling.Command{System.String}" />
-    public class AddOperatorToEstateCommand : Command<String>
+namespace EstateManagement.BusinessLogic.Requests
+{
+    using MediatR;
+
+    public class AddOperatorToEstateRequest : IRequest<String>
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateEstateCommand" /> class.
+        /// Initializes a new instance of the <see cref="AddOperatorToEstateRequest" /> class.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="operatorId">The operator identifier.</param>
         /// <param name="name">The name.</param>
         /// <param name="requireCustomMerchantNumber">if set to <c>true</c> [require custom merchant number].</param>
         /// <param name="requireCustomTerminalNumber">if set to <c>true</c> [require custom terminal number].</param>
-        /// <param name="commandId">The command identifier.</param>
-        private AddOperatorToEstateCommand(Guid estateId,
+        private AddOperatorToEstateRequest(Guid estateId,
                                            Guid operatorId,
                                            String name,
                                            Boolean requireCustomMerchantNumber,
-                                           Boolean requireCustomTerminalNumber,
-                                           Guid commandId) : base(commandId)
+                                           Boolean requireCustomTerminalNumber)
         {
             this.EstateId = estateId;
             this.OperatorId = operatorId;
@@ -91,13 +88,13 @@
         /// <param name="requireCustomMerchantNumber">if set to <c>true</c> [require custom merchant number].</param>
         /// <param name="requireCustomTerminalNumber">if set to <c>true</c> [require custom terminal number].</param>
         /// <returns></returns>
-        public static AddOperatorToEstateCommand Create(Guid estateId,
+        public static AddOperatorToEstateRequest Create(Guid estateId,
                                                         Guid operatorId,
                                                         String name,
                                                         Boolean requireCustomMerchantNumber,
                                                         Boolean requireCustomTerminalNumber)
         {
-            return new AddOperatorToEstateCommand(estateId, operatorId, name, requireCustomMerchantNumber, requireCustomTerminalNumber, Guid.NewGuid());
+            return new AddOperatorToEstateRequest(estateId, operatorId, name, requireCustomMerchantNumber, requireCustomTerminalNumber);
         }
 
         #endregion

@@ -2,14 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using BusinessLogic.Commands;
-    using DataTransferObjects.Requests;
+    using BusinessLogic.Requests;
     using EstateAggregate;
     using MerchantAggregate;
     using Models;
     using Models.Merchant;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
+    using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
+    using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
+    using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
 
     public class TestData
     {
@@ -19,10 +21,10 @@
 
         public static String EstateName = "Test Estate 1";
 
-        public static CreateEstateCommand CreateEstateCommand = CreateEstateCommand.Create(TestData.EstateId, TestData.EstateName);
+        public static CreateEstateRequest CreateEstateRequest = CreateEstateRequest.Create(TestData.EstateId, TestData.EstateName);
 
-        public static CreateEstateRequest CreateEstateRequest = new CreateEstateRequest
-                                                                {
+        public static CreateEstateRequestDTO CreateEstateRequestDTO = new CreateEstateRequestDTO
+        {
                                                                     EstateId = Guid.NewGuid(),
                                                                     EstateName = TestData.EstateName
                                                                 };
@@ -53,7 +55,7 @@
 
         public static String MerchantTown = "Test Town";
 
-        public static CreateMerchantCommand CreateMerchantCommand = CreateMerchantCommand.Create(TestData.EstateId,
+        public static CreateMerchantRequest CreateMerchantRequest = CreateMerchantRequest.Create(TestData.EstateId,
                                                                                                  TestData.MerchantId,
                                                                                                  TestData.MerchantName,
                                                                                                  TestData.MerchantAddressLine1,
@@ -236,7 +238,7 @@
 
         public static Boolean RequireCustomTerminalNumberFalse = false;
 
-        public static AddOperatorToEstateCommand CreateOperatorCommand = AddOperatorToEstateCommand.Create(TestData.EstateId, TestData.OperatorId,
+        public static AddOperatorToEstateRequest AddOperatorToEstateRequest = AddOperatorToEstateRequest.Create(TestData.EstateId, TestData.OperatorId,
                                                                                                  TestData.OperatorName,TestData.RequireCustomMerchantNumberFalse,
                                                                                                  TestData.RequireCustomTerminalNumberFalse);
 
@@ -244,10 +246,29 @@
 
         public static String OperatorTerminalNumber = "00000001";
 
-        public static AssignOperatorToMerchantCommand AssignOperatorToMerchantCommand = AssignOperatorToMerchantCommand.Create(TestData.EstateId,
+        public static AssignOperatorToMerchantRequest AssignOperatorToMerchantRequest = AssignOperatorToMerchantRequest.Create(TestData.EstateId,
                                                                                                                                TestData.MerchantId,
                                                                                                                                TestData.MerchantId,
                                                                                                                                TestData.OperatorMerchantNumber,
                                                                                                                                TestData.OperatorTerminalNumber);
+
+        public static String EstateUserEmailAddress = "testestateuser@estate1.co.uk";
+
+        public static String EstateUserPassword="123456";
+
+        public static String EstateUserGivenName = "Test";
+
+        public static String EstateUserMiddleName = "Middle";
+
+        public static String EstateUserFamilyName = "Estate";
+
+        public static CreateEstateUserRequest CreateEstateUserRequest = CreateEstateUserRequest.Create(TestData.EstateId,
+                                                                                                       TestData.EstateUserEmailAddress,
+                                                                                                       TestData.EstateUserPassword,
+                                                                                                       TestData.EstateUserGivenName,
+                                                                                                       TestData.EstateUserMiddleName,
+                                                                                                       TestData.EstateUserFamilyName);
+
+        public static Guid SecurityUserId = Guid.Parse("45B74A2E-BF92-44E9-A300-08E5CDEACFE3");
     }
 }

@@ -85,25 +85,25 @@ namespace EstateManagement.IntegrationTests.Merchant
         {
 #line 4
 #line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName"});
-            table4.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Test Estate 1"});
 #line 5
- testRunner.Given("I have created the following estates", ((string)(null)), table4, "Given ");
+ testRunner.Given("I have created the following estates", ((string)(null)), table6, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName",
                         "OperatorName",
                         "RequireCustomMerchantNumber",
                         "RequireCustomTerminalNumber"});
-            table5.AddRow(new string[] {
+            table7.AddRow(new string[] {
                         "Test Estate 1",
                         "Test Operator 1",
                         "True",
                         "True"});
 #line 8
- testRunner.Given("I have created the following operators", ((string)(null)), table5, "Given ");
+ testRunner.Given("I have created the following operators", ((string)(null)), table7, "Given ");
 #line hidden
         }
         
@@ -142,7 +142,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -151,7 +151,7 @@ this.FeatureBackground();
                             "ContactName",
                             "EmailAddress",
                             "EstateName"});
-                table6.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -161,7 +161,7 @@ this.FeatureBackground();
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
 #line 13
- testRunner.When("I create the following merchants", ((string)(null)), table6, "When ");
+ testRunner.When("I create the following merchants", ((string)(null)), table8, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -200,7 +200,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -209,7 +209,7 @@ this.FeatureBackground();
                             "ContactName",
                             "EmailAddress",
                             "EstateName"});
-                table7.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -219,20 +219,20 @@ this.FeatureBackground();
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
 #line 19
- testRunner.Given("I create the following merchants", ((string)(null)), table7, "Given ");
+ testRunner.Given("I create the following merchants", ((string)(null)), table9, "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName",
                             "MerchantName",
                             "MerchantNumber",
                             "TerminalNumber"});
-                table8.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Test Operator 1",
                             "Test Merchant 1",
                             "00000001",
                             "10000001"});
 #line 22
- testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table8, "When ");
+ testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table10, "When ");
 #line hidden
             }
             this.ScenarioCleanup();

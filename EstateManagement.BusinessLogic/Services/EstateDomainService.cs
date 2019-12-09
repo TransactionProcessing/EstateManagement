@@ -1,9 +1,12 @@
 ﻿namespace EstateManagement.BusinessLogic.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateAggregate;
+    using SecurityService.Client;
+    using SecurityService.DataTransferObjects;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
 
@@ -20,17 +23,25 @@
         /// </summary>
         private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
+        /// <summary>
+        /// The security service client
+        /// </summary>
+        private readonly ISecurityServiceClient SecurityServiceClient;
+
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EstateDomainService"/> class.
+        /// Initializes a new instance of the <see cref="EstateDomainService" /> class.
         /// </summary>
         /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
-        public EstateDomainService(IAggregateRepositoryManager aggregateRepositoryManager)
+        /// <param name="securityServiceClient">The security service client.</param>
+        public EstateDomainService(IAggregateRepositoryManager aggregateRepositoryManager,
+                                   ISecurityServiceClient securityServiceClient)
         {
             this.AggregateRepositoryManager = aggregateRepositoryManager;
+            this.SecurityServiceClient = securityServiceClient;
         }
 
         #endregion
@@ -77,6 +88,39 @@
             estateAggregate.AddOperator(operatorId, operatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
 
             await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+        }
+
+        public async Task<Guid> CreateEstateUser(Guid estateId,
+                                           String emailAddress,
+                                           String password,
+                                           String givenName,
+                                           String middleName,
+                                           String familyName,
+                                           CancellationToken cancellationToken)
+        {
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+
+            CreateUserRequest createUserRequest = new CreateUserRequest
+                                                  {
+                                                      EmailAddress = emailAddress,
+                                                      FamilyName = familyName,
+                                                      GivenName = givenName,
+                                                      MiddleName = middleName,
+                                                      Password = password,
+                                                      PhoneNumber = "123456", // Is this really needed :|
+                                                      Roles = new List<String>(),
+                                                      Claims = new Dictionary<String, String>()
+                                                  };
+
+            //createUserRequest.Roles.Add("Estate");
+            createUserRequest.Claims.Add("EstateId", estateId.ToString());
+            
+            CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
+
+            await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+
+            return createUserResponse.UserId;
         }
 
         #endregion

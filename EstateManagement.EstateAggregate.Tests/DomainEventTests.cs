@@ -43,5 +43,21 @@ namespace EstateManagement.EstateAggregate.Tests
             operatorAddedToEstateEvent.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumberFalse);
             operatorAddedToEstateEvent.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumberFalse);
         }
+
+        [Fact]
+        public void SecurityUserAddedEvent_CanBeCreated_IsCreated()
+        {
+            SecurityUserAddedEvent securityUserAddedEvent = SecurityUserAddedEvent.Create(TestData.EstateId,
+                                                                                                      TestData.SecurityUserId,
+                                                                                                      TestData.EstateUserEmailAddress);
+
+            securityUserAddedEvent.ShouldNotBeNull();
+            securityUserAddedEvent.AggregateId.ShouldBe(TestData.EstateId);
+            securityUserAddedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
+            securityUserAddedEvent.EventId.ShouldNotBe(Guid.Empty);
+            securityUserAddedEvent.EstateId.ShouldBe(TestData.EstateId);
+            securityUserAddedEvent.SecurityUserId.ShouldBe(TestData.SecurityUserId);
+            securityUserAddedEvent.EmailAddress.ShouldBe(TestData.EstateUserEmailAddress);
+        }
     }
 }

@@ -14,6 +14,21 @@
         #region Methods
 
         /// <summary>
+        /// Assigns the operator to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="assignOperatorRequest">The assign operator request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AssignOperatorResponse> AssignOperatorToMerchant(String accessToken,
+                                                              Guid estateId,
+                                                              Guid merchantId,
+                                                              AssignOperatorRequest assignOperatorRequest,
+                                                              CancellationToken cancellationToken);
+
+        /// <summary>
         /// Creates the estate.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -23,6 +38,19 @@
         Task<CreateEstateResponse> CreateEstate(String accessToken,
                                                 CreateEstateRequest createEstateRequest,
                                                 CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Creates the estate user.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createEstateUserRequest">The create estate user request.</param>
+        /// <param name="none">The none.</param>
+        /// <returns></returns>
+        Task<CreateEstateUserResponse> CreateEstateUser(String accessToken,
+                                                        Guid estateId,
+                                                        CreateEstateUserRequest createEstateUserRequest,
+                                                        CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates the merchant.
@@ -46,9 +74,9 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<CreateOperatorResponse> CreateOperator(String accessToken,
-                            Guid estateId,
-                            CreateOperatorRequest createOperatorRequest,
-                            CancellationToken cancellationToken);
+                                                    Guid estateId,
+                                                    CreateOperatorRequest createOperatorRequest,
+                                                    CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the estate.
@@ -73,21 +101,6 @@
                                            Guid estateId,
                                            Guid merchantId,
                                            CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Assigns the operator to merchant.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="assignOperatorRequest">The assign operator request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<AssignOperatorResponse> AssignOperatorToMerchant(String accessToken,
-                                      Guid estateId,
-                                      Guid merchantId,
-                                      AssignOperatorRequest assignOperatorRequest,
-                                      CancellationToken cancellationToken);
 
         #endregion
     }

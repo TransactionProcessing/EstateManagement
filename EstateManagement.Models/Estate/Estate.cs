@@ -36,6 +36,14 @@
         /// </value>
         public List<Operator> Operators { get; set; }
 
+        /// <summary>
+        /// Gets or sets the security users.
+        /// </summary>
+        /// <value>
+        /// The security users.
+        /// </value>
+        public List<SecurityUser> SecurityUsers { get; set; }
+
         #endregion
     }
 }

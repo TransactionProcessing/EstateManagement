@@ -137,6 +137,52 @@
         }
 
         /// <summary>
+        /// Creates the estate user.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createEstateUserRequest">The create estate user request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<CreateEstateUserResponse> CreateEstateUser(String accessToken,
+                                                                     Guid estateId,
+                                                                     CreateEstateUserRequest createEstateUserRequest,
+                                                                     CancellationToken cancellationToken)
+        {
+            CreateEstateUserResponse response = null;
+
+            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/users";
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(createEstateUserRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                //this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<CreateEstateUserResponse>(content);
+            }
+            catch(Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error creating new estate user Estate Id {estateId} Email Address {createEstateUserRequest.EmailAddress}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        /// <summary>
         /// Creates the merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

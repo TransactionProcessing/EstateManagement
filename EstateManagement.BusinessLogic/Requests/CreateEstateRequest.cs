@@ -1,21 +1,22 @@
-﻿namespace EstateManagement.BusinessLogic.Commands
-{
-    using System;
-    using Shared.DomainDrivenDesign.CommandHandling;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-    public class CreateEstateCommand : Command<String>
+namespace EstateManagement.BusinessLogic.Requests
+{
+    using MediatR;
+
+    public class CreateEstateRequest : IRequest<String>
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateEstateCommand" /> class.
+        /// Initializes a new instance of the <see cref="CreateEstateRequest" /> class.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="name">The name.</param>
-        /// <param name="commandId">The command identifier.</param>
-        private CreateEstateCommand(Guid estateId,
-                                      String name,
-                                      Guid commandId) : base(commandId)
+        private CreateEstateRequest(Guid estateId,
+                                    String name)
         {
             this.EstateId = estateId;
             this.Name = name;
@@ -51,10 +52,10 @@
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public static CreateEstateCommand Create(Guid estateId,
-                                                   String name)
+        public static CreateEstateRequest Create(Guid estateId,
+                                                 String name)
         {
-            return new CreateEstateCommand(estateId, name, Guid.NewGuid());
+            return new CreateEstateRequest(estateId, name);
         }
 
         #endregion

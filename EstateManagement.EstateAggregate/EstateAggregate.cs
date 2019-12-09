@@ -23,6 +23,11 @@
         /// </summary>
         private readonly List<Operator> Operators;
 
+        /// <summary>
+        /// The security users
+        /// </summary>
+        private readonly List<SecurityUser> SecurityUsers;
+
         #endregion
 
         #region Constructors
@@ -35,6 +40,7 @@
         {
             // Nothing here
             this.Operators = new List<Operator>();
+            this.SecurityUsers = new List<SecurityUser>();
         }
 
         /// <summary>
@@ -47,6 +53,7 @@
 
             this.AggregateId = aggregateId;
             this.Operators = new List<Operator>();
+            this.SecurityUsers = new List<SecurityUser>();
         }
 
         #endregion
@@ -97,6 +104,21 @@
         }
 
         /// <summary>
+        /// Adds the security user.
+        /// </summary>
+        /// <param name="securityUserId">The security user identifier.</param>
+        /// <param name="emailAddress">The email address.</param>
+        public void AddSecurityUser(Guid securityUserId,
+                                    String emailAddress)
+        {
+            this.CheckEstateHasBeenCreated();
+
+            SecurityUserAddedEvent securityUserAddedEvent = SecurityUserAddedEvent.Create(this.AggregateId, securityUserId, emailAddress);
+
+            this.ApplyAndPend(securityUserAddedEvent);
+        }
+
+        /// <summary>
         /// Creates the specified aggregate identifier.
         /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
@@ -134,7 +156,7 @@
 
             if (this.Operators.Any())
             {
-                estateModel.Operators =new List<Models.Operator>();
+                estateModel.Operators = new List<Models.Operator>();
 
                 foreach (Operator @operator in this.Operators)
                 {
@@ -144,7 +166,21 @@
                                                   Name = @operator.Name,
                                                   RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber,
                                                   RequireCustomTerminalNumber = @operator.RequireCustomterminalNumber
-                        });
+                                              });
+                }
+            }
+
+            if (this.SecurityUsers.Any())
+            {
+                estateModel.SecurityUsers = new List<Models.SecurityUser>();
+
+                foreach (SecurityUser securityUser in this.SecurityUsers)
+                {
+                    estateModel.SecurityUsers.Add(new Models.SecurityUser
+                                                  {
+                                                      EmailAddress = securityUser.EmailAddress,
+                                                      SecurityUserId = securityUser.SecurityUserId
+                                                  });
                 }
             }
 
@@ -219,6 +255,13 @@
             {
                 throw new InvalidOperationException($"Duplicate operator details are not allowed, an operator already exists on this estate with Name [{operatorName}]");
             }
+        }
+
+        private void PlayEvent(SecurityUserAddedEvent domainEvent)
+        {
+            SecurityUser securityUser = SecurityUser.Create(domainEvent.SecurityUserId, domainEvent.EmailAddress);
+
+            this.SecurityUsers.Add(securityUser);
         }
 
         /// <summary>

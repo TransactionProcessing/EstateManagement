@@ -1,10 +1,12 @@
 ﻿namespace EstateManagement.Models.Merchant
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// 
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Operator
     {
         #region Properties

@@ -1,31 +1,28 @@
-﻿namespace EstateManagement.BusinessLogic.Commands
-{
-    using System;
-    using Shared.DomainDrivenDesign.CommandHandling;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Shared.DomainDrivenDesign.CommandHandling.Command{System.String}" />
-    public class AssignOperatorToMerchantCommand : Command<String>
+namespace EstateManagement.BusinessLogic.Requests
+{
+    using MediatR;
+
+    public class AssignOperatorToMerchantRequest : IRequest<String>
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssignOperatorToMerchantCommand"/> class.
+        /// Initializes a new instance of the <see cref="AssignOperatorToMerchantRequest" /> class.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="merchantId">The merchant identifier.</param>
         /// <param name="operatorId">The operator identifier.</param>
         /// <param name="merchantNumber">The merchant number.</param>
         /// <param name="terminalNumber">The terminal number.</param>
-        /// <param name="commandId">The command identifier.</param>
-        private AssignOperatorToMerchantCommand(Guid estateId,
+        private AssignOperatorToMerchantRequest(Guid estateId,
                                                 Guid merchantId,
                                                 Guid operatorId,
                                                 String merchantNumber,
-                                                String terminalNumber,
-                                                Guid commandId) : base(commandId)
+                                                String terminalNumber)
         {
             this.EstateId = estateId;
             this.MerchantId = merchantId;
@@ -91,13 +88,13 @@
         /// <param name="merchantNumber">The merchant number.</param>
         /// <param name="terminalNumber">The terminal number.</param>
         /// <returns></returns>
-        public static AssignOperatorToMerchantCommand Create(Guid estateId,
+        public static AssignOperatorToMerchantRequest Create(Guid estateId,
                                                              Guid merchantId,
                                                              Guid operatorId,
                                                              String merchantNumber,
                                                              String terminalNumber)
         {
-            return new AssignOperatorToMerchantCommand(estateId, merchantId, operatorId, merchantNumber, terminalNumber, Guid.NewGuid());
+            return new AssignOperatorToMerchantRequest(estateId, merchantId, operatorId, merchantNumber, terminalNumber);
         }
 
         #endregion

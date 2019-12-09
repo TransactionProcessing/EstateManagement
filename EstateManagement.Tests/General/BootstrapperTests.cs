@@ -58,6 +58,7 @@
             configuration.Add("EventStoreSettings:ConnectionName", "UnitTestConnection");
             configuration.Add("EventStoreSettings:HttpPort", "2113");
             configuration.Add("AppSettings:UseConnectionStringConfig", "false");
+            configuration.Add("AppSettings:SecurityService", "http://127.0.0.1");
 
 
             builder.AddInMemoryCollection(configuration);
