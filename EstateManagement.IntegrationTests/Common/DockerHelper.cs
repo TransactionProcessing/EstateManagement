@@ -76,12 +76,12 @@ namespace EstateManagement.IntegrationTests.Common
                 $"EventStoreSettings:ConnectionString=ConnectTo=tcp://admin:changeit@{this.EventStoreContainerName}:1113;VerboseLogging=true;";
             
             this.SetupTestNetwork();
-            this.SetupEventStoreContainer(traceFolder);
-
-            await Task.Delay(30000).ConfigureAwait(false);
-
-            this.SetupEstateManagementApiContainer(traceFolder);
             this.SetupSecurityServiceContainer(traceFolder);
+            
+            await Task.Delay(30000).ConfigureAwait(false);
+            this.SetupEventStoreContainer(traceFolder);
+            this.SetupEstateManagementApiContainer(traceFolder);
+
 
             // Cache the ports
             this.EstateManagementApiPort= this.EstateManagementApiContainer.ToHostExposedEndpoint("5000/tcp").Port;
