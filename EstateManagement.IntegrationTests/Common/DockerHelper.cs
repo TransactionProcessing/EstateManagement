@@ -77,6 +77,9 @@ namespace EstateManagement.IntegrationTests.Common
             
             this.SetupTestNetwork();
             this.SetupEventStoreContainer(traceFolder);
+
+            await Task.Delay(30000).ConfigureAwait(false);
+
             this.SetupEstateManagementApiContainer(traceFolder);
             this.SetupSecurityServiceContainer(traceFolder);
 
