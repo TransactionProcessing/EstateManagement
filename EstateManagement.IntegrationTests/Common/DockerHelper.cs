@@ -21,7 +21,7 @@ namespace EstateManagement.IntegrationTests.Common
         protected Int32 EstateManagementApiPort;
         protected Int32 EventStorePort;
 
-        protected IContainerService EstateManagementApiContainer;
+        public IContainerService EstateManagementApiContainer;
         protected IContainerService EventStoreContainer;
 
         public IEstateClient EstateClient;

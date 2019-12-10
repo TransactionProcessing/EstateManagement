@@ -35,7 +35,7 @@ namespace EstateManagement.IntegrationTests.Estate
 #line 1 "Estate.feature"
 #line hidden
         
-        public EstateFeature(EstateFeature.FixtureData fixtureData, InternalSpecFlow.XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public EstateFeature(EstateFeature.FixtureData fixtureData, EstateManagement_IntegrationTests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
@@ -193,14 +193,11 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Create Security User")]
         [Xunit.TraitAttribute("FeatureTitle", "Estate")]
         [Xunit.TraitAttribute("Description", "Create Security User")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateSecurityUser()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User", null, new string[] {
-                        "PRTest"});
-#line 21
+            string[] tagsOfScenario = ((string[])(null));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User", null, ((string[])(null)));
+#line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -227,7 +224,7 @@ this.FeatureBackground();
                             "EstateName"});
                 table4.AddRow(new string[] {
                             "Test Estate 1"});
-#line 22
+#line 21
  testRunner.Given("I have created the following estates", ((string)(null)), table4, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -242,7 +239,7 @@ this.FeatureBackground();
                             "TestEstate",
                             "User1",
                             "Test Estate 1"});
-#line 25
+#line 24
  testRunner.When("I create the following security users", ((string)(null)), table5, "When ");
 #line hidden
             }

@@ -17,6 +17,7 @@ Scenario: Create Operator
 	| EstateName    | OperatorName    | RequireCustomMerchantNumber | RequireCustomTerminalNumber |
 	| Test Estate 1 | Test Operator 1 | True                        | True                        |
 
+@PRTest
 Scenario: Create Security User
 	Given I have created the following estates
 	| EstateName    |

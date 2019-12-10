@@ -35,7 +35,7 @@ namespace EstateManagement.IntegrationTests.Merchant
 #line 1 "Merchant.feature"
 #line hidden
         
-        public MerchantFeature(MerchantFeature.FixtureData fixtureData, InternalSpecFlow.XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public MerchantFeature(MerchantFeature.FixtureData fixtureData, EstateManagement_IntegrationTests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
