@@ -53,5 +53,5 @@ jobs:
         host: ${{ secrets.FTP_SERVER }}
         user: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        localDir: "/github/home"
+        localDir: "/home/txnproc"
         remoteDir: ""
