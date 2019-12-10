@@ -5,6 +5,7 @@ using System.Text;
 namespace EstateManagement.IntegrationTests.Common
 {
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
     using Client;
     using Ductus.FluentDocker.Builders;
@@ -76,10 +77,11 @@ namespace EstateManagement.IntegrationTests.Common
                 $"EventStoreSettings:ConnectionString=ConnectTo=tcp://admin:changeit@{this.EventStoreContainerName}:1113;VerboseLogging=true;";
             
             this.SetupTestNetwork();
+            this.SetupEstateManagementApiContainer(traceFolder);
             this.SetupSecurityServiceContainer(traceFolder);
             this.SetupEventStoreContainer(traceFolder);
-            this.SetupEstateManagementApiContainer(traceFolder);
-
+            
+            Thread.Sleep(20000);
 
             // Cache the ports
             this.EstateManagementApiPort= this.EstateManagementApiContainer.ToHostExposedEndpoint("5000/tcp").Port;
