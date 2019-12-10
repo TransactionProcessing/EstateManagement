@@ -148,7 +148,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                          .WithEnvironment("ASPNETCORE_ENVIRONMENT=IntegrationTest",
                                                                           $"ServiceOptions:PublicOrigin=http://{this.SecurityServiceContainerName}:5001",
                                                                           $"ServiceOptions:IssuerUrl=http://{this.SecurityServiceContainerName}:5001",
-                                                                          "urls=http://0.0.0.0:5001")
+                                                                          "urls=http://*:5001")
                                                          .WithCredential("https://www.docker.com", "stuartferguson", "Sc0tland")
                                                          .UseImage("stuartferguson/securityservice").ExposePort(5001).UseNetwork(new List<INetworkService>
                                                                                                                   {
@@ -165,7 +165,7 @@ namespace EstateManagement.IntegrationTests.Common
                                           .WithName(this.EstateManagementApiContainerName)
                                           .WithEnvironment(this.EventStoreConnectionString,
                                                            $"AppSettings:SecurityService=http://{this.SecurityServiceContainerName}:5001",
-                                                           "urls=http://0.0.0.0:5000")
+                                                           "urls=http://*:5000")
                                                            //"AppSettings:MigrateDatabase=true",
                                                            //"EventStoreSettings:START_PROJECTIONS=true",
                                                            //"EventStoreSettings:ContinuousProjectionsFolder=/app/projections/continuous")
