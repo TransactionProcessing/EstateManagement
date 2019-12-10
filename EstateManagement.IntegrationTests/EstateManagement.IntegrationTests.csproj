@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
     <PackageReference Include="SecurityService.Client" Version="0.0.4" />
+    <PackageReference Include="Shared" Version="0.0.4.1" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="SpecFlow" Version="3.1.44-beta" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.1.44-beta" />

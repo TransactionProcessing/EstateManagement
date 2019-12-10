@@ -8,6 +8,7 @@ namespace EstateManagement.IntegrationTests.Common
     using System.Threading.Tasks;
     using Client;
     using Ductus.FluentDocker.Builders;
+    using Ductus.FluentDocker.Common;
     using Ductus.FluentDocker.Model.Builders;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
@@ -54,12 +55,12 @@ namespace EstateManagement.IntegrationTests.Common
         }
 
         public Guid TestId;
-
+        
         public ISecurityServiceClient SecurityServiceClient;
 
         public async Task StartContainersForScenarioRun(String scenarioName)
         {
-            String traceFolder = $"/home/ubuntu/estatemanagement/trace/{scenarioName}/";
+            String traceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
 
             Logging.Enabled();
 
@@ -168,7 +169,7 @@ namespace EstateManagement.IntegrationTests.Common
                                           .UseImage("estatemanagement")
                                           .ExposePort(5000)
                                           .UseNetwork(new List<INetworkService> { this.TestNetwork, Setup.DatabaseServerNetwork }.ToArray())
-                                          .Mount(traceFolder, "/home", MountType.ReadWrite)
+                                          .Mount(traceFolder, "/home/txnproc/trace", MountType.ReadWrite)
                                           .Build()
                                           .Start().WaitForPort("5000/tcp", 30000);
         }
