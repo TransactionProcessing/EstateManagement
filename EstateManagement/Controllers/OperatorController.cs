@@ -7,9 +7,10 @@ namespace EstateManagement.Controllers
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
-    using BusinessLogic.Commands;
+    using BusinessLogic.Requests;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
+    using MediatR;
     using Microsoft.AspNetCore.Mvc;
     using Shared.DomainDrivenDesign.CommandHandling;
 
@@ -19,11 +20,18 @@ namespace EstateManagement.Controllers
     [ApiVersion("1.0")]
     public class OperatorController : ControllerBase
     {
-        private readonly ICommandRouter CommandRouter;
+        /// <summary>
+        /// The mediator
+        /// </summary>
+        private readonly IMediator Mediator;
 
-        public OperatorController(ICommandRouter commandRouter)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OperatorController"/> class.
+        /// </summary>
+        /// <param name="mediator">The mediator.</param>
+        public OperatorController(IMediator mediator)
         {
-            this.CommandRouter = commandRouter;
+            this.Mediator = mediator;
         }
 
         /// <summary>
@@ -40,13 +48,13 @@ namespace EstateManagement.Controllers
             Guid operatorId = Guid.NewGuid();
 
             // Create the command
-            AddOperatorToEstateCommand command = AddOperatorToEstateCommand.Create(estateId, operatorId,
+            AddOperatorToEstateRequest command = AddOperatorToEstateRequest.Create(estateId, operatorId,
                                                                          createOperatorRequest.Name,
                                                                          createOperatorRequest.RequireCustomMerchantNumber.Value,
                                                                          createOperatorRequest.RequireCustomTerminalNumber.Value);
 
             // Route the command
-            await this.CommandRouter.Route(command, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
             // return the result
             return this.Created($"{OperatorController.ControllerRoute}/{operatorId}",

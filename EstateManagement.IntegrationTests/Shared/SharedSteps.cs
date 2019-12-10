@@ -201,6 +201,30 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When(@"I create the following security users")]
+        public async Task WhenICreateTheFollowingSecurityUsers(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                // lookup the estate id based on the name in the table
+                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+                Guid estateId = this.TestingContext.Estates.Single(e => e.Key == estateName).Value;
+
+                CreateEstateUserRequest createEstateUserRequest = new CreateEstateUserRequest
+                                                                  {
+                                                                      EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
+                                                                      FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
+                                                                      GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
+                                                                      MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
+                                                                      Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
+                                                                  };
+
+                CreateEstateUserResponse createEstateUserResponse = await this.TestingContext.DockerHelper.EstateClient.CreateEstateUser(String.Empty, estateId, createEstateUserRequest, CancellationToken.None);
+
+                createEstateUserResponse.EstateId.ShouldBe(estateId);
+                createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
+            }
+        }
 
     }
 }

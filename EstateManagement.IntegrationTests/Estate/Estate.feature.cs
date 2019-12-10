@@ -190,6 +190,65 @@ this.FeatureBackground();
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Create Security User")]
+        [Xunit.TraitAttribute("FeatureTitle", "Estate")]
+        [Xunit.TraitAttribute("Description", "Create Security User")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
+        public virtual void CreateSecurityUser()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User", null, new string[] {
+                        "PRTest"});
+#line 21
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName"});
+                table4.AddRow(new string[] {
+                            "Test Estate 1"});
+#line 22
+ testRunner.Given("I have created the following estates", ((string)(null)), table4, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EmailAddress",
+                            "Password",
+                            "GivenName",
+                            "FamilyName",
+                            "EstateName"});
+                table5.AddRow(new string[] {
+                            "estateuser1@testestate1.co.uk",
+                            "123456",
+                            "TestEstate",
+                            "User1",
+                            "Test Estate 1"});
+#line 25
+ testRunner.When("I create the following security users", ((string)(null)), table5, "When ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable

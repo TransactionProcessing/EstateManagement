@@ -8,9 +8,11 @@ namespace EstateManagement.IntegrationTests.Common
     using System.Threading.Tasks;
     using Client;
     using Ductus.FluentDocker.Builders;
+    using Ductus.FluentDocker.Common;
     using Ductus.FluentDocker.Model.Builders;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
+    using SecurityService.Client;
 
     public class DockerHelper
     {
@@ -50,15 +52,15 @@ namespace EstateManagement.IntegrationTests.Common
                                        .Mount(traceFolder, "/var/log/eventstore", MountType.ReadWrite)
                                        .Build()
                                        .Start().WaitForPort("2113/tcp", 30000);
-
-            Console.Out.WriteLine("Started Event Store");
         }
 
         public Guid TestId;
+        
+        public ISecurityServiceClient SecurityServiceClient;
 
         public async Task StartContainersForScenarioRun(String scenarioName)
         {
-            String traceFolder = $"/home/ubuntu/estatemanagement/trace/{scenarioName}/";
+            String traceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
 
             Logging.Enabled();
 
@@ -68,47 +70,51 @@ namespace EstateManagement.IntegrationTests.Common
             // Setup the container names
             this.EstateManagementApiContainerName = $"estate{testGuid:N}";
             this.EventStoreContainerName = $"eventstore{testGuid:N}";
-            
+            this.SecurityServiceContainerName = $"securityservice{testGuid:N}";
+
             this.EventStoreConnectionString =
                 $"EventStoreSettings:ConnectionString=ConnectTo=tcp://admin:changeit@{this.EventStoreContainerName}:1113;VerboseLogging=true;";
             
             this.SetupTestNetwork();
             this.SetupEventStoreContainer(traceFolder);
             this.SetupEstateManagementApiContainer(traceFolder);
+            this.SetupSecurityServiceContainer(traceFolder);
 
             // Cache the ports
             this.EstateManagementApiPort= this.EstateManagementApiContainer.ToHostExposedEndpoint("5000/tcp").Port;
-
-            Console.Out.WriteLine($"Estate management port [{this.EstateManagementApiPort}]");
-
+            this.SecurityServicePort = this.SecurityServiceContainer.ToHostExposedEndpoint("5001/tcp").Port;
             this.EventStorePort = this.EventStoreContainer.ToHostExposedEndpoint("2113/tcp").Port;
-
-            Console.Out.WriteLine($"Event Store port [{this.EventStorePort}]");
-
-            // Setup the base address resolver
+            
+            // Setup the base address resolvers
             Func<String, String> baseAddressResolver = api => $"http://127.0.0.1:{this.EstateManagementApiPort}";
+            Func<String, String> securityServiceBaseAddressResolver = api => $"http://127.0.0.1:{this.SecurityServicePort}";
 
             HttpClient httpClient = new HttpClient();
             this.EstateClient = new EstateClient(baseAddressResolver, httpClient);
+            this.SecurityServiceClient = new SecurityServiceClient(securityServiceBaseAddressResolver, httpClient);
 
             //this.HttpClient = new HttpClient();
             //this.HttpClient.BaseAddress = new Uri(baseAddressResolver(String.Empty));
         }
 
+        public Int32 SecurityServicePort;
+
         public async Task StopContainersForScenarioRun()
         {
             try
             {
-                var log = this.EstateManagementApiContainer.Logs(true);
-                var gimp = log.TryRead(10000);
-
-                Console.Out.WriteLine(gimp);
-
                 if (this.EstateManagementApiContainer != null)
                 {
                     this.EstateManagementApiContainer.StopOnDispose = true;
                     this.EstateManagementApiContainer.RemoveOnDispose = true;
                     this.EstateManagementApiContainer.Dispose();
+                }
+
+                if (this.SecurityServiceContainer != null)
+                {
+                    this.SecurityServiceContainer.StopOnDispose = true;
+                    this.SecurityServiceContainer.RemoveOnDispose = true;
+                    this.SecurityServiceContainer.Dispose();
                 }
 
                 if (this.EventStoreContainer != null)
@@ -130,28 +136,42 @@ namespace EstateManagement.IntegrationTests.Common
             }
         }
 
+        public IContainerService SecurityServiceContainer;
+
+        public String SecurityServiceContainerName;
+
+        private void SetupSecurityServiceContainer(String traceFolder)
+        {
+            // Management API Container
+            this.SecurityServiceContainer = new Builder().UseContainer().WithName(this.SecurityServiceContainerName)
+                                                         .WithEnvironment("ASPNETCORE_ENVIRONMENT=IntegrationTest",
+                                                                          $"ServiceOptions:PublicOrigin=http://{this.SecurityServiceContainerName}:5001",
+                                                                          $"ServiceOptions:IssuerUrl=http://{this.SecurityServiceContainerName}:5001")
+                                                         .WithCredential("https://www.docker.com", "stuartferguson", "Sc0tland")
+                                                         .UseImage("stuartferguson/securityservice").ExposePort(5001).UseNetwork(new List<INetworkService>
+                                                                                                                  {
+                                                                                                                      this.TestNetwork
+                                                                                                                  }.ToArray())
+                                                         .Mount(traceFolder, "/home/txnproc/trace", MountType.ReadWrite).Build().Start().WaitForPort("5001/tcp", 30000);
+        }
+
         private void SetupEstateManagementApiContainer(String traceFolder)
         {
             // Management API Container
             this.EstateManagementApiContainer = new Builder()
                                           .UseContainer()
                                           .WithName(this.EstateManagementApiContainerName)
-                                          .WithEnvironment(this.EventStoreConnectionString) //,
+                                          .WithEnvironment(this.EventStoreConnectionString,
+                                                           $"AppSettings:SecurityService=http://{this.SecurityServiceContainerName}:5001")
                                                            //"AppSettings:MigrateDatabase=true",
                                                            //"EventStoreSettings:START_PROJECTIONS=true",
                                                            //"EventStoreSettings:ContinuousProjectionsFolder=/app/projections/continuous")
                                           .UseImage("estatemanagement")
                                           .ExposePort(5000)
                                           .UseNetwork(new List<INetworkService> { this.TestNetwork, Setup.DatabaseServerNetwork }.ToArray())
-                                          .Mount(traceFolder, "/home", MountType.ReadWrite)
+                                          .Mount(traceFolder, "/home/txnproc/trace", MountType.ReadWrite)
                                           .Build()
                                           .Start().WaitForPort("5000/tcp", 30000);
-
-            var log = this.EstateManagementApiContainer.Logs(true);
-            var gimp = log.TryRead(10000);
-            
-            Console.Out.WriteLine(gimp);
-            Console.Out.WriteLine("Started Estate Management");
         }
     }
 }

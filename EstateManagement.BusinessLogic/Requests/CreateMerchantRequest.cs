@@ -1,18 +1,17 @@
-﻿namespace EstateManagement.BusinessLogic.Commands
-{
-    using System;
-    using Shared.DomainDrivenDesign.CommandHandling;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Shared.DomainDrivenDesign.CommandHandling.Command{System.String}" />
-    public class CreateMerchantCommand : Command<String>
+namespace EstateManagement.BusinessLogic.Requests
+{
+    using MediatR;
+
+    public class CreateMerchantRequest : IRequest<String>
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateMerchantCommand" /> class.
+        /// Initializes a new instance of the <see cref="CreateMerchantRequest" /> class.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="merchantId">The merchant identifier.</param>
@@ -30,8 +29,7 @@
         /// <param name="contactName">Name of the contact.</param>
         /// <param name="contactPhoneNumber">The contact phone number.</param>
         /// <param name="contactEmailAddress">The contact email address.</param>
-        /// <param name="commandId">The command identifier.</param>
-        private CreateMerchantCommand(Guid estateId,
+        private CreateMerchantRequest(Guid estateId,
                                       Guid merchantId,
                                       String name,
                                       Guid addressId,
@@ -46,8 +44,7 @@
                                       Guid contactId,
                                       String contactName,
                                       String contactPhoneNumber,
-                                      String contactEmailAddress,
-                                      Guid commandId) : base(commandId)
+                                      String contactEmailAddress)
         {
             this.EstateId = estateId;
             this.MerchantId = merchantId;
@@ -221,7 +218,7 @@
         /// <param name="contactPhoneNumber">The contact phone number.</param>
         /// <param name="contactEmailAddress">The contact email address.</param>
         /// <returns></returns>
-        public static CreateMerchantCommand Create(Guid estateId,
+        public static CreateMerchantRequest Create(Guid estateId,
                                                    Guid merchantId,
                                                    String name,
                                                    String addressLine1,
@@ -236,7 +233,7 @@
                                                    String contactPhoneNumber,
                                                    String contactEmailAddress)
         {
-            return new CreateMerchantCommand(estateId,
+            return new CreateMerchantRequest(estateId,
                                              merchantId,
                                              name,
                                              Guid.NewGuid(),
@@ -251,8 +248,7 @@
                                              Guid.NewGuid(),
                                              contactName,
                                              contactPhoneNumber,
-                                             contactEmailAddress,
-                                             Guid.NewGuid());
+                                             contactEmailAddress);
         }
 
         #endregion

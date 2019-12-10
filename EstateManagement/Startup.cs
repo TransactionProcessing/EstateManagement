@@ -5,17 +5,20 @@ namespace EstateManagement
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
+    using System.Net.Http;
     using System.Reflection;
     using System.Threading.Tasks;
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
-    using BusinessLogic.CommandHandlers;
     using BusinessLogic.EventHandling;
     using BusinessLogic.Manger;
+    using BusinessLogic.RequestHandlers;
+    using BusinessLogic.Requests;
     using BusinessLogic.Services;
     using Common;
     using Controllers;
     using EventStore.ClientAPI;
+    using MediatR;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -33,6 +36,7 @@ namespace EstateManagement
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using NLog.Extensions.Logging;
+    using SecurityService.Client;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EntityFramework.ConnectionStringConfiguration;
@@ -67,7 +71,7 @@ namespace EstateManagement
         {
             this.ConfigureMiddlewareServices(services);
 
-            services.AddSingleton<ICommandRouter, CommandRouter>();
+            services.AddTransient<IMediator, Mediator>();
             services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
         }
 
@@ -139,6 +143,25 @@ namespace EstateManagement
             builder.RegisterType<MerchantDomainService>().As<IMerchantDomainService>().SingleInstance();
             builder.RegisterType<ModelFactory>().As<IModelFactory>().SingleInstance();
             builder.RegisterType<Factories.ModelFactory>().As<Factories.IModelFactory>().SingleInstance();
+            builder.RegisterType<SecurityServiceClient>().As<ISecurityServiceClient>().SingleInstance();
+
+            // request & notification handlers
+            builder.Register<ServiceFactory>(context =>
+                                             {
+                                                 var c = context.Resolve<IComponentContext>();
+                                                 return t => c.Resolve(t);
+                                             });
+            
+            builder.RegisterType<EstateRequestHandler>().As<IRequestHandler<CreateEstateRequest, String>>().SingleInstance();
+            builder.RegisterType<EstateRequestHandler>().As<IRequestHandler<AddOperatorToEstateRequest, String>>().SingleInstance();
+            builder.RegisterType<EstateRequestHandler>().As<IRequestHandler<CreateEstateUserRequest, Guid>>().SingleInstance();
+            builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<CreateMerchantRequest, String>>().SingleInstance();
+            builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<AssignOperatorToMerchantRequest, String>>().SingleInstance();
+
+            Func<String, String> apiAddressResolver = (serviceName) => { return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString; };
+
+            builder.RegisterInstance<Func<String, String>>(apiAddressResolver);
+            builder.RegisterType<HttpClient>().SingleInstance();
         }
 
         private void ConfigureMiddlewareServices(IServiceCollection services)

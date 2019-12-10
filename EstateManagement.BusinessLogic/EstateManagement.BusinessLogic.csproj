@@ -9,8 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SecurityService.Client" Version="0.0.4" />
     <PackageReference Include="Shared" Version="0.0.4.1" />
     <PackageReference Include="Shared.DomainDrivenDesign" Version="0.0.4.1" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

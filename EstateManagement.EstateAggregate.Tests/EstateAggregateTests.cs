@@ -90,6 +90,38 @@
         }
 
         [Fact]
+        public void EstateAggregate_GetEstate_NoSecurityUsers_EstateIsReturned()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+
+            Estate model = aggregate.GetEstate();
+
+            model.EstateId.ShouldBe(TestData.EstateId);
+            model.Name.ShouldBe(TestData.EstateName);
+            model.Operators.ShouldBeNull();
+            model.SecurityUsers.ShouldBeNull();
+        }
+
+        [Fact]
+        public void EstateAggregate_GetEstate_WithASecurityUser_EstateIsReturned()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+            aggregate.AddSecurityUser(TestData.SecurityUserId,TestData.EstateUserEmailAddress);
+
+            Estate model = aggregate.GetEstate();
+
+            model.EstateId.ShouldBe(TestData.EstateId);
+            model.Name.ShouldBe(TestData.EstateName);
+            model.SecurityUsers.ShouldHaveSingleItem();
+
+            SecurityUser securityUser = model.SecurityUsers.Single();
+            securityUser.SecurityUserId.ShouldBe(TestData.SecurityUserId);
+            securityUser.EmailAddress.ShouldBe(TestData.EstateUserEmailAddress);
+        }
+
+        [Fact]
         public void EstateAggregate_AddOperatorToEstate_OperatorIsAdded()
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
@@ -139,6 +171,27 @@
                                                                                   });
 
             exception.Message.ShouldContain($"Duplicate operator details are not allowed, an operator already exists on this estate with Name [{TestData.OperatorName}]");
+        }
+
+        [Fact]
+        public void EstateAggregate_AddSecurityUserToEstate_SecurityUserIsAdded()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+            aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.EstateUserEmailAddress);
+        }
+
+        [Fact]
+        public void EstateAggregate_AddSecurityUserToEstate_EstateNotCreated_ErrorThrown()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+                                                                                          {
+                                                                                              aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.EstateUserEmailAddress);
+                                                                                          });
+
+            exception.Message.ShouldContain("Estate has not been created");
         }
     }
 }
