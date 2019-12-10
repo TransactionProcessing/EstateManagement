@@ -193,11 +193,14 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Create Security User")]
         [Xunit.TraitAttribute("FeatureTitle", "Estate")]
         [Xunit.TraitAttribute("Description", "Create Security User")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateSecurityUser()
         {
-            string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User", null, ((string[])(null)));
-#line 20
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User", null, new string[] {
+                        "PRTest"});
+#line 21
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -224,7 +227,7 @@ this.FeatureBackground();
                             "EstateName"});
                 table4.AddRow(new string[] {
                             "Test Estate 1"});
-#line 21
+#line 22
  testRunner.Given("I have created the following estates", ((string)(null)), table4, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -239,7 +242,7 @@ this.FeatureBackground();
                             "TestEstate",
                             "User1",
                             "Test Estate 1"});
-#line 24
+#line 25
  testRunner.When("I create the following security users", ((string)(null)), table5, "When ");
 #line hidden
             }
