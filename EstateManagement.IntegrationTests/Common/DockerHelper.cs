@@ -68,10 +68,10 @@ namespace EstateManagement.IntegrationTests.Common
             this.TestId = testGuid;
 
             // Setup the container names
+            this.SecurityServiceContainerName = $"securityservice{testGuid:N}";
             this.EstateManagementApiContainerName = $"estate{testGuid:N}";
             this.EventStoreContainerName = $"eventstore{testGuid:N}";
-            this.SecurityServiceContainerName = $"securityservice{testGuid:N}";
-
+            
             this.EventStoreConnectionString =
                 $"EventStoreSettings:ConnectionString=ConnectTo=tcp://admin:changeit@{this.EventStoreContainerName}:1113;VerboseLogging=true;";
             
