@@ -155,7 +155,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                                                                                       this.TestNetwork
                                                                                                                   }.ToArray())
                                                          .Mount(traceFolder, "/home/txnproc/trace", MountType.ReadWrite).Build().Start().WaitForPort("5001/tcp", 30000);
-            Thread.Sleep(10000);
+            Thread.Sleep(20000);
 
         }
 
