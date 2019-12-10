@@ -81,8 +81,6 @@ namespace EstateManagement.IntegrationTests.Common
             this.SetupSecurityServiceContainer(traceFolder);
             this.SetupEventStoreContainer(traceFolder);
             
-            Thread.Sleep(20000);
-
             // Cache the ports
             this.EstateManagementApiPort= this.EstateManagementApiContainer.ToHostExposedEndpoint("5000/tcp").Port;
             this.SecurityServicePort = this.SecurityServiceContainer.ToHostExposedEndpoint("5001/tcp").Port;
@@ -157,6 +155,8 @@ namespace EstateManagement.IntegrationTests.Common
                                                                                                                       this.TestNetwork
                                                                                                                   }.ToArray())
                                                          .Mount(traceFolder, "/home/txnproc/trace", MountType.ReadWrite).Build().Start().WaitForPort("5001/tcp", 30000);
+            Thread.Sleep(10000);
+
         }
 
         private void SetupEstateManagementApiContainer(String traceFolder)
