@@ -47,6 +47,7 @@ jobs:
       run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj" --filter Category=PRTest
 
     - name: Upload logs
+      if: failure()
       uses: sebastianpopp/ftp-action@releases/v1
       with:
         host: ${{ secrets.FTP_SERVER }}
