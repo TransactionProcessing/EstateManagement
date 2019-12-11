@@ -43,6 +43,7 @@ namespace EstateManagement
     using Shared.EventStore.EventStore;
     using Shared.Extensions;
     using Shared.General;
+    using Shared.Logger;
     using Shared.Repositories;
     using Swashbuckle.AspNetCore.Filters;
     using Swashbuckle.AspNetCore.SwaggerGen;
