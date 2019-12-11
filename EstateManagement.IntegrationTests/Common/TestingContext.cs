@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using global::Shared.Logger;
 
     public class TestingContext
     {
@@ -12,6 +13,8 @@
             this.Operators = new Dictionary<String, Guid>();
             this.EstateMerchants = new Dictionary<Guid, List<Guid>>();
         }
+
+        public NlogLogger Logger { get; set; }
 
         public DockerHelper DockerHelper { get; set; }
 

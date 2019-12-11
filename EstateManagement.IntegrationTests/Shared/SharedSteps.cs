@@ -51,6 +51,8 @@ namespace EstateManagement.IntegrationTests.Shared
                 
                 // Cache the estate id
                 this.TestingContext.Estates.Add(estateName, response.EstateId);
+
+                this.TestingContext.Logger.LogInformation($"Estate {estateName} created with Id {response.EstateId}");
             }
 
             foreach (TableRow tableRow in table.Rows)
@@ -97,6 +99,8 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Cache the estate id
                 this.TestingContext.Operators.Add(operatorName, response.OperatorId);
+
+                this.TestingContext.Logger.LogInformation($"Operator {operatorName} created with Id {response.OperatorId} for Estate {response.EstateId}");
             }
         }
 
@@ -146,6 +150,8 @@ namespace EstateManagement.IntegrationTests.Shared
                 {
                     this.TestingContext.EstateMerchants.Add(estateId, new List<Guid> {response.MerchantId});
                 }
+
+                this.TestingContext.Logger.LogInformation($"Merchant {merchantName} created with Id {response.MerchantId} for Estate {response.EstateId}");
             }
 
             foreach (TableRow tableRow in table.Rows)
@@ -198,6 +204,8 @@ namespace EstateManagement.IntegrationTests.Shared
                 assignOperatorResponse.EstateId.ShouldBe(estateId);
                 assignOperatorResponse.MerchantId.ShouldBe(merchantId);
                 assignOperatorResponse.OperatorId.ShouldBe(operatorId);
+
+                this.TestingContext.Logger.LogInformation($"Operator {operatorName} assigned to Estate {estateId}");
             }
         }
 
@@ -209,7 +217,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 // lookup the estate id based on the name in the table
                 String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
                 Guid estateId = this.TestingContext.Estates.Single(e => e.Key == estateName).Value;
-
+                
                 CreateEstateUserRequest createEstateUserRequest = new CreateEstateUserRequest
                                                                   {
                                                                       EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
@@ -223,6 +231,8 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 createEstateUserResponse.EstateId.ShouldBe(estateId);
                 createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
+
+                this.TestingContext.Logger.LogInformation($"Security user {createEstateUserRequest.EmailAddress} assigned to Estate {estateName}");
             }
         }
 

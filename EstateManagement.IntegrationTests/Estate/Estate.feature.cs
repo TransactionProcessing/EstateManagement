@@ -35,7 +35,7 @@ namespace EstateManagement.IntegrationTests.Estate
 #line 1 "Estate.feature"
 #line hidden
         
-        public EstateFeature(EstateFeature.FixtureData fixtureData, InternalSpecFlow.XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public EstateFeature(EstateFeature.FixtureData fixtureData, EstateManagement_IntegrationTests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();

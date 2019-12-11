@@ -8,6 +8,7 @@ namespace EstateManagement
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
     [ExcludeFromCodeCoverage]
     public class Program
@@ -28,6 +29,11 @@ namespace EstateManagement
                                                                   .AddEnvironmentVariables().Build();
 
             IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
+            hostBuilder.ConfigureLogging(logging =>
+                                         {
+                                             logging.AddConsole(); 
+
+                                         });
                 hostBuilder.ConfigureWebHostDefaults(webBuilder =>
                                           {
                                               webBuilder.UseStartup<Startup>();
