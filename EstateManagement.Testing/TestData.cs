@@ -279,5 +279,13 @@
                                                                                                        TestData.EstateUserFamilyName);
 
         public static Guid SecurityUserId = Guid.Parse("45B74A2E-BF92-44E9-A300-08E5CDEACFE3");
+
+        public static CreateMerchantUserRequest CreateMerchantUserRequest = CreateMerchantUserRequest.Create(TestData.EstateId,
+                                                                                                             TestData.MerchantId,
+                                                                                                             TestData.MerchantUserEmailAddress,
+                                                                                                             TestData.MerchantUserPassword,
+                                                                                                             TestData.MerchantUserGivenName,
+                                                                                                             TestData.MerchantUserMiddleName,
+                                                                                                             TestData.MerchantUserFamilyName);
     }
 }

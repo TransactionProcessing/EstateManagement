@@ -103,5 +103,27 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             createEstateUserRequest.FamilyName.ShouldBe(TestData.EstateUserFamilyName);
 
         }
+
+        [Fact]
+        public void CreateMerchantUserRequest_CanBeCreated_IsCreated()
+        {
+            CreateMerchantUserRequest createMerchantUserRequest = CreateMerchantUserRequest.Create(TestData.EstateId,
+                                                                                                   TestData.MerchantId,
+                                                                                                               TestData.EstateUserEmailAddress,
+                                                                                                               TestData.EstateUserPassword,
+                                                                                                               TestData.EstateUserGivenName,
+                                                                                                               TestData.EstateUserMiddleName,
+                                                                                                               TestData.EstateUserFamilyName);
+
+            createMerchantUserRequest.ShouldNotBeNull();
+            createMerchantUserRequest.EstateId.ShouldBe(TestData.EstateId);
+            createMerchantUserRequest.MerchantId.ShouldBe(TestData.MerchantId);
+            createMerchantUserRequest.EmailAddress.ShouldBe(TestData.EstateUserEmailAddress);
+            createMerchantUserRequest.Password.ShouldBe(TestData.EstateUserPassword);
+            createMerchantUserRequest.GivenName.ShouldBe(TestData.EstateUserGivenName);
+            createMerchantUserRequest.MiddleName.ShouldBe(TestData.EstateUserMiddleName);
+            createMerchantUserRequest.FamilyName.ShouldBe(TestData.EstateUserFamilyName);
+
+        }
     }
 }
