@@ -12,7 +12,9 @@
     /// </summary>
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.CreateMerchantRequest, System.String}" />
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AssignOperatorToMerchantRequest, System.String}" />
-    public class MerchantRequestHandler : IRequestHandler<CreateMerchantRequest, String>, IRequestHandler<AssignOperatorToMerchantRequest, String>
+    public class MerchantRequestHandler : IRequestHandler<CreateMerchantRequest, String>, 
+                                          IRequestHandler<AssignOperatorToMerchantRequest, String>,
+                                          IRequestHandler<CreateMerchantUserRequest, Guid>
     {
         #region Fields
 
@@ -88,5 +90,20 @@
         }
 
         #endregion
+
+        public async Task<Guid> Handle(CreateMerchantUserRequest request,
+                                       CancellationToken cancellationToken)
+        {
+            Guid userId = await this.MerchantDomainService.CreateMerchantUser(request.EstateId,
+                                                                              request.MerchantId,
+                                                                          request.EmailAddress,
+                                                                          request.Password,
+                                                                          request.GivenName,
+                                                                          request.MiddleName,
+                                                                          request.FamilyName,
+                                                                          cancellationToken);
+
+            return userId;
+        }
     }
 }

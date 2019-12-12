@@ -254,13 +254,22 @@
 
         public static String EstateUserEmailAddress = "testestateuser@estate1.co.uk";
 
+        public static String MerchantUserEmailAddress = "testmerchantuser@merchant1.co.uk";
+
         public static String EstateUserPassword="123456";
+
+        public static String MerchantUserPassword = "123456";
 
         public static String EstateUserGivenName = "Test";
 
+        public static String MerchantUserGivenName = "Test";
+
         public static String EstateUserMiddleName = "Middle";
 
+        public static String MerchantUserMiddleName = "Middle";
+
         public static String EstateUserFamilyName = "Estate";
+        public static String MerchantUserFamilyName = "Merchant";
 
         public static CreateEstateUserRequest CreateEstateUserRequest = CreateEstateUserRequest.Create(TestData.EstateId,
                                                                                                        TestData.EstateUserEmailAddress,
@@ -270,5 +279,13 @@
                                                                                                        TestData.EstateUserFamilyName);
 
         public static Guid SecurityUserId = Guid.Parse("45B74A2E-BF92-44E9-A300-08E5CDEACFE3");
+
+        public static CreateMerchantUserRequest CreateMerchantUserRequest = CreateMerchantUserRequest.Create(TestData.EstateId,
+                                                                                                             TestData.MerchantId,
+                                                                                                             TestData.MerchantUserEmailAddress,
+                                                                                                             TestData.MerchantUserPassword,
+                                                                                                             TestData.MerchantUserGivenName,
+                                                                                                             TestData.MerchantUserMiddleName,
+                                                                                                             TestData.MerchantUserFamilyName);
     }
 }

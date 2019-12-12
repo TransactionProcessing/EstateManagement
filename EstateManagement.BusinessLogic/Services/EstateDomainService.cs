@@ -90,6 +90,17 @@
             await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }
 
+        /// <summary>
+        /// Creates the estate user.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="emailAddress">The email address.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="givenName">Name of the given.</param>
+        /// <param name="middleName">Name of the middle.</param>
+        /// <param name="familyName">Name of the family.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<Guid> CreateEstateUser(Guid estateId,
                                            String emailAddress,
                                            String password,
@@ -117,6 +128,11 @@
             createUserRequest.Claims.Add("EstateId", estateId.ToString());
             
             CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
+
+            // Add the user to the aggregate 
+            estateAggregate.AddSecurityUser(createUserResponse.UserId, emailAddress);
+
+            // TODO: add a delete user here in case the aggregate add fails...
 
             await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
 

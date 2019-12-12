@@ -214,25 +214,60 @@ namespace EstateManagement.IntegrationTests.Shared
         {
             foreach (TableRow tableRow in table.Rows)
             {
-                // lookup the estate id based on the name in the table
-                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
-                Guid estateId = this.TestingContext.Estates.Single(e => e.Key == estateName).Value;
-                
-                CreateEstateUserRequest createEstateUserRequest = new CreateEstateUserRequest
-                                                                  {
-                                                                      EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
-                                                                      FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
-                                                                      GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
-                                                                      MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
-                                                                      Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
-                                                                  };
+                if (tableRow.ContainsKey("EstateName"))
+                {
+                    // Creating an Estate User
 
-                CreateEstateUserResponse createEstateUserResponse = await this.TestingContext.DockerHelper.EstateClient.CreateEstateUser(String.Empty, estateId, createEstateUserRequest, CancellationToken.None);
+                    // lookup the estate id based on the name in the table
+                    String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+                    Guid estateId = this.TestingContext.Estates.Single(e => e.Key == estateName).Value;
 
-                createEstateUserResponse.EstateId.ShouldBe(estateId);
-                createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
+                    CreateEstateUserRequest createEstateUserRequest = new CreateEstateUserRequest
+                                                                      {
+                                                                          EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
+                                                                          FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
+                                                                          GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
+                                                                          MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
+                                                                          Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
+                                                                      };
 
-                this.TestingContext.Logger.LogInformation($"Security user {createEstateUserRequest.EmailAddress} assigned to Estate {estateName}");
+                    CreateEstateUserResponse createEstateUserResponse =
+                        await this.TestingContext.DockerHelper.EstateClient.CreateEstateUser(String.Empty, estateId, createEstateUserRequest, CancellationToken.None);
+
+                    createEstateUserResponse.EstateId.ShouldBe(estateId);
+                    createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
+
+                    this.TestingContext.Logger.LogInformation($"Security user {createEstateUserRequest.EmailAddress} assigned to Estate {estateName}");
+                }
+                else if (tableRow.ContainsKey("MerchantName"))
+                {
+                    // Creating a merchant user
+
+                    // lookup the merchant id based on the name in the table
+                    String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                    Guid merchantId = this.TestingContext.Merchants.Single(m => m.Key == merchantName).Value;
+
+                    // Now find the estate Id
+                    Guid estateId = this.TestingContext.EstateMerchants.Single(e => e.Value.Contains(merchantId)).Key;
+
+                    CreateMerchantUserRequest createMerchantUserRequest = new CreateMerchantUserRequest
+                                                                      {
+                                                                          EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
+                                                                          FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
+                                                                          GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
+                                                                          MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
+                                                                          Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
+                                                                      };
+
+                    CreateMerchantUserResponse createMerchantUserResponse = 
+                        await this.TestingContext.DockerHelper.EstateClient.CreateMerchantUser(String.Empty, estateId, merchantId, createMerchantUserRequest, CancellationToken.None);
+
+                    createMerchantUserResponse.EstateId.ShouldBe(estateId);
+                    createMerchantUserResponse.MerchantId.ShouldBe(merchantId);
+                    createMerchantUserResponse.UserId.ShouldNotBe(Guid.Empty);
+
+                    this.TestingContext.Logger.LogInformation($"Security user {createMerchantUserRequest.EmailAddress} assigned to Merchant {merchantName}");
+                }
             }
         }
 

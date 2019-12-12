@@ -41,5 +41,20 @@
                             });
 
         }
+
+        [Fact]
+        public void MerchantRequestHandler_CreateMerchantUserRequest_IsHandled()
+        {
+            Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
+
+            CreateMerchantUserRequest request = TestData.CreateMerchantUserRequest;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+
+        }
     }
 }

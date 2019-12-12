@@ -68,6 +68,27 @@
                                       String terminalNumber,
                                       CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Creates the merchant user.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="emailAddress">The email address.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="givenName">Name of the given.</param>
+        /// <param name="middleName">Name of the middle.</param>
+        /// <param name="familyName">Name of the family.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<Guid> CreateMerchantUser(Guid estateId,
+                                      Guid merchantId,
+                                      String emailAddress,
+                                      String password,
+                                      String givenName,
+                                      String middleName,
+                                      String familyName,
+                                      CancellationToken cancellationToken);
+
         #endregion
     }
 }

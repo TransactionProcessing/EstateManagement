@@ -33,6 +33,11 @@
         /// </summary>
         private readonly List<Operator> Operators;
 
+        /// <summary>
+        /// The security users
+        /// </summary>
+        private readonly List<SecurityUser> SecurityUsers;
+
         #endregion
 
         #region Constructors
@@ -47,6 +52,7 @@
             this.Addresses = new List<Address>();
             this.Contacts = new List<Contact>();
             this.Operators = new List<Operator>();
+            this.SecurityUsers = new List<SecurityUser>();
         }
 
         /// <summary>
@@ -61,6 +67,7 @@
             this.Addresses = new List<Address>();
             this.Contacts = new List<Contact>();
             this.Operators = new List<Operator>();
+            this.SecurityUsers = new List<SecurityUser>();
         }
 
         #endregion
@@ -151,6 +158,15 @@
                                                                             TerminalNumber = o.TerminalNumber,
                                                                             MerchantNumber = o.MerchantNumber
                                                                         }));
+            }
+
+            if (this.SecurityUsers.Any())
+            {
+                this.SecurityUsers.ForEach(s => merchantModel.SecurityUsers.Add(new Models.Merchant.SecurityUser
+                                                                                {
+                                                                                    SecurityUserId = s.SecurityUserId,
+                                                                                    EmailAddress = s.EmailAddress
+                                                                                }));
             }
 
             return merchantModel;
@@ -371,6 +387,28 @@
                                                  operatorAssignedToMerchantEvent.TerminalNumber);
 
             this.Operators.Add(@operator);
+        }
+
+        /// <summary>
+        /// Adds the security user.
+        /// </summary>
+        /// <param name="securityUserId">The security user identifier.</param>
+        /// <param name="emailAddress">The email address.</param>
+        public void AddSecurityUser(Guid securityUserId,
+                                    String emailAddress)
+        {
+            this.EnsureMerchantHasBeenCreated();
+
+            SecurityUserAddedEvent securityUserAddedEvent = SecurityUserAddedEvent.Create(this.AggregateId, this.EstateId, securityUserId, emailAddress);
+
+            this.ApplyAndPend(securityUserAddedEvent);
+        }
+
+        private void PlayEvent(SecurityUserAddedEvent domainEvent)
+        {
+            SecurityUser securityUser = SecurityUser.Create(domainEvent.SecurityUserId, domainEvent.EmailAddress);
+
+            this.SecurityUsers.Add(securityUser);
         }
     }
 }

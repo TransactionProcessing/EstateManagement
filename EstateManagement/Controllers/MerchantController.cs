@@ -18,6 +18,8 @@
     using CreateMerchantRequestDTO = DataTransferObjects.Requests.CreateMerchantRequest;
     using AssignOperatorToMerchantRequest = BusinessLogic.Requests.AssignOperatorToMerchantRequest;
     using AssignOperatorRequestDTO = DataTransferObjects.Requests.AssignOperatorRequest;
+    using CreateMerchantUserRequest = BusinessLogic.Requests.CreateMerchantUserRequest;
+    using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.CreateMerchantUserRequest;
 
     /// <summary>
     /// 
@@ -164,6 +166,33 @@
                                     EstateId = estateId,
                                     MerchantId = merchantId,
                                     OperatorId = assignOperatorRequest.OperatorId
+                                });
+        }
+
+        [HttpPost]
+        [Route("{merchantId}/users")]
+        public async Task<IActionResult> CreateMerchantUser([FromRoute] Guid estateId, 
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromBody] CreateMerchantUserRequestDTO createMerchantUserRequest,
+                                                            CancellationToken cancellationToken)
+        {
+            // Create the command
+            CreateMerchantUserRequest request = CreateMerchantUserRequest.Create(estateId, merchantId, createMerchantUserRequest.EmailAddress,
+                                                                                 createMerchantUserRequest.Password,
+                                                                                 createMerchantUserRequest.GivenName,
+                                                                                 createMerchantUserRequest.MiddleName,
+                                                                                 createMerchantUserRequest.FamilyName);
+
+            // Route the command
+            Guid userId = await this.Mediator.Send(request, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}/users/{userId}",
+                                new CreateMerchantUserResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    UserId = userId
                                 });
         }
 
