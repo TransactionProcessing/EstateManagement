@@ -12,8 +12,12 @@
         public Merchant()
         {
             this.Addresses = new List<Address>();
+
             this.Contacts = new List<Contact>();
-            this.Operators=new List<Operator>();
+
+            this.Operators = new List<Operator>();
+
+            this.SecurityUsers = new List<SecurityUser>();
         }
 
         #endregion
@@ -67,6 +71,14 @@
         /// The operators.
         /// </value>
         public List<Operator> Operators { get; set; }
+
+        /// <summary>
+        /// Gets or sets the security users.
+        /// </summary>
+        /// <value>
+        /// The security users.
+        /// </value>
+        public List<SecurityUser> SecurityUsers { get; set; }
 
         #endregion
     }

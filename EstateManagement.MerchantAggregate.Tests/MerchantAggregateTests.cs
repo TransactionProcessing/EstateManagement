@@ -159,5 +159,32 @@ namespace EstateManagement.MerchantAggregate.Tests
                                                         aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
                                                     });
         }
+
+        [Fact]
+        public void MerchantAggregate_AddSecurityUserToMerchant_SecurityUserIsAdded()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.MerchantUserEmailAddress);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.SecurityUsers.ShouldHaveSingleItem();
+            SecurityUser securityUser = merchantModel.SecurityUsers.Single();
+            securityUser.EmailAddress.ShouldBe(TestData.MerchantUserEmailAddress);
+            securityUser.SecurityUserId.ShouldBe(TestData.SecurityUserId);
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddSecurityUserToMerchant_MerchantNotCreated_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+                                                                                          {
+                                                                                              aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.EstateUserEmailAddress);
+                                                                                          });
+
+            exception.Message.ShouldContain("Merchant has not been created");
+        }
     }
 }

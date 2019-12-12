@@ -45,7 +45,7 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="createEstateUserRequest">The create estate user request.</param>
-        /// <param name="none">The none.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<CreateEstateUserResponse> CreateEstateUser(String accessToken,
                                                         Guid estateId,
@@ -64,6 +64,21 @@
                                                     Guid estateId,
                                                     CreateMerchantRequest createMerchantRequest,
                                                     CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Creates the merchant user.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="createMerchantUserRequest">The create merchant user request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<CreateMerchantUserResponse> CreateMerchantUser(String accessToken,
+                                                           Guid estateId,
+                                                           Guid merchantId,
+                                                           CreateMerchantUserRequest createMerchantUserRequest,
+                                                           CancellationToken cancellationToken);
 
         /// <summary>
         /// Adds the operator.

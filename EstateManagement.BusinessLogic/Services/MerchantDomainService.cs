@@ -1,12 +1,15 @@
 ﻿namespace EstateManagement.BusinessLogic.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateAggregate;
     using MerchantAggregate;
     using Models;
+    using SecurityService.Client;
+    using SecurityService.DataTransferObjects;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
 
@@ -23,6 +26,11 @@
         /// </summary>
         private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
+        /// <summary>
+        /// The security service client
+        /// </summary>
+        private readonly ISecurityServiceClient SecurityServiceClient;
+
         #endregion
 
         #region Constructors
@@ -31,9 +39,11 @@
         /// Initializes a new instance of the <see cref="MerchantDomainService" /> class.
         /// </summary>
         /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
-        public MerchantDomainService(IAggregateRepositoryManager aggregateRepositoryManager)
+        public MerchantDomainService(IAggregateRepositoryManager aggregateRepositoryManager,
+                                     ISecurityServiceClient securityServiceClient)
         {
             this.AggregateRepositoryManager = aggregateRepositoryManager;
+            this.SecurityServiceClient = securityServiceClient;
         }
 
         #endregion
@@ -163,7 +173,45 @@
             await merchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
+        public async Task<Guid> CreateMerchantUser(Guid estateId,
+                                                   Guid merchantId,
+                                                   String emailAddress,
+                                                   String password,
+                                                   String givenName,
+                                                   String middleName,
+                                                   String familyName,
+                                                   CancellationToken cancellationToken)
+        {
+            IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
+            MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
+            CreateUserRequest createUserRequest = new CreateUserRequest
+                                                  {
+                                                      EmailAddress = emailAddress,
+                                                      FamilyName = familyName,
+                                                      GivenName = givenName,
+                                                      MiddleName = middleName,
+                                                      Password = password,
+                                                      PhoneNumber = "123456", // Is this really needed :|
+                                                      Roles = new List<String>(),
+                                                      Claims = new Dictionary<String, String>()
+                                                  };
+
+            //createUserRequest.Roles.Add("Estate");
+            createUserRequest.Claims.Add("EstateId", estateId.ToString());
+            createUserRequest.Claims.Add("MerchantId", merchantId.ToString());
+
+            CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
+
+            // Add the user to the aggregate 
+            merchantAggregate.AddSecurityUser(createUserResponse.UserId, emailAddress);
+
+            // TODO: add a delete user here in case the aggregate add fails...
+
+            await merchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+
+            return createUserResponse.UserId;
+        }
         #endregion
     }
 }
