@@ -124,7 +124,7 @@
                                                       Claims = new Dictionary<String, String>()
                                                   };
 
-            //createUserRequest.Roles.Add("Estate");
+            createUserRequest.Roles.Add("Estate");
             createUserRequest.Claims.Add("EstateId", estateId.ToString());
             
             CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);

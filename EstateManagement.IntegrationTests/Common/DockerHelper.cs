@@ -31,6 +31,7 @@ namespace EstateManagement.IntegrationTests.Common
         protected IContainerService EventStoreContainer;
 
         public IEstateClient EstateClient;
+
         protected HttpClient HttpClient;
 
         protected String EventStoreConnectionString;

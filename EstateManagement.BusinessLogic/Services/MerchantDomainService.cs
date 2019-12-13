@@ -197,7 +197,7 @@
                                                       Claims = new Dictionary<String, String>()
                                                   };
 
-            //createUserRequest.Roles.Add("Estate");
+            createUserRequest.Roles.Add("Merchant");
             createUserRequest.Claims.Add("EstateId", estateId.ToString());
             createUserRequest.Claims.Add("MerchantId", merchantId.ToString());
 
