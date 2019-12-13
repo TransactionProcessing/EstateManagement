@@ -12,7 +12,7 @@ Background:
 
 	Given the following security roles exist
 	| RoleName |
-	| Estate   |
+	| Merchant   |
 
 Scenario: Create Merchant	
 	When I create the following merchants
