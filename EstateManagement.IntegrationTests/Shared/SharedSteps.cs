@@ -12,6 +12,8 @@ namespace EstateManagement.IntegrationTests.Shared
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using EstateManagement.DataTransferObjects.Requests;
+    using SecurityService.DataTransferObjects.Requests;
+    using SecurityService.DataTransferObjects.Responses;
     using Shouldly;
     using TechTalk.SpecFlow;
 
@@ -270,6 +272,25 @@ namespace EstateManagement.IntegrationTests.Shared
                 }
             }
         }
+
+        [Given(@"the following security roles exist")]
+        public async Task GivenTheFollowingSecurityRolesExist(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String roleName = SpecflowTableHelper.GetStringRowValue(tableRow,"RoleName");
+
+                CreateRoleRequest createRoleRequest = new CreateRoleRequest
+                                                      {
+                                                          RoleName = roleName
+                                                      };
+
+                CreateRoleResponse createRoleResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateRole(createRoleRequest, CancellationToken.None).ConfigureAwait(false);
+
+                createRoleResponse.RoleId.ShouldNotBe(Guid.Empty);
+            }
+        }
+
 
     }
 }

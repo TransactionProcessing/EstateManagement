@@ -85,6 +85,13 @@ namespace EstateManagement.IntegrationTests.Estate
         {
 #line 4
 #line hidden
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                        "RoleName"});
+            table1.AddRow(new string[] {
+                        "Estate"});
+#line 5
+ testRunner.Given("the following security roles exist", ((string)(null)), table1, "Given ");
+#line hidden
         }
         
         void System.IDisposable.Dispose()
@@ -99,51 +106,7 @@ namespace EstateManagement.IntegrationTests.Estate
         {
             string[] tagsOfScenario = ((string[])(null));
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Estate", null, ((string[])(null)));
-#line 6
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EstateName"});
-                table1.AddRow(new string[] {
-                            "Test Estate 1"});
-#line 7
- testRunner.When("I create the following estates", ((string)(null)), table1, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Create Operator")]
-        [Xunit.TraitAttribute("FeatureTitle", "Estate")]
-        [Xunit.TraitAttribute("Description", "Create Operator")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
-        public virtual void CreateOperator()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Operator", null, new string[] {
-                        "PRTest"});
-#line 12
+#line 9
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -170,37 +133,24 @@ this.FeatureBackground();
                             "EstateName"});
                 table2.AddRow(new string[] {
                             "Test Estate 1"});
-#line 13
- testRunner.Given("I have created the following estates", ((string)(null)), table2, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EstateName",
-                            "OperatorName",
-                            "RequireCustomMerchantNumber",
-                            "RequireCustomTerminalNumber"});
-                table3.AddRow(new string[] {
-                            "Test Estate 1",
-                            "Test Operator 1",
-                            "True",
-                            "True"});
-#line 16
- testRunner.When("I create the following operators", ((string)(null)), table3, "When ");
+#line 10
+ testRunner.When("I create the following estates", ((string)(null)), table2, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Create Security User")]
+        [Xunit.SkippableFactAttribute(DisplayName="Create Operator")]
         [Xunit.TraitAttribute("FeatureTitle", "Estate")]
-        [Xunit.TraitAttribute("Description", "Create Security User")]
+        [Xunit.TraitAttribute("Description", "Create Operator")]
         [Xunit.TraitAttribute("Category", "PRTest")]
-        public virtual void CreateSecurityUser()
+        public virtual void CreateOperator()
         {
             string[] tagsOfScenario = new string[] {
                     "PRTest"};
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User", null, new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Operator", null, new string[] {
                         "PRTest"});
-#line 21
+#line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -223,27 +173,84 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "EstateName"});
-                table4.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "Test Estate 1"});
-#line 22
- testRunner.Given("I have created the following estates", ((string)(null)), table4, "Given ");
+#line 16
+ testRunner.Given("I have created the following estates", ((string)(null)), table3, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "RequireCustomMerchantNumber",
+                            "RequireCustomTerminalNumber"});
+                table4.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "True",
+                            "True"});
+#line 20
+ testRunner.When("I create the following operators", ((string)(null)), table4, "When ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Create Security User")]
+        [Xunit.TraitAttribute("FeatureTitle", "Estate")]
+        [Xunit.TraitAttribute("Description", "Create Security User")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
+        public virtual void CreateSecurityUser()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User", null, new string[] {
+                        "PRTest"});
+#line 25
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
 #line hidden
                 TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName"});
+                table5.AddRow(new string[] {
+                            "Test Estate 1"});
+#line 26
+ testRunner.Given("I have created the following estates", ((string)(null)), table5, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                             "EmailAddress",
                             "Password",
                             "GivenName",
                             "FamilyName",
                             "EstateName"});
-                table5.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "estateuser1@testestate1.co.uk",
                             "123456",
                             "TestEstate",
                             "User1",
                             "Test Estate 1"});
-#line 25
- testRunner.When("I create the following security users", ((string)(null)), table5, "When ");
+#line 29
+ testRunner.When("I create the following security users", ((string)(null)), table6, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
