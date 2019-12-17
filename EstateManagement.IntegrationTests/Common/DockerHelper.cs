@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EstateManagement.IntegrationTests.Common
 {
+    using System.Configuration;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
@@ -165,9 +166,9 @@ namespace EstateManagement.IntegrationTests.Common
             this.Logger.LogInformation("About to Start Security Container");
 
             this.SecurityServiceContainer = new Builder().UseContainer().WithName(this.SecurityServiceContainerName)
-                                                         .WithEnvironment("ASPNETCORE_ENVIRONMENT=IntegrationTest",
-                                                                          $"ServiceOptions:PublicOrigin=http://{this.SecurityServiceContainerName}:5001",
+                                                         .WithEnvironment($"ServiceOptions:PublicOrigin=http://{this.SecurityServiceContainerName}:5001",
                                                                           $"ServiceOptions:IssuerUrl=http://{this.SecurityServiceContainerName}:5001",
+                                                                          "ASPNETCORE_ENVIRONMENT=IntegrationTest",
                                                                           "urls=http://*:5001")
                                                          .WithCredential("https://www.docker.com", "stuartferguson", "Sc0tland")
                                                          .UseImage("stuartferguson/securityservice").ExposePort(5001).UseNetwork(new List<INetworkService>
@@ -177,7 +178,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                          .Mount(traceFolder, "/home/txnproc/trace", MountType.ReadWrite).Build().Start().WaitForPort("5001/tcp", 30000);
             Thread.Sleep(20000);
 
-            this.Logger.LogInformation("Security Service Container Started");
+                this.Logger.LogInformation("Security Service Container Started");
 
         }
 
@@ -190,6 +191,7 @@ namespace EstateManagement.IntegrationTests.Common
                                           .WithName(this.EstateManagementApiContainerName)
                                           .WithEnvironment(this.EventStoreConnectionString,
                                                            $"AppSettings:SecurityService=http://{this.SecurityServiceContainerName}:5001",
+                                                           $"SecurityConfiguration:Authority=http://{this.SecurityServiceContainerName}:5001",
                                                            "urls=http://*:5000")
                                                            //"AppSettings:MigrateDatabase=true",
                                                            //"EventStoreSettings:START_PROJECTIONS=true",

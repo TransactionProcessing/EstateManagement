@@ -7,6 +7,7 @@ namespace EstateManagement
     using System.Linq;
     using System.Net.Http;
     using System.Reflection;
+    using System.Text;
     using System.Threading.Tasks;
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
@@ -18,7 +19,9 @@ namespace EstateManagement
     using Common;
     using Controllers;
     using EventStore.ClientAPI;
+    using IdentityModel.AspNetCore.OAuth2Introspection;
     using MediatR;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -32,6 +35,7 @@ namespace EstateManagement
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.Tokens;
     using Models.Factories;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
@@ -47,8 +51,10 @@ namespace EstateManagement
     using Shared.Repositories;
     using Swashbuckle.AspNetCore.Filters;
     using Swashbuckle.AspNetCore.SwaggerGen;
+    using AuthenticationFailedContext = Microsoft.AspNetCore.Authentication.JwtBearer.AuthenticationFailedContext;
     using ConnectionStringType = Shared.Repositories.ConnectionStringType;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
+    using TokenValidatedContext = Microsoft.AspNetCore.Authentication.JwtBearer.TokenValidatedContext;
 
     [ExcludeFromCodeCoverage]
     public class Startup
@@ -201,6 +207,28 @@ namespace EstateManagement
 
             services.AddSwaggerExamplesFromAssemblyOf<SwaggerJsonConverter>();
 
+            services.AddAuthentication(options =>
+                                       {
+                                           options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                                           options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                                           options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                                       })
+                .AddJwtBearer(options =>
+                              {
+                                  //options.SaveToken = true;
+                                  options.Authority = ConfigurationReader.GetValue("SecurityConfiguration", "Authority");
+                                  options.Audience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName");
+                                  options.RequireHttpsMetadata = false;
+                                  options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                                  {
+                                      ValidateIssuer = true,
+                                      ValidateAudience = true,
+                                      ValidAudience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName"),
+                                      ValidIssuer = ConfigurationReader.GetValue("SecurityConfiguration", "Authority"),
+                                  };
+                                  options.IncludeErrorDetails = true;
+                              });
+
             services.AddControllers().AddNewtonsoftJson(options =>
                                                         {
                                                             options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -213,7 +241,6 @@ namespace EstateManagement
             Assembly assembly = this.GetType().GetTypeInfo().Assembly;
             services.AddMvcCore().AddApplicationPart(assembly).AddControllersAsServices();
         }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
                               IApiVersionDescriptionProvider provider)
@@ -238,16 +265,16 @@ namespace EstateManagement
             app.AddRequestLogging();
             app.AddResponseLogging();
             app.AddExceptionHandler();
-            
+
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
+                             {
+                                 endpoints.MapControllers();
+                             });
             app.UseSwagger();
 
             app.UseSwaggerUI(

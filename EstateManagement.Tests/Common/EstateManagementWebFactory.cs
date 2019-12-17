@@ -3,14 +3,19 @@
     using System;
     using System.Linq;
     using System.Net.Http;
+    using System.Security.Claims;
     using System.Text;
+    using System.Text.Encodings.Web;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Authorization;
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Moq;
     using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.CommandHandling;
@@ -30,10 +35,10 @@
                     services.AddSingleton<IMediator>(mediatorMock.Object);
                 }
 
-                services.AddMvc(options =>
-                {
-                    options.Filters.Add(new AllowAnonymousFilter());
-                })
+                services.AddMvcCore(options =>
+                                    {
+                                        options.Filters.Add(new AllowAnonymousFilter());
+                                    })
                         .AddApplicationPart(typeof(Startup).Assembly);
             });
             ;
@@ -75,5 +80,26 @@
         }
 
         #endregion
+    }
+
+    public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    {
+        public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
+                               ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
+            : base(options, logger, encoder, clock)
+        {
+        }
+
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        {
+            var claims = new[] { new Claim(ClaimTypes.Name, "Test user") };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var principal = new ClaimsPrincipal(identity);
+            var ticket = new AuthenticationTicket(principal, "Test");
+
+            var result = AuthenticateResult.Success(ticket);
+
+            return Task.FromResult(result);
+        }
     }
 }
