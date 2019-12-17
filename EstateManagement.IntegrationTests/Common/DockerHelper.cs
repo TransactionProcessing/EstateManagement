@@ -178,7 +178,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                          .Mount(traceFolder, "/home/txnproc/trace", MountType.ReadWrite).Build().Start().WaitForPort("5001/tcp", 30000);
             Thread.Sleep(20000);
 
-            this.Logger.LogInformation("Security Service Container Started");
+                this.Logger.LogInformation("Security Service Container Started");
 
         }
 
@@ -191,6 +191,7 @@ namespace EstateManagement.IntegrationTests.Common
                                           .WithName(this.EstateManagementApiContainerName)
                                           .WithEnvironment(this.EventStoreConnectionString,
                                                            $"AppSettings:SecurityService=http://{this.SecurityServiceContainerName}:5001",
+                                                           $"SecurityConfiguration:Authority=http://{this.SecurityServiceContainerName}:5001",
                                                            "urls=http://*:5000")
                                                            //"AppSettings:MigrateDatabase=true",
                                                            //"EventStoreSettings:START_PROJECTIONS=true",

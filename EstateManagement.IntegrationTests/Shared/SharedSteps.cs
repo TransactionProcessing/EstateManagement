@@ -209,7 +209,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                       };
 
                     CreateEstateUserResponse createEstateUserResponse =
-                        await this.TestingContext.DockerHelper.EstateClient.CreateEstateUser(String.Empty, estateDetails.EstateId, createEstateUserRequest, CancellationToken.None);
+                        await this.TestingContext.DockerHelper.EstateClient.CreateEstateUser(this.TestingContext.AccessToken, estateDetails.EstateId, createEstateUserRequest, CancellationToken.None);
 
                     createEstateUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
                     createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
