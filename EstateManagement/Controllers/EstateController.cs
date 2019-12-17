@@ -2,9 +2,11 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Manger;
+    using Common;
     using DataTransferObjects;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
@@ -15,6 +17,7 @@
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.Exceptions;
     using EstateManagement.BusinessLogic.Requests;
+    using Microsoft.AspNetCore.Authorization;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
     using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
     using CreateEstateUserRequest = BusinessLogic.Requests.CreateEstateUserRequest;
@@ -24,6 +27,7 @@
     [Route(EstateController.ControllerRoute)]
     [ApiController]
     [ApiVersion("1.0")]
+    [Authorize]
     public class EstateController : ControllerBase
     {
         #region Fields
@@ -77,6 +81,12 @@
         public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequestDTO createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
+            // Reject password tokens
+            if (ClaimsHelper.IsPasswordToken(this.User))
+            {
+                return this.Forbid();
+            }
+
             Guid estateId = createEstateRequest.EstateId;
 
             // Create the command
@@ -105,6 +115,15 @@
         public async Task<IActionResult> GetEstate([FromRoute] Guid estateId,
                                                    CancellationToken cancellationToken)
         {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            Boolean validationResult = ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim);
+            if (validationResult == false)
+            {
+                return this.Forbid();
+            }
+
             Estate estate = await this.EstateManagementManager.GetEstate(estateId, cancellationToken);
 
             if (estate == null)
@@ -121,6 +140,12 @@
                                                           [FromBody] CreateEstateUserRequestDTO createEstateUserRequest,
                                                           CancellationToken cancellationToken)
         {
+            // Reject password tokens
+            if (ClaimsHelper.IsPasswordToken(this.User))
+            {
+                return this.Forbid();
+            }
+
             // Create the command
             CreateEstateUserRequest request = CreateEstateUserRequest.Create(estateId, createEstateUserRequest.EmailAddress,
                                                                              createEstateUserRequest.Password,
