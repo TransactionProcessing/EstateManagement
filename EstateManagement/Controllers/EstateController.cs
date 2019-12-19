@@ -27,7 +27,6 @@
     [Route(EstateController.ControllerRoute)]
     [ApiController]
     [ApiVersion("1.0")]
-    [Authorize]
     public class EstateController : ControllerBase
     {
         #region Fields
@@ -118,12 +117,16 @@
             // Get the Estate Id claim from the user
             Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
 
-            Boolean validationResult = ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim);
-            if (validationResult == false)
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] {"Estate"}) == false)
             {
                 return this.Forbid();
             }
 
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+            
             Estate estate = await this.EstateManagementManager.GetEstate(estateId, cancellationToken);
 
             if (estate == null)

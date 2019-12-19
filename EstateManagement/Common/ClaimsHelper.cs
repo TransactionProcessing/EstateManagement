@@ -4,11 +4,13 @@
     using System.Linq;
     using System.Security.Claims;
     using IdentityModel;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Shared.Exceptions;
 
     public class ClaimsHelper
     {
         #region Methods
-
+        
         /// <summary>
         /// Gets the user claims.
         /// </summary>
@@ -30,7 +32,7 @@
 
                 if (userClaim == null)
                 {
-                    userClaim = new Claim(customClaimType, defaultValue);
+                    throw new NotFoundException($"Claim type [{customClaimType}] not found");
                 }
             }
             else
@@ -52,7 +54,7 @@
         {
             Boolean result = false;
 
-            Claim userIdClaim = user.Claims.SingleOrDefault(c => c.Type == JwtClaimTypes.Subject);
+            Claim userIdClaim = user.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
             if (userIdClaim != null)
             {
@@ -76,6 +78,32 @@
                 return false;
             }
 
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether [is user roles valid] [the specified user].
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="allowedRoles">The allowed roles.</param>
+        /// <returns>
+        ///   <c>true</c> if [is user roles valid] [the specified user]; otherwise, <c>false</c>.
+        /// </returns>
+        public static Boolean IsUserRolesValid(ClaimsPrincipal user, String[] allowedRoles)
+        {
+            if (IsPasswordToken(user) == false)
+            {
+                return true;
+            }
+
+            foreach (String allowedRole in allowedRoles)
+            {
+                if (user.IsInRole(allowedRole) == false)
+                {
+                    return false;
+                }
+            }
+            
             return true;
         }
 
