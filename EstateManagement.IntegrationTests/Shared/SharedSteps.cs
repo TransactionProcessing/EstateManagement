@@ -278,15 +278,26 @@ namespace EstateManagement.IntegrationTests.Shared
                 String scopes = SpecflowTableHelper.GetStringRowValue(tableRow, "Scopes");
                 String userClaims = SpecflowTableHelper.GetStringRowValue(tableRow, "UserClaims");
 
+                List<String> splitScopes = scopes.Split(",").ToList();
+                List<String> splitUserClaims = userClaims.Split(",").ToList();
+
                 CreateApiResourceRequest createApiResourceRequest = new CreateApiResourceRequest
                                                                     {
                                                                         Description = String.Empty,
                                                                         DisplayName = displayName,
                                                                         Name = resourceName,
-                                                                        Scopes = scopes.Split(",").ToList(),
+                                                                        Scopes = new List<String>(),
                                                                         Secret = secret,
-                                                                        UserClaims = userClaims.Split(",").ToList()
+                                                                        UserClaims = new List<String>()
                                                                     };
+                splitScopes.ForEach(a=>
+                                    {
+                                        createApiResourceRequest.Scopes.Add(a.Trim());
+                                    });
+                splitUserClaims.ForEach(a =>
+                                        {
+                                            createApiResourceRequest.UserClaims.Add(a.Trim());
+                                        });
 
                 CreateApiResourceResponse createApiResourceResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateApiResource(createApiResourceRequest,CancellationToken.None).ConfigureAwait(false);
 
@@ -304,15 +315,28 @@ namespace EstateManagement.IntegrationTests.Shared
                 String secret = SpecflowTableHelper.GetStringRowValue(tableRow, "Secret");
                 String allowedScopes = SpecflowTableHelper.GetStringRowValue(tableRow, "AllowedScopes");
                 String allowedGrantTypes = SpecflowTableHelper.GetStringRowValue(tableRow, "AllowedGrantTypes");
+
+                List<String> splitAllowedScopes = allowedScopes.Split(",").ToList();
+                List<String> splitAllowedGrantTypes = allowedGrantTypes.Split(",").ToList();
+                
                 CreateClientRequest createClientRequest = new CreateClientRequest
                                                           {
                                                               Secret = secret,
-                                                              AllowedGrantTypes = allowedGrantTypes.Split(",").ToList(),
-                                                              AllowedScopes = allowedScopes.Split(",").ToList(),
+                                                              AllowedGrantTypes = new List<String>(),
+                                                              AllowedScopes = new List<String>(),
                                                               ClientDescription = String.Empty,
                                                               ClientId = clientId,
                                                               ClientName = clientName
                                                           };
+
+                splitAllowedScopes.ForEach(a =>
+                                           {
+                                               createClientRequest.AllowedScopes.Add(a.Trim());
+                                           });
+                splitAllowedGrantTypes.ForEach(a =>
+                                               {
+                                                   createClientRequest.AllowedGrantTypes.Add(a.Trim());
+                                               });
 
                 CreateClientResponse createClientResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateClient(createClientRequest, CancellationToken.None).ConfigureAwait(false);
 

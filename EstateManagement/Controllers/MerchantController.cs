@@ -20,6 +20,8 @@
     using AssignOperatorRequestDTO = DataTransferObjects.Requests.AssignOperatorRequest;
     using CreateMerchantUserRequest = BusinessLogic.Requests.CreateMerchantUserRequest;
     using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.CreateMerchantUserRequest;
+    using EstateManagement.Common;
+    using System.Security.Claims;
 
     /// <summary>
     /// 
@@ -84,6 +86,19 @@
                                                         [FromBody] CreateMerchantRequestDTO createMerchantRequest,
                                                         CancellationToken cancellationToken)
         {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { "Estate" }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
             Guid merchantId = Guid.NewGuid();
 
             // Create the command
@@ -128,6 +143,19 @@
         [Route("{merchantId}")]
         public async Task<IActionResult> GetMerchant([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
         {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { "Estate" }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
             Merchant merchant = await this.EstateManagementManager.GetMerchant(estateId, merchantId, cancellationToken);
 
             if (merchant == null)
@@ -153,6 +181,19 @@
                                                         AssignOperatorRequestDTO assignOperatorRequest,
                                                         CancellationToken cancellationToken)
         {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { "Estate" }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
             AssignOperatorToMerchantRequest command = AssignOperatorToMerchantRequest.Create(estateId, merchantId,assignOperatorRequest.OperatorId,
                                                                                              assignOperatorRequest.MerchantNumber, assignOperatorRequest.TerminalNumber);
 
@@ -176,6 +217,19 @@
                                                             [FromBody] CreateMerchantUserRequestDTO createMerchantUserRequest,
                                                             CancellationToken cancellationToken)
         {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { "Estate" }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
             // Create the command
             CreateMerchantUserRequest request = CreateMerchantUserRequest.Create(estateId, merchantId, createMerchantUserRequest.EmailAddress,
                                                                                  createMerchantUserRequest.Password,
