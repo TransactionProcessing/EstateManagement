@@ -22,6 +22,7 @@
     using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.CreateMerchantUserRequest;
     using EstateManagement.Common;
     using System.Security.Claims;
+    using Microsoft.AspNetCore.Authorization;
 
     /// <summary>
     /// 
@@ -31,6 +32,7 @@
     [Route(MerchantController.ControllerRoute)]
     [ApiController]
     [ApiVersion("1.0")]
+    [Authorize]
     public class MerchantController : ControllerBase
     {
         #region Fields

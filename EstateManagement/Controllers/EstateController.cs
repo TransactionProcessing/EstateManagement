@@ -27,6 +27,7 @@
     [Route(EstateController.ControllerRoute)]
     [ApiController]
     [ApiVersion("1.0")]
+    [Authorize]
     public class EstateController : ControllerBase
     {
         #region Fields

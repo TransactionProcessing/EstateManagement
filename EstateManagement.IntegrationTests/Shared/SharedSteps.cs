@@ -107,6 +107,14 @@ namespace EstateManagement.IntegrationTests.Shared
         {
             foreach (TableRow tableRow in table.Rows)
             {
+                // lookup the estate id based on the name in the table
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
                 CreateMerchantRequest createMerchantRequest = new CreateMerchantRequest
                                                               {
@@ -124,12 +132,9 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                 Country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country")
                                                                             }
                                                               };
-
-                // lookup the estate id based on the name in the table
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
-
+                
                 CreateMerchantResponse response = await this.TestingContext.DockerHelper.EstateClient
-                                                            .CreateMerchant(String.Empty, estateDetails.EstateId, createMerchantRequest, CancellationToken.None).ConfigureAwait(false);
+                                                            .CreateMerchant(token, estateDetails.EstateId, createMerchantRequest, CancellationToken.None).ConfigureAwait(false);
 
                 response.ShouldNotBeNull();
                 response.EstateId.ShouldBe(estateDetails.EstateId);
@@ -149,7 +154,13 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
-                MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(String.Empty, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
 
                 merchant.MerchantName.ShouldBe(merchantName);
             }
@@ -161,6 +172,12 @@ namespace EstateManagement.IntegrationTests.Shared
             foreach (TableRow tableRow in table.Rows)
             {
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
@@ -177,7 +194,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                   TerminalNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
                                                               };
 
-                AssignOperatorResponse assignOperatorResponse = await this.TestingContext.DockerHelper.EstateClient.AssignOperatorToMerchant(String.Empty, estateDetails.EstateId, merchantId, assignOperatorRequest, CancellationToken.None).ConfigureAwait(false);
+                AssignOperatorResponse assignOperatorResponse = await this.TestingContext.DockerHelper.EstateClient.AssignOperatorToMerchant(token, estateDetails.EstateId, merchantId, assignOperatorRequest, CancellationToken.None).ConfigureAwait(false);
                 
                 assignOperatorResponse.EstateId.ShouldBe(estateDetails.EstateId);
                 assignOperatorResponse.MerchantId.ShouldBe(merchantId);
@@ -195,7 +212,7 @@ namespace EstateManagement.IntegrationTests.Shared
             {
                 // lookup the estate id based on the name in the table
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
-
+                
                 if (tableRow.ContainsKey("EstateName") && tableRow.ContainsKey("MerchantName") == false)
                 {
                     // Creating an Estate User
@@ -221,7 +238,11 @@ namespace EstateManagement.IntegrationTests.Shared
                 else if (tableRow.ContainsKey("MerchantName"))
                 {
                     // Creating a merchant user
-
+                    String token = this.TestingContext.AccessToken;
+                    if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                    {
+                        token = estateDetails.AccessToken;
+                    }
                     // lookup the merchant id based on the name in the table
                     String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
                     Guid merchantId = estateDetails.GetMerchantId(merchantName);
@@ -236,7 +257,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                       };
 
                     CreateMerchantUserResponse createMerchantUserResponse = 
-                        await this.TestingContext.DockerHelper.EstateClient.CreateMerchantUser(String.Empty, estateDetails.EstateId, merchantId, createMerchantUserRequest, CancellationToken.None);
+                        await this.TestingContext.DockerHelper.EstateClient.CreateMerchantUser(token, estateDetails.EstateId, merchantId, createMerchantUserRequest, CancellationToken.None);
 
                     createMerchantUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
                     createMerchantUserResponse.MerchantId.ShouldBe(merchantId);
