@@ -52,21 +52,21 @@ namespace EstateManagement.IntegrationTests.Common
         {
             if (this.ScenarioContext.TestError != null)
             {
-                // The test has failed, grab the logs from all the containers
-                List<IContainerService> containers = new List<IContainerService>();
-                containers.Add(this.TestingContext.DockerHelper.SecurityServiceContainer);
-                containers.Add(this.TestingContext.DockerHelper.EstateManagementApiContainer);
+                //// The test has failed, grab the logs from all the containers
+                //List<IContainerService> containers = new List<IContainerService>();
+                //containers.Add(this.TestingContext.DockerHelper.SecurityServiceContainer);
+                //containers.Add(this.TestingContext.DockerHelper.EstateManagementApiContainer);
 
-                foreach (IContainerService containerService in containers)
-                {
-                    ConsoleStream<String> logStream = containerService.Logs();
-                    IList<String> logData = logStream.ReadToEnd();
+                //foreach (IContainerService containerService in containers)
+                //{
+                //    ConsoleStream<String> logStream = containerService.Logs();
+                //    IList<String> logData = logStream.ReadToEnd();
 
-                    foreach (String s in logData)
-                    {
-                        this.TestingContext.Logger.LogWarning(s);
-                    }
-                }
+                //    foreach (String s in logData)
+                //    {
+                //        this.TestingContext.Logger.LogWarning(s);
+                //    }
+                //}
             }
 
             this.TestingContext.Logger.LogInformation("About to Stop Containers for Scenario Run");
