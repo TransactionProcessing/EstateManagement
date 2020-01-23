@@ -182,8 +182,22 @@
                                                    String familyName,
                                                    CancellationToken cancellationToken)
         {
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
             IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
             MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+
+            // Check merchant has been created
+            if (merchantAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+            }
+
+            // Estate Id is a valid estate
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            }
 
             CreateUserRequest createUserRequest = new CreateUserRequest
                                                   {
@@ -212,6 +226,44 @@
 
             return createUserResponse.UserId;
         }
+
+        /// <summary>
+        /// Adds the device to merchant.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="deviceId">The device identifier.</param>
+        /// <param name="deviceIdentifier">The device identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task AddDeviceToMerchant(Guid estateId,
+                                                      Guid merchantId,
+                                                      Guid deviceId,
+                                                      String deviceIdentifier,
+                                                      CancellationToken cancellationToken)
+        {
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
+            MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+
+            // Check merchant has been created
+            if (merchantAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+            }
+
+            // Estate Id is a valid estate
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            }
+
+            merchantAggregate.AddDevice(deviceId, deviceIdentifier);
+
+            await merchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+        }
+
         #endregion
     }
 }

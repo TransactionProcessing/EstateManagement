@@ -18,6 +18,8 @@
             this.Operators = new List<Operator>();
 
             this.SecurityUsers = new List<SecurityUser>();
+
+            this.Devices = new Dictionary<Guid, String>();
         }
 
         #endregion
@@ -79,6 +81,14 @@
         /// The security users.
         /// </value>
         public List<SecurityUser> SecurityUsers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the devices.
+        /// </summary>
+        /// <value>
+        /// The devices.
+        /// </value>
+        public Dictionary<Guid, String> Devices { get; set; }
 
         #endregion
     }

@@ -12,7 +12,7 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
     public class RequestsTests
     {
         [Fact]
-        public void CreateEstateCommand_CanBeCreated_IsCreated()
+        public void CreateEstateRequest_CanBeCreated_IsCreated()
         {
             CreateEstateRequest createEstateRequest = CreateEstateRequest.Create(TestData.EstateId, TestData.EstateName);
 
@@ -124,6 +124,19 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             createMerchantUserRequest.MiddleName.ShouldBe(TestData.EstateUserMiddleName);
             createMerchantUserRequest.FamilyName.ShouldBe(TestData.EstateUserFamilyName);
 
+        }
+
+        [Fact]
+        public void AddMerchantDeviceRequest_CanBeCreted_IsCreated()
+        {
+            AddMerchantDeviceRequest addMerchantDeviceRequest =
+                AddMerchantDeviceRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.DeviceId, TestData.DeviceIdentifier);
+
+            addMerchantDeviceRequest.ShouldNotBeNull();
+            addMerchantDeviceRequest.EstateId.ShouldBe(TestData.EstateId);
+            addMerchantDeviceRequest.MerchantId.ShouldBe(TestData.MerchantId);
+            addMerchantDeviceRequest.DeviceId.ShouldBe(TestData.DeviceId);
+            addMerchantDeviceRequest.DeviceIdentifier.ShouldBe(TestData.DeviceIdentifier);
         }
     }
 }

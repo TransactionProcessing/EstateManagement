@@ -14,6 +14,21 @@
         #region Methods
 
         /// <summary>
+        /// Adds the device to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AddMerchantDeviceResponse> AddDeviceToMerchant(String accessToken,
+                                                            Guid estateId,
+                                                            Guid merchantId,
+                                                            AddMerchantDeviceRequest request,
+                                                            CancellationToken cancellationToken);
+
+        /// <summary>
         /// Assigns the operator to merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -75,10 +90,10 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<CreateMerchantUserResponse> CreateMerchantUser(String accessToken,
-                                                           Guid estateId,
-                                                           Guid merchantId,
-                                                           CreateMerchantUserRequest createMerchantUserRequest,
-                                                           CancellationToken cancellationToken);
+                                                            Guid estateId,
+                                                            Guid merchantId,
+                                                            CreateMerchantUserRequest createMerchantUserRequest,
+                                                            CancellationToken cancellationToken);
 
         /// <summary>
         /// Adds the operator.

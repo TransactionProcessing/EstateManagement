@@ -423,6 +423,47 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When(@"I add the following devices to the merchant")]
+        public async Task WhenIAddTheFollowingDevicesToTheMerchant(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                String deviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "DeviceIdentifier");
+
+                AddMerchantDeviceRequest addMerchantDeviceRequest = new AddMerchantDeviceRequest
+                {
+                    DeviceIdentifier = deviceIdentifier
+                };
+
+                AddMerchantDeviceResponse addMerchantDeviceResponse = await this
+                                                                            .TestingContext.DockerHelper.EstateClient
+                                                                            .AddDeviceToMerchant(token,
+                                                                                                 estateDetails.EstateId,
+                                                                                                 merchantId,
+                                                                                                 addMerchantDeviceRequest,
+                                                                                                 CancellationToken.None).ConfigureAwait(false);
+
+                addMerchantDeviceResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                addMerchantDeviceResponse.MerchantId.ShouldBe(merchantId);
+                addMerchantDeviceResponse.DeviceId.ShouldNotBe(Guid.Empty);
+
+                this.TestingContext.Logger.LogInformation($"Device {deviceIdentifier} assigned to Merchant {merchantName}");
+            }
+        }
+
+
 
     }
 }

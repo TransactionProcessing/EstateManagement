@@ -287,5 +287,10 @@
                                                                                                              TestData.MerchantUserGivenName,
                                                                                                              TestData.MerchantUserMiddleName,
                                                                                                              TestData.MerchantUserFamilyName);
+
+        public static Guid DeviceId = Guid.Parse("B434EA1A-1684-442F-8BEB-21D84C4F53B3");
+        public static String DeviceIdentifier = "EMULATOR123456";
+
+        public static AddMerchantDeviceRequest AddMerchantDeviceRequest = AddMerchantDeviceRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.DeviceId, TestData.DeviceIdentifier);
     }
 }

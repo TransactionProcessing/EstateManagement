@@ -186,5 +186,56 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             exception.Message.ShouldContain("Merchant has not been created");
         }
+
+        [Fact]
+        public void MerchantAggregate_AddDevice_DeviceAdded()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Devices.ShouldHaveSingleItem();
+            merchantModel.Devices.Single().Key.ShouldBe(TestData.DeviceId);
+            merchantModel.Devices.Single().Value.ShouldBe(TestData.DeviceIdentifier);
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddDevice_MerchantNotCreated_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+                                                    });
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddDevice_MerchantNoSpaceForDevice_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+                                                    });
+        }
+
+        [Fact(Skip="Not valid until can request additional device")]
+        public void MerchantAggregate_AddDevice_DuplicateDevice_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+                                                    });
+        }
     }
 }
