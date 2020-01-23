@@ -165,6 +165,7 @@ namespace EstateManagement
             builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<CreateMerchantRequest, String>>().SingleInstance();
             builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<AssignOperatorToMerchantRequest, String>>().SingleInstance();
             builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<CreateMerchantUserRequest, Guid>>().SingleInstance();
+            builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<AddMerchantDeviceRequest, String>>().SingleInstance();
 
             Func<String, String> apiAddressResolver = (serviceName) => { return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString; };
 

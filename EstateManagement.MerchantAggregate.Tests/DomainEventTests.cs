@@ -112,5 +112,21 @@ namespace EstateManagement.MerchantAggregate.Tests
             securityUserAddedEvent.SecurityUserId.ShouldBe(TestData.SecurityUserId);
             securityUserAddedEvent.EmailAddress.ShouldBe(TestData.EstateUserEmailAddress);
         }
+
+        [Fact]
+        public void DeviceAddedToMerchantEvent_CanBeCreated_IsCreated()
+        {
+            DeviceAddedToMerchantEvent deviceAddedToMerchantEvent =
+                DeviceAddedToMerchantEvent.Create(TestData.MerchantId, TestData.EstateId, TestData.DeviceId, TestData.DeviceIdentifier);
+
+            deviceAddedToMerchantEvent.ShouldNotBeNull();
+            deviceAddedToMerchantEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            deviceAddedToMerchantEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
+            deviceAddedToMerchantEvent.EventId.ShouldNotBe(Guid.Empty);
+            deviceAddedToMerchantEvent.EstateId.ShouldBe(TestData.EstateId);
+            deviceAddedToMerchantEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            deviceAddedToMerchantEvent.DeviceId.ShouldBe(TestData.DeviceId);
+            deviceAddedToMerchantEvent.DeviceIdentifier.ShouldBe(TestData.DeviceIdentifier);
+        }
     }
 }

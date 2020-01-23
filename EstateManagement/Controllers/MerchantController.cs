@@ -20,6 +20,8 @@
     using AssignOperatorRequestDTO = DataTransferObjects.Requests.AssignOperatorRequest;
     using CreateMerchantUserRequest = BusinessLogic.Requests.CreateMerchantUserRequest;
     using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.CreateMerchantUserRequest;
+    using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
+    using AddMerchantDeviceRequestDTO = DataTransferObjects.Requests.AddMerchantDeviceRequest;
     using EstateManagement.Common;
     using System.Security.Claims;
     using Microsoft.AspNetCore.Authorization;
@@ -249,6 +251,43 @@
                                     EstateId = estateId,
                                     MerchantId = merchantId,
                                     UserId = userId
+                                });
+        }
+
+        [HttpPost]
+        [Route("{merchantId}/devices")]
+        public async Task<IActionResult> AddDevice([FromRoute] Guid estateId,
+                                                    [FromRoute] Guid merchantId,
+                                                    [FromBody] AddMerchantDeviceRequestDTO addMerchantDeviceRequest,
+                                                    CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { "Estate" }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            Guid deviceId = Guid.NewGuid();
+
+            AddMerchantDeviceRequest command = AddMerchantDeviceRequest.Create(estateId, merchantId, deviceId, addMerchantDeviceRequest.DeviceIdentifier);
+            
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new AddMerchantDeviceResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    DeviceId = deviceId
                                 });
         }
 

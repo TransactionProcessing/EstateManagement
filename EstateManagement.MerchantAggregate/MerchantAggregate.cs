@@ -38,6 +38,11 @@
         /// </summary>
         private readonly List<SecurityUser> SecurityUsers;
 
+        /// <summary>
+        /// The devices
+        /// </summary>
+        private readonly Dictionary<Guid, String> Devices;
+
         #endregion
 
         #region Constructors
@@ -53,6 +58,7 @@
             this.Contacts = new List<Contact>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
+            this.Devices = new Dictionary<Guid, String>();
         }
 
         /// <summary>
@@ -68,6 +74,7 @@
             this.Contacts = new List<Contact>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
+            this.Devices = new Dictionary<Guid, String>();
         }
 
         #endregion
@@ -105,6 +112,14 @@
         /// The name.
         /// </value>
         public String Name { get; private set; }
+
+        /// <summary>
+        /// Gets the maximum devices.
+        /// </summary>
+        /// <value>
+        /// The maximum devices.
+        /// </value>
+        public Int32 MaximumDevices { get; private set; }
 
         #endregion
 
@@ -167,6 +182,14 @@
                                                                                     SecurityUserId = s.SecurityUserId,
                                                                                     EmailAddress = s.EmailAddress
                                                                                 }));
+            }
+
+            if (this.Devices.Any())
+            {
+                foreach ((Guid key, String value) in this.Devices)
+                {
+                    merchantModel.Devices.Add(key, value);
+                }
             }
 
             return merchantModel;
@@ -330,6 +353,7 @@
             this.Name = merchantCreatedEvent.MerchantName;
             this.AggregateId = merchantCreatedEvent.AggregateId;
             this.DateCreated = merchantCreatedEvent.DateCreated;
+            this.MaximumDevices = 1;
         }
 
         /// <summary>
@@ -404,11 +428,77 @@
             this.ApplyAndPend(securityUserAddedEvent);
         }
 
+        /// <summary>
+        /// Plays the event.
+        /// </summary>
+        /// <param name="domainEvent">The domain event.</param>
         private void PlayEvent(SecurityUserAddedEvent domainEvent)
         {
             SecurityUser securityUser = SecurityUser.Create(domainEvent.SecurityUserId, domainEvent.EmailAddress);
 
             this.SecurityUsers.Add(securityUser);
+        }
+
+        /// <summary>
+        /// Plays the event.
+        /// </summary>
+        /// <param name="domainEvent">The domain event.</param>
+        private void PlayEvent(DeviceAddedToMerchantEvent domainEvent)
+        {
+            this.Devices.Add(domainEvent.DeviceId, domainEvent.DeviceIdentifier);
+        }
+
+        /// <summary>
+        /// Adds the device.
+        /// </summary>
+        /// <param name="deviceId">The device identifier.</param>
+        /// <param name="deviceIdentifier">The device identifier.</param>
+        public void AddDevice(Guid deviceId,
+                              String deviceIdentifier)
+        {
+            this.EnsureMerchantHasBeenCreated();
+            this.EnsureMerchantHasSpaceForDevice();
+            // TODO: Reintroduce when merchant can request > 1 device
+            //this.EnsureNotDuplicateDevice(deviceId, deviceIdentifier);
+            
+            DeviceAddedToMerchantEvent deviceAddedToMerchantEvent = DeviceAddedToMerchantEvent.Create(this.AggregateId,this.EstateId, deviceId, deviceIdentifier);
+
+            this.ApplyAndPend(deviceAddedToMerchantEvent);
+        }
+
+        ///// <summary>
+        ///// Ensures the not duplicate device.
+        ///// </summary>
+        ///// <param name="deviceId">The device identifier.</param>
+        ///// <param name="deviceIdentifier">The device identifier.</param>
+        ///// <exception cref="InvalidOperationException">
+        ///// Device Id {deviceId} already allocated to Merchant {this.Name}
+        ///// or
+        ///// Device Identifier {deviceIdentifier} already allocated to Merchant {this.Name}
+        ///// </exception>
+        //private void EnsureNotDuplicateDevice(Guid deviceId, String deviceIdentifier)
+        //{
+        //    if (this.Devices.Any(d => d.Key == deviceId))
+        //    {
+        //        throw new InvalidOperationException($"Device Id {deviceId} already allocated to Merchant {this.Name}");
+        //    }
+
+        //    if (this.Devices.Any(d => d.Value == deviceIdentifier))
+        //    {
+        //        throw new InvalidOperationException($"Device Identifier {deviceIdentifier} already allocated to Merchant {this.Name}");
+        //    }
+        //}
+
+        /// <summary>
+        /// Ensures the merchant has space for device.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Merchant {this.Name} already has the maximum devices allocated</exception>
+        private void EnsureMerchantHasSpaceForDevice()
+        {
+            if (this.Devices.Count + 1 > this.MaximumDevices)
+            {
+                throw new InvalidOperationException($"Merchant {this.Name} already has the maximum devices allocated");
+            }
         }
     }
 }

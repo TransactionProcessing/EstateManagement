@@ -89,6 +89,21 @@
                                       String familyName,
                                       CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Adds the device to merchant.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="deviceId">The device identifier.</param>
+        /// <param name="deviceIdentifier">The device identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task AddDeviceToMerchant(Guid estateId,
+                                         Guid merchantId,
+                                         Guid deviceId,
+                                         String deviceIdentifier,
+                                         CancellationToken cancellationToken);
+
         #endregion
     }
 }
