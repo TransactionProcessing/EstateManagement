@@ -1,5 +1,6 @@
 ﻿namespace EstateManagement.Factories
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using DataTransferObjects.Responses;
@@ -76,6 +77,16 @@
                                                                                    ContactEmailAddress = c.ContactEmailAddress,
                                                                                    ContactName = c.ContactName
                                                                                }));
+            }
+
+            if (merchant.Devices != null && merchant.Devices.Any())
+            {
+                merchantResponse.Devices = new Dictionary<Guid, String>();
+
+                foreach ((Guid key, String value) in merchant.Devices)
+                {
+                    merchantResponse.Devices.Add(key, value);
+                }
             }
 
             return merchantResponse;
