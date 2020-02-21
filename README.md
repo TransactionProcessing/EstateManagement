@@ -6,8 +6,11 @@
 [![Last Release Build Status Badge](https://github.com/StuartFerguson/EstateManagement/workflows/Release/badge.svg)](https://github.com/StuartFerguson/EstateManagement/workflows/Release/badge.svg)
 
 ## Nuget Versions
-
-**Client Proy Base:**  [![Estate Management Client MyGet Badge](https://buildstats.info/myget/transactionprocessing/EstateManagement.Client)](https://buildstats.info/myget/transactionprocessing/EstateManagement.Client)
+|||
+| --- | --- |
+| **EstateManagement.Client** | [![Estate Management Client MyGet Badge](https://buildstats.info/myget/transactionprocessing/EstateManagement.Client)](https://buildstats.info/myget/transactionprocessing/EstateManagement.Client) |
+| **EstateManagement.Estate.DomainEvents** | [![Estate Management Estate DomainEvents MyGet Badge](https://buildstats.info/myget/transactionprocessing/EstateManagement.Estate.DomainEvents)](https://buildstats.info/myget/transactionprocessing/EstateManagement.Estate.DomainEvents) |
+| **EstateManagement.Merchant.DomainEvents** | [![Estate Management Merchant DomainEvents MyGet Badge](https://buildstats.info/myget/transactionprocessing/EstateManagement.Merchant.DomainEvents)](https://buildstats.info/myget/transactionprocessing/EstateManagement.Merchant.DomainEvents) |
 
 ## Code Coverage Results
 
