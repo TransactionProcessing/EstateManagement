@@ -103,6 +103,7 @@
         /// <value>
         /// The merchant identifier.
         /// </value>
+        [JsonProperty]
         public Guid MerchantId { get; private set; }
 
         #endregion
