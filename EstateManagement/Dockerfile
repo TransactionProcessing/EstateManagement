@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.2-bionic AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.102-bionic AS build
 WORKDIR /src
 COPY ["EstateManagement/NuGet.Config", "."]
 COPY ["EstateManagement/EstateManagement.csproj", "EstateManagment/"]
