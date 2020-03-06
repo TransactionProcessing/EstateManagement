@@ -6,6 +6,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Castle.DynamicProxy.Generators;
     using EstateAggregate;
     using Manger;
     using MerchantAggregate;
@@ -13,6 +14,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Models.Factories;
     using Models.Merchant;
     using Moq;
+    using Repository;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
     using Shouldly;
@@ -24,6 +26,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         private readonly Mock<IAggregateRepositoryManager> AggregateRepositoryManager;
         private readonly Mock<IAggregateRepository<EstateAggregate>> EstateAggregateRepository;
         private readonly Mock<IAggregateRepository<MerchantAggregate>> MerchantAggregateRepository;
+        private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
 
         private readonly Mock<IModelFactory> ModelFactory;
 
@@ -34,18 +37,21 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate>>();
+            this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
+
             this.ModelFactory = new Mock<IModelFactory>();
 
             aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(this.EstateAggregateRepository.Object);
             aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(this.MerchantAggregateRepository.Object);
 
-            this.EstateManagementManager = new EstateManagementManager(aggregateRepositoryManager.Object, this.ModelFactory.Object);
+            this.EstateManagementManager =
+                new EstateManagementManager(aggregateRepositoryManager.Object, this.EstateManagementRepository.Object, this.ModelFactory.Object);
         }
 
         [Fact]
         public async Task EstateManagementManager_GetEstate_EstateIsReturned()
         {
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
 
             Estate estateModel =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
             

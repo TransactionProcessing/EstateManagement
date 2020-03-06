@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SecurityService.Client" Version="0.0.5.4" />
@@ -19,6 +15,7 @@
     <ProjectReference Include="..\EstateManagement.EstateAggregate\EstateManagement.EstateAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.MerchantAggregate\EstateManagement.MerchantAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
+    <ProjectReference Include="..\EstateManagement.Repository\EstateManagement.Repository.csproj" />
   </ItemGroup>
 
 </Project>

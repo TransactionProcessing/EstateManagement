@@ -4,11 +4,8 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using Autofac;
-    using Autofac.Core;
-    using Autofac.Extensions.DependencyInjection;
+    using Common;
     using Controllers;
-    //using Lamar;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +17,7 @@
     [Collection("TestCollection")]
     public class BootstrapperTests
     {
-        [Fact]
+        [Fact]//(Skip="Change required after moving from Autofac")]
         public void VerifyBootstrapperIsValid()
         {
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
@@ -30,22 +27,13 @@
 
             IServiceCollection services = new ServiceCollection();
             Startup s = new Startup(hostingEnvironment.Object);
-            s.ConfigureServices(services);
-            
             Startup.Configuration = this.SetupMemoryConfiguration();
+
+            s.ConfigureServices(services);
+
             this.AddTestRegistrations(services, hostingEnvironment.Object);
 
-            ContainerBuilder builder = new ContainerBuilder();
-            builder.Populate(services);
-            
-            s.ConfigureContainer(builder);
-
-            IContainer container = builder.Build();
-
-            using(ILifetimeScope scope = container.BeginLifetimeScope())
-            {
-                scope.ResolveAll(new List<String>());
-            }
+            services.AssertConfigurationIsValid();
         }
 
         private IConfigurationRoot SetupMemoryConfiguration()
@@ -77,34 +65,34 @@
         }
     }
 
-    public static class ScopeExtensions
-    {
-        public static IList<IServiceWithType> Filter(this IEnumerable<IServiceWithType> services,
-                                                     IEnumerable<string> ignoredAssemblies)
-        {
-            return services.Where(serviceWithType => ignoredAssemblies
-                                      .All(ignored => ignored != serviceWithType.ServiceType.FullName)).ToList();
-        }
+    //public static class ScopeExtensions
+    //{
+    //    public static IList<IServiceWithType> Filter(this IEnumerable<IServiceWithType> services,
+    //                                                 IEnumerable<string> ignoredAssemblies)
+    //    {
+    //        return services.Where(serviceWithType => ignoredAssemblies
+    //                                  .All(ignored => ignored != serviceWithType.ServiceType.FullName)).ToList();
+    //    }
 
-        public static IList<object> ResolveAll(this ILifetimeScope scope, IEnumerable<string> ignoredAssemblies)
-        {
-            var services = scope.ComponentRegistry.Registrations.SelectMany(x => x.Services)
-                                .OfType<IServiceWithType>().Filter(ignoredAssemblies).ToList();
+    //    public static IList<object> ResolveAll(this ILifetimeScope scope, IEnumerable<string> ignoredAssemblies)
+    //    {
+    //        var services = scope.ComponentRegistry.Registrations.SelectMany(x => x.Services)
+    //                            .OfType<IServiceWithType>().Filter(ignoredAssemblies).ToList();
 
-            foreach (var serviceWithType in services)
-            {
-                try
-                {
-                    scope.Resolve(serviceWithType.ServiceType);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-            }
+    //        foreach (var serviceWithType in services)
+    //        {
+    //            try
+    //            {
+    //                scope.Resolve(serviceWithType.ServiceType);
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                Console.WriteLine(e);
+    //                throw;
+    //            }
+    //        }
 
-            return services.Select(x => x.ServiceType).Select(scope.Resolve).ToList();
-        }
-    }
+    //        return services.Select(x => x.ServiceType).Select(scope.Resolve).ToList();
+    //    }
+    //}
 }
