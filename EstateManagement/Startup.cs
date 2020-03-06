@@ -176,6 +176,7 @@ namespace EstateManagement
 
             services.AddSingleton<IRequestHandler<CreateEstateRequest, String>, EstateRequestHandler>();
             services.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddOperatorToEstateRequest, String>, EstateRequestHandler>();
 
             services.AddSingleton<IRequestHandler<CreateMerchantRequest, String>, MerchantRequestHandler>();
             services.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest, String>, MerchantRequestHandler>();

@@ -24,9 +24,12 @@ namespace EstateManagement.IntegrationTests.Common
     {
         private readonly NlogLogger Logger;
 
-        public DockerHelper(NlogLogger logger)
+        private readonly TestingContext TestingContext;
+
+        public DockerHelper(NlogLogger logger, TestingContext testingContext)
         {
             this.Logger = logger;
+            this.TestingContext = testingContext;
             this.Containers = new List<IContainerService>();
             this.TestNetworks =new List<INetworkService>();
         }
@@ -37,6 +40,15 @@ namespace EstateManagement.IntegrationTests.Common
 
         protected List<INetworkService> TestNetworks;
 
+        protected String SecurityServiceContainerName;
+
+        protected String EstateManagementContainerName;
+
+        protected String EventStoreContainerName;
+
+        protected String EstateReportingContainerName;
+
+        protected String SubscriptionServiceContainerName;
         public override async Task StartContainersForScenarioRun(String scenarioName)
         {
             String traceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
@@ -49,40 +61,43 @@ namespace EstateManagement.IntegrationTests.Common
             this.Logger.LogInformation($"Test Id is {testGuid}");
             
             // Setup the container names
-            String securityServiceContainerName = $"securityservice{testGuid:N}";
-            String estateManagementContainerName = $"estate{testGuid:N}";
-            String eventStoreContainerName = $"eventstore{testGuid:N}";
-            String estateReportingContainerName = $"estatereporting{testGuid:N}";
-            String subscriptionServiceContainerName = $"subscription{testGuid:N}";
+            this.SecurityServiceContainerName = $"securityservice{testGuid:N}";
+            this.EstateManagementContainerName = $"estate{testGuid:N}";
+            this.EventStoreContainerName = $"eventstore{testGuid:N}";
+            this.EstateReportingContainerName = $"estatereporting{testGuid:N}";
+            this.SubscriptionServiceContainerName = $"subscription{testGuid:N}";
 
             (String, String,String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
 
             INetworkService testNetwork = DockerHelper.SetupTestNetwork();
             this.TestNetworks.Add(testNetwork);
 
-            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(eventStoreContainerName, this.Logger,
+            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger,
                                                                                           "eventstore/eventstore:release-5.0.2",
                                                                                           testNetwork, traceFolder);
 
 
-            IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(estateManagementContainerName, this.Logger,
+            IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName, this.Logger,
                                                                                                       "estatemanagement", new List<INetworkService>
                                                                                                                           {
                                                                                                                               testNetwork,
                                                                                                                               Setup.DatabaseServerNetwork
                                                                                                                           }, traceFolder, null,
-                                                                                                      securityServiceContainerName,
-                                                                                                      eventStoreContainerName,
+                                                                                                      this.SecurityServiceContainerName,
+                                                                                                      this.EventStoreContainerName,
+                                                                                                      Setup.SqlServerContainerName,
+                                                                                                      "sa",
+                                                                                                      "thisisalongpassword123!",
                                                                                                       ("serviceClient", "Secret1"));
 
-            IContainerService securityServiceContainer = DockerHelper.SetupSecurityServiceContainer(securityServiceContainerName,
+            IContainerService securityServiceContainer = DockerHelper.SetupSecurityServiceContainer(this.SecurityServiceContainerName,
                                                                                                     this.Logger,
                                                                                                     "stuartferguson/securityservice",
                                                                                                     testNetwork,
                                                                                                     traceFolder,
                                                                                                     dockerCredentials);
 
-            IContainerService estateReportingContainer = DockerHelper.SetupEstateReportingContainer(estateReportingContainerName,
+            IContainerService estateReportingContainer = DockerHelper.SetupEstateReportingContainer(this.EstateReportingContainerName,
                                                                                                     this.Logger,
                                                                                                     "stuartferguson/estatereporting",
                                                                                                     new List<INetworkService>
@@ -92,7 +107,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                                                                     },
                                                                                                     traceFolder,
                                                                                                     dockerCredentials,
-                                                                                                    securityServiceContainerName,
+                                                                                                    this.SecurityServiceContainerName,
                                                                                                     Setup.SqlServerContainerName,
                                                                                                     "sa",
                                                                                                     "thisisalongpassword123!",
@@ -121,9 +136,9 @@ namespace EstateManagement.IntegrationTests.Common
             this.EstateClient = new EstateClient(EstateManagementBaseAddressResolver, httpClient);
             this.SecurityServiceClient = new SecurityServiceClient(SecurityServiceBaseAddressResolver, httpClient);
 
-            await PopulateSubscriptionServiceConfiguration(eventStoreContainerName).ConfigureAwait(false);
+            await PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
 
-            IContainerService subscriptionServiceContainer = DockerHelper.SetupSubscriptionServiceContainer(subscriptionServiceContainerName,
+            IContainerService subscriptionServiceContainer = DockerHelper.SetupSubscriptionServiceContainer(this.SubscriptionServiceContainerName,
                                                                                                             this.Logger,
                                                                                                             "stuartferguson/subscriptionservicehost",
                                                                                                             new List<INetworkService>
@@ -133,7 +148,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                                                                             },
                                                                                                             traceFolder,
                                                                                                             dockerCredentials,
-                                                                                                            securityServiceContainerName,
+                                                                                                            this.SecurityServiceContainerName,
                                                                                                             Setup.SqlServerContainerName,
                                                                                                             "sa",
                                                                                                             "thisisalongpassword123!",
@@ -160,6 +175,8 @@ namespace EstateManagement.IntegrationTests.Common
         {
             await CleanUpSubscriptionServiceConfiguration().ConfigureAwait(false);
 
+            await RemoveEstateReadModel().ConfigureAwait(false);
+
             if (this.Containers.Any())
             {
                 foreach (IContainerService containerService in this.Containers)
@@ -180,7 +197,36 @@ namespace EstateManagement.IntegrationTests.Common
             }
         }
 
-        protected async Task PopulateSubscriptionServiceConfiguration(String eventStoreContainerName)
+        private async Task RemoveEstateReadModel()
+        {
+            List<Guid> estateIdList = this.TestingContext.GetAllEstateIds();
+
+            foreach (Guid estateId in estateIdList)
+            {
+                // Build the connection string (to master)
+                String connectionString = Setup.GetLocalConnectionString("master");
+
+                // Execute the drop db command
+                await using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    try
+                    {
+                        await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
+
+                        // Drop the Read Model
+                        await this.DropEstateReportingReadModel(connection, estateId).ConfigureAwait(false);
+
+                        await connection.CloseAsync().ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
+
+        protected async Task PopulateSubscriptionServiceConfiguration()
         {
             String connectionString = Setup.GetLocalConnectionString("SubscriptionServiceConfiguration");
 
@@ -191,9 +237,9 @@ namespace EstateManagement.IntegrationTests.Common
                     await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
                 
                     // Create an Event Store Server
-                    await this.InsertEventStoreServer(connection,eventStoreContainerName).ConfigureAwait(false);
+                    await this.InsertEventStoreServer(connection,this.EventStoreContainerName).ConfigureAwait(false);
 
-                    String endPointUri = $"http://localhost:{this.EstateReportingPort}/api/DomainEvent";
+                    String endPointUri = $"http://{this.EstateReportingContainerName}:5005/api/domainevents";
                     // Add Route for Estate Aggregate Events
                     await this.InsertSubscription(connection, "$ce-EstateAggregate", "Reporting", endPointUri).ConfigureAwait(false);
 
@@ -232,6 +278,23 @@ namespace EstateManagement.IntegrationTests.Common
             String esConnectionString = $"ConnectTo=tcp://admin:changeit@{eventStoreContainerName}:{DockerHelper.EventStoreTcpDockerPort};VerboseLogging=true;";
             SqlCommand command = openConnection.CreateCommand();
             command.CommandText = $"INSERT INTO EventStoreServer(EventStoreServerId, ConnectionString,Name) SELECT '{this.TestId}', '{esConnectionString}', 'TestEventStore'";
+            command.CommandType = CommandType.Text;
+            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+
+        protected async Task DropEstateReportingReadModel(SqlConnection openConnection,
+                                                          Guid estateId)
+        {
+            // Build the database name
+            String databaseName = $"EstateReportingReadModel{estateId}";
+
+            SqlCommand command = openConnection.CreateCommand();
+            command.CommandText = $"alter database [{databaseName}] set single_user with rollback immediate";
+            command.CommandType = CommandType.Text;
+            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
+
+            command = openConnection.CreateCommand();
+            command.CommandText = $"DROP DATABASE [{databaseName}]";
             command.CommandType = CommandType.Text;
             await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
         }
