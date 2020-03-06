@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Tests.Common
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Security.Claims;
@@ -100,6 +101,30 @@
             var result = AuthenticateResult.Success(ticket);
 
             return Task.FromResult(result);
+        }
+    }
+
+    public static class ServiceCollectionExtensions
+    {
+        public static void AssertConfigurationIsValid(this IServiceCollection serviceCollection,
+                                                      List<Type> typesToIgnore = null)
+        {
+            ServiceProvider buildServiceProvider = serviceCollection.BuildServiceProvider();
+
+            List<ServiceDescriptor> list = serviceCollection.Where(x => x.ServiceType.Namespace != null && x.ServiceType.Namespace.Contains("Vme")).ToList();
+
+            if (typesToIgnore != null)
+            {
+                list.RemoveAll(listItem => typesToIgnore.Contains(listItem.ServiceType));
+            }
+
+            foreach (ServiceDescriptor serviceDescriptor in list)
+            {
+                Type type = serviceDescriptor.ServiceType;
+
+                //This throws an Exception if the type cannot be instantiated.
+                buildServiceProvider.GetService(type);
+            }
         }
     }
 }

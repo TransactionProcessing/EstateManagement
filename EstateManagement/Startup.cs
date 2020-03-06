@@ -9,8 +9,7 @@ namespace EstateManagement
     using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
-    using Autofac;
-    using Autofac.Extensions.DependencyInjection;
+    using BusinessLogic.Common;
     using BusinessLogic.EventHandling;
     using BusinessLogic.Manger;
     using BusinessLogic.RequestHandlers;
@@ -18,6 +17,7 @@ namespace EstateManagement
     using BusinessLogic.Services;
     using Common;
     using Controllers;
+    using EstateReporting.Database;
     using EventStore.ClientAPI;
     using IdentityModel.AspNetCore.OAuth2Introspection;
     using MediatR;
@@ -40,9 +40,11 @@ namespace EstateManagement
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using NLog.Extensions.Logging;
+    using Repository;
     using SecurityService.Client;
     using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EntityFramework;
     using Shared.EntityFramework.ConnectionStringConfiguration;
     using Shared.EventStore.EventStore;
     using Shared.Extensions;
@@ -80,10 +82,7 @@ namespace EstateManagement
 
             services.AddTransient<IMediator, Mediator>();
             services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
-        }
 
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
             ConfigurationReader.Initialise(Startup.Configuration);
             String connString = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString");
             String connectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
@@ -91,39 +90,58 @@ namespace EstateManagement
 
             Boolean useConnectionStringConfig = Boolean.Parse(ConfigurationReader.GetValue("AppSettings", "UseConnectionStringConfig"));
             EventStoreConnectionSettings settings = EventStoreConnectionSettings.Create(connString, connectionName, httpPort);
-            builder.RegisterInstance(settings);
+            services.AddSingleton(settings);
 
-            Func<EventStoreConnectionSettings, IEventStoreConnection> eventStoreConnectionFunc = (connectionSettings) =>
-                                                                                                 {
-                                                                                                     return EventStoreConnection.Create(connectionSettings.ConnectionString);
-                                                                                                 };
+            services.AddSingleton<Func<EventStoreConnectionSettings, IEventStoreConnection>>(cont => (connectionSettings) =>
+            {
+                return EventStoreConnection.Create(connectionSettings
+                                                       .ConnectionString);
+            });
 
-            builder.RegisterInstance<Func<EventStoreConnectionSettings, IEventStoreConnection>>(eventStoreConnectionFunc);
+            services.AddSingleton<Func<String, IEventStoreContext>>(cont => (connectionString) =>
+            {
+                EventStoreConnectionSettings connectionSettings =
+                    EventStoreConnectionSettings.Create(connectionString, connectionName, httpPort);
 
-            Func<String, IEventStoreContext> eventStoreContextFunc = (connectionString) =>
-                                                                     {
-                                                                         EventStoreConnectionSettings connectionSettings = EventStoreConnectionSettings.Create(connectionString, connectionName, httpPort);
+                Func<EventStoreConnectionSettings, IEventStoreConnection> eventStoreConnectionFunc = cont.GetService<Func<EventStoreConnectionSettings, IEventStoreConnection>>();
 
-                                                                         IEventStoreContext context = new EventStoreContext(connectionSettings, eventStoreConnectionFunc);
-                                                                         
-                                                                         return context;
-                                                                     };
+                IEventStoreContext context =
+                    new EventStoreContext(connectionSettings, eventStoreConnectionFunc);
 
-            builder.RegisterInstance<Func<String, IEventStoreContext>>(eventStoreContextFunc);
+                return context;
+            });
+
 
             if (useConnectionStringConfig)
             {
                 String connectionStringConfigurationConnString = ConfigurationReader.GetConnectionString("ConnectionStringConfiguration");
-                builder.Register(c => new ConnectionStringConfigurationContext(connectionStringConfigurationConnString)).InstancePerDependency();
-                builder.RegisterType<ConnectionStringConfigurationRepository>().As<IConnectionStringConfigurationRepository>().SingleInstance();
-                builder.RegisterType<EventStoreContextManager>().As<IEventStoreContextManager>().UsingConstructor(typeof(Func<String,IEventStoreContext>), typeof(IConnectionStringConfigurationRepository)) .SingleInstance();
+                services.AddSingleton<IConnectionStringConfigurationRepository, ConnectionStringConfigurationRepository>();
+                services.AddTransient<ConnectionStringConfigurationContext>(c =>
+                {
+                    return new ConnectionStringConfigurationContext(connectionStringConfigurationConnString);
+                });
+
+                services.AddSingleton<IEventStoreContextManager, EventStoreContextManager>(c =>
+                {
+                    Func<String, IEventStoreContext> contextFunc = c.GetService<Func<String, IEventStoreContext>>();
+                    IConnectionStringConfigurationRepository connectionStringConfigurationRepository =
+                        c.GetService<IConnectionStringConfigurationRepository>();
+                    return new EventStoreContextManager(contextFunc,
+                                                        connectionStringConfigurationRepository);
+                });
             }
             else
             {
-                builder.RegisterType<EventStoreContextManager>().As<IEventStoreContextManager>().UsingConstructor(typeof(IEventStoreContext)).SingleInstance();
-                // TODO: Once we have a Read Model
-                //this.RegisterType<Vme.Repositories.IConnectionStringRepository, ConfigReaderConnectionStringRepository>().Singleton();
+                services.AddSingleton<IEventStoreContextManager, EventStoreContextManager>(c =>
+                {
+                    IEventStoreContext context = c.GetService<IEventStoreContext>();
+                    return new EventStoreContextManager(context);
+                });
+                services.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
             }
+
+            services.AddSingleton<IEstateManagementRepository, EstateManagementRepository>();
+            services.AddSingleton<IDbContextFactory<EstateReportingContext>, DbContextFactory<EstateReportingContext>>();
 
             Dictionary<String, String[]> handlerEventTypesToSilentlyHandle = new Dictionary<String, String[]>();
 
@@ -137,40 +155,38 @@ namespace EstateManagement
                 }
             }
 
+            services.AddSingleton<Func<String, EstateReportingContext>>(cont => (connectionString) => { return new EstateReportingContext(connectionString); });
+
             DomainEventTypesToSilentlyHandle eventTypesToSilentlyHandle = new DomainEventTypesToSilentlyHandle(handlerEventTypesToSilentlyHandle);
+            services.AddTransient<IEventStoreContext, EventStoreContext>();
+            services.AddSingleton<IAggregateRepositoryManager, AggregateRepositoryManager>();
+            services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate>, AggregateRepository<EstateAggregate.EstateAggregate>>();
+            services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate>, AggregateRepository<MerchantAggregate.MerchantAggregate>>();
+            services.AddSingleton<IEstateDomainService, EstateDomainService>();
+            services.AddSingleton<IMerchantDomainService, MerchantDomainService>();
+            services.AddSingleton<IModelFactory, ModelFactory>();
+            services.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
+            services.AddSingleton<ISecurityServiceClient, SecurityServiceClient>();
 
-            //Can we create a static method in this class that returns IContainer?
-            builder.RegisterInstance<DomainEventTypesToSilentlyHandle>(eventTypesToSilentlyHandle).SingleInstance();
+            //// request & notification handlers
+            services.AddTransient<ServiceFactory>(context =>
+            {
+                return t => context.GetService(t);
+            });
 
-            builder.RegisterType<EventStoreContext>().As<IEventStoreContext>();
-            builder.RegisterType<AggregateRepositoryManager>().As<IAggregateRepositoryManager>().SingleInstance();
-            builder.RegisterType<AggregateRepository<EstateAggregate.EstateAggregate>>().As<IAggregateRepository<EstateAggregate.EstateAggregate>>().SingleInstance();
-            builder.RegisterType<AggregateRepository<MerchantAggregate.MerchantAggregate>>().As<IAggregateRepository<MerchantAggregate.MerchantAggregate>>().SingleInstance();
-            builder.RegisterType<EstateDomainService>().As<IEstateDomainService>().SingleInstance();
-            builder.RegisterType<MerchantDomainService>().As<IMerchantDomainService>().SingleInstance();
-            builder.RegisterType<ModelFactory>().As<IModelFactory>().SingleInstance();
-            builder.RegisterType<Factories.ModelFactory>().As<Factories.IModelFactory>().SingleInstance();
-            builder.RegisterType<SecurityServiceClient>().As<ISecurityServiceClient>().SingleInstance();
+            services.AddSingleton<IRequestHandler<CreateEstateRequest, String>, EstateRequestHandler>();
+            services.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
 
-            // request & notification handlers
-            builder.Register<ServiceFactory>(context =>
-                                             {
-                                                 var c = context.Resolve<IComponentContext>();
-                                                 return t => c.Resolve(t);
-                                             });
-            
-            builder.RegisterType<EstateRequestHandler>().As<IRequestHandler<CreateEstateRequest, String>>().SingleInstance();
-            builder.RegisterType<EstateRequestHandler>().As<IRequestHandler<AddOperatorToEstateRequest, String>>().SingleInstance();
-            builder.RegisterType<EstateRequestHandler>().As<IRequestHandler<CreateEstateUserRequest, Guid>>().SingleInstance();
-            builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<CreateMerchantRequest, String>>().SingleInstance();
-            builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<AssignOperatorToMerchantRequest, String>>().SingleInstance();
-            builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<CreateMerchantUserRequest, Guid>>().SingleInstance();
-            builder.RegisterType<MerchantRequestHandler>().As<IRequestHandler<AddMerchantDeviceRequest, String>>().SingleInstance();
+            services.AddSingleton<IRequestHandler<CreateMerchantRequest, String>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest, String>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddMerchantDeviceRequest, String>, MerchantRequestHandler>();
 
-            Func<String, String> apiAddressResolver = (serviceName) => { return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString; };
-
-            builder.RegisterInstance<Func<String, String>>(apiAddressResolver);
-            builder.RegisterType<HttpClient>().SingleInstance();
+            services.AddSingleton<Func<String, String>>(container => (serviceName) =>
+            {
+                return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
+            });
+            services.AddSingleton<HttpClient>();
         }
 
         private void ConfigureMiddlewareServices(IServiceCollection services)

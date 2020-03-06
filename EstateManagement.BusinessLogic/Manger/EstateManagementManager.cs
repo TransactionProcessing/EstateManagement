@@ -8,6 +8,7 @@
     using Models;
     using Models.Factories;
     using Models.Merchant;
+    using Repository;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
 
@@ -24,6 +25,8 @@
         /// </summary>
         private readonly IAggregateRepositoryManager AggregateRepositoryManager;
 
+        private readonly IEstateManagementRepository EstateManagementRepository;
+
         private readonly IAggregateRepository<MerchantAggregate> MerchantAggregateRepository;
 
         /// <summary>
@@ -39,11 +42,14 @@
         /// Initializes a new instance of the <see cref="EstateManagementManager" /> class.
         /// </summary>
         /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
+        /// <param name="estateManagementRepository">The estate management repository.</param>
         /// <param name="modelFactory">The model factory.</param>
         public EstateManagementManager(IAggregateRepositoryManager aggregateRepositoryManager,
+                                       IEstateManagementRepository estateManagementRepository,
                                        IModelFactory modelFactory)
         {
             this.AggregateRepositoryManager = aggregateRepositoryManager;
+            this.EstateManagementRepository = estateManagementRepository;
             this.ModelFactory = modelFactory;
         }
 
@@ -61,10 +67,7 @@
                                             CancellationToken cancellationToken)
         {
             // Get the estate from the aggregate repository
-            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
-            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-
-            Estate estateModel = estateAggregate.GetEstate();
+            Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
 
             return estateModel;
         }

@@ -31,11 +31,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Models", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Testing", "EstateManagement.Testing\EstateManagement.Testing.csproj", "{F1F54EC3-98A8-4F0F-8DAC-2CB59BE42C49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantAggregate", "EstateManagement.MerchantAggregate\EstateManagement.MerchantAggregate.csproj", "{9A4BCC94-FD17-4AB4-8DCB-2AA0B99A1F0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantAggregate", "EstateManagement.MerchantAggregate\EstateManagement.MerchantAggregate.csproj", "{9A4BCC94-FD17-4AB4-8DCB-2AA0B99A1F0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.Merchant.DomainEvents", "EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj", "{1BB254AC-F6EF-4879-995C-67F452506623}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Merchant.DomainEvents", "EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj", "{1BB254AC-F6EF-4879-995C-67F452506623}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantAggregate.Tests", "EstateManagement.MerchantAggregate.Tests\EstateManagement.MerchantAggregate.Tests.csproj", "{9C011D6D-4014-414F-B1DE-018C1C1A5BAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantAggregate.Tests", "EstateManagement.MerchantAggregate.Tests\EstateManagement.MerchantAggregate.Tests.csproj", "{9C011D6D-4014-414F-B1DE-018C1C1A5BAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.Repository", "EstateManagement.Repository\EstateManagement.Repository.csproj", "{FE89BE0D-2401-43E2-9998-88C3FD717999}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{9C011D6D-4014-414F-B1DE-018C1C1A5BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C011D6D-4014-414F-B1DE-018C1C1A5BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C011D6D-4014-414F-B1DE-018C1C1A5BAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE89BE0D-2401-43E2-9998-88C3FD717999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE89BE0D-2401-43E2-9998-88C3FD717999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE89BE0D-2401-43E2-9998-88C3FD717999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE89BE0D-2401-43E2-9998-88C3FD717999}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{9A4BCC94-FD17-4AB4-8DCB-2AA0B99A1F0F} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
 		{1BB254AC-F6EF-4879-995C-67F452506623} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
 		{9C011D6D-4014-414F-B1DE-018C1C1A5BAF} = {37B5C834-5EC7-4244-B6D8-987AAF52E9EE}
+		{FE89BE0D-2401-43E2-9998-88C3FD717999} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D9C2C14-F455-44B6-AA7D-DDC6D6B27FB8}

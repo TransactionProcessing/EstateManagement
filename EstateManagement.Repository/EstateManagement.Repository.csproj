@@ -8,4 +8,8 @@
     <PackageReference Include="EstateReporting.Database" Version="0.0.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
+  </ItemGroup>
+
 </Project>
