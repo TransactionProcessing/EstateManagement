@@ -206,23 +206,19 @@ namespace EstateManagement.IntegrationTests.Common
                 // Build the connection string (to master)
                 String connectionString = Setup.GetLocalConnectionString("master");
 
-                // Execute the drop db command
-                await using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    try
-                    {
-                        await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
+                await Retry.For(async () =>
+                          {
+                              // Execute the drop db command
+                              await using(SqlConnection connection = new SqlConnection(connectionString))
+                              {
+                                  await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
 
-                        // Drop the Read Model
-                        await this.DropEstateReportingReadModel(connection, estateId).ConfigureAwait(false);
+                                  // Drop the Read Model
+                                  await this.DropEstateReportingReadModel(connection, estateId).ConfigureAwait(false);
 
-                        await connection.CloseAsync().ConfigureAwait(false);
-                    }
-                    catch (Exception e)
-                    {
-                        throw;
-                    }
-                }
+                                  await connection.CloseAsync().ConfigureAwait(false);
+                              }
+                          }, TimeSpan.FromSeconds(30));
             }
         }
 
