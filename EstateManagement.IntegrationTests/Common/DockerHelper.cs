@@ -285,12 +285,7 @@ namespace EstateManagement.IntegrationTests.Common
             String databaseName = $"EstateReportingReadModel{estateId}";
 
             SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"alter database [{databaseName}] set single_user with rollback immediate";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-
-            command = openConnection.CreateCommand();
-            command.CommandText = $"DROP DATABASE [{databaseName}]";
+            command.CommandText = $"alter database [{databaseName}] set single_user with rollback immediate; DROP DATABASE [{databaseName}];";
             command.CommandType = CommandType.Text;
             await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
         }
