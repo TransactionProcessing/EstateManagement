@@ -13,6 +13,7 @@ namespace EstateManagement.IntegrationTests.Common
     using Ductus.FluentDocker.Common;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
+    using EstateReporting.Database;
     using Gherkin;
     using global::Shared.Logger;
     using global::Shared.IntegrationTesting;
@@ -203,22 +204,12 @@ namespace EstateManagement.IntegrationTests.Common
 
             foreach (Guid estateId in estateIdList)
             {
+                String databaseName = $"EstateReportingReadModel{estateId}";
+
                 // Build the connection string (to master)
-                String connectionString = Setup.GetLocalConnectionString("master");
-
-                await Retry.For(async () =>
-                          {
-                              // Execute the drop db command
-                              await using(SqlConnection connection = new SqlConnection(connectionString))
-                              {
-                                  await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
-
-                                  // Drop the Read Model
-                                  await this.DropEstateReportingReadModel(connection, estateId).ConfigureAwait(false);
-
-                                  await connection.CloseAsync().ConfigureAwait(false);
-                              }
-                          }, TimeSpan.FromSeconds(30));
+                String connectionString = Setup.GetLocalConnectionString(databaseName);
+                EstateReportingContext context = new EstateReportingContext(connectionString);
+                await context.Database.EnsureDeletedAsync(CancellationToken.None);
             }
         }
 
@@ -277,19 +268,7 @@ namespace EstateManagement.IntegrationTests.Common
             command.CommandType = CommandType.Text;
             await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
         }
-
-        protected async Task DropEstateReportingReadModel(SqlConnection openConnection,
-                                                          Guid estateId)
-        {
-            // Build the database name
-            String databaseName = $"EstateReportingReadModel{estateId}";
-
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"alter database [{databaseName}] set single_user with rollback immediate; DROP DATABASE [{databaseName}];";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-
+        
         protected async Task DeleteEventStoreServer(SqlConnection openConnection)
         {
             SqlCommand command = openConnection.CreateCommand();
