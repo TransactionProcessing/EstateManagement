@@ -17,6 +17,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Repository;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
+    using Shared.Exceptions;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -51,6 +52,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetEstate_EstateIsReturned()
         {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
 
             Estate estateModel =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
@@ -58,6 +60,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(TestData.EstateModel.EstateId);
             estateModel.Name.ShouldBe(TestData.EstateModel.Name);
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetEstate_InvalidEstateId_ErrorIsThrown()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
+
+            Should.Throw<NotFoundException>(async () => { await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None); });
         }
 
         [Fact]

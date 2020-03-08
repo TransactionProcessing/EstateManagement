@@ -70,7 +70,7 @@
             // Get the estate from the aggregate repository
             IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
             EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-            if (estateAggregate.Version < 0)
+            if (estateAggregate.IsCreated == false)
             {
                 throw new NotFoundException($"No estate found with Id [{estateId}]");
             }
