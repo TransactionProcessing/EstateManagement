@@ -11,6 +11,7 @@
     using Repository;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
+    using Shared.Exceptions;
 
     /// <summary>
     /// 
@@ -67,6 +68,12 @@
                                             CancellationToken cancellationToken)
         {
             // Get the estate from the aggregate repository
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new NotFoundException($"No estate found with Id [{estateId}]");
+            }
             Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
 
             return estateModel;
