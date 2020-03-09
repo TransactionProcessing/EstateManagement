@@ -208,8 +208,12 @@ namespace EstateManagement.IntegrationTests.Common
 
                 // Build the connection string (to master)
                 String connectionString = Setup.GetLocalConnectionString(databaseName);
-                EstateReportingContext context = new EstateReportingContext(connectionString);
-                await context.Database.EnsureDeletedAsync(CancellationToken.None);
+                await Retry.For(async () =>
+                                {
+                                    EstateReportingContext context = new EstateReportingContext(connectionString);
+                                    await context.Database.EnsureDeletedAsync(CancellationToken.None);
+                                });
+                
             }
         }
 
