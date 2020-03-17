@@ -17,7 +17,49 @@ namespace EstateManagement.Tests.Factories
     public class ModelFactoryTests
     {
         [Fact]
-        public void ModelFactory_EstateAggregate_IsConverted()
+        public void ModelFactory_EstateAggregate_WithNoOperatorsOrSecurityUsers_IsConverted()
+        {
+            Estate estateModel = TestData.EstateModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+
+            estateResponse.ShouldNotBeNull();
+            estateResponse.EstateId.ShouldBe(estateModel.EstateId);
+            estateResponse.EstateName.ShouldBe(estateModel.Name);
+        }
+
+        [Fact]
+        public void ModelFactory_EstateAggregate_WithOperators_IsConverted()
+        {
+            Estate estateModel = TestData.EstateModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+
+            estateResponse.ShouldNotBeNull();
+            estateResponse.EstateId.ShouldBe(estateModel.EstateId);
+            estateResponse.EstateName.ShouldBe(estateModel.Name);
+        }
+
+        [Fact]
+        public void ModelFactory_EstateAggregate_WithSecurityUsers_IsConverted()
+        {
+            Estate estateModel = TestData.EstateModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+
+            estateResponse.ShouldNotBeNull();
+            estateResponse.EstateId.ShouldBe(estateModel.EstateId);
+            estateResponse.EstateName.ShouldBe(estateModel.Name);
+        }
+
+        [Fact]
+        public void ModelFactory_EstateAggregate_WithOperatorsAndSecurityUsers_IsConverted()
         {
             Estate estateModel = TestData.EstateModel;
 

@@ -12,6 +12,7 @@
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
     using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
     using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
+    using Operator = Models.Operator;
 
     public class TestData
     {
@@ -77,6 +78,55 @@
                                                EstateId = TestData.EstateId,
                                                Name = TestData.EstateName
                                            };
+
+        public static Estate EstateModelWithOperators = new Estate
+                                           {
+                                               EstateId = TestData.EstateId,
+                                               Name = TestData.EstateName,
+                                               Operators = new List<Operator>
+                                                           {
+                                                               new Operator
+                                                               {
+                                                                   RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumberTrue,
+                                                                   Name = TestData.OperatorName,
+                                                                   OperatorId = TestData.OperatorId,
+                                                                   RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumberTrue
+                                                               }
+                                                           }
+                                           };
+
+        public static Estate EstateModelWithSecurityUsers = new Estate
+                                                        {
+                                                            EstateId = TestData.EstateId,
+                                                            Name = TestData.EstateName,
+                                                            Operators = new List<Operator>
+                                                                        {
+                                                                            new Operator
+                                                                            {
+                                                                                RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumberTrue,
+                                                                                Name = TestData.OperatorName,
+                                                                                OperatorId = TestData.OperatorId,
+                                                                                RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumberTrue
+                                                                            }
+
+                                                                        }
+                                                        };
+
+        public static Estate EstateModelWithOperatorsAndSecurityUsers = new Estate
+                                                        {
+                                                            EstateId = TestData.EstateId,
+                                                            Name = TestData.EstateName,
+                                                            Operators = new List<Operator>
+                                                                        {
+                                                                            new Operator
+                                                                            {
+                                                                                RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumberTrue,
+                                                                                Name = TestData.OperatorName,
+                                                                                OperatorId = TestData.OperatorId,
+                                                                                RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumberTrue
+                                                                            }
+                                                                        }
+                                                        };
 
         public static DateTime DateMerchantCreated = new DateTime(2019,11,16);
 

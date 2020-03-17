@@ -28,8 +28,30 @@
             EstateResponse estateResponse = new EstateResponse
                                             {
                                                 EstateName = estate.Name,
-                                                EstateId = estate.EstateId
+                                                EstateId = estate.EstateId,
+                                                Operators = new List<OperatorResponse>(),
+                                                SecurityUsers = new List<SecurityUserResponse>()
                                             };
+
+            if (estate.Operators.Any())
+            {
+                estate.Operators.ForEach(o => estateResponse.Operators.Add(new OperatorResponse
+                                                                           {
+                                                                               Name = o.Name,
+                                                                               OperatorId = o.OperatorId,
+                                                                               RequireCustomMerchantNumber = o.RequireCustomMerchantNumber,
+                                                                               RequireCustomTerminalNumber = o.RequireCustomTerminalNumber
+                                                                           }));
+            }
+
+            if (estate.SecurityUsers.Any())
+            {
+                estate.SecurityUsers.ForEach(s => estateResponse.SecurityUsers.Add(new SecurityUserResponse()
+                                                                               {
+                                                                                   EmailAddress = s.EmailAddress,
+                                                                                   SecurityUserId = s.SecurityUserId
+                                                                               }));
+            }
 
             return estateResponse;
         }
