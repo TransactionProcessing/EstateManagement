@@ -74,6 +74,12 @@
         [JsonProperty]
         public Guid EstateId { get; private set; }
 
+        /// <summary>
+        /// Gets the merchant identifier.
+        /// </summary>
+        /// <value>
+        /// The merchant identifier.
+        /// </value>
         [JsonProperty]
         public Guid MerchantId { get; private set; }
 
