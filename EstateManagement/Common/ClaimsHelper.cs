@@ -1,12 +1,14 @@
 ﻿namespace EstateManagement.Common
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Security.Claims;
     using IdentityModel;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Shared.Exceptions;
 
+    [ExcludeFromCodeCoverage]
     public class ClaimsHelper
     {
         #region Methods

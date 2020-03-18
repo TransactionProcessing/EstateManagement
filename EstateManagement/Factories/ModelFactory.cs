@@ -33,7 +33,7 @@
                                                 SecurityUsers = new List<SecurityUserResponse>()
                                             };
 
-            if (estate.Operators.Any())
+            if (estate.Operators != null && estate.Operators.Any())
             {
                 estate.Operators.ForEach(o => estateResponse.Operators.Add(new OperatorResponse
                                                                            {
@@ -44,7 +44,7 @@
                                                                            }));
             }
 
-            if (estate.SecurityUsers.Any())
+            if (estate.SecurityUsers != null && estate.SecurityUsers.Any())
             {
                 estate.SecurityUsers.ForEach(s => estateResponse.SecurityUsers.Add(new SecurityUserResponse()
                                                                                {

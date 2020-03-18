@@ -408,27 +408,55 @@ namespace EstateManagement.IntegrationTests.Shared
         [When(@"I get the estate ""(.*)"" the estate details are returned as follows")]
         public async Task WhenIGetTheEstateTheEstateDetailsAreReturnedAsFollows(String estateName, Table table)
         {
+            EstateResponse estate = await this.GetEstate(estateName);
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String estateNameFromRow = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+                estate.EstateName.ShouldBe(estateNameFromRow);
+            }
+        }
+
+        [When(@"I get the estate ""(.*)"" the estate operator details are returned as follows")]
+        public async Task WhenIGetTheEstateTheEstateOperatorDetailsAreReturnedAsFollows(String estateName, Table table)
+        {
+            EstateResponse estate = await this.GetEstate(estateName);
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String operatorNameFromRow = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+                OperatorResponse operatorResponse = estate.Operators.SingleOrDefault(o => o.Name == operatorNameFromRow);
+                operatorResponse.ShouldNotBeNull();
+            }
+        }
+
+        [When(@"I get the estate ""(.*)"" the estate security user details are returned as follows")]
+        public async Task WhenIGetTheEstateTheEstateSecurityUserDetailsAreReturnedAsFollows(String estateName, Table table)
+        {
+            EstateResponse estate = await this.GetEstate(estateName);
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String emailAddressFromRow = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress");
+                SecurityUserResponse securityUserResponse = estate.SecurityUsers.SingleOrDefault(o => o.EmailAddress == emailAddressFromRow);
+                securityUserResponse.ShouldNotBeNull();
+            }
+        }
+        
+        private async Task<EstateResponse> GetEstate(String estateName)
+        {
             EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
             String token = this.TestingContext.AccessToken;
             if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
             {
                 token = estateDetails.AccessToken;
             }
-            
+
             EstateResponse estate = await this.TestingContext.DockerHelper.EstateClient.GetEstate(token, estateDetails.EstateId, CancellationToken.None)
                                               .ConfigureAwait(false);
-
-            foreach (TableRow tableRow in table.Rows)
-            {
-                String estateNameFromRow = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
-                //String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
-                //String emailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress");
-                //String givenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName");
-                //String familyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName");
-
-                estate.EstateName.ShouldBe(estateNameFromRow);
-            }
+            return estate;
         }
+
 
         [When(@"I add the following devices to the merchant")]
         public async Task WhenIAddTheFollowingDevicesToTheMerchant(Table table)

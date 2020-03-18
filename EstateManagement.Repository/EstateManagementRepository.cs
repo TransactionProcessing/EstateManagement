@@ -1,6 +1,8 @@
 ﻿namespace EstateManagement.Repository
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateReporting.Database;
@@ -79,15 +81,18 @@
                                                  CancellationToken cancellationToken)
         {
             EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
-
+            
             Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken);
 
             if (estate == null)
             {
-                throw new NotFoundException($"No estate found with Id [{estateId}]");
+                throw new NotFoundException($"No estate found in read model with Id [{estateId}]");
             }
 
-            return this.ModelFactory.ConvertFrom(estate);
+            List<EstateOperator> estateOperators = await context.EstateOperators.Where(eo => eo.EstateId == estateId).ToListAsync(cancellationToken);
+            List<EstateSecurityUser> estateSecurityUsers = await context.EstateSecurityUsers.Where(esu => esu.EstateId == estateId).ToListAsync(cancellationToken);
+
+            return this.ModelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
         }
 
         #endregion

@@ -343,6 +343,11 @@ this.FeatureBackground();
                             "Test Operator 1",
                             "True",
                             "True"});
+                table11.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 2",
+                            "True",
+                            "True"});
 #line 50
  testRunner.And("I have created the following operators", ((string)(null)), table11, "And ");
 #line hidden
@@ -358,23 +363,41 @@ this.FeatureBackground();
                             "TestEstate",
                             "User1",
                             "Test Estate 1"});
-#line 53
+                table12.AddRow(new string[] {
+                            "estateuser2@testestate1.co.uk",
+                            "123456",
+                            "TestEstate",
+                            "User2",
+                            "Test Estate 1"});
+#line 54
  testRunner.And("I have created the following security users", ((string)(null)), table12, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EstateName",
-                            "OperatorName",
-                            "EmailAddress",
-                            "GivenName",
-                            "FamilyName"});
+                            "EstateName"});
                 table13.AddRow(new string[] {
-                            "Test Estate 1",
-                            "Test Operator 1",
-                            "estateuser1@testestate1.co.uk",
-                            "TestEstate",
-                            "User1"});
-#line 56
+                            "Test Estate 1"});
+#line 58
  testRunner.When("I get the estate \"Test Estate 1\" the estate details are returned as follows", ((string)(null)), table13, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OperatorName"});
+                table14.AddRow(new string[] {
+                            "Test Operator 1"});
+                table14.AddRow(new string[] {
+                            "Test Operator 2"});
+#line 61
+ testRunner.When("I get the estate \"Test Estate 1\" the estate operator details are returned as foll" +
+                        "ows", ((string)(null)), table14, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EmailAddress"});
+                table15.AddRow(new string[] {
+                            "estateuser1@testestate1.co.uk"});
+                table15.AddRow(new string[] {
+                            "estateuser2@testestate1.co.uk"});
+#line 65
+ testRunner.When("I get the estate \"Test Estate 1\" the estate security user details are returned as" +
+                        " follows", ((string)(null)), table15, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -390,7 +413,7 @@ this.FeatureBackground();
                     "PRTest"};
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Estate - Estate user", null, new string[] {
                         "PRTest"});
-#line 61
+#line 70
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -413,59 +436,82 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "EstateName"});
-                table14.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "Test Estate 1"});
-#line 62
- testRunner.Given("I have created the following estates", ((string)(null)), table14, "Given ");
+#line 71
+ testRunner.Given("I have created the following estates", ((string)(null)), table16, "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "EstateName",
                             "OperatorName",
                             "RequireCustomMerchantNumber",
                             "RequireCustomTerminalNumber"});
-                table15.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "True",
                             "True"});
-#line 65
- testRunner.And("I have created the following operators", ((string)(null)), table15, "And ");
+                table17.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 2",
+                            "True",
+                            "True"});
+#line 74
+ testRunner.And("I have created the following operators", ((string)(null)), table17, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "EmailAddress",
                             "Password",
                             "GivenName",
                             "FamilyName",
                             "EstateName"});
-                table16.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "estateuser1@testestate1.co.uk",
                             "123456",
                             "TestEstate",
                             "User1",
                             "Test Estate 1"});
-#line 68
- testRunner.And("I have created the following security users", ((string)(null)), table16, "And ");
+                table18.AddRow(new string[] {
+                            "estateuser2@testestate1.co.uk",
+                            "123456",
+                            "TestEstate",
+                            "User2",
+                            "Test Estate 1"});
+#line 78
+ testRunner.And("I have created the following security users", ((string)(null)), table18, "And ");
 #line hidden
-#line 71
+#line 82
  testRunner.And("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
                         "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EstateName",
-                            "OperatorName",
-                            "EmailAddress",
-                            "GivenName",
-                            "FamilyName"});
-                table17.AddRow(new string[] {
-                            "Test Estate 1",
-                            "Test Operator 1",
-                            "estateuser1@testestate1.co.uk",
-                            "TestEstate",
-                            "User1"});
-#line 72
- testRunner.When("I get the estate \"Test Estate 1\" the estate details are returned as follows", ((string)(null)), table17, "When ");
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName"});
+                table19.AddRow(new string[] {
+                            "Test Estate 1"});
+#line 83
+ testRunner.When("I get the estate \"Test Estate 1\" the estate details are returned as follows", ((string)(null)), table19, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OperatorName"});
+                table20.AddRow(new string[] {
+                            "Test Operator 1"});
+                table20.AddRow(new string[] {
+                            "Test Operator 2"});
+#line 86
+ testRunner.When("I get the estate \"Test Estate 1\" the estate operator details are returned as foll" +
+                        "ows", ((string)(null)), table20, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EmailAddress"});
+                table21.AddRow(new string[] {
+                            "estateuser1@testestate1.co.uk"});
+                table21.AddRow(new string[] {
+                            "estateuser2@testestate1.co.uk"});
+#line 90
+ testRunner.When("I get the estate \"Test Estate 1\" the estate security user details are returned as" +
+                        " follows", ((string)(null)), table21, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
