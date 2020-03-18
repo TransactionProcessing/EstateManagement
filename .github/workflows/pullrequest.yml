@@ -34,6 +34,7 @@ jobs:
         dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj"
         dotnet test "EstateManagement.MerchantAggregate.Tests\EstateManagement.MerchantAggregate.Tests.csproj"
         dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj"
+        dotnet test "EstateManagement.Repository.Tests\EstateManagement.Repository.Tests.csproj"
 
     - name: Build Docker Image
       run: docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest

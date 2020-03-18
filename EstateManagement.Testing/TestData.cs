@@ -4,14 +4,17 @@
     using System.Collections.Generic;
     using BusinessLogic.Requests;
     using EstateAggregate;
+    using EstateReporting.Database.Entities;
     using MerchantAggregate;
-    using Models;
-    using Models.Merchant;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
     using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
     using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
+    using Estate = Models.Estate;
+    using Merchant = Models.Merchant.Merchant;
+    using Operator = Models.Operator;
+    using SecurityUser = Models.SecurityUser;
 
     public class TestData
     {
@@ -75,8 +78,66 @@
         public static Estate EstateModel = new Estate
                                            {
                                                EstateId = TestData.EstateId,
-                                               Name = TestData.EstateName
-                                           };
+                                               Name = TestData.EstateName,
+                                               Operators = null,
+                                               SecurityUsers = null
+        };
+        
+        public static Estate EstateModelWithOperators = new Estate
+                                           {
+                                               EstateId = TestData.EstateId,
+                                               Name = TestData.EstateName,
+                                               Operators = new List<Operator>
+                                                           {
+                                                               new Operator
+                                                               {
+                                                                   RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumberTrue,
+                                                                   Name = TestData.OperatorName,
+                                                                   OperatorId = TestData.OperatorId,
+                                                                   RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumberTrue
+                                                               }
+                                                           },
+                                               SecurityUsers = null
+        };
+
+        public static Estate EstateModelWithSecurityUsers = new Estate
+                                                        {
+                                                            EstateId = TestData.EstateId,
+                                                            Name = TestData.EstateName,
+                                                            Operators = null,
+                                                            SecurityUsers = new List<SecurityUser>
+                                                                            {
+                                                                                new SecurityUser
+                                                                                {
+                                                                                    EmailAddress = TestData.EstateUserEmailAddress,
+                                                                                    SecurityUserId = TestData.SecurityUserId
+                                                                                }
+                                                                            }
+                                                        };
+
+        public static Estate EstateModelWithOperatorsAndSecurityUsers = new Estate
+                                                        {
+                                                            EstateId = TestData.EstateId,
+                                                            Name = TestData.EstateName,
+                                                            Operators = new List<Operator>
+                                                                        {
+                                                                            new Operator
+                                                                            {
+                                                                                RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumberTrue,
+                                                                                Name = TestData.OperatorName,
+                                                                                OperatorId = TestData.OperatorId,
+                                                                                RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumberTrue
+                                                                            }
+                                                                        },
+                                                            SecurityUsers = new List<SecurityUser>
+                                                                            {
+                                                                                new SecurityUser
+                                                                                {
+                                                                                    EmailAddress = TestData.EstateUserEmailAddress,
+                                                                                    SecurityUserId = TestData.SecurityUserId
+                                                                                }
+                                                                            }
+        };
 
         public static DateTime DateMerchantCreated = new DateTime(2019,11,16);
 
@@ -292,5 +353,27 @@
         public static String DeviceIdentifier = "EMULATOR123456";
 
         public static AddMerchantDeviceRequest AddMerchantDeviceRequest = AddMerchantDeviceRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.DeviceId, TestData.DeviceIdentifier);
+
+        public static EstateReporting.Database.Entities.Estate EstateEntity = new EstateReporting.Database.Entities.Estate
+                                                                              {
+                                                                                  Name = TestData.EstateName,
+                                                                                  EstateId = TestData.EstateId
+                                                                              };
+
+        public static EstateOperator EstateOperatorEntity = new EstateOperator
+                                                            {
+                                                                EstateId = TestData.EstateId,
+                                                                OperatorId = TestData.OperatorId,
+                                                                RequireCustomTerminalNumber = TestData.RequireCustomMerchantNumberTrue,
+                                                                Name = TestData.OperatorName,
+                                                                RequireCustomMerchantNumber = TestData.RequireCustomTerminalNumberTrue
+                                                            };
+
+        public static EstateSecurityUser EstateSecurityUserEntity = new EstateSecurityUser
+                                                                    {
+                                                                        EstateId = TestData.EstateId,
+                                                                        EmailAddress = TestData.EstateUserEmailAddress,
+                                                                        SecurityUserId = TestData.SecurityUserId
+                                                                    };
     }
 }
