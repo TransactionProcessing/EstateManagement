@@ -59,6 +59,14 @@
         /// </value>
         public String MerchantName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the operators.
+        /// </summary>
+        /// <value>
+        /// The operators.
+        /// </value>
+        public List<MerchantOperatorResponse> Operators { get; set; }
+
         #endregion
     }
 }

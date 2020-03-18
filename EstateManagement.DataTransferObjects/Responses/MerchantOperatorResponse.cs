@@ -4,7 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    public class EstateOperatorResponse
+    public class MerchantOperatorResponse
     {
         #region Properties
 
@@ -25,20 +25,20 @@
         public Guid OperatorId { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether [require custom merchant number].
+        /// Gets or sets the merchant number.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [require custom merchant number]; otherwise, <c>false</c>.
+        /// The merchant number.
         /// </value>
-        public Boolean RequireCustomMerchantNumber { get; set; }
+        public String MerchantNumber { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether [require customterminal number].
+        /// Gets or sets the terminal number.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [require customterminal number]; otherwise, <c>false</c>.
+        /// The terminal number.
         /// </value>
-        public Boolean RequireCustomTerminalNumber { get; set; }
+        public String TerminalNumber { get; set; }
 
         #endregion
     }

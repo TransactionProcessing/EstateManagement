@@ -31,7 +31,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The operators.
         /// </value>
-        public List<OperatorResponse> Operators { get; set; }
+        public List<EstateOperatorResponse> Operators { get; set; }
 
         /// <summary>
         /// Gets or sets the security users.
