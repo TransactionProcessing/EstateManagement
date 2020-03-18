@@ -46,7 +46,7 @@
 
             if (estate.SecurityUsers != null && estate.SecurityUsers.Any())
             {
-                estate.SecurityUsers.ForEach(s => estateResponse.SecurityUsers.Add(new SecurityUserResponse()
+                estate.SecurityUsers.ForEach(s => estateResponse.SecurityUsers.Add(new SecurityUserResponse
                                                                                {
                                                                                    EmailAddress = s.EmailAddress,
                                                                                    SecurityUserId = s.SecurityUserId

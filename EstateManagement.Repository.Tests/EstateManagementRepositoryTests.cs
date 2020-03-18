@@ -40,7 +40,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetEstate_EstateRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await this.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.Estates.Add(new Estate
                                 {
                                     EstateId = TestData.EstateId
@@ -72,7 +72,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetEstate_EstateNotFound_ErrorThrown(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await this.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
 
             Mock<IDbContextFactory<EstateReportingContext>> dbContextFactory = new Mock<IDbContextFactory<EstateReportingContext>>();
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
@@ -87,7 +87,7 @@ namespace EstateManagement.Repository.Tests
                                             });
         }
 
-        private async Task<EstateReportingContext> GetContext(String databaseName, TestDatabaseType databaseType = TestDatabaseType.InMemory)
+        private static async Task<EstateReportingContext> GetContext(String databaseName, TestDatabaseType databaseType = TestDatabaseType.InMemory)
         {
             EstateReportingContext context = null;
             if (databaseType == TestDatabaseType.InMemory)
