@@ -29,13 +29,13 @@
                                             {
                                                 EstateName = estate.Name,
                                                 EstateId = estate.EstateId,
-                                                Operators = new List<OperatorResponse>(),
+                                                Operators = new List<EstateOperatorResponse>(),
                                                 SecurityUsers = new List<SecurityUserResponse>()
                                             };
 
             if (estate.Operators != null && estate.Operators.Any())
             {
-                estate.Operators.ForEach(o => estateResponse.Operators.Add(new OperatorResponse
+                estate.Operators.ForEach(o => estateResponse.Operators.Add(new EstateOperatorResponse
                                                                            {
                                                                                Name = o.Name,
                                                                                OperatorId = o.OperatorId,
@@ -109,6 +109,19 @@
                 {
                     merchantResponse.Devices.Add(key, value);
                 }
+            }
+
+            if (merchant.Operators != null && merchant.Operators.Any())
+            {
+                merchantResponse.Operators = new List<MerchantOperatorResponse>();
+
+                merchant.Operators.ForEach(a => merchantResponse.Operators.Add(new MerchantOperatorResponse
+                                                                               {
+                                                                                   Name = a.Name,
+                                                                                   MerchantNumber = a.MerchantNumber,
+                                                                                   OperatorId = a.OperatorId,
+                                                                                   TerminalNumber = a.TerminalNumber
+                                                                               }));
             }
 
             return merchantResponse;

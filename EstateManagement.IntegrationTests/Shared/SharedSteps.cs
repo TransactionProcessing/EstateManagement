@@ -425,7 +425,7 @@ namespace EstateManagement.IntegrationTests.Shared
             foreach (TableRow tableRow in table.Rows)
             {
                 String operatorNameFromRow = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
-                OperatorResponse operatorResponse = estate.Operators.SingleOrDefault(o => o.Name == operatorNameFromRow);
+                EstateOperatorResponse operatorResponse = estate.Operators.SingleOrDefault(o => o.Name == operatorNameFromRow);
                 operatorResponse.ShouldNotBeNull();
             }
         }

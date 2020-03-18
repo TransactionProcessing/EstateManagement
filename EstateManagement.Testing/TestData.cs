@@ -212,7 +212,7 @@
             return merchantAggregate;
         }
 
-        public static Merchant MerchantModelWithAddressesAndContacts = new Merchant
+        public static Merchant MerchantModelWithAddressesContactsDevicesAndOperators = new Merchant
                                                                        {
                                                                            MerchantId = TestData.MerchantId,
                                                                            MerchantName = TestData.MerchantName,
@@ -241,28 +241,56 @@
                                                                                               ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
                                                                                               ContactEmailAddress = TestData.MerchantContactEmailAddress
                                                                                           }
-                                                                                      }
+                                                                                      },
+                                                                           Devices = new Dictionary<Guid, String>
+                                                                                     {
+                                                                                         {TestData.DeviceId, TestData.DeviceIdentifier}
+                                                                                     },
+                                                                           Operators = new List<Models.Merchant.Operator>
+                                                                                       {
+                                                                                           new Models.Merchant.Operator
+                                                                                           {
+                                                                                               Name = TestData.OperatorName,
+                                                                                               TerminalNumber = TestData.OperatorTerminalNumber,
+                                                                                               MerchantNumber = TestData.OperatorMerchantNumber,
+                                                                                               OperatorId = TestData.OperatorId
+                                                                                           }
+                                                                                       }
                                                                        };
 
-        public static Merchant MerchantModelWithNullAddressesAndWithContacts = new Merchant
-        {
-            MerchantId = TestData.MerchantId,
-            MerchantName = TestData.MerchantName,
-            EstateId = TestData.EstateId,
-            Addresses = null,
-            Contacts = new List<Contact>
-                                                                                      {
-                                                                                          new Contact
-                                                                                          {
-                                                                                              ContactId = TestData.MerchantContactId,
-                                                                                              ContactName = TestData.MerchantContactName,
-                                                                                              ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
-                                                                                              ContactEmailAddress = TestData.MerchantContactEmailAddress
-                                                                                          }
-                                                                                      }
-        };
+        public static Merchant MerchantModelWithNullAddresses = new Merchant
+                                                                               {
+                                                                                   MerchantId = TestData.MerchantId,
+                                                                                   MerchantName = TestData.MerchantName,
+                                                                                   EstateId = TestData.EstateId,
+                                                                                   Addresses = null,
+                                                                                   Contacts = new List<Contact>
+                                                                                              {
+                                                                                                  new Contact
+                                                                                                  {
+                                                                                                      ContactId = TestData.MerchantContactId,
+                                                                                                      ContactName = TestData.MerchantContactName,
+                                                                                                      ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
+                                                                                                      ContactEmailAddress = TestData.MerchantContactEmailAddress
+                                                                                                  }
+                                                                                              },
+                                                                                   Devices = new Dictionary<Guid, String>
+                                                                                             {
+                                                                                                 {TestData.DeviceId, TestData.DeviceIdentifier}
+                                                                                             },
+                                                                                   Operators = new List<Models.Merchant.Operator>
+                                                                                               {
+                                                                                                   new Models.Merchant.Operator
+                                                                                                   {
+                                                                                                       Name = TestData.OperatorName,
+                                                                                                       TerminalNumber = TestData.OperatorTerminalNumber,
+                                                                                                       MerchantNumber = TestData.OperatorMerchantNumber,
+                                                                                                       OperatorId = TestData.OperatorId
+                                                                                                   }
+                                                                                               }
+                                                                               };
 
-        public static Merchant MerchantModelWithAddressesAndNullContacts = new Merchant
+        public static Merchant MerchantModelWithNullContacts = new Merchant
                                                                            {
                                                                                MerchantId = TestData.MerchantId,
                                                                                MerchantName = TestData.MerchantName,
@@ -282,8 +310,102 @@
                                                                                                    PostalCode = TestData.MerchantPostalCode
                                                                                                }
                                                                                            },
-                                                                               Contacts = null
-                                                                           };
+                                                                               Contacts = null,
+                                                                               Devices = new Dictionary<Guid, String>
+                                                                                         {
+                                                                                             {TestData.DeviceId, TestData.DeviceIdentifier}
+                                                                                         },
+                                                                               Operators = new List<Models.Merchant.Operator>
+                                                                                           {
+                                                                                               new Models.Merchant.Operator
+                                                                                               {
+                                                                                                   Name = TestData.OperatorName,
+                                                                                                   TerminalNumber = TestData.OperatorTerminalNumber,
+                                                                                                   MerchantNumber = TestData.OperatorMerchantNumber,
+                                                                                                   OperatorId = TestData.OperatorId
+                                                                                               }
+                                                                                           }
+        };
+
+        public static Merchant MerchantModelWithNullDevices = new Merchant
+                                                              {
+                                                                  MerchantId = TestData.MerchantId,
+                                                                  MerchantName = TestData.MerchantName,
+                                                                  EstateId = TestData.EstateId,
+                                                                  Addresses = new List<Address>
+                                                                              {
+                                                                                  new Address
+                                                                                  {
+                                                                                      Town = TestData.MerchantTown,
+                                                                                      AddressLine4 = TestData.MerchantAddressLine4,
+                                                                                      AddressId = TestData.MerchantAddressId,
+                                                                                      Region = TestData.MerchantRegion,
+                                                                                      Country = TestData.MerchantCountry,
+                                                                                      AddressLine1 = TestData.MerchantAddressLine1,
+                                                                                      AddressLine2 = TestData.MerchantAddressLine2,
+                                                                                      AddressLine3 = TestData.MerchantAddressLine3,
+                                                                                      PostalCode = TestData.MerchantPostalCode
+                                                                                  }
+                                                                              },
+                                                                  Contacts = new List<Contact>
+                                                                             {
+                                                                                 new Contact
+                                                                                 {
+                                                                                     ContactId = TestData.MerchantContactId,
+                                                                                     ContactName = TestData.MerchantContactName,
+                                                                                     ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
+                                                                                     ContactEmailAddress = TestData.MerchantContactEmailAddress
+                                                                                 }
+                                                                             },
+                                                                  Devices = null,
+                                                                  Operators = new List<Models.Merchant.Operator>
+                                                                              {
+                                                                                  new Models.Merchant.Operator
+                                                                                  {
+                                                                                      Name = TestData.OperatorName,
+                                                                                      TerminalNumber = TestData.OperatorTerminalNumber,
+                                                                                      MerchantNumber = TestData.OperatorMerchantNumber,
+                                                                                      OperatorId = TestData.OperatorId
+                                                                                  }
+                                                                              }
+                                                              };
+
+        public static Merchant MerchantModelWithNullOperators = new Merchant
+                                                                {
+                                                                    MerchantId = TestData.MerchantId,
+                                                                    MerchantName = TestData.MerchantName,
+                                                                    EstateId = TestData.EstateId,
+                                                                    Addresses = new List<Address>
+                                                                                {
+                                                                                    new Address
+                                                                                    {
+                                                                                        Town = TestData.MerchantTown,
+                                                                                        AddressLine4 = TestData.MerchantAddressLine4,
+                                                                                        AddressId = TestData.MerchantAddressId,
+                                                                                        Region = TestData.MerchantRegion,
+                                                                                        Country = TestData.MerchantCountry,
+                                                                                        AddressLine1 = TestData.MerchantAddressLine1,
+                                                                                        AddressLine2 = TestData.MerchantAddressLine2,
+                                                                                        AddressLine3 = TestData.MerchantAddressLine3,
+                                                                                        PostalCode = TestData.MerchantPostalCode
+                                                                                    }
+                                                                                },
+                                                                    Contacts = new List<Contact>
+                                                                               {
+                                                                                   new Contact
+                                                                                   {
+                                                                                       ContactId = TestData.MerchantContactId,
+                                                                                       ContactName = TestData.MerchantContactName,
+                                                                                       ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
+                                                                                       ContactEmailAddress = TestData.MerchantContactEmailAddress
+                                                                                   }
+                                                                               },
+                                                                    Devices = new Dictionary<Guid, String>
+                                                                              {
+                                                                                  {TestData.DeviceId, TestData.DeviceIdentifier}
+                                                                              },
+                                                                    Operators = null
+                                                                };
 
         public static Guid OperatorId = Guid.Parse("6A63DA8B-4621-4731-90B1-A9D09B130D4B");
 
