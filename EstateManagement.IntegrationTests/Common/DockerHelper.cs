@@ -212,7 +212,7 @@ namespace EstateManagement.IntegrationTests.Common
                                 {
                                     EstateReportingContext context = new EstateReportingContext(connectionString);
                                     await context.Database.EnsureDeletedAsync(CancellationToken.None);
-                                });
+                                }, retryFor:TimeSpan.FromMinutes(2),retryInterval:TimeSpan.FromSeconds(30));
                 
             }
         }
