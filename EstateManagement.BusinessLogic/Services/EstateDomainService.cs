@@ -124,7 +124,9 @@
                                                       Claims = new Dictionary<String, String>()
                                                   };
 
-            createUserRequest.Roles.Add("Estate");
+            // Check if role has been overridden
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            createUserRequest.Roles.Add(String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName);
             createUserRequest.Claims.Add("EstateId", estateId.ToString());
             
             CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
