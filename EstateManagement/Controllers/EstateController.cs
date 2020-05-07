@@ -118,7 +118,8 @@
             // Get the Estate Id claim from the user
             Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
 
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] {"Estate"}) == false)
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
             {
                 return this.Forbid();
             }
