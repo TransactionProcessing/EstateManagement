@@ -1,11 +1,26 @@
 ﻿namespace EstateManagement.Models.Factories
 {
+    using System;
     using System.Collections.Generic;
+    using Merchant;
     using Microsoft.EntityFrameworkCore.Internal;
-    using EstateModel = EstateManagement.Models.Estate;
+    using EstateModel = EstateManagement.Models.Estate.Estate;
     using EstateEntity = EstateReporting.Database.Entities.Estate;
     using EstateOperatorEntity = EstateReporting.Database.Entities.EstateOperator;
     using EstateSecurityUserEntity = EstateReporting.Database.Entities.EstateSecurityUser;
+    using EstateOperatorModel = Models.Estate.Operator;
+    using SecurityUserModel = Models.SecurityUser;
+    using MerchantModel = EstateManagement.Models.Merchant.Merchant;
+    using MerchantAddressModel = EstateManagement.Models.Merchant.Address;
+    using MerchantContactModel = EstateManagement.Models.Merchant.Contact;
+    using MerchantOperatorModel = EstateManagement.Models.Merchant.Operator;
+
+    using MerchantEntity = EstateReporting.Database.Entities.Merchant;
+    using MerchantAddressEntity = EstateReporting.Database.Entities.MerchantAddress;
+    using MerchantContactEntity = EstateReporting.Database.Entities.MerchantContact;
+    using MerchantOperatorEntity = EstateReporting.Database.Entities.MerchantOperator;
+    using MerchantDeviceEntity = EstateReporting.Database.Entities.MerchantDevice;
+    using MerchantSecurityUserEntity = EstateReporting.Database.Entities.MerchantSecurityUser;
 
     /// <summary>
     /// 
@@ -28,9 +43,9 @@
 
             if (estateOperators != null && estateOperators.Any())
             {
-                estateModel.Operators = new List<Operator>();
-                estateOperators.ForEach(eo => estateModel.Operators.Add(new Operator
-                                                                        {
+                estateModel.Operators = new List<EstateOperatorModel>();
+                estateOperators.ForEach(eo => estateModel.Operators.Add(new EstateOperatorModel
+                {
                                                                             Name = eo.Name,
                                                                             RequireCustomMerchantNumber = eo.RequireCustomMerchantNumber,
                                                                             RequireCustomTerminalNumber = eo.RequireCustomTerminalNumber,
@@ -40,8 +55,8 @@
 
             if (estateSecurityUsers != null && estateSecurityUsers.Any())
             {
-                estateModel.SecurityUsers = new List<SecurityUser>();
-                estateSecurityUsers.ForEach(esu => estateModel.SecurityUsers.Add(new SecurityUser
+                estateModel.SecurityUsers = new List<SecurityUserModel>();
+                estateSecurityUsers.ForEach(esu => estateModel.SecurityUsers.Add(new SecurityUserModel
                                                                                  {
                                                                                      SecurityUserId = esu.SecurityUserId,
                                                                                      EmailAddress = esu.EmailAddress
@@ -49,6 +64,75 @@
             }
 
             return estateModel;
+        }
+
+        public MerchantModel ConvertFrom(MerchantEntity merchant, List<MerchantAddressEntity> merchantAddresses, List<MerchantContactEntity> merchantContacts,
+                                         List<MerchantOperatorEntity> merchantOperators, List<MerchantDeviceEntity> merchantDevices,
+                                         List<MerchantSecurityUserEntity> merchantSecurityUsers)
+        {
+            MerchantModel merchantModel = new MerchantModel();
+            merchantModel.EstateId = merchant.EstateId;
+            merchantModel.MerchantId = merchant.MerchantId;
+            merchantModel.MerchantName = merchant.Name;
+
+            if (merchantAddresses != null && merchantAddresses.Any())
+            {
+                merchantModel.Addresses= new List<MerchantAddressModel>();
+                merchantAddresses.ForEach(ma => merchantModel.Addresses.Add(new MerchantAddressModel
+                {
+                                                                            AddressId = ma.AddressId,
+                                                                            AddressLine1 = ma.AddressLine1,
+                                                                            AddressLine2 = ma.AddressLine2,
+                                                                            AddressLine3 = ma.AddressLine3,
+                                                                            AddressLine4 = ma.AddressLine4,
+                                                                            Country = ma.Country,
+                                                                            PostalCode = ma.PostalCode,
+                                                                            Region = ma.Region,
+                                                                            Town = ma.Town
+                                                                        }));
+            }
+
+            if (merchantContacts != null && merchantContacts.Any())
+            {
+                merchantModel.Contacts = new List<MerchantContactModel>();
+                merchantContacts.ForEach(mc => merchantModel.Contacts.Add(new MerchantContactModel
+                {
+                                                                                ContactEmailAddress = mc.EmailAddress,
+                                                                                ContactId = mc.ContactId,
+                                                                                ContactName = mc.Name,
+                                                                                ContactPhoneNumber = mc.PhoneNumber
+                                                                            }));
+            }
+
+            if (merchantOperators != null && merchantOperators.Any())
+            {
+                merchantModel.Operators = new List<MerchantOperatorModel>();
+                merchantOperators.ForEach(mo => merchantModel.Operators.Add(new MerchantOperatorModel
+                                                                          {
+                                                                              Name = mo.Name,
+                                                                              MerchantNumber = mo.MerchantNumber,
+                                                                              OperatorId = mo.OperatorId,
+                                                                              TerminalNumber = mo.TerminalNumber
+                                                                          }));
+            }
+
+            if (merchantDevices != null && merchantDevices.Any())
+            {
+                merchantModel.Devices = new Dictionary<Guid, String>();
+                merchantDevices.ForEach(md => merchantModel.Devices.Add(md.DeviceId, md.DeviceIdentifier));
+            }
+
+            if (merchantSecurityUsers != null && merchantSecurityUsers.Any())
+            {
+                merchantModel.SecurityUsers = new List<SecurityUserModel>();
+                merchantSecurityUsers.ForEach(msu => merchantModel.SecurityUsers.Add(new SecurityUserModel
+                                                                                     {
+                                                                                         EmailAddress = msu.EmailAddress,
+                                                                                         SecurityUserId = msu.SecurityUserId
+                                                                                     }));
+            }
+
+            return merchantModel;
         }
     }
 }

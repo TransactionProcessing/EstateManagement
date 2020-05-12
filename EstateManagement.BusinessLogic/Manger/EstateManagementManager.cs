@@ -1,11 +1,13 @@
 ﻿namespace EstateManagement.BusinessLogic.Manger
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateAggregate;
     using MerchantAggregate;
     using Models;
+    using Models.Estate;
     using Models.Factories;
     using Models.Merchant;
     using Repository;
@@ -96,6 +98,18 @@
             Merchant merchantModel = merchantAggregate.GetMerchant();
 
             return merchantModel;
+        }
+
+        /// <summary>
+        /// Gets the merchants.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<Merchant>> GetMerchants(Guid estateId,
+                                                       CancellationToken cancellationToken)
+        {
+            return await this.EstateManagementRepository.GetMerchants(estateId, cancellationToken);
         }
 
         #endregion

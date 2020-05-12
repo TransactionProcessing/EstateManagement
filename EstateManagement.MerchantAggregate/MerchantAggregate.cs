@@ -139,6 +139,7 @@
 
             if (this.Addresses.Any())
             {
+                merchantModel.Addresses = new List<Models.Merchant.Address>();
                 this.Addresses.ForEach(a => merchantModel.Addresses.Add(new Models.Merchant.Address
                                                                         {
                                                                             AddressId = a.AddressId,
@@ -155,6 +156,7 @@
 
             if (this.Contacts.Any())
             {
+                merchantModel.Contacts = new List<Models.Merchant.Contact>();
                 this.Contacts.ForEach(c => merchantModel.Contacts.Add(new Models.Merchant.Contact
                                                                       {
                                                                           ContactId = c.ContactId,
@@ -166,6 +168,7 @@
 
             if (this.Operators.Any())
             {
+                merchantModel.Operators = new List<Models.Merchant.Operator>();
                 this.Operators.ForEach(o => merchantModel.Operators.Add(new Models.Merchant.Operator
                                                                         {
                                                                             OperatorId = o.OperatorId,
@@ -177,7 +180,8 @@
 
             if (this.SecurityUsers.Any())
             {
-                this.SecurityUsers.ForEach(s => merchantModel.SecurityUsers.Add(new Models.Merchant.SecurityUser
+                merchantModel.SecurityUsers = new List<Models.SecurityUser>();
+                this.SecurityUsers.ForEach(s => merchantModel.SecurityUsers.Add(new Models.SecurityUser
                                                                                 {
                                                                                     SecurityUserId = s.SecurityUserId,
                                                                                     EmailAddress = s.EmailAddress
@@ -186,6 +190,7 @@
 
             if (this.Devices.Any())
             {
+                merchantModel.Devices = new Dictionary<Guid, String>();
                 foreach ((Guid key, String value) in this.Devices)
                 {
                     merchantModel.Devices.Add(key, value);

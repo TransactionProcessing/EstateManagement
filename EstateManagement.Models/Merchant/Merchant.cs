@@ -11,15 +11,15 @@
 
         public Merchant()
         {
-            this.Addresses = new List<Address>();
+            //this.Addresses = new List<Address>();
 
-            this.Contacts = new List<Contact>();
+            //this.Contacts = new List<Contact>();
 
-            this.Operators = new List<Operator>();
+            //this.Operators = new List<Operator>();
 
-            this.SecurityUsers = new List<SecurityUser>();
+            //this.SecurityUsers = new List<SecurityUser>();
 
-            this.Devices = new Dictionary<Guid, String>();
+            //this.Devices = new Dictionary<Guid, String>();
         }
 
         #endregion

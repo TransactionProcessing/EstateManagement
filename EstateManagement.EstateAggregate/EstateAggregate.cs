@@ -6,6 +6,7 @@
     using System.Linq;
     using Estate.DomainEvents;
     using Models;
+    using Models.Estate;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.DomainDrivenDesign.EventStore;
     using Shared.General;
@@ -156,11 +157,11 @@
 
             if (this.Operators.Any())
             {
-                estateModel.Operators = new List<Models.Operator>();
+                estateModel.Operators = new List<Models.Estate.Operator>();
 
                 foreach (Operator @operator in this.Operators)
                 {
-                    estateModel.Operators.Add(new Models.Operator
+                    estateModel.Operators.Add(new Models.Estate.Operator
                                               {
                                                   OperatorId = @operator.OperatorId,
                                                   Name = @operator.Name,

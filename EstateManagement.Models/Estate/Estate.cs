@@ -1,4 +1,4 @@
-﻿namespace EstateManagement.Models
+﻿namespace EstateManagement.Models.Estate
 {
     using System;
     using System.Collections.Generic;

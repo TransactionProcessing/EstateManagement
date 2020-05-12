@@ -4,6 +4,7 @@
     using System.Linq;
     using EstateManagement.Testing;
     using Models;
+    using Models.Estate;
     using Shouldly;
     using Xunit;
 
