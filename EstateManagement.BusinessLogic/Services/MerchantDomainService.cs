@@ -212,7 +212,8 @@
                                                       Claims = new Dictionary<String, String>()
                                                   };
 
-            createUserRequest.Roles.Add("Merchant");
+            String merchantRoleName = Environment.GetEnvironmentVariable("MerchantRoleName");
+            createUserRequest.Roles.Add(String.IsNullOrEmpty(merchantRoleName) ? "Merchant" : merchantRoleName);
             createUserRequest.Claims.Add("EstateId", estateId.ToString());
             createUserRequest.Claims.Add("MerchantId", merchantId.ToString());
 
