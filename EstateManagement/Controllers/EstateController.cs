@@ -18,6 +18,7 @@
     using Shared.Exceptions;
     using EstateManagement.BusinessLogic.Requests;
     using Microsoft.AspNetCore.Authorization;
+    using Models.Estate;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
     using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
     using CreateEstateUserRequest = BusinessLogic.Requests.CreateEstateUserRequest;

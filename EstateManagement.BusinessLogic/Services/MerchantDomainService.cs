@@ -8,6 +8,7 @@
     using EstateAggregate;
     using MerchantAggregate;
     using Models;
+    using Models.Estate;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
     using Shared.DomainDrivenDesign.EventStore;

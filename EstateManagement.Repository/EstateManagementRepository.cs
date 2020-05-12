@@ -8,10 +8,12 @@
     using EstateReporting.Database;
     using EstateReporting.Database.Entities;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
     using Models.Factories;
     using Shared.EntityFramework;
     using Shared.Exceptions;
-    using EstateModel = Models.Estate;
+    using EstateModel = Models.Estate.Estate;
+    using MerchantModel = Models.Merchant.Merchant;
 
     /// <summary>
     /// 
@@ -28,6 +30,15 @@
         /// <returns></returns>
         Task<EstateModel> GetEstate(Guid estateId,
                                     CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the merchants.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<MerchantModel>> GetMerchants(Guid estateId,
+                                          CancellationToken cancellationToken);
 
         #endregion
     }
@@ -93,6 +104,46 @@
             List<EstateSecurityUser> estateSecurityUsers = await context.EstateSecurityUsers.Where(esu => esu.EstateId == estateId).ToListAsync(cancellationToken);
 
             return this.ModelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+        }
+
+        /// <summary>
+        /// Gets the merchants.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<MerchantModel>> GetMerchants(Guid estateId,
+                                                       CancellationToken cancellationToken)
+        {
+            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            List<Merchant> merchants = await (from m in context.Merchants where m.EstateId == estateId select m).ToListAsync(cancellationToken);
+
+            List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.EstateId == estateId select a).ToListAsync(cancellationToken);
+            List<MerchantContact> merchantContacts = await (from c in context.MerchantContacts where c.EstateId == estateId select c).ToListAsync(cancellationToken);
+            List<MerchantDevice> merchantDevices = await (from d in context.MerchantDevices where d.EstateId == estateId select d).ToListAsync(cancellationToken);
+            List<MerchantSecurityUser> merchantSecurityUsers = await (from u in context.MerchantSecurityUsers where u.EstateId == estateId select u).ToListAsync(cancellationToken);
+            List<MerchantOperator> merchantOperators = await (from o in context.MerchantOperators where o.EstateId == estateId select o).ToListAsync(cancellationToken);
+            
+            if (merchants.Any() == false)
+            {
+                return null;
+            }
+
+            List<MerchantModel> models = new List<MerchantModel>();
+
+            foreach (Merchant merchant in merchants)
+            {
+                List<MerchantAddress> addresses = merchantAddresses.Where(a => a.MerchantId == merchant.MerchantId).ToList();
+                List<MerchantContact> contacts = merchantContacts.Where(c => c.MerchantId == merchant.MerchantId).ToList();
+                List<MerchantDevice> devices = merchantDevices.Where(d => d.MerchantId == merchant.MerchantId).ToList();
+                List<MerchantSecurityUser> securityUsers = merchantSecurityUsers.Where(s => s.MerchantId == merchant.MerchantId).ToList();
+                List<MerchantOperator> operators = merchantOperators.Where(o => o.MerchantId == merchant.MerchantId).ToList();
+
+                models.Add(this.ModelFactory.ConvertFrom(merchant, addresses, contacts, operators, devices, securityUsers));
+            }
+
+            return models;
         }
 
         #endregion

@@ -11,6 +11,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Manger;
     using MerchantAggregate;
     using Models;
+    using Models.Estate;
     using Models.Factories;
     using Models.Merchant;
     using Moq;
@@ -72,7 +73,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
-        public async Task EstateManagementManager_GetMerchant_MerchantIsReturnedWithEmptyAddressesAndContacts()
+        public async Task EstateManagementManager_GetMerchant_MerchantIsReturnedWithNullAddressesAndContacts()
         {
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
@@ -82,12 +83,12 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.EstateId.ShouldBe(TestData.EstateId);
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
             merchantModel.MerchantName.ShouldBe(TestData.MerchantName);
-            merchantModel.Addresses.ShouldBeEmpty();
-            merchantModel.Contacts.ShouldBeEmpty();
+            merchantModel.Addresses.ShouldBeNull();
+            merchantModel.Contacts.ShouldBeNull();
         }
 
         [Fact]
-        public async Task EstateManagementManager_GetMerchant_WithAddress_MerchantIsReturnedWithEmptyContacts()
+        public async Task EstateManagementManager_GetMerchant_WithAddress_MerchantIsReturnedWithNullContacts()
         {
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithAddress);
 
@@ -98,11 +99,11 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
             merchantModel.MerchantName.ShouldBe(TestData.MerchantName);
             merchantModel.Addresses.ShouldHaveSingleItem();
-            merchantModel.Contacts.ShouldBeEmpty();
+            merchantModel.Contacts.ShouldBeNull();
         }
 
         [Fact]
-        public async Task EstateManagementManager_GetMerchant_WithContact_MerchantIsReturnedWithEmptyAddresses()
+        public async Task EstateManagementManager_GetMerchant_WithContact_MerchantIsReturnedWithNullAddresses()
         {
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithContact);
 
@@ -112,8 +113,24 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.EstateId.ShouldBe(TestData.EstateId);
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
             merchantModel.MerchantName.ShouldBe(TestData.MerchantName);
-            merchantModel.Addresses.ShouldBeEmpty();
+            merchantModel.Addresses.ShouldBeNull();
             merchantModel.Contacts.ShouldHaveSingleItem();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetMerchants_MerchantListIsReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Merchant>
+                                                                                                                                     {
+                                                                                                                                         TestData
+                                                                                                                                             .MerchantModelWithAddressesContactsDevicesAndOperators
+                                                                                                                                     });
+
+            List<Merchant> merchantList = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+
+            merchantList.ShouldNotBeNull();
+            merchantList.ShouldNotBeEmpty();
+            merchantList.ShouldHaveSingleItem();
         }
     }
 }

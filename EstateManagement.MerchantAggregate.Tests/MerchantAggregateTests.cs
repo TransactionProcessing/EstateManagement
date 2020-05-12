@@ -6,6 +6,7 @@ namespace EstateManagement.MerchantAggregate.Tests
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using EstateManagement.Models;
     using Models.Merchant;
     using Shouldly;
     using Testing;
@@ -129,7 +130,7 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Operators.ShouldHaveSingleItem();
-            Operator operatorModel = merchantModel.Operators.Single();
+            Models.Merchant.Operator operatorModel = merchantModel.Operators.Single();
             operatorModel.OperatorId.ShouldBe(TestData.OperatorId);
             operatorModel.Name.ShouldBe(TestData.OperatorName);
             operatorModel.MerchantNumber.ShouldBe(TestData.OperatorMerchantNumber);

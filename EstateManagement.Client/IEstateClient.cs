@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Client
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using DataTransferObjects.Requests;
@@ -131,6 +132,17 @@
                                            Guid estateId,
                                            Guid merchantId,
                                            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<MerchantResponse>> GetMerchants(String accessToken,
+                                            Guid estateId,
+                                            CancellationToken cancellationToken);
 
         #endregion
     }

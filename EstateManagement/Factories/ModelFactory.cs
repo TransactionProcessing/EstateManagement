@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using DataTransferObjects.Responses;
-    using Models;
+    using Models.Estate;
     using Models.Merchant;
 
     /// <summary>
@@ -13,6 +13,8 @@
     /// <seealso cref="EstateManagement.Factories.IModelFactory" />
     public class ModelFactory : IModelFactory
     {
+        #region Methods
+
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -47,15 +49,20 @@
             if (estate.SecurityUsers != null && estate.SecurityUsers.Any())
             {
                 estate.SecurityUsers.ForEach(s => estateResponse.SecurityUsers.Add(new SecurityUserResponse
-                                                                               {
-                                                                                   EmailAddress = s.EmailAddress,
-                                                                                   SecurityUserId = s.SecurityUserId
-                                                                               }));
+                                                                                   {
+                                                                                       EmailAddress = s.EmailAddress,
+                                                                                       SecurityUserId = s.SecurityUserId
+                                                                                   }));
             }
 
             return estateResponse;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchant">The merchant.</param>
+        /// <returns></returns>
         public MerchantResponse ConvertFrom(Merchant merchant)
         {
             if (merchant == null)
@@ -92,13 +99,13 @@
             {
                 merchantResponse.Contacts = new List<ContactResponse>();
 
-                merchant.Contacts.ForEach(c => merchantResponse.Contacts.Add(new ContactResponse()
-                                                                               {
-                                                                                   ContactId = c.ContactId,
-                                                                                   ContactPhoneNumber = c.ContactPhoneNumber,
-                                                                                   ContactEmailAddress = c.ContactEmailAddress,
-                                                                                   ContactName = c.ContactName
-                                                                               }));
+                merchant.Contacts.ForEach(c => merchantResponse.Contacts.Add(new ContactResponse
+                                                                             {
+                                                                                 ContactId = c.ContactId,
+                                                                                 ContactPhoneNumber = c.ContactPhoneNumber,
+                                                                                 ContactEmailAddress = c.ContactEmailAddress,
+                                                                                 ContactName = c.ContactName
+                                                                             }));
             }
 
             if (merchant.Devices != null && merchant.Devices.Any())
@@ -126,5 +133,21 @@
 
             return merchantResponse;
         }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchants">The merchants.</param>
+        /// <returns></returns>
+        public List<MerchantResponse> ConvertFrom(List<Merchant> merchants)
+        {
+            List<MerchantResponse> result = new List<MerchantResponse>();
+
+            merchants.ForEach(m => result.Add(this.ConvertFrom(m)));
+
+            return result;
+        }
+
+        #endregion
     }
 }

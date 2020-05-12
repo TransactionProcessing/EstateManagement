@@ -1,7 +1,9 @@
 ﻿namespace EstateManagement.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Manger;
@@ -133,6 +135,40 @@
                                     AddressId = command.AddressId,
                                     ContactId = command.ContactId
                                 });
+        }
+
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException">Merchant not found with estate Id {estateId} and merchant Id {merchantId}</exception>
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> GetMerchants([FromRoute] Guid estateId, CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { "Estate" }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            List<Merchant> merchants = await this.EstateManagementManager.GetMerchants(estateId, cancellationToken);
+
+            if (merchants == null || merchants.Any() == false)
+            {
+                throw new NotFoundException($"No Merchants found for estate Id {estateId}");
+            }
+
+            return this.Ok(this.ModelFactory.ConvertFrom(merchants));
         }
 
         /// <summary>

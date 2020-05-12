@@ -9,6 +9,7 @@ namespace EstateManagement.Tests.Factories
     using EstateAggregate;
     using EstateManagement.Factories;
     using Models;
+    using Models.Estate;
     using Models.Merchant;
     using Shouldly;
     using Testing;
@@ -17,7 +18,7 @@ namespace EstateManagement.Tests.Factories
     public class ModelFactoryTests
     {
         [Fact]
-        public void ModelFactory_EstateAggregate_WithNoOperatorsOrSecurityUsers_IsConverted()
+        public void ModelFactory_Estate_WithNoOperatorsOrSecurityUsers_IsConverted()
         {
             Estate estateModel = TestData.EstateModel;
 
@@ -31,7 +32,7 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_EstateAggregate_WithOperators_IsConverted()
+        public void ModelFactory_Estate_WithOperators_IsConverted()
         {
             Estate estateModel = TestData.EstateModelWithOperators;
 
@@ -48,7 +49,7 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_EstateAggregate_WithSecurityUsers_IsConverted()
+        public void ModelFactory_Estate_WithSecurityUsers_IsConverted()
         {
             Estate estateModel = TestData.EstateModelWithSecurityUsers;
 
@@ -65,7 +66,7 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_EstateAggregate_WithOperatorsAndSecurityUsers_IsConverted()
+        public void ModelFactory_Estate_WithOperatorsAndSecurityUsers_IsConverted()
         {
             Estate estateModel = TestData.EstateModelWithOperatorsAndSecurityUsers;
 
@@ -83,7 +84,7 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_EstateAggregate_NullInput_IsConverted()
+        public void ModelFactory_Estate_NullInput_IsConverted()
         {
             Estate estateModel = null;
 
@@ -299,6 +300,23 @@ namespace EstateManagement.Tests.Factories
             device.Value.ShouldBe(merchantModel.Devices.Single().Value);
 
             merchantResponse.Operators.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_MerchantList_IsConverted()
+        {
+            List<Merchant> merchantModelList = new List<Merchant>
+                                               {
+                                                   TestData.MerchantModelWithAddressesContactsDevicesAndOperators
+                                               };
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            var merchantResponseList = modelFactory.ConvertFrom(merchantModelList);
+
+            merchantResponseList.ShouldNotBeNull();
+            merchantResponseList.ShouldNotBeEmpty();
+            merchantResponseList.Count.ShouldBe(merchantModelList.Count);
         }
     }
 }

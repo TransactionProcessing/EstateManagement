@@ -498,7 +498,22 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When(@"I get the merchants for '(.*)' then (.*) merchants will be returned")]
+        public async Task WhenIGetTheMerchantsForThenMerchantsWillBeReturned(String estateName, Int32 expectedMerchantCount)
+        {
+            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
 
+            String token = this.TestingContext.AccessToken;
+            if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+            {
+                token = estateDetails.AccessToken;
+            }
 
+            List<MerchantResponse> merchantList= await this.TestingContext.DockerHelper.EstateClient.GetMerchants(token, estateDetails.EstateId, CancellationToken.None).ConfigureAwait(false);
+
+            merchantList.ShouldNotBeNull();
+            merchantList.ShouldNotBeEmpty();
+            merchantList.Count.ShouldBe(expectedMerchantCount);
+        }
     }
 }

@@ -1,7 +1,8 @@
 ﻿namespace EstateManagement.Factories
 {
+    using System.Collections.Generic;
     using DataTransferObjects.Responses;
-    using Models;
+    using Models.Estate;
     using Models.Merchant;
 
     /// <summary>
@@ -24,6 +25,13 @@
         /// <param name="merchant">The merchant.</param>
         /// <returns></returns>
         MerchantResponse ConvertFrom(Merchant merchant);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchants">The merchants.</param>
+        /// <returns></returns>
+        List<MerchantResponse> ConvertFrom(List<Merchant> merchants);
 
         #endregion
     }
