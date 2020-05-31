@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// 
@@ -17,6 +18,7 @@
         /// <value>
         /// The merchant number.
         /// </value>
+        [JsonProperty("merchant_number")]
         public String MerchantNumber { get; set; }
 
         /// <summary>
@@ -25,6 +27,7 @@
         /// <value>
         /// The operator identifier.
         /// </value>
+        [JsonProperty("operator_id")]
         public Guid OperatorId { get; set; }
 
         /// <summary>
@@ -33,6 +36,7 @@
         /// <value>
         /// The terminal number.
         /// </value>
+        [JsonProperty("terminal_number")]
         public String TerminalNumber { get; set; }
 
         #endregion

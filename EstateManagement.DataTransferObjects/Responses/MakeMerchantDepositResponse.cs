@@ -1,14 +1,14 @@
-﻿namespace EstateManagement.DataTransferObjects.Responses
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace EstateManagement.DataTransferObjects.Responses
 {
-    using System;
     using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
 
-    /// <summary>
-    /// 
-    /// </summary>
     [ExcludeFromCodeCoverage]
-    public class AssignOperatorResponse
+    public class MakeMerchantDepositResponse
     {
         #region Properties
 
@@ -31,13 +31,13 @@
         public Guid MerchantId { get; set; }
 
         /// <summary>
-        /// Gets or sets the operator identifier.
+        /// Gets or sets the device identifier.
         /// </summary>
         /// <value>
-        /// The operator identifier.
+        /// The device identifier.
         /// </value>
-        [JsonProperty("operator_id")]
-        public Guid OperatorId { get; set; }
+        [JsonProperty("deposit_id")]
+        public Guid DepositId { get; set; }
 
         #endregion
     }

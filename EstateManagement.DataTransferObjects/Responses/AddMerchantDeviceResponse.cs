@@ -4,6 +4,10 @@ using System.Text;
 
 namespace EstateManagement.DataTransferObjects.Responses
 {
+    using System.Diagnostics.CodeAnalysis;
+    using Newtonsoft.Json;
+
+    [ExcludeFromCodeCoverage]
     public class AddMerchantDeviceResponse
     {
         #region Properties
@@ -14,6 +18,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The estate identifier.
         /// </value>
+        [JsonProperty("estate_id")]
         public Guid EstateId { get; set; }
 
         /// <summary>
@@ -22,6 +27,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The merchant identifier.
         /// </value>
+        [JsonProperty("merchant_id")]
         public Guid MerchantId { get; set; }
 
         /// <summary>
@@ -30,6 +36,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The device identifier.
         /// </value>
+        [JsonProperty("device_id")]
         public Guid DeviceId { get; set; }
 
         #endregion

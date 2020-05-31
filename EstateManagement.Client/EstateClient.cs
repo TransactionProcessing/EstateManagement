@@ -499,6 +499,54 @@
             return response;
         }
 
+        /// <summary>
+        /// Makes the merchant deposit.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="makeMerchantDepositRequest">The make merchant deposit request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<MakeMerchantDepositResponse> MakeMerchantDeposit(String accessToken,
+                                                                           Guid estateId,
+                                                                           Guid merchantId,
+                                                                           MakeMerchantDepositRequest makeMerchantDepositRequest,
+                                                                           CancellationToken cancellationToken)
+        {
+            MakeMerchantDepositResponse response = null;
+
+            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}/deposits";
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(makeMerchantDepositRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<MakeMerchantDepositResponse>(content);
+            }
+            catch(Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error making merchant deposit for merchant {merchantId} for estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         #endregion
     }
 }

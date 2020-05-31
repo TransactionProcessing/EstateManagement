@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EstateManagement.BusinessLogic.Tests.Commands
 {
+    using Models;
     using Requests;
     using Shouldly;
     using Testing;
@@ -137,6 +138,27 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             addMerchantDeviceRequest.MerchantId.ShouldBe(TestData.MerchantId);
             addMerchantDeviceRequest.DeviceId.ShouldBe(TestData.DeviceId);
             addMerchantDeviceRequest.DeviceIdentifier.ShouldBe(TestData.DeviceIdentifier);
+        }
+
+        [Theory]
+        [InlineData(MerchantDepositSource.Manual)]
+        [InlineData(MerchantDepositSource.Automatic)]
+        public void MakeMerchantDepositRequest_CanBeCreated_IsCreated(MerchantDepositSource merchantDepositSource)
+        {
+            MakeMerchantDepositRequest makeMerchantDepositRequest = MakeMerchantDepositRequest.Create(TestData.EstateId,
+                                                                                               TestData.MerchantId,
+                                                                                               merchantDepositSource,
+                                                                                               TestData.DepositReference,
+                                                                                               TestData.DepositDateTime,
+                                                                                               TestData.DepositAmount);
+
+            makeMerchantDepositRequest.ShouldNotBeNull();
+            makeMerchantDepositRequest.EstateId.ShouldBe(TestData.EstateId);
+            makeMerchantDepositRequest.MerchantId.ShouldBe(TestData.MerchantId);
+            makeMerchantDepositRequest.Source.ShouldBe(merchantDepositSource);
+            makeMerchantDepositRequest.Amount.ShouldBe(TestData.DepositAmount);
+            makeMerchantDepositRequest.DepositDateTime.ShouldBe(TestData.DepositDateTime);
+            makeMerchantDepositRequest.Reference.ShouldBe(TestData.DepositReference);
         }
     }
 }

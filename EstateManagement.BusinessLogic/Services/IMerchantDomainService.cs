@@ -104,6 +104,25 @@
                                          String deviceIdentifier,
                                          CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Makes the merchant deposit.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="reference">The reference.</param>
+        /// <param name="depositDateTime">The deposit date time.</param>
+        /// <param name="amount">The amount.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<Guid> MakeMerchantDeposit(Guid estateId,
+                                 Guid merchantId,
+                                 Models.MerchantDepositSource source,
+                                 String reference,
+                                 DateTime depositDateTime,
+                                 Decimal amount,
+                                 CancellationToken cancellationToken);
+
         #endregion
     }
 }

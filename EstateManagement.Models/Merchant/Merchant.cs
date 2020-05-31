@@ -9,19 +9,6 @@
     {
         #region Constructors
 
-        public Merchant()
-        {
-            //this.Addresses = new List<Address>();
-
-            //this.Contacts = new List<Contact>();
-
-            //this.Operators = new List<Operator>();
-
-            //this.SecurityUsers = new List<SecurityUser>();
-
-            //this.Devices = new Dictionary<Guid, String>();
-        }
-
         #endregion
 
         #region Properties
@@ -41,6 +28,22 @@
         /// The contacts.
         /// </value>
         public List<Contact> Contacts { get; set; }
+
+        /// <summary>
+        /// Gets or sets the deposits.
+        /// </summary>
+        /// <value>
+        /// The deposits.
+        /// </value>
+        public List<Deposit> Deposits { get; set; }
+
+        /// <summary>
+        /// Gets or sets the devices.
+        /// </summary>
+        /// <value>
+        /// The devices.
+        /// </value>
+        public Dictionary<Guid, String> Devices { get; set; }
 
         /// <summary>
         /// Gets or sets the estate identifier.
@@ -81,14 +84,6 @@
         /// The security users.
         /// </value>
         public List<SecurityUser> SecurityUsers { get; set; }
-
-        /// <summary>
-        /// Gets or sets the devices.
-        /// </summary>
-        /// <value>
-        /// The devices.
-        /// </value>
-        public Dictionary<Guid, String> Devices { get; set; }
 
         #endregion
     }

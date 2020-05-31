@@ -141,8 +141,23 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<List<MerchantResponse>> GetMerchants(String accessToken,
-                                            Guid estateId,
-                                            CancellationToken cancellationToken);
+                                                  Guid estateId,
+                                                  CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Makes the merchant deposit.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="makeMerchantDepositRequest">The make merchant deposit request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<MakeMerchantDepositResponse> MakeMerchantDeposit(String accessToken,
+                                                              Guid estateId,
+                                                              Guid merchantId,
+                                                              MakeMerchantDepositRequest makeMerchantDepositRequest,
+                                                              CancellationToken cancellationToken);
 
         #endregion
     }

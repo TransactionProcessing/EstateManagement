@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateAggregate;
@@ -264,6 +266,60 @@
             merchantAggregate.AddDevice(deviceId, deviceIdentifier);
 
             await merchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+        }
+
+        public async Task<Guid> MakeMerchantDeposit(Guid estateId,
+                                                    Guid merchantId,
+                                                    Models.MerchantDepositSource source,
+                                                    String reference,
+                                                    DateTime depositDateTime,
+                                                    Decimal amount,
+                                                    CancellationToken cancellationToken)
+        {
+            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
+            IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
+            MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+
+            // Check merchant has been created
+            if (merchantAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+            }
+
+            // Estate Id is a valid estate
+            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            }
+
+            String depositData = $"{depositDateTime.ToString("yyyymmdd hh:mm:ss.fff")}-{reference}-{amount:N2)}-{source}";
+            Guid depositId = this.GenerateGuidFromString(depositData);
+
+            merchantAggregate.MakeDeposit(depositId, source,reference,depositDateTime,amount);
+
+            await merchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+
+            return depositId;
+        }
+
+        /// <summary>
+        /// Generates the unique identifier from string.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns></returns>
+        private Guid GenerateGuidFromString(String input)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                //Generate hash from the key
+                Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+                Byte[] j = bytes.Skip(Math.Max(0, bytes.Count() - 16)).ToArray(); //Take last 16
+
+                //Create our Guid.
+                return new Guid(j);
+            }
         }
 
         #endregion

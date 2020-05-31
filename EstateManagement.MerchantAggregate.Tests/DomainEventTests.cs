@@ -128,5 +128,28 @@ namespace EstateManagement.MerchantAggregate.Tests
             deviceAddedToMerchantEvent.DeviceId.ShouldBe(TestData.DeviceId);
             deviceAddedToMerchantEvent.DeviceIdentifier.ShouldBe(TestData.DeviceIdentifier);
         }
+
+        [Fact]
+        public void ManualDepositMadeEvent_CanBeCreated_IsCreated()
+        {
+            ManualDepositMadeEvent manualDepositMadeEvent = ManualDepositMadeEvent.Create(TestData.MerchantId, 
+                                                                                          TestData.EstateId,
+                                                                                          TestData.DepositId,
+                                                                                          TestData.DepositReference,
+                                                                                          TestData.DepositDateTime,
+                                                                                          TestData.DepositAmount);
+
+            manualDepositMadeEvent.ShouldNotBeNull();
+            manualDepositMadeEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            manualDepositMadeEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
+            manualDepositMadeEvent.EventId.ShouldNotBe(Guid.Empty);
+            manualDepositMadeEvent.EstateId.ShouldBe(TestData.EstateId);
+            manualDepositMadeEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            manualDepositMadeEvent.DepositId.ShouldBe(TestData.DepositId);
+            manualDepositMadeEvent.Reference.ShouldBe(TestData.DepositReference);
+            manualDepositMadeEvent.DepositDateTime.ShouldBe(TestData.DepositDateTime);
+            manualDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount);
+
+        }
     }
 }

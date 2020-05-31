@@ -1,7 +1,10 @@
 ﻿namespace EstateManagement.DataTransferObjects.Responses
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
+    using Newtonsoft.Json;
 
+    [ExcludeFromCodeCoverage]
     public class ContactResponse
     {
         #region Properties
@@ -12,6 +15,7 @@
         /// <value>
         /// The contact email address.
         /// </value>
+        [JsonProperty("contact_email_address")]
         public String ContactEmailAddress { get; set; }
 
         /// <summary>
@@ -20,6 +24,7 @@
         /// <value>
         /// The contact identifier.
         /// </value>
+        [JsonProperty("contact_id")]
         public Guid ContactId { get; set; }
 
         /// <summary>
@@ -28,6 +33,7 @@
         /// <value>
         /// The name of the contact.
         /// </value>
+        [JsonProperty("contact_name")]
         public String ContactName { get; set; }
 
         /// <summary>
@@ -36,6 +42,7 @@
         /// <value>
         /// The contact phone number.
         /// </value>
+        [JsonProperty("contact_phone_number")]
         public String ContactPhoneNumber { get; set; }
 
         #endregion

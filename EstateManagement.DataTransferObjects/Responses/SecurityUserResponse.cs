@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using Newtonsoft.Json;
 
     [ExcludeFromCodeCoverage]
     public class SecurityUserResponse
@@ -14,6 +15,7 @@
         /// <value>
         /// The email address.
         /// </value>
+        [JsonProperty("email_address")]
         public String EmailAddress { get; set; }
 
         /// <summary>
@@ -22,6 +24,7 @@
         /// <value>
         /// The security user identifier.
         /// </value>
+        [JsonProperty("security_user_id")]
         public Guid SecurityUserId { get; set; }
 
         #endregion

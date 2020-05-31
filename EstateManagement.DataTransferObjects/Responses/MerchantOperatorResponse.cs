@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using Newtonsoft.Json;
 
     [ExcludeFromCodeCoverage]
     public class MerchantOperatorResponse
@@ -14,6 +15,7 @@
         /// <value>
         /// The name.
         /// </value>
+        [JsonProperty("name")]
         public String Name { get; set; }
 
         /// <summary>
@@ -22,6 +24,7 @@
         /// <value>
         /// The operator identifier.
         /// </value>
+        [JsonProperty("operator_id")]
         public Guid OperatorId { get; set; }
 
         /// <summary>
@@ -30,6 +33,7 @@
         /// <value>
         /// The merchant number.
         /// </value>
+        [JsonProperty("merchant_number")]
         public String MerchantNumber { get; set; }
 
         /// <summary>
@@ -38,6 +42,7 @@
         /// <value>
         /// The terminal number.
         /// </value>
+        [JsonProperty("terminal_number")]
         public String TerminalNumber { get; set; }
 
         #endregion

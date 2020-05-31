@@ -17,7 +17,8 @@
     public class MerchantRequestHandler : IRequestHandler<CreateMerchantRequest, String>,
                                           IRequestHandler<AssignOperatorToMerchantRequest, String>,
                                           IRequestHandler<CreateMerchantUserRequest, Guid>,
-                                          IRequestHandler<AddMerchantDeviceRequest, String>
+                                          IRequestHandler<AddMerchantDeviceRequest, String>,
+                                          IRequestHandler<MakeMerchantDepositRequest, Guid>
     {
         #region Fields
 
@@ -128,5 +129,27 @@
         }
 
         #endregion
+
+        /// <summary>
+        /// Handles a request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>
+        /// Response from the request
+        /// </returns>
+        public async Task<Guid> Handle(MakeMerchantDepositRequest request,
+                                       CancellationToken cancellationToken)
+        {
+            Guid depositId = await this.MerchantDomainService.MakeMerchantDeposit(request.EstateId,
+                                                                                  request.MerchantId,
+                                                                                  request.Source,
+                                                                                  request.Reference,
+                                                                                  request.DepositDateTime,
+                                                                                  request.Amount,
+                                                                                  cancellationToken);
+
+            return depositId;
+        }
     }
 }
