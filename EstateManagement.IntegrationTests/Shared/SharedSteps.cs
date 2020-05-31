@@ -545,11 +545,15 @@ namespace EstateManagement.IntegrationTests.Shared
                 token = estateDetails.AccessToken;
             }
 
-            List<MerchantResponse> merchantList= await this.TestingContext.DockerHelper.EstateClient.GetMerchants(token, estateDetails.EstateId, CancellationToken.None).ConfigureAwait(false);
+            await Retry.For(async () =>
+                            {
+                                List<MerchantResponse> merchantList = await this.TestingContext.DockerHelper.EstateClient.GetMerchants(token, estateDetails.EstateId, CancellationToken.None).ConfigureAwait(false);
 
-            merchantList.ShouldNotBeNull();
-            merchantList.ShouldNotBeEmpty();
-            merchantList.Count.ShouldBe(expectedMerchantCount);
+                                merchantList.ShouldNotBeNull();
+                                merchantList.ShouldNotBeEmpty();
+                                merchantList.Count.ShouldBe(expectedMerchantCount);
+                            });
+            
         }
     }
 }

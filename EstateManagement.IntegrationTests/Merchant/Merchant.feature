@@ -120,7 +120,7 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	| Deposit2  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
 
 @PRTest
-Scenario: Get Merchats for Estate - System Login
+Scenario: Get Merchants for Estate - System Login
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
 	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
@@ -158,7 +158,7 @@ Scenario: Get Merchats for Estate - System Login
 	When I get the merchants for 'Test Estate 2' then 2 merchants will be returned
 
 @PRTest
-Scenario: Get Merchats for Estate - Estate Login
+Scenario: Get Merchants for Estate - Estate Login
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
 	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
