@@ -238,5 +238,73 @@ namespace EstateManagement.MerchantAggregate.Tests
                                                         aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
                                                     });
         }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_DepositMade()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Deposits.ShouldHaveSingleItem();
+            merchantModel.Deposits.Single().Source.ShouldBe(TestData.MerchantDepositSourceManual);
+            merchantModel.Deposits.Single().DepositId.ShouldBe(TestData.DepositId);
+            merchantModel.Deposits.Single().DepositDateTime.ShouldBe(TestData.DepositDateTime);
+            merchantModel.Deposits.Single().Reference.ShouldBe(TestData.DepositReference);
+            merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount);
+        }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_MerchantNotCreated_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                    });
+        }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_DuplicateDepositId_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Deposits.ShouldHaveSingleItem();
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                    });
+        }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_DepositSourceNotSet_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.MakeDeposit(TestData.DepositId, MerchantDepositSource.NotSet, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                    });
+        }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_AutomaticDepositSource_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            Should.Throw<NotSupportedException>(() =>
+                                                    {
+                                                        aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceAutomatic, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                    });
+        }
+
     }
 }

@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateManagement.DataTransferObjects.Responses
+﻿namespace EstateManagement.DataTransferObjects.Responses
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
 
+    [ExcludeFromCodeCoverage]
     public class CreateOperatorResponse
     {
+        #region Properties
+
         /// <summary>
         /// Gets or sets the estate identifier.
         /// </summary>
@@ -25,5 +26,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// </value>
         [JsonProperty("operator_id")]
         public Guid OperatorId { get; set; }
+
+        #endregion
     }
 }

@@ -24,6 +24,8 @@
     using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.CreateMerchantUserRequest;
     using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
     using AddMerchantDeviceRequestDTO = DataTransferObjects.Requests.AddMerchantDeviceRequest;
+    using MakeMerchantDepositRequest = BusinessLogic.Requests.MakeMerchantDepositRequest;
+    using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.MakeMerchantDepositRequest;
     using EstateManagement.Common;
     using System.Security.Claims;
     using Microsoft.AspNetCore.Authorization;
@@ -209,16 +211,73 @@
             return this.Ok(this.ModelFactory.ConvertFrom(merchant));
         }
 
-        /// <summary>
-        /// Assigns the operator.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="assignOperatorRequest">The assign operator request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         [HttpPost]
-        [Route("{merchantId}/operators")]
+        [Route("{merchantId}/deposits")]
+        public async Task<IActionResult> MakeDeposit([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromBody] MakeMerchantDepositRequestDTO makeMerchantDepositRequest,
+                                                     CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            // Convert the source
+            Models.MerchantDepositSource merchantDepositSourceModel = Models.MerchantDepositSource.NotSet;
+            switch(makeMerchantDepositRequest.Source)
+            {
+                case MerchantDepositSource.Manual:
+                    merchantDepositSourceModel = Models.MerchantDepositSource.Manual;
+                    break;
+                    case MerchantDepositSource.Automatic:
+                        merchantDepositSourceModel = Models.MerchantDepositSource.Automatic;
+                        break;
+                    default:
+                        merchantDepositSourceModel = Models.MerchantDepositSource.Manual;
+                        break;
+            }
+
+            MakeMerchantDepositRequest command = MakeMerchantDepositRequest.Create(estateId,
+                                                                                   merchantId,
+                                                                                   merchantDepositSourceModel,
+                                                                                   makeMerchantDepositRequest.Reference,
+                                                                                   makeMerchantDepositRequest.DepositDateTime,
+                                                                                   makeMerchantDepositRequest.Amount);
+
+            // Route the command
+            Guid depositId = await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new MakeMerchantDepositResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    DepositId = depositId
+                                });
+
+        }
+
+                                                        /// <summary>
+                                                        /// Assigns the operator.
+                                                        /// </summary>
+                                                        /// <param name="estateId">The estate identifier.</param>
+                                                        /// <param name="merchantId">The merchant identifier.</param>
+                                                        /// <param name="assignOperatorRequest">The assign operator request.</param>
+                                                        /// <param name="cancellationToken">The cancellation token.</param>
+                                                        /// <returns></returns>
+                                                        [HttpPost]
+                                                        [Route("{merchantId}/operators")]
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
                                                         [FromRoute] Guid merchantId,
                                                         AssignOperatorRequestDTO assignOperatorRequest,

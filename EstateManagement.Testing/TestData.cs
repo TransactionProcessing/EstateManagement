@@ -6,6 +6,7 @@
     using EstateAggregate;
     using EstateReporting.Database.Entities;
     using MerchantAggregate;
+    using Models;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
@@ -561,5 +562,25 @@
                                                                                                               EmailAddress = TestData.MerchantUserEmailAddress,
                                                                                                               CreatedDateTime = TestData.DateMerchantCreated
                                                                                                           };
+
+        public static Guid DepositId = Guid.Parse("A15460B1-9665-4C3E-861D-3B65D0EBEF19");
+
+        public static String DepositReference = "Test Deposit 1";
+
+        public static DateTime DepositDateTime = new DateTime(2019, 11, 16);
+
+        public static Decimal DepositAmount = 1000.00m;
+
+        public static MerchantDepositSource MerchantDepositSourceManual = MerchantDepositSource.Manual;
+
+        public static MerchantDepositSource MerchantDepositSourceAutomatic = MerchantDepositSource.Automatic;
+
+        public static MakeMerchantDepositRequest MakeMerchantDepositRequest = MakeMerchantDepositRequest.Create(TestData.EstateId,
+                                                                                                                TestData.MerchantId,
+                                                                                                                TestData.MerchantDepositSourceManual,
+                                                                                                                TestData.DepositReference,
+                                                                                                                TestData.DepositDateTime,
+                                                                                                                TestData.DepositAmount);
+
     }
 }

@@ -1,8 +1,10 @@
 ﻿namespace EstateManagement.DataTransferObjects.Responses
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
 
+    [ExcludeFromCodeCoverage]
     public class CreateEstateResponse
     {
         /// <summary>

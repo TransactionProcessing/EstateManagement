@@ -1,11 +1,13 @@
 ﻿namespace EstateManagement.DataTransferObjects.Responses
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
 
     /// <summary>
     /// 
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class CreateMerchantResponse
     {
         #region Properties

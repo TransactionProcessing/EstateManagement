@@ -1,10 +1,14 @@
 ﻿namespace EstateManagement.DataTransferObjects.Responses
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
 
+    [ExcludeFromCodeCoverage]
     public class CreateMerchantUserResponse
     {
+        #region Properties
+
         /// <summary>
         /// Gets or sets the name of the estate.
         /// </summary>
@@ -31,5 +35,7 @@
         /// </value>
         [JsonProperty("user_id")]
         public Guid UserId { get; set; }
+
+        #endregion
     }
 }

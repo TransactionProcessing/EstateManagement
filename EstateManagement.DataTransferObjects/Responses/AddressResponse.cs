@@ -1,7 +1,10 @@
 ﻿namespace EstateManagement.DataTransferObjects.Responses
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
+    using Newtonsoft.Json;
 
+    [ExcludeFromCodeCoverage]
     public class AddressResponse
     {
         #region Properties
@@ -12,6 +15,7 @@
         /// <value>
         /// The address identifier.
         /// </value>
+        [JsonProperty("address_id")]
         public Guid AddressId { get; set; }
 
         /// <summary>
@@ -20,6 +24,7 @@
         /// <value>
         /// The address line1.
         /// </value>
+        [JsonProperty("address_line_1")]
         public String AddressLine1 { get; set; }
 
         /// <summary>
@@ -28,6 +33,7 @@
         /// <value>
         /// The address line2.
         /// </value>
+        [JsonProperty("address_line_2")]
         public String AddressLine2 { get; set; }
 
         /// <summary>
@@ -36,6 +42,7 @@
         /// <value>
         /// The address line3.
         /// </value>
+        [JsonProperty("address_line_3")]
         public String AddressLine3 { get; set; }
 
         /// <summary>
@@ -44,6 +51,7 @@
         /// <value>
         /// The address line4.
         /// </value>
+        [JsonProperty("address_line_4")]
         public String AddressLine4 { get; set; }
 
         /// <summary>
@@ -52,6 +60,7 @@
         /// <value>
         /// The country.
         /// </value>
+        [JsonProperty("country")]
         public String Country { get; set; }
 
         /// <summary>
@@ -60,6 +69,7 @@
         /// <value>
         /// The postal code.
         /// </value>
+        [JsonProperty("postal_code")]
         public String PostalCode { get; set; }
 
         /// <summary>
@@ -68,6 +78,7 @@
         /// <value>
         /// The region.
         /// </value>
+        [JsonProperty("region")]
         public String Region { get; set; }
 
         /// <summary>
@@ -76,6 +87,7 @@
         /// <value>
         /// The town.
         /// </value>
+        [JsonProperty("town")]
         public String Town { get; set; }
 
         #endregion

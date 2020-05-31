@@ -1,20 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateManagement.DataTransferObjects.Responses
+﻿namespace EstateManagement.DataTransferObjects.Responses
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using Newtonsoft.Json;
+
     /// <summary>
     /// 
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class EstateResponse
     {
+        #region Properties
+
         /// <summary>
         /// Gets or sets the estate identifier.
         /// </summary>
         /// <value>
         /// The estate identifier.
         /// </value>
+        [JsonProperty("estate_id")]
         public Guid EstateId { get; set; }
 
         /// <summary>
@@ -23,6 +28,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The name of the estate.
         /// </value>
+        [JsonProperty("estate_name")]
         public String EstateName { get; set; }
 
         /// <summary>
@@ -31,6 +37,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The operators.
         /// </value>
+        [JsonProperty("operators")]
         public List<EstateOperatorResponse> Operators { get; set; }
 
         /// <summary>
@@ -39,6 +46,9 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The security users.
         /// </value>
+        [JsonProperty("security_users")]
         public List<SecurityUserResponse> SecurityUsers { get; set; }
+
+        #endregion
     }
 }
