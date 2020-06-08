@@ -107,6 +107,7 @@ Scenario: Add Device To Merchant - System Login
 	| DeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1      | Test Merchant 1 | Test Estate 1 |
 
+@PRTest
 Scenario: Make Manual Merchant Deposit - Estate User
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -118,6 +119,11 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	| Reference | Amount  | DateTime  | MerchantName    | EstateName    |
 	| Deposit1  | 1000.00 | Today     | Test Merchant 1 | Test Estate 1 |
 	| Deposit2  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
+
+	Then the merchant balances are as follows
+	| Balance | AvailableBalance | MerchantName    | EstateName    |
+	| 2000.00 | 2000.00          | Test Merchant 1 | Test Estate 1 |
+
 
 @PRTest
 Scenario: Get Merchants for Estate - System Login

@@ -7,6 +7,7 @@
     using EstateReporting.Database.Entities;
     using MerchantAggregate;
     using Models;
+    using Models.Merchant;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
@@ -49,7 +50,11 @@
 
         public static String MerchantCountry = "United Kingdom";
 
-        public static Guid MerchantId = Guid.Parse("AC476195-F993-4712-8EA1-CB41C0B44328");
+        public static Guid MerchantId = Guid.Parse("ac476195-f993-4712-8ea1-cb41c0b44328");
+
+        public static Decimal AvailableBalance = 1000.00m;
+        
+        public static Decimal Balance = 1000.00m;
 
         public static String MerchantName = "Test Merchant 1";
 
@@ -582,5 +587,12 @@
                                                                                                                 TestData.DepositDateTime,
                                                                                                                 TestData.DepositAmount);
 
+        public static MerchantBalance MerchantBalanceModel = new MerchantBalance
+                                                             {
+                                                                 AvailableBalance = TestData.AvailableBalance,
+                                                                 MerchantId = TestData.MerchantId,
+                                                                 Balance = TestData.Balance,
+                                                                 EstateId = TestData.EstateId
+                                                             };
     }
 }

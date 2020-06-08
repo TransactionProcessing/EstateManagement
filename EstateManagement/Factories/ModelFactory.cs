@@ -63,7 +63,7 @@
         /// </summary>
         /// <param name="merchant">The merchant.</param>
         /// <returns></returns>
-        public MerchantResponse ConvertFrom(Merchant merchant)
+        public MerchantResponse ConvertFrom(Merchant merchant, MerchantBalance merchantBalance = null)
         {
             if (merchant == null)
             {
@@ -131,7 +131,35 @@
                                                                                }));
             }
 
+            // Only include the balance if the dto fed in is not null
+            if (merchantBalance != null)
+            {
+                merchantResponse.AvailableBalance = merchantBalance.AvailableBalance;
+                merchantResponse.Balance = merchantBalance.Balance;
+            }
+
             return merchantResponse;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchantBalance"></param>
+        /// <returns></returns>
+        public MerchantBalanceResponse ConvertFrom(MerchantBalance merchantBalance)
+        {
+            if (merchantBalance == null)
+            {
+                return null;
+            }
+
+            return new MerchantBalanceResponse
+                   {
+                       MerchantId = merchantBalance.MerchantId,
+                       EstateId = merchantBalance.EstateId,
+                       AvailableBalance = merchantBalance.AvailableBalance,
+                       Balance = merchantBalance.Balance
+                   };
         }
 
         /// <summary>

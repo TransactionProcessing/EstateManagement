@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantAg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Repository", "EstateManagement.Repository\EstateManagement.Repository.csproj", "{FE89BE0D-2401-43E2-9998-88C3FD717999}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.Repository.Tests", "EstateManagement.Repository.Tests\EstateManagement.Repository.Tests.csproj", "{582FDDEF-33C9-49C2-8D3A-0A78EB899272}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Repository.Tests", "EstateManagement.Repository.Tests\EstateManagement.Repository.Tests.csproj", "{582FDDEF-33C9-49C2-8D3A-0A78EB899272}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -268,6 +268,22 @@
             await merchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
+        /// <summary>
+        /// Makes the merchant deposit.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="reference">The reference.</param>
+        /// <param name="depositDateTime">The deposit date time.</param>
+        /// <param name="amount">The amount.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Merchant Id {merchantId} has not been created
+        /// or
+        /// Estate Id {estateId} has not been created
+        /// </exception>
         public async Task<Guid> MakeMerchantDeposit(Guid estateId,
                                                     Guid merchantId,
                                                     Models.MerchantDepositSource source,

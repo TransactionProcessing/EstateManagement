@@ -29,7 +29,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         private readonly Mock<IAggregateRepository<EstateAggregate>> EstateAggregateRepository;
         private readonly Mock<IAggregateRepository<MerchantAggregate>> MerchantAggregateRepository;
         private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
-
+        private readonly Mock<IEventStoreContextManager> EventStoreContextManager;
         private readonly Mock<IModelFactory> ModelFactory;
 
         private readonly EstateManagementManager EstateManagementManager;
@@ -40,6 +40,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate>>();
             this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
+            this.EventStoreContextManager = new Mock<IEventStoreContextManager>();
 
             this.ModelFactory = new Mock<IModelFactory>();
 
@@ -47,7 +48,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(this.MerchantAggregateRepository.Object);
 
             this.EstateManagementManager =
-                new EstateManagementManager(aggregateRepositoryManager.Object, this.EstateManagementRepository.Object, this.ModelFactory.Object);
+                new EstateManagementManager(aggregateRepositoryManager.Object, this.EstateManagementRepository.Object, this.EventStoreContextManager.Object, this.ModelFactory.Object);
         }
 
         [Fact]
@@ -115,6 +116,24 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.MerchantName.ShouldBe(TestData.MerchantName);
             merchantModel.Addresses.ShouldBeNull();
             merchantModel.Contacts.ShouldHaveSingleItem();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetMerchantBalance_MerchantBalanceIsReturned()
+        {
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+
+            String projectionState = "{\r\n  \"merchants\": {\r\n    \"" + $"{TestData.MerchantId}" + "\": {\r\n      \"MerchantId\": \"b3054488-ccfc-4bfe-9b0c-ad7ac10b16e8\",\r\n      \"MerchantName\": \"Test Merchant 2\",\r\n      \"AvailableBalance\": 1000.00,\r\n      \"Balance\": 1000.00,\r\n      \"LastDepositDateTime\": null,\r\n      \"LastSaleDateTime\": null,\r\n      \"PendingBalanceUpdates\": []\r\n    }\r\n  },\r\n  \"debug\": []\r\n}";
+
+            eventStoreContext.Setup(e => e.GetPartitionStateFromProjection(It.IsAny<String>(), It.IsAny<String>())).ReturnsAsync(projectionState);
+            this.EventStoreContextManager.Setup(m => m.GetEventStoreContext(It.IsAny<String>())).Returns(eventStoreContext.Object);
+
+            var merchantBalanceModel = await this.EstateManagementManager.GetMerchantBalance(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+
+            merchantBalanceModel.EstateId.ShouldBe(TestData.EstateId);
+            merchantBalanceModel.MerchantId.ShouldBe(TestData.MerchantId);
+            merchantBalanceModel.AvailableBalance.ShouldBe(TestData.AvailableBalance);
+            merchantBalanceModel.Balance.ShouldBe(TestData.Balance);
         }
 
         [Fact]

@@ -330,6 +330,36 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [Then(@"the merchant balances are as follows")]
+        public async Task ThenTheMerchantBalancesAreAsFollows(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                Decimal availableBalance = SpecflowTableHelper.GetDecimalValue(tableRow, "AvailableBalance");
+                Decimal balance = SpecflowTableHelper.GetDecimalValue(tableRow, "Balance");
+
+                MerchantBalanceResponse merchantBalanceResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchantBalance(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+
+                merchantBalanceResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                merchantBalanceResponse.MerchantId.ShouldBe(merchantId);
+                merchantBalanceResponse.AvailableBalance.ShouldBe(availableBalance);
+                merchantBalanceResponse.Balance.ShouldBe(balance);
+            }
+        }
+
+
 
         [Given(@"the following api resources exist")]
         public async Task GivenTheFollowingApiResourcesExist(Table table)
