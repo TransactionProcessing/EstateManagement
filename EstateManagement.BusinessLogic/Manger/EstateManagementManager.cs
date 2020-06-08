@@ -123,22 +123,6 @@
         {
             IEventStoreContext context = this.EventStoreContextManager.GetEventStoreContext(estateId.ToString());
             
-            //var contextType = typeof(EventStoreContext);
-            //FieldInfo[] fields = contextType.GetFields(BindingFlags.NonPublic |
-            //                                           BindingFlags.Instance);
-
-            //var settingsField = fields.Where(f => f.FieldType == typeof(EventStoreConnectionSettings)).SingleOrDefault();
-
-            //var settings = (EventStoreConnectionSettings)settingsField.GetValue(context);
-            //var ipAddress = Dns.GetHostAddresses(settings.IpAddress);
-            
-            //foreach (IPAddress address in ipAddress)
-            //{
-            //    Logger.LogDebug(address.ToString());
-            //}
-
-            //IPEndPoint endpoint = new IPEndPoint(ipAddress[0], settings.HttpPort);
-
             String projectionState = await context.GetPartitionStateFromProjection("MerchantBalanceCalculator", $"MerchantBalanceHistory-{merchantId:N}");
 
             JObject parsedState = JObject.Parse(projectionState);
