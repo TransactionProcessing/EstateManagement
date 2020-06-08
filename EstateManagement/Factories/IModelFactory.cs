@@ -29,6 +29,13 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="merchant">The merchant.</param>
+        /// <returns></returns>
+        MerchantBalanceResponse ConvertFrom(MerchantBalance merchantBalance);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="merchants">The merchants.</param>
         /// <returns></returns>
         List<MerchantResponse> ConvertFrom(List<Merchant> merchants);

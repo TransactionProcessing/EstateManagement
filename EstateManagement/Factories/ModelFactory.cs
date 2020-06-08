@@ -137,6 +137,27 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="merchantBalance"></param>
+        /// <returns></returns>
+        public MerchantBalanceResponse ConvertFrom(MerchantBalance merchantBalance)
+        {
+            if (merchantBalance == null)
+            {
+                return null;
+            }
+
+            return new MerchantBalanceResponse
+                   {
+                       MerchantId = merchantBalance.MerchantId,
+                       EstateId = merchantBalance.EstateId,
+                       AvailableBalance = merchantBalance.AvailableBalance,
+                       Balance = merchantBalance.Balance
+                   };
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="merchants">The merchants.</param>
         /// <returns></returns>
         public List<MerchantResponse> ConvertFrom(List<Merchant> merchants)

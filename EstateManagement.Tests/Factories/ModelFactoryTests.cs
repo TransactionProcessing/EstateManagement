@@ -318,5 +318,33 @@ namespace EstateManagement.Tests.Factories
             merchantResponseList.ShouldNotBeEmpty();
             merchantResponseList.Count.ShouldBe(merchantModelList.Count);
         }
+
+        [Fact]
+        public void ModelFactory_MerchantBalance_IsConverted()
+        {
+            MerchantBalance merchantBalanceModel = TestData.MerchantBalanceModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            MerchantBalanceResponse merchantBalanceResponse = modelFactory.ConvertFrom(merchantBalanceModel);
+
+            merchantBalanceResponse.ShouldNotBeNull();
+            merchantBalanceResponse.MerchantId.ShouldBe(merchantBalanceModel.MerchantId);
+            merchantBalanceResponse.EstateId.ShouldBe(merchantBalanceModel.EstateId);
+            merchantBalanceResponse.AvailableBalance.ShouldBe(merchantBalanceModel.AvailableBalance);
+            merchantBalanceResponse.Balance.ShouldBe(merchantBalanceModel.Balance);
+        }
+
+        [Fact]
+        public void ModelFactory_MerchantBalance_NullInput_IsConverted()
+        {
+            MerchantBalance merchantBalanceModel = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            MerchantBalanceResponse merchantBalanceResponse = modelFactory.ConvertFrom(merchantBalanceModel);
+
+            merchantBalanceResponse.ShouldBeNull();
+        }
     }
 }

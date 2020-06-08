@@ -119,6 +119,11 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	| Deposit1  | 1000.00 | Today     | Test Merchant 1 | Test Estate 1 |
 	| Deposit2  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
 
+	Then the merchant balances are as follows
+	| Balance | AvailableBalance | MerchantName    | EstateName    |
+	| 2000.00 | 2000.00          | Test Merchant 1 | Test Estate 1 |
+
+
 @PRTest
 Scenario: Get Merchants for Estate - System Login
 	Given I create the following merchants
