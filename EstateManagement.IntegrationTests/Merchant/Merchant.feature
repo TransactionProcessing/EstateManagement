@@ -107,6 +107,7 @@ Scenario: Add Device To Merchant - System Login
 	| DeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1      | Test Merchant 1 | Test Estate 1 |
 
+@PRTest
 Scenario: Make Manual Merchant Deposit - Estate User
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
