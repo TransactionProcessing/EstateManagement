@@ -208,7 +208,14 @@
                 throw new NotFoundException($"Merchant not found with estate Id {estateId} and merchant Id {merchantId}");
             }
 
-            return this.Ok(this.ModelFactory.ConvertFrom(merchant));
+            MerchantBalance merchantBalance = await this.EstateManagementManager.GetMerchantBalance(estateId, merchantId, cancellationToken);
+
+            if (merchantBalance == null)
+            {
+                throw new NotFoundException($"Merchant Balance details not found with estate Id {estateId} and merchant Id {merchantId}");
+            }
+
+            return this.Ok(this.ModelFactory.ConvertFrom(merchant, merchantBalance));
         }
 
         /// <summary>

@@ -63,7 +63,7 @@
         /// </summary>
         /// <param name="merchant">The merchant.</param>
         /// <returns></returns>
-        public MerchantResponse ConvertFrom(Merchant merchant)
+        public MerchantResponse ConvertFrom(Merchant merchant, MerchantBalance merchantBalance = null)
         {
             if (merchant == null)
             {
@@ -129,6 +129,13 @@
                                                                                    OperatorId = a.OperatorId,
                                                                                    TerminalNumber = a.TerminalNumber
                                                                                }));
+            }
+
+            // Only include the balance if the dto fed in is not null
+            if (merchantBalance != null)
+            {
+                merchantResponse.AvailableBalance = merchantBalance.AvailableBalance;
+                merchantResponse.Balance = merchantBalance.Balance;
             }
 
             return merchantResponse;
