@@ -273,6 +273,11 @@
         /// <returns></returns>
         public Merchant GetMerchant()
         {
+            if (this.IsCreated == false)
+            {
+                return null;
+            }
+
             Merchant merchantModel = new Merchant();
 
             merchantModel.EstateId = this.EstateId;
