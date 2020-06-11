@@ -20,6 +20,8 @@ namespace EstateManagement.MerchantAggregate.Tests
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
             aggregate.AggregateId.ShouldBe(TestData.MerchantId);
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.ShouldBeNull();
         }
 
         [Fact]
