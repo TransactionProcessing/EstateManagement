@@ -187,21 +187,33 @@
         [Route("{merchantId}")]
         public async Task<IActionResult> GetMerchant([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
         {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            // Get the merchant Id claim from the user
-            Claim merchantIdClaim = ClaimsHelper.GetUserClaim(this.User, "MerchantId");
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            String merchantRoleName = Environment.GetEnvironmentVariable("MerchantRoleName");
+            String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
+            String merchantRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("MerchantRoleName")) ? "Merchant" : Environment.GetEnvironmentVariable("MerchantRoleName");
             if (ClaimsHelper.IsUserRolesValid(this.User, new[]
                                                          {
-                                                             String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName,
-                                                             String.IsNullOrEmpty(merchantRoleName) ? "Merchant" : merchantRoleName
+                                                             estateRoleName,
+                                                             merchantRoleName
                                                          }) == false)
             {
                 return this.Forbid();
+            }
+
+            Claim estateIdClaim = null;
+            Claim merchantIdClaim = null;
+
+            // Determine the users role
+            if (this.User.IsInRole(estateRoleName))
+            {
+                // Estate user
+                // Get the Estate Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+            }
+
+            if (this.User.IsInRole(merchantRoleName))
+            {
+                // Get the merchant Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+                merchantIdClaim = ClaimsHelper.GetUserClaim(this.User, "MerchantId");
             }
 
             if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
@@ -243,23 +255,35 @@
         [Route("{merchantId}/balance")]
         public async Task<IActionResult> GetMerchantBalance([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
         {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            // Get the merchant Id claim from the user
-            Claim merchantIdClaim = ClaimsHelper.GetUserClaim(this.User, "MerchantId");
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            String merchantRoleName = Environment.GetEnvironmentVariable("MerchantRoleName");
+            String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
+            String merchantRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("MerchantRoleName")) ? "Merchant" : Environment.GetEnvironmentVariable("MerchantRoleName");
             if (ClaimsHelper.IsUserRolesValid(this.User, new[]
                                                          {
-                                                             String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName,
-                                                             String.IsNullOrEmpty(merchantRoleName) ? "Merchant" : merchantRoleName
+                                                             estateRoleName,
+                                                             merchantRoleName
                                                          }) == false)
             {
                 return this.Forbid();
             }
 
+            Claim estateIdClaim = null;
+            Claim merchantIdClaim = null;
+
+            // Determine the users role
+            if (this.User.IsInRole(estateRoleName))
+            {
+                // Estate user
+                // Get the Estate Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+            }
+
+            if (this.User.IsInRole(merchantRoleName))
+            {
+                // Get the merchant Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+                merchantIdClaim = ClaimsHelper.GetUserClaim(this.User, "MerchantId");
+            }
+            
             if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
             {
                 return this.Forbid();

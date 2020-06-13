@@ -75,7 +75,7 @@
         public static Boolean ValidateRouteParameter<T>(T routeParameter,
                                                         Claim userClaim)
         {
-            if (userClaim.Value != String.Empty)
+            if (userClaim != null && userClaim.Value != String.Empty)
             {
                 if (routeParameter.ToString() != userClaim.Value)
                 {
