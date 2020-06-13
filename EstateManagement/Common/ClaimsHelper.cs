@@ -75,9 +75,12 @@
         public static Boolean ValidateRouteParameter<T>(T routeParameter,
                                                         Claim userClaim)
         {
-            if (routeParameter.ToString() != userClaim.Value)
+            if (userClaim.Value != String.Empty)
             {
-                return false;
+                if (routeParameter.ToString() != userClaim.Value)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -97,16 +100,8 @@
             {
                 return true;
             }
-
-            foreach (String allowedRole in allowedRoles)
-            {
-                if (user.IsInRole(allowedRole) == false)
-                {
-                    return false;
-                }
-            }
             
-            return true;
+            return allowedRoles.Any(r => user.IsInRole(r));
         }
 
         #endregion
