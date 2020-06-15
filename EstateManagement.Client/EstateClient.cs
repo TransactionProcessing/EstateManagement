@@ -27,9 +27,23 @@
         /// </summary>
         private readonly String BaseAddress;
 
+        /// <summary>
+        /// The base address resolver
+        /// </summary>
+        private readonly Func<String, String> BaseAddressResolver;
+
         #endregion
 
         #region Constructors
+
+        private String BuildRequestUrl(String route)
+        {
+            String baseAddress = this.BaseAddressResolver("EstateManagementApi");
+
+            String requestUri = $"{baseAddress}{route}";
+
+            return requestUri;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateClient" /> class.
@@ -39,7 +53,7 @@
         public EstateClient(Func<String, String> baseAddressResolver,
                             HttpClient httpClient) : base(httpClient)
         {
-            this.BaseAddress = baseAddressResolver("EstateManagementApi");
+            this.BaseAddressResolver = baseAddressResolver;
 
             // Add the API version header
             this.HttpClient.DefaultRequestHeaders.Add("api-version", "1.0");
@@ -66,7 +80,7 @@
         {
             AddMerchantDeviceResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}/devices";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices");
 
             try
             {
@@ -114,7 +128,7 @@
         {
             AssignOperatorResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}/operators";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/operators");
 
             try
             {
@@ -159,7 +173,7 @@
         {
             CreateEstateResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/";
+            String requestUri = this.BuildRequestUrl($"/api/estates/");
 
             try
             {
@@ -205,7 +219,7 @@
         {
             CreateEstateUserResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/users";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/users");
 
             try
             {
@@ -251,7 +265,7 @@
         {
             CreateMerchantResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants");
 
             try
             {
@@ -299,7 +313,7 @@
         {
             CreateMerchantUserResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}/users";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/users");
 
             try
             {
@@ -346,7 +360,7 @@
         {
             CreateOperatorResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/operators";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators");
 
             try
             {
@@ -390,7 +404,7 @@
         {
             EstateResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}");
 
             try
             {
@@ -432,7 +446,7 @@
         {
             MerchantResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}");
 
             try
             {
@@ -474,7 +488,7 @@
         {
             MerchantBalanceResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}/balance";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/balance");
 
             try
             {
@@ -514,7 +528,7 @@
         {
             List<MerchantResponse> response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants");
 
             try
             {
@@ -558,7 +572,7 @@
         {
             MakeMerchantDepositResponse response = null;
 
-            String requestUri = $"{this.BaseAddress}/api/estates/{estateId}/merchants/{merchantId}/deposits";
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/deposits");
 
             try
             {
