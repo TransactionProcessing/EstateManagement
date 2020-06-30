@@ -12,7 +12,6 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using Moq;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
-    using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
@@ -30,13 +29,10 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
+            
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.NotThrow( async () =>
                             {
@@ -70,14 +66,10 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
             MerchantDomainService domainService = new 
-                MerchantDomainService(aggregateRepositoryManager.Object,securityServiceClient.Object);
+                MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -111,13 +103,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue));
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             await domainService.AssignOperatorToMerchant(TestData.EstateId,
                                                          TestData.MerchantId,
@@ -137,13 +125,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator());
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
@@ -166,13 +150,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -195,13 +175,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -226,13 +202,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberFalse));
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -257,13 +229,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue));
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
@@ -286,16 +254,13 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
             securityServiceClient.Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new CreateUserResponse
             {
                 UserId = Guid.NewGuid()
             });
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.NotThrow(async () =>
             {
@@ -320,17 +285,13 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
             securityServiceClient.Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new CreateUserResponse
             {
                 UserId = Guid.NewGuid()
             });
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -355,17 +316,13 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
             securityServiceClient.Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new CreateUserResponse
             {
                 UserId = Guid.NewGuid()
             });
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -390,13 +347,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
             securityServiceClient.Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<Exception>(async () =>
             {
@@ -421,13 +374,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.NotThrow(async () =>
             {
@@ -449,13 +398,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -477,13 +422,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -505,13 +446,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.NotThrow(async () =>
             {
@@ -535,13 +472,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -565,13 +498,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
             merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(merchantAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            MerchantDomainService domainService = new MerchantDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {

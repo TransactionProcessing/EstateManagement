@@ -2,24 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateAggregate;
     using MerchantAggregate;
-    using Models;
     using Models.Estate;
     using Models.Factories;
     using Models.Merchant;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Repository;
-    using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
     using Shared.Exceptions;
-    using Shared.Logger;
 
     /// <summary>
     /// 
@@ -32,12 +25,21 @@
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
+        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
 
+        /// <summary>
+        /// The estate management repository
+        /// </summary>
         private readonly IEstateManagementRepository EstateManagementRepository;
 
-        private readonly IEventStoreContextManager EventStoreContextManager;
+        /// <summary>
+        /// The event store context
+        /// </summary>
+        private readonly IEventStoreContext EventStoreContext;
 
+        /// <summary>
+        /// The merchant aggregate repository
+        /// </summary>
         private readonly IAggregateRepository<MerchantAggregate> MerchantAggregateRepository;
 
         /// <summary>
@@ -52,17 +54,21 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateManagementManager" /> class.
         /// </summary>
-        /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
+        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
+        /// <param name="merchantAggregateRepository">The merchant aggregate repository.</param>
         /// <param name="estateManagementRepository">The estate management repository.</param>
+        /// <param name="eventStoreContext">The event store context.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementManager(IAggregateRepositoryManager aggregateRepositoryManager,
+        public EstateManagementManager(IAggregateRepository<EstateAggregate> estateAggregateRepository,
+                                       IAggregateRepository<MerchantAggregate> merchantAggregateRepository,
                                        IEstateManagementRepository estateManagementRepository,
-                                       IEventStoreContextManager eventStoreContextManager,
+                                       IEventStoreContext eventStoreContext,
                                        IModelFactory modelFactory)
         {
-            this.AggregateRepositoryManager = aggregateRepositoryManager;
+            this.EstateAggregateRepository = estateAggregateRepository;
+            this.MerchantAggregateRepository = merchantAggregateRepository;
             this.EstateManagementRepository = estateManagementRepository;
-            this.EventStoreContextManager = eventStoreContextManager;
+            this.EventStoreContext = eventStoreContext;
             this.ModelFactory = modelFactory;
         }
 
@@ -76,16 +82,17 @@
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
+        /// <exception cref="NotFoundException">No estate found with Id [{estateId}]</exception>
         public async Task<Estate> GetEstate(Guid estateId,
                                             CancellationToken cancellationToken)
         {
             // Get the estate from the aggregate repository
-            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
-            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
             if (estateAggregate.IsCreated == false)
             {
                 throw new NotFoundException($"No estate found with Id [{estateId}]");
             }
+
             Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
 
             return estateModel;
@@ -99,11 +106,10 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public async Task<Merchant> GetMerchant(Guid estateId,
-                                      Guid merchantId,
-                                      CancellationToken cancellationToken)
+                                                Guid merchantId,
+                                                CancellationToken cancellationToken)
         {
-            IAggregateRepository<MerchantAggregate> merchantAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<MerchantAggregate>(estateId);
-            MerchantAggregate merchantAggregate = await merchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
             Merchant merchantModel = merchantAggregate.GetMerchant();
 
@@ -121,20 +127,19 @@
                                                               Guid merchantId,
                                                               CancellationToken cancellationToken)
         {
-            IEventStoreContext context = this.EventStoreContextManager.GetEventStoreContext(estateId.ToString());
-            
-            String projectionState = await context.GetPartitionStateFromProjection("MerchantBalanceCalculator", $"MerchantBalanceHistory-{merchantId:N}");
+            String projectionState =
+                await this.EventStoreContext.GetPartitionStateFromProjection("MerchantBalanceCalculator", $"MerchantBalanceHistory-{merchantId:N}", cancellationToken);
 
             JObject parsedState = JObject.Parse(projectionState);
             JToken? merchantRecord = parsedState["merchants"][$"{merchantId}"];
-            
+
             return new MerchantBalance
                    {
-                       AvailableBalance = Decimal.Parse(merchantRecord["AvailableBalance"].ToString()),
-                       Balance = Decimal.Parse(merchantRecord["Balance"].ToString()),
+                       AvailableBalance = decimal.Parse(merchantRecord["AvailableBalance"].ToString()),
+                       Balance = decimal.Parse(merchantRecord["Balance"].ToString()),
                        EstateId = estateId,
                        MerchantId = merchantId
-            };
+                   };
         }
 
         /// <summary>

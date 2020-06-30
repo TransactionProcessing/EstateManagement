@@ -7,7 +7,6 @@
     using EstateAggregate;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
-    using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
 
     /// <summary>
@@ -19,9 +18,9 @@
         #region Fields
 
         /// <summary>
-        /// The aggregate repository manager
+        /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepositoryManager AggregateRepositoryManager;
+        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
 
         /// <summary>
         /// The security service client
@@ -35,12 +34,12 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateDomainService" /> class.
         /// </summary>
-        /// <param name="aggregateRepositoryManager">The aggregate repository manager.</param>
+        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         /// <param name="securityServiceClient">The security service client.</param>
-        public EstateDomainService(IAggregateRepositoryManager aggregateRepositoryManager,
+        public EstateDomainService(IAggregateRepository<EstateAggregate> estateAggregateRepository,
                                    ISecurityServiceClient securityServiceClient)
         {
-            this.AggregateRepositoryManager = aggregateRepositoryManager;
+            this.EstateAggregateRepository = estateAggregateRepository;
             this.SecurityServiceClient = securityServiceClient;
         }
 
@@ -58,12 +57,11 @@
                                        String estateName,
                                        CancellationToken cancellationToken)
         {
-            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
-            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
 
             estateAggregate.Create(estateName);
 
-            await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+            await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }
 
         /// <summary>
@@ -82,12 +80,11 @@
                                          Boolean requireCustomTerminalNumber,
                                          CancellationToken cancellationToken)
         {
-            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
-            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
 
             estateAggregate.AddOperator(operatorId, operatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
 
-            await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+            await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }
 
         /// <summary>
@@ -109,8 +106,7 @@
                                            String familyName,
                                            CancellationToken cancellationToken)
         {
-            IAggregateRepository<EstateAggregate> estateAggregateRepository = this.AggregateRepositoryManager.GetAggregateRepository<EstateAggregate>(estateId);
-            EstateAggregate estateAggregate = await estateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
 
             CreateUserRequest createUserRequest = new CreateUserRequest
                                                   {
@@ -136,7 +132,7 @@
 
             // TODO: add a delete user here in case the aggregate add fails...
 
-            await estateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+            await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
 
             return createUserResponse.UserId;
         }

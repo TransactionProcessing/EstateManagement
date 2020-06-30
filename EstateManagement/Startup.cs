@@ -18,7 +18,7 @@ namespace EstateManagement
     using Common;
     using Controllers;
     using EstateReporting.Database;
-    using EventStore.ClientAPI;
+    using EventStore.Client;
     using IdentityModel.AspNetCore.OAuth2Introspection;
     using MediatR;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -43,7 +43,6 @@ namespace EstateManagement
     using Repository;
     using SecurityService.Client;
     using Shared.DomainDrivenDesign.CommandHandling;
-    using Shared.DomainDrivenDesign.EventStore;
     using Shared.EntityFramework;
     using Shared.EntityFramework.ConnectionStringConfiguration;
     using Shared.EventStore.EventStore;
@@ -84,62 +83,71 @@ namespace EstateManagement
             services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
 
             ConfigurationReader.Initialise(Startup.Configuration);
-            String connString = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString");
-            String connectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
-            Int32 httpPort = Startup.Configuration.GetValue<Int32>("EventStoreSettings:HttpPort");
-
+            
             Boolean useConnectionStringConfig = Boolean.Parse(ConfigurationReader.GetValue("AppSettings", "UseConnectionStringConfig"));
-            EventStoreConnectionSettings settings = EventStoreConnectionSettings.Create(connString, connectionName, httpPort);
-            services.AddSingleton(settings);
-
-            services.AddSingleton<Func<EventStoreConnectionSettings, IEventStoreConnection>>(cont => (connectionSettings) =>
-            {
-                return EventStoreConnection.Create(connectionSettings
-                                                       .ConnectionString);
-            });
-
-            services.AddSingleton<Func<String, IEventStoreContext>>(cont => (connectionString) =>
-            {
-                EventStoreConnectionSettings connectionSettings =
-                    EventStoreConnectionSettings.Create(connectionString, connectionName, httpPort);
-
-                Func<EventStoreConnectionSettings, IEventStoreConnection> eventStoreConnectionFunc = cont.GetService<Func<EventStoreConnectionSettings, IEventStoreConnection>>();
-
-                IEventStoreContext context =
-                    new EventStoreContext(connectionSettings, eventStoreConnectionFunc);
-
-                return context;
-            });
-
-
+            
             if (useConnectionStringConfig)
             {
                 String connectionStringConfigurationConnString = ConfigurationReader.GetConnectionString("ConnectionStringConfiguration");
                 services.AddSingleton<IConnectionStringConfigurationRepository, ConnectionStringConfigurationRepository>();
                 services.AddTransient<ConnectionStringConfigurationContext>(c =>
-                {
-                    return new ConnectionStringConfigurationContext(connectionStringConfigurationConnString);
-                });
+                                                                            {
+                                                                                return new ConnectionStringConfigurationContext(connectionStringConfigurationConnString);
+                                                                            });
 
-                services.AddSingleton<IEventStoreContextManager, EventStoreContextManager>(c =>
-                {
-                    Func<String, IEventStoreContext> contextFunc = c.GetService<Func<String, IEventStoreContext>>();
-                    IConnectionStringConfigurationRepository connectionStringConfigurationRepository =
-                        c.GetService<IConnectionStringConfigurationRepository>();
-                    return new EventStoreContextManager(contextFunc,
-                                                        connectionStringConfigurationRepository);
-                });
+                // TODO: Read this from a the database and set
             }
             else
             {
-                services.AddSingleton<IEventStoreContextManager, EventStoreContextManager>(c =>
+                services.AddEventStoreClient((settings) =>
                 {
-                    IEventStoreContext context = c.GetService<IEventStoreContext>();
-                    return new EventStoreContextManager(context);
+                    settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
+                    {
+                        SslOptions =
+                                                                                               {
+                                                                                                   RemoteCertificateValidationCallback = (sender,
+                                                                                                                                          certificate,
+                                                                                                                                          chain,
+                                                                                                                                          errors) => true,
+                                                                                               }
+                    };
+                    settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
+                    settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
+                    {
+                        Address =
+                                                            new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString")),
+                    };
+                    settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
+                                                                       Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
+                });
+
+
+
+                services.AddEventStoreProjectionManagerClient((settings) =>
+                {
+                    settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
+                    {
+                        SslOptions =
+                                                                                                                {
+                                                                                                                    RemoteCertificateValidationCallback = (sender,
+                                                                                                                                                           certificate,
+                                                                                                                                                           chain,
+                                                                                                                                                           errors) => true,
+                                                                                                                }
+                    };
+                    settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
+                    settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
+                    {
+                        Address =
+                                                            new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString"))
+                    };
+                    settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
+                                                                      Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
                 });
                 services.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
             }
 
+            services.AddTransient<IEventStoreContext, EventStoreContext>();
             services.AddSingleton<IEstateManagementRepository, EstateManagementRepository>();
             services.AddSingleton<IDbContextFactory<EstateReportingContext>, DbContextFactory<EstateReportingContext>>();
 

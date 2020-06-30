@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shared.DomainDrivenDesign" Version="0.0.14" />
-    <PackageReference Include="Shared.EventStore" Version="0.0.14" />
+    <PackageReference Include="Shared.DomainDrivenDesign" Version="0.0.15.6" />
+    <PackageReference Include="Shared.EventStore" Version="0.0.15.6" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,7 +11,6 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using Moq;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
-    using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
@@ -26,12 +25,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
             estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            EstateDomainService domainService = new EstateDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
 
             Should.NotThrow(async () =>
             {
@@ -48,12 +44,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
-            EstateDomainService domainService = new EstateDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
 
             Should.NotThrow(async () =>
                             {
@@ -72,17 +65,14 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(estateAggregateRepository.Object);
-
+            
             Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
             securityServiceClient.Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new CreateUserResponse
                                                                                                                                       {
                                                                                                                                           UserId = Guid.NewGuid()
                                                                                                                                       });
 
-            EstateDomainService domainService = new EstateDomainService(aggregateRepositoryManager.Object, securityServiceClient.Object);
+            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
 
             Should.NotThrow(async () =>
                             {

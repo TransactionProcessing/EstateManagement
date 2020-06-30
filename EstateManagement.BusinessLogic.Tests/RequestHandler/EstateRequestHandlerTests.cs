@@ -11,7 +11,6 @@
     using RequestHandlers;
     using Requests;
     using Shared.DomainDrivenDesign.CommandHandling;
-    using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
