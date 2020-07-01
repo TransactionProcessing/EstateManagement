@@ -167,7 +167,6 @@ namespace EstateManagement
 
             DomainEventTypesToSilentlyHandle eventTypesToSilentlyHandle = new DomainEventTypesToSilentlyHandle(handlerEventTypesToSilentlyHandle);
             services.AddTransient<IEventStoreContext, EventStoreContext>();
-            services.AddSingleton<IAggregateRepositoryManager, AggregateRepositoryManager>();
             services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate>, AggregateRepository<EstateAggregate.EstateAggregate>>();
             services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate>, AggregateRepository<MerchantAggregate.MerchantAggregate>>();
             services.AddSingleton<IEstateDomainService, EstateDomainService>();
