@@ -11,7 +11,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Moq;
-    using Shared.DomainDrivenDesign.EventStore;
     using Xunit;
 
     [Collection("TestCollection")]
@@ -42,9 +41,10 @@
 
             IConfigurationBuilder builder = new ConfigurationBuilder();
 
-            configuration.Add("EventStoreSettings:ConnectionString", "ConnectTo=tcp://admin:changeit@127.0.0.1:1112;VerboseLogging=true;");
+            configuration.Add("EventStoreSettings:ConnectionString", "https://127.0.0.1:2113");
             configuration.Add("EventStoreSettings:ConnectionName", "UnitTestConnection");
-            configuration.Add("EventStoreSettings:HttpPort", "2113");
+            configuration.Add("EventStoreSettings:UserName", "admin");
+            configuration.Add("EventStoreSettings:Password", "changeit");
             configuration.Add("AppSettings:UseConnectionStringConfig", "false");
             configuration.Add("AppSettings:SecurityService", "http://127.0.0.1");
 

@@ -16,7 +16,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Models.Merchant;
     using Moq;
     using Repository;
-    using Shared.DomainDrivenDesign.EventStore;
     using Shared.EventStore.EventStore;
     using Shared.Exceptions;
     using Shouldly;
@@ -25,30 +24,27 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
     public class EstateManagementManagerTests
     {
-        private readonly Mock<IAggregateRepositoryManager> AggregateRepositoryManager;
         private readonly Mock<IAggregateRepository<EstateAggregate>> EstateAggregateRepository;
         private readonly Mock<IAggregateRepository<MerchantAggregate>> MerchantAggregateRepository;
         private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
-        private readonly Mock<IEventStoreContextManager> EventStoreContextManager;
+        private readonly Mock<IEventStoreContext> EventStoreContext;
         private readonly Mock<IModelFactory> ModelFactory;
 
         private readonly EstateManagementManager EstateManagementManager;
 
         public EstateManagementManagerTests()
         {
-            Mock<IAggregateRepositoryManager> aggregateRepositoryManager = new Mock<IAggregateRepositoryManager>();
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate>>();
             this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
-            this.EventStoreContextManager = new Mock<IEventStoreContextManager>();
+            this.EventStoreContext = new Mock<IEventStoreContext>();
 
             this.ModelFactory = new Mock<IModelFactory>();
-
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<EstateAggregate>(It.IsAny<Guid>())).Returns(this.EstateAggregateRepository.Object);
-            aggregateRepositoryManager.Setup(x => x.GetAggregateRepository<MerchantAggregate>(It.IsAny<Guid>())).Returns(this.MerchantAggregateRepository.Object);
-
+            
             this.EstateManagementManager =
-                new EstateManagementManager(aggregateRepositoryManager.Object, this.EstateManagementRepository.Object, this.EventStoreContextManager.Object, this.ModelFactory.Object);
+                new EstateManagementManager(this.EstateAggregateRepository.Object,
+                                            this.MerchantAggregateRepository.Object,
+                                            this.EstateManagementRepository.Object, this.EventStoreContext.Object, this.ModelFactory.Object);
         }
 
         [Fact]
@@ -121,12 +117,9 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchantBalance_MerchantBalanceIsReturned()
         {
-            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
-
             String projectionState = "{\r\n  \"merchants\": {\r\n    \"" + $"{TestData.MerchantId}" + "\": {\r\n      \"MerchantId\": \"b3054488-ccfc-4bfe-9b0c-ad7ac10b16e8\",\r\n      \"MerchantName\": \"Test Merchant 2\",\r\n      \"AvailableBalance\": 1000.00,\r\n      \"Balance\": 1000.00,\r\n      \"LastDepositDateTime\": null,\r\n      \"LastSaleDateTime\": null,\r\n      \"PendingBalanceUpdates\": []\r\n    }\r\n  },\r\n  \"debug\": []\r\n}";
 
-            eventStoreContext.Setup(e => e.GetPartitionStateFromProjection(It.IsAny<String>(), It.IsAny<String>())).ReturnsAsync(projectionState);
-            this.EventStoreContextManager.Setup(m => m.GetEventStoreContext(It.IsAny<String>())).Returns(eventStoreContext.Object);
+            this.EventStoreContext.Setup(e => e.GetPartitionStateFromProjection(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(projectionState);
 
             var merchantBalanceModel = await this.EstateManagementManager.GetMerchantBalance(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 

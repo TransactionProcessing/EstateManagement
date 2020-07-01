@@ -18,6 +18,7 @@ namespace EstateManagement.IntegrationTests.Common
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateReporting.Database;
+    using EventStore.Client;
     using Gherkin;
     using global::Shared.Logger;
     using global::Shared.IntegrationTesting;
@@ -25,9 +26,6 @@ namespace EstateManagement.IntegrationTests.Common
     using Microsoft.EntityFrameworkCore.Diagnostics;
     using Microsoft.EntityFrameworkCore.Internal;
     using SecurityService.Client;
-    using EventStore.ClientAPI.Projections;
-    using EventStore.ClientAPI.Common.Log;
-    using EventStore.ClientAPI.SystemData;
 
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
@@ -81,9 +79,7 @@ namespace EstateManagement.IntegrationTests.Common
             INetworkService testNetwork = DockerHelper.SetupTestNetwork();
             this.TestNetworks.Add(testNetwork);
 
-            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger,
-                                                                                          "eventstore/eventstore:release-5.0.2",
-                                                                                          testNetwork, traceFolder);
+            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, "eventstore/eventstore:20.6.0-buster-slim", testNetwork, traceFolder, usesEventStore2006OrLater: true);
 
 
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName, this.Logger,
@@ -176,7 +172,6 @@ namespace EstateManagement.IntegrationTests.Common
             //Start our Continous Projections - we might decide to do this at a different stage, but now lets try here
             String projectionsFolder = "../../../projections/continuous";
             IPAddress[] ipAddresses = Dns.GetHostAddresses("127.0.0.1");
-            IPEndPoint endpoint = new IPEndPoint(ipAddresses.First(), this.EventStoreHttpPort);
 
             if (!String.IsNullOrWhiteSpace(projectionsFolder))
             {
@@ -186,8 +181,26 @@ namespace EstateManagement.IntegrationTests.Common
                 {
                     FileInfo[] files = di.GetFiles();
 
-                    // TODO: possibly need to change timeout and logger here
-                    ProjectionsManager projectionManager = new ProjectionsManager(new ConsoleLogger(), endpoint, TimeSpan.FromSeconds(30));
+                    EventStoreClientSettings eventStoreClientSettings = new EventStoreClientSettings
+                                                                        {
+                                                                            ConnectivitySettings = new EventStoreClientConnectivitySettings
+                                                                                                   {
+                                                                                                       Address = new Uri($"https://{ipAddresses.First().ToString()}:{this.EventStoreHttpPort}")
+                                                                                                   },
+                                                                            CreateHttpMessageHandler = () => new SocketsHttpHandler
+                                                                                                             {
+                                                                                                                 SslOptions =
+                                                                                                                 {
+                                                                                                                     RemoteCertificateValidationCallback = (sender,
+                                                                                                                                                            certificate,
+                                                                                                                                                            chain,
+                                                                                                                                                            errors) => true,
+                                                                                                                 }
+                                                                                                             },
+                                                                            DefaultCredentials = new UserCredentials("admin","changeit")
+
+                };
+                    EventStoreProjectionManagementClient projectionClient = new EventStoreProjectionManagementClient(eventStoreClientSettings);
 
                     foreach (FileInfo file in files)
                     {
@@ -197,7 +210,7 @@ namespace EstateManagement.IntegrationTests.Common
                         try
                         {
                             Logger.LogInformation($"Creating projection [{projectionName}]");
-                            await projectionManager.CreateContinuousAsync(projectionName, projection, new UserCredentials("admin", "changeit")).ConfigureAwait(false);
+                            await projectionClient.CreateContinuousAsync(projectionName, projection).ConfigureAwait(false);
                         }
                         catch (Exception e)
                         {

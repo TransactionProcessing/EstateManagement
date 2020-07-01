@@ -8,13 +8,13 @@
     using Models;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
-    using Shared.DomainDrivenDesign.EventStore;
+    using Shared.EventStore.EventStore;
     using Shared.General;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Shared.DomainDrivenDesign.EventStore.Aggregate" />
+    /// <seealso cref="Aggregate" />
     public class MerchantAggregate : Aggregate
     {
         #region Fields
