@@ -169,8 +169,10 @@ namespace EstateManagement
             services.AddTransient<IEventStoreContext, EventStoreContext>();
             services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate>, AggregateRepository<EstateAggregate.EstateAggregate>>();
             services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate>, AggregateRepository<MerchantAggregate.MerchantAggregate>>();
+            services.AddSingleton<IAggregateRepository<ContractAggregate.ContractAggregate>, AggregateRepository<ContractAggregate.ContractAggregate>>();
             services.AddSingleton<IEstateDomainService, EstateDomainService>();
             services.AddSingleton<IMerchantDomainService, MerchantDomainService>();
+            services.AddSingleton<IContractDomainService, ContractDomainService>();
             services.AddSingleton<IModelFactory, ModelFactory>();
             services.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
             services.AddSingleton<ISecurityServiceClient, SecurityServiceClient>();
@@ -190,6 +192,10 @@ namespace EstateManagement
             services.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
             services.AddSingleton<IRequestHandler<AddMerchantDeviceRequest, String>, MerchantRequestHandler>();
             services.AddSingleton<IRequestHandler<MakeMerchantDepositRequest, Guid>, MerchantRequestHandler>();
+
+            services.AddSingleton<IRequestHandler<CreateContractRequest, String>, ContractRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddProductToContractRequest, String>, ContractRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest, String>, ContractRequestHandler>();
 
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
             {

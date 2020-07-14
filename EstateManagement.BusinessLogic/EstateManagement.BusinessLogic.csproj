@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EstateManagement.ContractAggregate\EstateManagement.ContractAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.DataTransferObjects\EstateManagement.DataTransferObjects.csproj" />
     <ProjectReference Include="..\EstateManagement.EstateAggregate\EstateManagement.EstateAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.MerchantAggregate\EstateManagement.MerchantAggregate.csproj" />

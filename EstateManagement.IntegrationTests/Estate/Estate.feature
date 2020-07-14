@@ -66,6 +66,7 @@ Scenario: Get Estate - System Login
 	| EmailAddress                  |
 	| estateuser1@testestate1.co.uk |
 	| estateuser2@testestate1.co.uk |
+
 @PRTest
 Scenario: Get Estate - Estate user
 	Given I have created the following estates
