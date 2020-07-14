@@ -44,3 +44,5 @@ jobs:
         dotnet nuget push Nugets/EstateManagement.Estate.DomainEvents.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
         dotnet pack "EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets -c Release
         dotnet nuget push Nugets/EstateManagement.Merchant.DomainEvents.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet pack "EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets -c Release
+        dotnet nuget push Nugets/EstateManagement.Contract.DomainEvents.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
