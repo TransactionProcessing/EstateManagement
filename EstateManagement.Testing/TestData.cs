@@ -3,10 +3,12 @@
     using System;
     using System.Collections.Generic;
     using BusinessLogic.Requests;
+    using ContractAggregate;
     using EstateAggregate;
     using EstateReporting.Database.Entities;
     using MerchantAggregate;
     using Models;
+    using Models.Contract;
     using Models.Merchant;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
@@ -154,6 +156,22 @@
         #endregion
 
         #region Methods
+
+        public static ContractAggregate EmptyContractAggregate()
+        {
+            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+            return contractAggregate;
+        }
+
+        public static ContractAggregate CreatedContractAggregate()
+        {
+            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+            contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+
+            return contractAggregate;
+        }
 
         public static EstateAggregate CreatedEstateAggregate()
         {
@@ -594,5 +612,50 @@
                                                                  Balance = TestData.Balance,
                                                                  EstateId = TestData.EstateId
                                                              };
+
+        public static Guid ContractId = Guid.Parse("3C50EDAB-0718-4666-8BEB-1BD5BF08E1D7");
+
+        public static String ContractDescription = "Test Contract";
+
+        public static String ProductName = "Product 1";
+
+        public static Guid ProductId = Guid.Parse("C6309D4C-3182-4D96-AEEA-E9DBBB9DED8F");
+
+        public static CreateContractRequest CreateContractRequest = CreateContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+
+        public static String ProductDisplayText = "100 KES";
+
+        public static Decimal ProductFixedValue = 100.00m;
+
+        public static Guid TransactionFeeId = Guid.Parse("B83FCCCE-0D45-4FC2-8952-ED277A124BDB");
+
+        public static String TransactionFeeDescription = "Commission for Merchant";
+
+        public static Decimal TransactionFeeValue = 0.5m;
+
+        public static AddProductToContractRequest AddProductToContractRequest = AddProductToContractRequest.Create(TestData.ContractId,TestData.EstateId,TestData.ProductId,
+                                                                                                                   TestData.ProductName,
+                                                                                                                   TestData.ProductDisplayText,
+                                                                                                                   TestData.ProductFixedValue);
+
+        public static AddTransactionFeeForProductToContractRequest AddTransactionFeeForProductToContractRequest =
+            AddTransactionFeeForProductToContractRequest.Create(TestData.ContractId,
+                                                                TestData.EstateId,
+                                                                TestData.ProductId,
+                                                                TestData.TransactionFeeId,
+                                                                TestData.TransactionFeeDescription,
+                                                                CalculationType.Fixed,
+                                                                TestData.TransactionFeeValue);
+
+        public static ContractAggregate CreatedContractAggregateWithAProduct()
+        {
+            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+            contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+            contractAggregate.AddFixedValueProduct(TestData.ProductId,TestData.ProductName,TestData.ProductDisplayText,
+                                                   TestData.ProductFixedValue);
+
+            return contractAggregate;
+        }
     }
 }

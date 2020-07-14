@@ -30,6 +30,39 @@
                                                             CancellationToken cancellationToken);
 
         /// <summary>
+        /// Adds the product to contract.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="addProductToContractRequest">The add product to contract request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AddProductToContractResponse> AddProductToContract(String accessToken,
+                                                                Guid estateId,
+                                                                Guid contractId,
+                                                                AddProductToContractRequest addProductToContractRequest,
+                                                                CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Adds the transaction fee for product to contract.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="addTransactionFeeForProductToContractRequest">The add transaction fee for product to contract request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AddTransactionFeeForProductToContractResponse> AddTransactionFeeForProductToContract(String accessToken,
+                                                                                                  Guid estateId,
+                                                                                                  Guid contractId,
+                                                                                                  Guid productId,
+                                                                                                  AddTransactionFeeForProductToContractRequest
+                                                                                                      addTransactionFeeForProductToContractRequest,
+                                                                                                  CancellationToken cancellationToken);
+
+        /// <summary>
         /// Assigns the operator to merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -43,6 +76,19 @@
                                                               Guid merchantId,
                                                               AssignOperatorRequest assignOperatorRequest,
                                                               CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Creates the contract.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createContractRequest">The create contract request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<CreateContractResponse> CreateContract(String accessToken,
+                                                    Guid estateId,
+                                                    CreateContractRequest createContractRequest,
+                                                    CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates the estate.

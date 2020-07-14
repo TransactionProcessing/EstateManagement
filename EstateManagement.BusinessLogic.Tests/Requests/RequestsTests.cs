@@ -5,6 +5,7 @@ using System.Text;
 namespace EstateManagement.BusinessLogic.Tests.Commands
 {
     using Models;
+    using Models.Contract;
     using Requests;
     using Shouldly;
     using Testing;
@@ -159,6 +160,71 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             makeMerchantDepositRequest.Amount.ShouldBe(TestData.DepositAmount);
             makeMerchantDepositRequest.DepositDateTime.ShouldBe(TestData.DepositDateTime);
             makeMerchantDepositRequest.Reference.ShouldBe(TestData.DepositReference);
+        }
+
+        [Fact]
+        public void CreateContractRequest_CanBeCreated_IsCreated()
+        {
+            CreateContractRequest createContractRequest = CreateContractRequest.Create(TestData.ContractId,TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+
+            createContractRequest.ShouldNotBeNull();
+            createContractRequest.ContractId.ShouldBe(TestData.ContractId);
+            createContractRequest.EstateId.ShouldBe(TestData.EstateId);
+            createContractRequest.OperatorId.ShouldBe(TestData.OperatorId);
+            createContractRequest.Description.ShouldBe(TestData.ContractDescription);
+        }
+
+        [Fact]
+        public void AddProductToContractRequest_WithFixedValue_CanBeCreated_IsCreated()
+        {
+            AddProductToContractRequest addProductToContractRequest = AddProductToContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.ProductName,
+                                                                                                         TestData.ProductDisplayText, TestData.ProductFixedValue);
+
+            addProductToContractRequest.ShouldNotBeNull();
+            addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
+            addProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
+            addProductToContractRequest.ProductId.ShouldBe(TestData.ProductId);
+            addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
+            addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
+            addProductToContractRequest.Value.ShouldBe(TestData.ProductFixedValue);
+        }
+
+        [Fact]
+        public void AddProductToContractRequest_WithVariableValue_CanBeCreated_IsCreated()
+        {
+            AddProductToContractRequest addProductToContractRequest = AddProductToContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.ProductName,
+                                                                                                         TestData.ProductDisplayText, null);
+
+            addProductToContractRequest.ShouldNotBeNull();
+            addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
+            addProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
+            addProductToContractRequest.ProductId.ShouldBe(TestData.ProductId);
+            addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
+            addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
+            addProductToContractRequest.Value.ShouldBeNull();
+        }
+
+        [Theory]
+        [InlineData(CalculationType.Percentage)]
+        [InlineData(CalculationType.Fixed)]
+        public void AddTransactionFeeForProductToContractRequest_CanBeCreated_IsCreated(CalculationType calculationType)
+        {
+            AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest = AddTransactionFeeForProductToContractRequest.Create(TestData.ContractId,TestData.EstateId,
+                                                                                                                                                            TestData.ProductId,
+                                                                                                                                                            TestData.TransactionFeeId,
+                                                                                                                                                            TestData.TransactionFeeDescription,
+                                                                                                                                                            calculationType,
+                                                                                                                                                            TestData.TransactionFeeValue);
+
+            addTransactionFeeForProductToContractRequest.ShouldNotBeNull();
+            addTransactionFeeForProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
+            addTransactionFeeForProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
+            addTransactionFeeForProductToContractRequest.ProductId.ShouldBe(TestData.ProductId);
+            addTransactionFeeForProductToContractRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
+            addTransactionFeeForProductToContractRequest.Description.ShouldBe(TestData.TransactionFeeDescription);
+            addTransactionFeeForProductToContractRequest.CalculationType.ShouldBe(calculationType);
+            addTransactionFeeForProductToContractRequest.Value.ShouldBe(TestData.TransactionFeeValue);
+
         }
     }
 }

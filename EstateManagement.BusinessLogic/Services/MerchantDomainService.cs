@@ -45,6 +45,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="MerchantDomainService" /> class.
         /// </summary>
+        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         /// <param name="merchantAggregateRepository">The merchant aggregate repository.</param>
         /// <param name="securityServiceClient">The security service client.</param>
         public MerchantDomainService(IAggregateRepository<EstateAggregate> estateAggregateRepository,

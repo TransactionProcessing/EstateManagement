@@ -603,6 +603,123 @@
             return response;
         }
 
+        public async Task<CreateContractResponse> CreateContract(String accessToken,
+                                                                 Guid estateId,
+                                                                 CreateContractRequest createContractRequest,
+                                                                 CancellationToken cancellationToken)
+        {
+            CreateContractResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(createContractRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<CreateContractResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error creating contract [{createContractRequest.Description}] for estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        public async Task<AddProductToContractResponse> AddProductToContract(String accessToken,
+                                                                             Guid estateId,
+                                                                             Guid contractId,
+                                                                             AddProductToContractRequest addProductToContractRequest,
+                                                                             CancellationToken cancellationToken)
+        {
+            AddProductToContractResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}/products");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(addProductToContractRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<AddProductToContractResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error adding product [{addProductToContractRequest.ProductName}] to contract [{contractId}] for estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        public async Task<AddTransactionFeeForProductToContractResponse> AddTransactionFeeForProductToContract(String accessToken,
+                                                                                                               Guid estateId,
+                                                                                                               Guid contractId,
+                                                                                                               Guid productId,
+                                                                                                               AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest,
+                                                                                                               CancellationToken cancellationToken)
+        {
+            AddTransactionFeeForProductToContractResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}/products/{productId}/transactionFees");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(addTransactionFeeForProductToContractRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<AddTransactionFeeForProductToContractResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error adding transaction fee [{addTransactionFeeForProductToContractRequest.Description}] for product [{productId}] to contract [{contractId}] for estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         #endregion
     }
 }

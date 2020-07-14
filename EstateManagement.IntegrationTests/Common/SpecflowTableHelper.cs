@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EstateManagement.IntegrationTests.Common
 {
+    using NLog.LayoutRenderers.Wrappers;
     using TechTalk.SpecFlow;
 
     public static class SpecflowTableHelper
@@ -81,6 +82,21 @@ namespace EstateManagement.IntegrationTests.Common
                 default:
                     return DateTime.Parse(dateString);
             }
+        }
+
+        /// <summary>
+        /// Gets the enum value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="row">The row.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public static T GetEnumValue<T>(TableRow row,
+                                              String key) where T : struct
+        {
+            String field = SpecflowTableHelper.GetStringRowValue(row, key);
+
+            return Enum.Parse<T>(field, true);
         }
 
         #endregion
