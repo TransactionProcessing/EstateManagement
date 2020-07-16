@@ -9,6 +9,7 @@ namespace EstateManagement.Tests.Factories
     using EstateAggregate;
     using EstateManagement.Factories;
     using Models;
+    using Models.Contract;
     using Models.Estate;
     using Models.Merchant;
     using Shouldly;
@@ -383,6 +384,98 @@ namespace EstateManagement.Tests.Factories
             MerchantBalanceResponse merchantBalanceResponse = modelFactory.ConvertFrom(merchantBalanceModel);
 
             merchantBalanceResponse.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_Contract_ContractOnly_IsConverted()
+        {
+            Contract contractModel = TestData.ContractModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+
+            contractResponse.ShouldNotBeNull();
+            contractResponse.EstateId.ShouldBe(contractModel.EstateId);
+            contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
+            contractResponse.ContractId.ShouldBe(contractModel.ContractId);
+            contractResponse.Description.ShouldBe(contractModel.Description);
+            contractResponse.Products.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_Contract_ContractWithProducts_IsConverted()
+        {
+            Contract contractModel = TestData.ContractModelWithProducts;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+
+            contractResponse.ShouldNotBeNull();
+            contractResponse.EstateId.ShouldBe(contractModel.EstateId);
+            contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
+            contractResponse.ContractId.ShouldBe(contractModel.ContractId);
+            contractResponse.Description.ShouldBe(contractModel.Description);
+            contractResponse.Products.ShouldNotBeNull();
+            contractResponse.Products.ShouldHaveSingleItem();
+
+            ContractProduct contractProduct = contractResponse.Products.Single();
+            Product expectedContractProduct = contractModel.Products.Single();
+
+            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.Value.ShouldBe(expectedContractProduct.Value);
+            contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
+            contractProduct.Name.ShouldBe(expectedContractProduct.Name);
+            contractProduct.TransactionFees.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_Contract_ContractWithProductsAndFees_IsConverted()
+        {
+            Contract contractModel = TestData.ContractModelWithProductsAndTransactionFees;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+
+            contractResponse.ShouldNotBeNull();
+            contractResponse.EstateId.ShouldBe(contractModel.EstateId);
+            contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
+            contractResponse.ContractId.ShouldBe(contractModel.ContractId);
+            contractResponse.Description.ShouldBe(contractModel.Description);
+            contractResponse.Products.ShouldNotBeNull();
+            contractResponse.Products.ShouldHaveSingleItem();
+            
+            ContractProduct contractProduct = contractResponse.Products.Single();
+            Product expectedContractProduct = contractModel.Products.Single();
+
+            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.Value.ShouldBe(expectedContractProduct.Value);
+            contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
+            contractProduct.Name.ShouldBe(expectedContractProduct.Name);
+            contractProduct.TransactionFees.ShouldNotBeNull();
+            contractProduct.TransactionFees.ShouldHaveSingleItem();
+
+            ContractProductTransactionFee productTransactionFee = contractProduct.TransactionFees.Single();
+            ContractProductTransactionFee expectedProductTransactionFee = contractProduct.TransactionFees.Single();
+
+            productTransactionFee.TransactionFeeId.ShouldBe(expectedProductTransactionFee.TransactionFeeId);
+            productTransactionFee.Value.ShouldBe(expectedProductTransactionFee.Value);
+            productTransactionFee.CalculationType.ShouldBe(expectedProductTransactionFee.CalculationType);
+            productTransactionFee.Description.ShouldBe(expectedProductTransactionFee.Description);
+        }
+
+        [Fact]
+        public void ModelFactory_Contract_NullContract_IsConverted()
+        {
+            Contract contractModel = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+
+            contractResponse.ShouldBeNull();
         }
     }
 }

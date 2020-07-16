@@ -3,9 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using DataTransferObjects;
     using DataTransferObjects.Responses;
+    using Models.Contract;
     using Models.Estate;
     using Models.Merchant;
+    using CalculationType = DataTransferObjects.CalculationType;
 
     /// <summary>
     /// 
@@ -14,6 +17,60 @@
     public class ModelFactory : IModelFactory
     {
         #region Methods
+
+        public ContractResponse ConvertFrom(Contract contract)
+        {
+            if (contract == null)
+            {
+                return null;
+            }
+
+            ContractResponse contractResponse = new ContractResponse
+                                                {
+                                                    ContractId = contract.ContractId,
+                                                    EstateId = contract.EstateId,
+                                                    OperatorId = contract.OperatorId,
+                                                    Description = contract.Description
+                                                };
+
+            if (contract.Products != null && contract.Products.Any())
+            {
+                contractResponse.Products = new List<ContractProduct>();
+
+                contract.Products.ForEach(p =>
+                                          {
+                                              ContractProduct contractProduct = new ContractProduct
+                                                                                {
+                                                                                    ProductId = p.ProductId,
+                                                                                    Value = p.Value,
+                                                                                    DisplayText = p.DisplayText,
+                                                                                    Name = p.Name
+                                                                                };
+                                              if (p.TransactionFees != null && p.TransactionFees.Any())
+                                              {
+                                                  contractProduct.TransactionFees = new List<ContractProductTransactionFee>();
+                                                  p.TransactionFees.ForEach(tf =>
+                                                                            {
+                                                                                ContractProductTransactionFee transactionFee = new ContractProductTransactionFee
+                                                                                                                               {
+                                                                                                                                   TransactionFeeId = tf.TransactionFeeId,
+                                                                                                                                   Value = tf.Value,
+                                                                                                                                   Description = tf.Description,
+                                                                                                                               };
+                                                                                transactionFee.CalculationType =
+                                                                                    Enum.Parse<CalculationType>(tf.CalculationType.ToString());
+
+                                                                                contractProduct.TransactionFees.Add(transactionFee);
+                                                                            });
+                                              }
+
+                                              contractResponse.Products.Add(contractProduct);
+                                          });
+
+            }
+
+            return contractResponse;
+        }
 
         /// <summary>
         /// Converts from.

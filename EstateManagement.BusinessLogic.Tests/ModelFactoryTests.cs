@@ -6,6 +6,11 @@ using EstateEntity = EstateReporting.Database.Entities.Estate;
 using EstateOperatorEntity = EstateReporting.Database.Entities.EstateOperator;
 using EstateSecurityUserEntity = EstateReporting.Database.Entities.EstateSecurityUser;
 
+using ContractModel = EstateManagement.Models.Contract.Contract;
+using ContractEntity = EstateReporting.Database.Entities.Contract;
+using ContractProductEntity = EstateReporting.Database.Entities.ContractProduct;
+using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
+
 using MerchantEntity = EstateReporting.Database.Entities.Merchant;
 using MerchantAddressEntity = EstateReporting.Database.Entities.MerchantAddress;
 using MerchantContactEntity = EstateReporting.Database.Entities.MerchantContact;
@@ -15,9 +20,11 @@ using MerchantSecurityUserEntity = EstateReporting.Database.Entities.MerchantSec
 
 namespace EstateManagement.BusinessLogic.Tests
 {
+    using System.Linq;
     using EstateAggregate;
     using EstateReporting.Database.Entities;
     using Models;
+    using Models.Contract;
     using Models.Factories;
     using Shouldly;
     using Testing;
@@ -584,6 +591,148 @@ namespace EstateManagement.BusinessLogic.Tests
             merchantModel.Devices.ShouldNotBeNull();
             merchantModel.Devices.Count.ShouldBe(merchantDevices.Count);
             merchantModel.SecurityUsers.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ContractEntities_ConvertFrom_ContractConverted()
+        {
+            ContractEntity contract = TestData.ContractEntity;
+            List<ContractProductEntity> contractProducts = new List<ContractProductEntity>
+                                                      {
+                                                          TestData.ContractProductEntity
+                                                      };
+            List<ContractProductTransactionFeeEntity> contractProductsTransactionFees= new List<ContractProductTransactionFeeEntity>
+                                                                         {
+                                                                             TestData.ContractProductTransactionFeeEntity
+                                                                         };
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+
+            contractModel.ShouldNotBeNull();
+            contractModel.EstateId.ShouldBe(contract.EstateId);
+            contractModel.ContractId.ShouldBe(contract.ContractId);
+            contractModel.OperatorId.ShouldBe(contract.OperatorId);
+            contractModel.Description.ShouldBe(contract.Description);
+            contractModel.Products.ShouldNotBeNull();
+            contractModel.Products.ShouldHaveSingleItem();
+
+            Product contractProduct = contractModel.Products.Single();
+            ContractProduct expectedContractProduct = contractProducts.Single();
+            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
+            contractProduct.Name.ShouldBe(expectedContractProduct.ProductName);
+            contractProduct.Value.ShouldBe(expectedContractProduct.Value);
+            contractProduct.TransactionFees.ShouldNotBeNull();
+            contractProduct.TransactionFees.ShouldHaveSingleItem();
+
+            TransactionFee contractProductTransactionFee = contractProduct.TransactionFees.Single();
+            ContractProductTransactionFee expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
+            contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.TransactionFeeId);
+            contractProductTransactionFee.Description.ShouldBe(expectedContractProductTransactionFee.Description);
+            contractProductTransactionFee.Value.ShouldBe(expectedContractProductTransactionFee.Value);
+            contractProductTransactionFee.CalculationType.ShouldBe((CalculationType)expectedContractProductTransactionFee.CalculationType);
+        }
+
+        [Fact]
+        public void ContractEntities_ConvertFrom_NullProducts_ContractConverted()
+        {
+            ContractEntity contract = TestData.ContractEntity;
+            List<ContractProductEntity> contractProducts = null;
+            List<ContractProductTransactionFeeEntity> contractProductsTransactionFees = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+
+            contractModel.ShouldNotBeNull();
+            contractModel.EstateId.ShouldBe(contract.EstateId);
+            contractModel.ContractId.ShouldBe(contract.ContractId);
+            contractModel.OperatorId.ShouldBe(contract.OperatorId);
+            contractModel.Description.ShouldBe(contract.Description);
+            contractModel.Products.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ContractEntities_ConvertFrom_EmptyProducts_ContractConverted()
+        {
+            ContractEntity contract = TestData.ContractEntity;
+            List<ContractProductEntity> contractProducts = new List<ContractProduct>();
+            List<ContractProductTransactionFeeEntity> contractProductsTransactionFees = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+
+            contractModel.ShouldNotBeNull();
+            contractModel.EstateId.ShouldBe(contract.EstateId);
+            contractModel.ContractId.ShouldBe(contract.ContractId);
+            contractModel.OperatorId.ShouldBe(contract.OperatorId);
+            contractModel.Description.ShouldBe(contract.Description);
+            contractModel.Products.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ContractEntities_ConvertFrom_NullProductTransactionFees_ContractConverted()
+        {
+            ContractEntity contract = TestData.ContractEntity;
+            List<ContractProductEntity> contractProducts = new List<ContractProductEntity>
+                                                      {
+                                                          TestData.ContractProductEntity
+                                                      };
+            List<ContractProductTransactionFeeEntity> contractProductsTransactionFees = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+
+            contractModel.ShouldNotBeNull();
+            contractModel.EstateId.ShouldBe(contract.EstateId);
+            contractModel.ContractId.ShouldBe(contract.ContractId);
+            contractModel.OperatorId.ShouldBe(contract.OperatorId);
+            contractModel.Description.ShouldBe(contract.Description);
+            contractModel.Products.ShouldNotBeNull();
+            contractModel.Products.ShouldHaveSingleItem();
+
+            Product contractProduct = contractModel.Products.Single();
+            ContractProduct expectedContractProduct = contractProducts.Single();
+            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
+            contractProduct.Name.ShouldBe(expectedContractProduct.ProductName);
+            contractProduct.Value.ShouldBe(expectedContractProduct.Value);
+            contractProduct.TransactionFees.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ContractEntities_ConvertFrom_EmptyProductTransactionFees_ContractConverted()
+        {
+            ContractEntity contract = TestData.ContractEntity;
+            List<ContractProductEntity> contractProducts = new List<ContractProductEntity>
+                                                      {
+                                                          TestData.ContractProductEntity
+                                                      };
+            List<ContractProductTransactionFeeEntity> contractProductsTransactionFees = new List<ContractProductTransactionFeeEntity>();
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+
+            contractModel.ShouldNotBeNull();
+            contractModel.EstateId.ShouldBe(contract.EstateId);
+            contractModel.ContractId.ShouldBe(contract.ContractId);
+            contractModel.OperatorId.ShouldBe(contract.OperatorId);
+            contractModel.Description.ShouldBe(contract.Description);
+            contractModel.Products.ShouldNotBeNull();
+            contractModel.Products.ShouldHaveSingleItem();
+
+            Product contractProduct = contractModel.Products.Single();
+            ContractProduct expectedContractProduct = contractProducts.Single();
+            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
+            contractProduct.Name.ShouldBe(expectedContractProduct.ProductName);
+            contractProduct.Value.ShouldBe(expectedContractProduct.Value);
+            contractProduct.TransactionFees.ShouldBeEmpty();
         }
     }
 }

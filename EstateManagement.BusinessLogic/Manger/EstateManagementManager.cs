@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using EstateAggregate;
     using MerchantAggregate;
+    using Models.Contract;
     using Models.Estate;
     using Models.Factories;
     using Models.Merchant;
@@ -75,6 +76,26 @@
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Gets the contract.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="includeProducts">if set to <c>true</c> [include products].</param>
+        /// <param name="includeProductsWithFees">if set to <c>true</c> [include products with fees].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<Contract> GetContract(Guid estateId,
+                                                Guid contractId,
+                                                Boolean includeProducts,
+                                                Boolean includeProductsWithFees,
+                                                CancellationToken cancellationToken)
+        {
+            Contract contractModel = await this.EstateManagementRepository.GetContract(estateId, contractId, includeProducts, includeProductsWithFees, cancellationToken);
+
+            return contractModel;
+        }
 
         /// <summary>
         /// Gets the estate.
