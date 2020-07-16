@@ -16,6 +16,10 @@
     using CreateContractRequestDTO = DataTransferObjects.Requests.CreateContractRequest;
     using AddTransactionFeeForProductToContractRequestDTO = DataTransferObjects.Requests.AddTransactionFeeForProductToContractRequest;
     using AddTransactionFeeForProductToContractRequest = BusinessLogic.Requests.AddTransactionFeeForProductToContractRequest;
+    using EstateManagement.Factories;
+    using EstateManagement.BusinessLogic.Manger;
+    using Models.Contract;
+    using Shared.Exceptions;
 
     /// <summary>
     /// 
@@ -34,6 +38,10 @@
         /// </summary>
         private readonly IMediator Mediator;
 
+        private readonly IEstateManagementManager EstateManagementManager;
+
+        private readonly IModelFactory ModelFactory;
+
         #endregion
 
         #region Constructors
@@ -42,14 +50,59 @@
         /// Initializes a new instance of the <see cref="ContractController"/> class.
         /// </summary>
         /// <param name="mediator">The mediator.</param>
-        public ContractController(IMediator mediator)
+        public ContractController(IMediator mediator,
+                                  IEstateManagementManager estateManagementManager,
+                                  IModelFactory modelFactory)
         {
             this.Mediator = mediator;
+            this.EstateManagementManager = estateManagementManager;
+            this.ModelFactory = modelFactory;
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Gets the contract.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="includeProducts">if set to <c>true</c> [include products].</param>
+        /// <param name="includeProductsWithFees">if set to <c>true</c> [include products with fees].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{contractId}")]
+        public async Task<IActionResult> GetContract([FromRoute] Guid estateId, 
+                                                     [FromRoute] Guid contractId,
+                                                     [FromQuery] Boolean includeProducts,
+                                                     [FromQuery] Boolean includeProductsWithFees,
+                                                     CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            Contract contract = await this.EstateManagementManager.GetContract(estateId, contractId, includeProducts, includeProductsWithFees, cancellationToken);
+
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract not found with estate Id {estateId} and contract Id {contractId}");
+            }
+
+            return this.Ok(this.ModelFactory.ConvertFrom(contract));
+        }
 
         /// <summary>
         /// Adds the product to contract.

@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using DataTransferObjects.Responses;
+    using Models.Contract;
     using Models.Estate;
     using Models.Merchant;
 
@@ -11,6 +12,13 @@
     public interface IModelFactory
     {
         #region Methods
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contract">The contract.</param>
+        /// <returns></returns>
+        ContractResponse ConvertFrom(Contract contract);
 
         /// <summary>
         /// Converts from.

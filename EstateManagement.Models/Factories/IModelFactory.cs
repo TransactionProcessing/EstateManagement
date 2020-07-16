@@ -9,6 +9,10 @@ using MerchantContactEntity = EstateReporting.Database.Entities.MerchantContact;
 using MerchantOperatorEntity = EstateReporting.Database.Entities.MerchantOperator;
 using MerchantDeviceEntity = EstateReporting.Database.Entities.MerchantDevice;
 using MerchantSecurityUserEntity = EstateReporting.Database.Entities.MerchantSecurityUser;
+using ContractModel = EstateManagement.Models.Contract.Contract;
+using ContractEntity = EstateReporting.Database.Entities.Contract;
+using ContractProductEntity = EstateReporting.Database.Entities.ContractProduct;
+using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
 
 namespace EstateManagement.Models.Factories
 {
@@ -42,5 +46,17 @@ namespace EstateManagement.Models.Factories
         MerchantModel ConvertFrom(MerchantEntity merchant, List<MerchantAddressEntity> merchantAddresses, List<MerchantContactEntity> merchantContacts,
                                   List<MerchantOperatorEntity> merchantOperators, List<MerchantDeviceEntity> merchantDevices,
                                   List<MerchantSecurityUserEntity> merchantSecurityUsers);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contract">The contract.</param>
+        /// <param name="contractProducts">The contract products.</param>
+        /// <param name="productTransactionFees">The product transaction fees.</param>
+        /// <returns></returns>
+        ContractModel ConvertFrom(ContractEntity contract,
+                                  List<ContractProductEntity> contractProducts,
+                                  List<ContractProductTransactionFeeEntity> productTransactionFees);
+
     }
 }

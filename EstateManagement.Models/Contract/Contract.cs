@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Models.Contract
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
@@ -50,6 +51,14 @@
         /// The operator identifier.
         /// </value>
         public Guid OperatorId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the products.
+        /// </summary>
+        /// <value>
+        /// The products.
+        /// </value>
+        public List<Product> Products { get; set; }
 
         #endregion
     }

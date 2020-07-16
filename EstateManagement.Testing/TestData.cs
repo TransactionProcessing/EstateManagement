@@ -12,6 +12,7 @@
     using Models.Merchant;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
+    using Contract = Models.Contract.Contract;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
     using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
     using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
@@ -505,7 +506,7 @@
                                                                                   Name = TestData.EstateName,
                                                                                   EstateId = TestData.EstateId
                                                                               };
-
+        
         public static EstateOperator EstateOperatorEntity = new EstateOperator
                                                             {
                                                                 EstateId = TestData.EstateId,
@@ -657,5 +658,95 @@
 
             return contractAggregate;
         }
+
+        public static Contract ContractModel = new Contract
+        {
+            EstateId = TestData.EstateId,
+            OperatorId = TestData.OperatorId,
+            ContractId = TestData.ContractId,
+            Description = TestData.ContractDescription,
+            IsCreated = true,
+            Products = null
+        };
+
+        public static Contract ContractModelWithProducts = new Contract
+                                               {
+                                                   EstateId = TestData.EstateId,
+                                                   OperatorId = TestData.OperatorId,
+                                                   ContractId = TestData.ContractId,
+                                                   Description = TestData.ContractDescription,
+                                                   IsCreated = true,
+                                                   Products = new List<Product>
+                                                              {
+                                                                  new Product
+                                                                  {
+                                                                      Value = TestData.ProductFixedValue,
+                                                                      ProductId = TestData.ProductId,
+                                                                      DisplayText = TestData.ProductDisplayText,
+                                                                      Name = TestData.ProductName,
+                                                                      TransactionFees = null
+                                                                  }
+                                                              }
+                                               };
+
+        public static Contract ContractModelWithProductsAndTransactionFees = new Contract
+        {
+            EstateId = TestData.EstateId,
+            OperatorId = TestData.OperatorId,
+            ContractId = TestData.ContractId,
+            Description = TestData.ContractDescription,
+            IsCreated = true,
+            Products = new List<Product>
+                                                              {
+                                                                  new Product
+                                                                  {
+                                                                      Value = TestData.ProductFixedValue,
+                                                                      ProductId = TestData.ProductId,
+                                                                      DisplayText = TestData.ProductDisplayText,
+                                                                      Name = TestData.ProductName,
+                                                                      TransactionFees = new List<TransactionFee>
+                                                                                        {
+                                                                                            new TransactionFee
+                                                                                            {
+                                                                                                TransactionFeeId = TestData.TransactionFeeId,
+                                                                                                Description = TestData.TransactionFeeDescription,
+                                                                                                Value = TestData.TransactionFeeValue,
+                                                                                                CalculationType = CalculationType.Fixed
+                                                                                            }
+                                                                                        }
+                                                                  }
+                                                              }
+        };
+
+        public static EstateReporting.Database.Entities.Contract ContractEntity = new EstateReporting.Database.Entities.Contract
+                                                                                  {
+                                                                                      EstateId = TestData.EstateId,
+                                                                                      OperatorId = TestData.OperatorId,
+                                                                                      Description = TestData.ContractDescription,
+                                                                                      ContractId = TestData.ContractId
+                                                                                  };
+
+        public static EstateReporting.Database.Entities.ContractProduct ContractProductEntity = new EstateReporting.Database.Entities.ContractProduct
+                                                                                                {
+                                                                                                    EstateId = TestData.EstateId,
+                                                                                                    ContractId = TestData.ContractId,
+                                                                                                    Value = TestData.ProductFixedValue,
+                                                                                                    ProductId = TestData.ProductId,
+                                                                                                    ProductName = TestData.ProductName,
+                                                                                                    DisplayText = TestData.ProductDisplayText
+                                                                                                };
+
+        public static EstateReporting.Database.Entities.ContractProductTransactionFee ContractProductTransactionFeeEntity = new EstateReporting.Database.Entities.ContractProductTransactionFee
+        {
+                                                                                                    EstateId = TestData.EstateId,
+                                                                                                    ContractId = TestData.ContractId,
+                                                                                                    Value = TestData.ProductFixedValue,
+                                                                                                    ProductId = TestData.ProductId,
+                                                                                                    TransactionFeeId = TestData.TransactionFeeId,
+                                                                                                    Description = TestData.TransactionFeeDescription,
+                                                                                                    CalculationType = 0
+                                                                                                };
+
+
     }
 }

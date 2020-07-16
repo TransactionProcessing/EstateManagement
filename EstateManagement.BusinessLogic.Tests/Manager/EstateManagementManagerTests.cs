@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EstateManagement.BusinessLogic.Tests.Manager
 {
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Castle.DynamicProxy.Generators;
@@ -11,6 +12,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Manger;
     using MerchantAggregate;
     using Models;
+    using Models.Contract;
     using Models.Estate;
     using Models.Factories;
     using Models.Merchant;
@@ -143,6 +145,24 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantList.ShouldNotBeNull();
             merchantList.ShouldNotBeEmpty();
             merchantList.ShouldHaveSingleItem();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetContract_ContractIsReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetContract(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Boolean>(), It.IsAny<Boolean>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.ContractModelWithProductsAndTransactionFees);
+
+            Contract contractModel = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, false, false, CancellationToken.None);
+
+            contractModel.ShouldNotBeNull();
+            contractModel.EstateId.ShouldBe(TestData.EstateId);
+            contractModel.ContractId.ShouldBe(TestData.ContractId);
+            contractModel.Description.ShouldBe(TestData.ContractDescription);
+            contractModel.OperatorId.ShouldBe(TestData.OperatorId);
+            contractModel.Products.ShouldNotBeNull();
+            contractModel.Products.First().ProductId.ShouldBe(TestData.ProductId);
+            contractModel.Products.First().TransactionFees.ShouldNotBeNull();
+            contractModel.Products.First().TransactionFees.First().TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
         }
     }
 }

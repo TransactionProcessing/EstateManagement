@@ -9,39 +9,14 @@
     using EstateReporting.Database.Entities;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+    using Models.Contract;
     using Models.Factories;
     using Shared.EntityFramework;
     using Shared.Exceptions;
+    using Contract = EstateReporting.Database.Entities.Contract;
     using EstateModel = Models.Estate.Estate;
     using MerchantModel = Models.Merchant.Merchant;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IEstateManagementRepository
-    {
-        #region Methods
-
-        /// <summary>
-        /// Gets the estate.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<EstateModel> GetEstate(Guid estateId,
-                                    CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the merchants.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<List<MerchantModel>> GetMerchants(Guid estateId,
-                                          CancellationToken cancellationToken);
-
-        #endregion
-    }
+    using ContractModel = Models.Contract.Contract;
 
     /// <summary>
     /// 
@@ -80,6 +55,47 @@
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Gets the contract.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="includeProducts">if set to <c>true</c> [include products].</param>
+        /// <param name="includeProductsWithFees">if set to <c>true</c> [include products with fees].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException">No contract found in read model with Id [{contractId}]</exception>
+        public async Task<ContractModel> GetContract(Guid estateId,
+                                                Guid contractId,
+                                                Boolean includeProducts,
+                                                Boolean includeProductsWithFees,
+                                                CancellationToken cancellationToken)
+        {
+            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            Contract contract = await context.Contracts.SingleOrDefaultAsync(c => c.EstateId == estateId && c.ContractId == contractId, cancellationToken);
+
+            if (contract == null)
+            {
+                throw new NotFoundException($"No contract found in read model with Id [{contractId}]");
+            }
+
+            List<ContractProduct> contractProducts = null;
+            List<ContractProductTransactionFee> contractProductFees = null;
+
+            if (includeProducts || includeProductsWithFees)
+            {
+                contractProducts = await context.ContractProducts.Where(cp => cp.EstateId == estateId && cp.ContractId == contractId).ToListAsync(cancellationToken);
+            }
+
+            if (includeProductsWithFees)
+            {
+                contractProductFees = await context.ContractProductTransactionFees.Where(f => f.EstateId == estateId && f.ContractId == contractId).ToListAsync(cancellationToken);
+            }
+
+            return this.ModelFactory.ConvertFrom(contract, contractProducts, contractProductFees);
+        }
 
         /// <summary>
         /// Gets the estate.
