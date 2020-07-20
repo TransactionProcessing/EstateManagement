@@ -9,6 +9,7 @@ namespace EstateManagement.Repository.Tests
     using Microsoft.Data.Sqlite;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
+    using Models.Contract;
     using Models.Factories;
     using Moq;
     using Shared.EntityFramework;
@@ -17,6 +18,7 @@ namespace EstateManagement.Repository.Tests
     using Shouldly;
     using Testing;
     using Xunit;
+    using Contract = EstateReporting.Database.Entities.Contract;
     using Merchant = Models.Merchant.Merchant;
 
     public class EstateManagementRepositoryTests
@@ -227,7 +229,27 @@ namespace EstateManagement.Repository.Tests
                                             });
         }
 
+        [Theory]
+        [InlineData(TestDatabaseType.InMemory)]
+        [InlineData(TestDatabaseType.SqliteInMemory)]
+        public async Task EstateManagementRepository_GetTransactionFeesForProduct_TransactionFeesForProductRetrieved(TestDatabaseType testDatabaseType)
+        {
+            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            context.ContractProductTransactionFees.Add(TestData.ContractProductTransactionFeeEntity);
+            await context.SaveChangesAsync();
 
+            Mock<IDbContextFactory<EstateReportingContext>> dbContextFactory = new Mock<IDbContextFactory<EstateReportingContext>>();
+            Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
+
+            dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ProductTransactionFees);
+            EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
+
+            List<TransactionFee> transactionFeesModel = await estateManagementRepository.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ProductId, CancellationToken.None);
+
+            transactionFeesModel.ShouldNotBeNull();
+            transactionFeesModel.ShouldHaveSingleItem();
+        }
 
         private static async Task<EstateReportingContext> GetContext(String databaseName, TestDatabaseType databaseType = TestDatabaseType.InMemory)
         {

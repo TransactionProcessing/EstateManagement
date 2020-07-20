@@ -703,6 +703,45 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [Then(@"I get the Transaction Fees for '(.*)' on the '(.*)' contract for '(.*)' the following fees are returned")]
+        public async Task ThenIGetTheTransactionFeesForOnTheContractForTheFollowingFeesAreReturned(String productName, String contractName, String estateName, Table table)
+        {
+            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
 
+            String token = this.TestingContext.AccessToken;
+            if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+            {
+                token = estateDetails.AccessToken;
+            }
+            
+            Contract contract = estateDetails.GetContract(contractName);
+
+            Product product = contract.GetProduct(productName);
+
+            await Retry.For(async () =>
+                            {
+
+
+                                List<ContractProductTransactionFee> transactionFees =
+                                    await this.TestingContext.DockerHelper.EstateClient.GetTransactionFeesForProduct(token,
+                                                                                                                     estateDetails.EstateId,
+                                                                                                                     Guid.Empty,
+                                                                                                                     contract.ContractId,
+                                                                                                                     product.ProductId,
+                                                                                                                     CancellationToken.None);
+                                foreach (TableRow tableRow in table.Rows)
+                                {
+                                    CalculationType calculationType = SpecflowTableHelper.GetEnumValue<CalculationType>(tableRow, "CalculationType");
+                                    String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
+                                    Decimal feeValue = Decimal.Round(SpecflowTableHelper.GetDecimalValue(tableRow, "Value"), 2,MidpointRounding.AwayFromZero);
+
+                                    Boolean feeFound =
+                                        transactionFees.Any(f => f.CalculationType == calculationType && f.Description == feeDescription && f.Value == feeValue);
+
+                                    feeFound.ShouldBeTrue();
+                                }
+                            });
+
+        }
     }
 }

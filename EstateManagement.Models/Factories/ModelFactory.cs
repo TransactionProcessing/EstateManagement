@@ -205,6 +205,29 @@
             return contractModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="productTransactionFees">The product transaction fees.</param>
+        /// <returns></returns>
+        public List<TransactionFee> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees)
+        {
+            List<TransactionFee> productTransactionFeesModelList = new List<TransactionFee>();
+
+            productTransactionFees.ForEach(f =>
+                                           {
+                                               productTransactionFeesModelList.Add(new TransactionFee
+                                                                                   {
+                                                                                       TransactionFeeId = f.TransactionFeeId,
+                                                                                       Value = f.Value,
+                                                                                       Description = f.Description,
+                                                                                       CalculationType = (CalculationType)f.CalculationType
+                                                                                   });
+                                           });
+
+            return productTransactionFeesModelList;
+        }
+
         #endregion
     }
 }

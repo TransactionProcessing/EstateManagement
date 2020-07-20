@@ -300,6 +300,9 @@ namespace EstateManagement.IntegrationTests.Common
                     // Add Route for Merchant Aggregate Events
                     await this.InsertSubscription(connection, "$ce-MerchantAggregate", "Reporting", endPointUri).ConfigureAwait(false);
 
+                    // Add Route for Contract Aggregate Events
+                    await this.InsertSubscription(connection, "$ce-ContractAggregate", "Reporting", endPointUri).ConfigureAwait(false);
+
                     await connection.CloseAsync().ConfigureAwait(false);
                 }
                 catch (Exception e)

@@ -668,7 +668,7 @@
             IsCreated = true,
             Products = null
         };
-
+        
         public static Contract ContractModelWithProducts = new Contract
                                                {
                                                    EstateId = TestData.EstateId,
@@ -747,6 +747,15 @@
                                                                                                     CalculationType = 0
                                                                                                 };
 
-
+        public static List<TransactionFee> ProductTransactionFees = new List<TransactionFee>
+                                                                    {
+                                                                        new TransactionFee
+                                                                        {
+                                                                            TransactionFeeId = TestData.TransactionFeeId,
+                                                                            Description = TestData.TransactionFeeDescription,
+                                                                            Value = TestData.TransactionFeeValue,
+                                                                            CalculationType = CalculationType.Fixed
+                                                                        }
+                                                                    };
     }
 }

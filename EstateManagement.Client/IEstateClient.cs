@@ -204,6 +204,23 @@
                                                   CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the transaction fees for product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<ContractProductTransactionFee>> GetTransactionFeesForProduct(String accessToken,
+                                                                               Guid estateId,
+                                                                               Guid merchantId,
+                                                                               Guid contractId,
+                                                                               Guid productId,
+                                                                               CancellationToken cancellationToken);
+
+        /// <summary>
         /// Makes the merchant deposit.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

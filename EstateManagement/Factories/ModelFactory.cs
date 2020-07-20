@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using DataTransferObjects;
     using DataTransferObjects.Responses;
     using Models.Contract;
     using Models.Estate;
@@ -66,7 +65,6 @@
 
                                               contractResponse.Products.Add(contractProduct);
                                           });
-
             }
 
             return contractResponse;
@@ -120,7 +118,8 @@
         /// </summary>
         /// <param name="merchant">The merchant.</param>
         /// <returns></returns>
-        public MerchantResponse ConvertFrom(Merchant merchant, MerchantBalance merchantBalance = null)
+        public MerchantResponse ConvertFrom(Merchant merchant,
+                                            MerchantBalance merchantBalance = null)
         {
             if (merchant == null)
             {
@@ -229,6 +228,30 @@
             List<MerchantResponse> result = new List<MerchantResponse>();
 
             merchants.ForEach(m => result.Add(this.ConvertFrom(m)));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="transactionFees">The transaction fees.</param>
+        /// <returns></returns>
+        public List<ContractProductTransactionFee> ConvertFrom(List<TransactionFee> transactionFees)
+        {
+            List<ContractProductTransactionFee> result = new List<ContractProductTransactionFee>();
+            transactionFees.ForEach(tf =>
+                                    {
+                                        ContractProductTransactionFee transactionFee = new ContractProductTransactionFee
+                                                                                       {
+                                                                                           TransactionFeeId = tf.TransactionFeeId,
+                                                                                           Value = tf.Value,
+                                                                                           Description = tf.Description,
+                                                                                       };
+                                        transactionFee.CalculationType = Enum.Parse<CalculationType>(tf.CalculationType.ToString());
+
+                                        result.Add(transactionFee);
+                                    });
 
             return result;
         }
