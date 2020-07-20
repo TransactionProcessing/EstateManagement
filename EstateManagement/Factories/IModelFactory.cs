@@ -49,6 +49,13 @@
         /// <returns></returns>
         List<MerchantResponse> ConvertFrom(List<Merchant> merchants);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="transactionFees">The transaction fees.</param>
+        /// <returns></returns>
+        List<ContractProductTransactionFee> ConvertFrom(List<TransactionFee> transactionFees);
+
         #endregion
     }
 }

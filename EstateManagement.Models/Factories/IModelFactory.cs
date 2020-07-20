@@ -10,6 +10,7 @@ using MerchantOperatorEntity = EstateReporting.Database.Entities.MerchantOperato
 using MerchantDeviceEntity = EstateReporting.Database.Entities.MerchantDevice;
 using MerchantSecurityUserEntity = EstateReporting.Database.Entities.MerchantSecurityUser;
 using ContractModel = EstateManagement.Models.Contract.Contract;
+using TransactionFeeModel = EstateManagement.Models.Contract.TransactionFee;
 using ContractEntity = EstateReporting.Database.Entities.Contract;
 using ContractProductEntity = EstateReporting.Database.Entities.ContractProduct;
 using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
@@ -17,13 +18,14 @@ using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.Co
 namespace EstateManagement.Models.Factories
 {
     using System.Collections.Generic;
-    
 
     /// <summary>
     /// 
     /// </summary>
     public interface IModelFactory
     {
+        #region Methods
+
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -31,7 +33,9 @@ namespace EstateManagement.Models.Factories
         /// <param name="estateOperators">The estate operators.</param>
         /// <param name="estateSecurityUsers">The estate security users.</param>
         /// <returns></returns>
-        EstateModel ConvertFrom(EstateEntity estate, List<EstateOperatorEntity> estateOperators, List<EstateSecurityUserEntity> estateSecurityUsers);
+        EstateModel ConvertFrom(EstateEntity estate,
+                                List<EstateOperatorEntity> estateOperators,
+                                List<EstateSecurityUserEntity> estateSecurityUsers);
 
         /// <summary>
         /// Converts from.
@@ -43,8 +47,11 @@ namespace EstateManagement.Models.Factories
         /// <param name="merchantDevices">The merchant devices.</param>
         /// <param name="merchantSecurityUsers">The merchant security users.</param>
         /// <returns></returns>
-        MerchantModel ConvertFrom(MerchantEntity merchant, List<MerchantAddressEntity> merchantAddresses, List<MerchantContactEntity> merchantContacts,
-                                  List<MerchantOperatorEntity> merchantOperators, List<MerchantDeviceEntity> merchantDevices,
+        MerchantModel ConvertFrom(MerchantEntity merchant,
+                                  List<MerchantAddressEntity> merchantAddresses,
+                                  List<MerchantContactEntity> merchantContacts,
+                                  List<MerchantOperatorEntity> merchantOperators,
+                                  List<MerchantDeviceEntity> merchantDevices,
                                   List<MerchantSecurityUserEntity> merchantSecurityUsers);
 
         /// <summary>
@@ -58,5 +65,13 @@ namespace EstateManagement.Models.Factories
                                   List<ContractProductEntity> contractProducts,
                                   List<ContractProductTransactionFeeEntity> productTransactionFees);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="productTransactionFees">The product transaction fees.</param>
+        /// <returns></returns>
+        List<TransactionFeeModel> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees);
+
+        #endregion
     }
 }

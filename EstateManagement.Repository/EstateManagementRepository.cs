@@ -8,7 +8,6 @@
     using EstateReporting.Database;
     using EstateReporting.Database.Entities;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
     using Models.Contract;
     using Models.Factories;
     using Shared.EntityFramework;
@@ -67,10 +66,10 @@
         /// <returns></returns>
         /// <exception cref="NotFoundException">No contract found in read model with Id [{contractId}]</exception>
         public async Task<ContractModel> GetContract(Guid estateId,
-                                                Guid contractId,
-                                                Boolean includeProducts,
-                                                Boolean includeProductsWithFees,
-                                                CancellationToken cancellationToken)
+                                                     Guid contractId,
+                                                     Boolean includeProducts,
+                                                     Boolean includeProductsWithFees,
+                                                     CancellationToken cancellationToken)
         {
             EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
@@ -91,7 +90,8 @@
 
             if (includeProductsWithFees)
             {
-                contractProductFees = await context.ContractProductTransactionFees.Where(f => f.EstateId == estateId && f.ContractId == contractId).ToListAsync(cancellationToken);
+                contractProductFees = await context.ContractProductTransactionFees.Where(f => f.EstateId == estateId && f.ContractId == contractId)
+                                                   .ToListAsync(cancellationToken);
             }
 
             return this.ModelFactory.ConvertFrom(contract, contractProducts, contractProductFees);
@@ -108,7 +108,7 @@
                                                  CancellationToken cancellationToken)
         {
             EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
-            
+
             Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken);
 
             if (estate == null)
@@ -129,7 +129,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public async Task<List<MerchantModel>> GetMerchants(Guid estateId,
-                                                       CancellationToken cancellationToken)
+                                                            CancellationToken cancellationToken)
         {
             EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
@@ -138,9 +138,10 @@
             List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.EstateId == estateId select a).ToListAsync(cancellationToken);
             List<MerchantContact> merchantContacts = await (from c in context.MerchantContacts where c.EstateId == estateId select c).ToListAsync(cancellationToken);
             List<MerchantDevice> merchantDevices = await (from d in context.MerchantDevices where d.EstateId == estateId select d).ToListAsync(cancellationToken);
-            List<MerchantSecurityUser> merchantSecurityUsers = await (from u in context.MerchantSecurityUsers where u.EstateId == estateId select u).ToListAsync(cancellationToken);
+            List<MerchantSecurityUser> merchantSecurityUsers =
+                await (from u in context.MerchantSecurityUsers where u.EstateId == estateId select u).ToListAsync(cancellationToken);
             List<MerchantOperator> merchantOperators = await (from o in context.MerchantOperators where o.EstateId == estateId select o).ToListAsync(cancellationToken);
-            
+
             if (merchants.Any() == false)
             {
                 return null;
@@ -160,6 +161,33 @@
             }
 
             return models;
+        }
+
+        /// <summary>
+        /// Gets the transaction fees for product.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<TransactionFee>> GetTransactionFeesForProduct(Guid estateId,
+                                                                             Guid merchantId,
+                                                                             Guid contractId,
+                                                                             Guid productId,
+                                                                             CancellationToken cancellationToken)
+        {
+            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            List<ContractProductTransactionFee> transactionFees = await context
+                                                                        .ContractProductTransactionFees
+                                                                        .Where(c => c.EstateId == estateId && c.ContractId == contractId && c.ProductId == productId)
+                                                                        .ToListAsync(cancellationToken);
+
+            List<TransactionFee> transactionFeeModels = this.ModelFactory.ConvertFrom(transactionFees);
+
+            return transactionFeeModels;
         }
 
         #endregion

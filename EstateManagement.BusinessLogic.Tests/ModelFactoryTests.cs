@@ -594,6 +594,28 @@ namespace EstateManagement.BusinessLogic.Tests
         }
 
         [Fact]
+        public void ContractEntities_ContractProductTransactionFee_ConvertFrom_TransactionFeeConverted()
+        {
+            List<ContractProductTransactionFeeEntity> contractProductsTransactionFees = new List<ContractProductTransactionFeeEntity>
+                                                                                        {
+                                                                                            TestData.ContractProductTransactionFeeEntity
+                                                                                        };
+
+            ModelFactory modelFactory = new ModelFactory();
+            List<TransactionFee> transactionFeesModelList = modelFactory.ConvertFrom(contractProductsTransactionFees);
+
+            transactionFeesModelList.ShouldNotBeNull();
+            transactionFeesModelList.ShouldHaveSingleItem();
+
+            TransactionFee contractProductTransactionFee = transactionFeesModelList.Single();
+            ContractProductTransactionFee expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
+            contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.TransactionFeeId);
+            contractProductTransactionFee.Description.ShouldBe(expectedContractProductTransactionFee.Description);
+            contractProductTransactionFee.Value.ShouldBe(expectedContractProductTransactionFee.Value);
+            contractProductTransactionFee.CalculationType.ShouldBe((CalculationType)expectedContractProductTransactionFee.CalculationType);
+        }
+
+        [Fact]
         public void ContractEntities_ConvertFrom_ContractConverted()
         {
             ContractEntity contract = TestData.ContractEntity;

@@ -351,7 +351,7 @@ namespace EstateManagement.Tests.Factories
 
             ModelFactory modelFactory = new ModelFactory();
 
-            var merchantResponseList = modelFactory.ConvertFrom(merchantModelList);
+            List<MerchantResponse> merchantResponseList = modelFactory.ConvertFrom(merchantModelList);
 
             merchantResponseList.ShouldNotBeNull();
             merchantResponseList.ShouldNotBeEmpty();
@@ -476,6 +476,21 @@ namespace EstateManagement.Tests.Factories
             ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldBeNull();
+        }
+
+
+        [Fact]
+        public void ModelFactory_TransactionFeeList_IsConverted()
+        {
+            List<TransactionFee> transactionFeeModelList = TestData.ProductTransactionFees;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            List<ContractProductTransactionFee> transactionFeeResponseList = modelFactory.ConvertFrom(transactionFeeModelList);
+
+            transactionFeeResponseList.ShouldNotBeNull();
+            transactionFeeResponseList.ShouldNotBeEmpty();
+            transactionFeeResponseList.Count.ShouldBe(transactionFeeModelList.Count);
         }
     }
 }
