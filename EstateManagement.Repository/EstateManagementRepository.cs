@@ -8,6 +8,8 @@
     using EstateReporting.Database;
     using EstateReporting.Database.Entities;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+    using Microsoft.Extensions.WebEncoders.Testing;
     using Models.Contract;
     using Models.Factories;
     using Shared.EntityFramework;
@@ -120,6 +122,75 @@
             List<EstateSecurityUser> estateSecurityUsers = await context.EstateSecurityUsers.Where(esu => esu.EstateId == estateId).ToListAsync(cancellationToken);
 
             return this.ModelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+        }
+
+        /// <summary>
+        /// Gets the merchant contracts.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<ContractModel>> GetMerchantContracts(Guid estateId,
+                                                                    Guid merchantId,
+                                                                    CancellationToken cancellationToken)
+        {
+            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            var x = await (from c in context.Contracts
+                    join cp in context.ContractProducts on c.ContractId equals cp.ContractId
+                    join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
+                    join m in context.Merchants on c.EstateId equals m.EstateId
+                    where m.MerchantId == merchantId && m.EstateId == estateId
+                    select new
+                           {
+                               Contract = c,
+                               Product = cp,
+                               Operator = eo
+                           }).ToListAsync(cancellationToken);
+            
+            List<ContractModel> contracts = new List<ContractModel>();
+
+            foreach (var test in x)
+            {
+                // attempt to find the contract
+                ContractModel contract = contracts.SingleOrDefault(c => c.ContractId == test.Contract.ContractId);
+
+                if (contract == null)
+                {
+                    // create the contract
+                    contract = new ContractModel
+                               {
+                                   EstateId = test.Contract.EstateId,
+                                   OperatorId = test.Contract.OperatorId,
+                                   OperatorName = test.Operator.Name,
+                                   Products = new List<Product>(),
+                                   Description = test.Contract.Description,
+                                   IsCreated = true,
+                                   ContractId = test.Contract.ContractId
+                               };
+                    
+                    contracts.Add(contract);
+                }
+
+                // Now add the product if not already added
+                Boolean productFound = contract.Products.Any(p => p.ProductId == test.Product.ProductId);
+
+                if (productFound == false)
+                {
+                    // Not already there so need to add it
+                    contract.Products.Add(new Product
+                                          {
+                                              ProductId = test.Product.ProductId,
+                                              TransactionFees = null,
+                                              Value = test.Product.Value,
+                                              Name = test.Product.ProductName,
+                                              DisplayText = test.Product.DisplayText
+                                          });
+                }
+            }
+
+            return contracts;
         }
 
         /// <summary>

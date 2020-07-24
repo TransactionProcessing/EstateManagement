@@ -539,6 +539,56 @@
             return this.Ok(this.ModelFactory.ConvertFrom(transactionFees));
         }
 
+        [Route("{merchantId}/contracts")]
+        [HttpGet]
+        public async Task<IActionResult> GetMerchantContracts([FromRoute] Guid estateId,
+                                                                      [FromRoute] Guid merchantId,
+                                                                      CancellationToken cancellationToken)
+        {
+            String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
+            String merchantRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("MerchantRoleName")) ? "Merchant" : Environment.GetEnvironmentVariable("MerchantRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[]
+                                                         {
+                                                             estateRoleName,
+                                                             merchantRoleName
+                                                         }) == false)
+            {
+                return this.Forbid();
+            }
+
+            Claim estateIdClaim = null;
+            Claim merchantIdClaim = null;
+
+            // Determine the users role
+            if (this.User.IsInRole(estateRoleName))
+            {
+                // Estate user
+                // Get the Estate Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+            }
+
+            if (this.User.IsInRole(merchantRoleName))
+            {
+                // Get the merchant Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+                merchantIdClaim = ClaimsHelper.GetUserClaim(this.User, "MerchantId");
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(merchantId, merchantIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            List<Contract> contracts = await this.EstateManagementManager.GetMerchantContracts(estateId, merchantId, cancellationToken);
+
+            return this.Ok(this.ModelFactory.ConvertFrom(contracts));
+        }
+
         #region Others
 
         /// <summary>

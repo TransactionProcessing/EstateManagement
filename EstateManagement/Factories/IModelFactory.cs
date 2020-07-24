@@ -18,6 +18,13 @@
         /// </summary>
         /// <param name="contract">The contract.</param>
         /// <returns></returns>
+        List<ContractResponse> ConvertFrom(List<Contract> contract);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contract">The contract.</param>
+        /// <returns></returns>
         ContractResponse ConvertFrom(Contract contract);
 
         /// <summary>
@@ -33,7 +40,8 @@
         /// <param name="merchant">The merchant.</param>
         /// <param name="merchantBalance">The merchant balance.</param>
         /// <returns></returns>
-        MerchantResponse ConvertFrom(Merchant merchant, MerchantBalance merchantBalance = null);
+        MerchantResponse ConvertFrom(Merchant merchant,
+                                     MerchantBalance merchantBalance = null);
 
         /// <summary>
         /// Converts from.

@@ -438,6 +438,8 @@
 
         public static String OperatorName = "Test Operator 1";
 
+        public static String OperatorName2 = "Test Operator Name 2";
+
         public static Boolean RequireCustomMerchantNumberTrue = true;
         
         public static Boolean RequireCustomMerchantNumberFalse = false;
@@ -513,6 +515,15 @@
                                                                 OperatorId = TestData.OperatorId,
                                                                 RequireCustomTerminalNumber = TestData.RequireCustomMerchantNumberTrue,
                                                                 Name = TestData.OperatorName,
+                                                                RequireCustomMerchantNumber = TestData.RequireCustomTerminalNumberTrue
+                                                            };
+
+        public static EstateOperator EstateOperatorEntity2 = new EstateOperator
+                                                            {
+                                                                EstateId = TestData.EstateId,
+                                                                OperatorId = TestData.OperatorId2,
+                                                                RequireCustomTerminalNumber = TestData.RequireCustomMerchantNumberTrue,
+                                                                Name = TestData.OperatorName2,
                                                                 RequireCustomMerchantNumber = TestData.RequireCustomTerminalNumberTrue
                                                             };
 
@@ -616,11 +627,21 @@
 
         public static Guid ContractId = Guid.Parse("3C50EDAB-0718-4666-8BEB-1BD5BF08E1D7");
 
+        public static Guid ContractId2 = Guid.Parse("086C2FC0-DB29-4A75-8983-3A3A78628A2A");
+
         public static String ContractDescription = "Test Contract";
+
+        public static String ContractDescription2 = "Test Contract 2";
 
         public static String ProductName = "Product 1";
 
+        public static String ProductName2 = "Product 2";
+
         public static Guid ProductId = Guid.Parse("C6309D4C-3182-4D96-AEEA-E9DBBB9DED8F");
+
+        public static Guid ProductId2 = Guid.Parse("642522E4-05F1-4218-9739-18211930F489");
+
+        public static Guid ProductId3 = Guid.Parse("08657CB3-3737-4113-8BB1-C8118B3EEA06");
 
         public static CreateContractRequest CreateContractRequest = CreateContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
@@ -726,6 +747,14 @@
                                                                                       ContractId = TestData.ContractId
                                                                                   };
 
+        public static EstateReporting.Database.Entities.Contract ContractEntity2 = new EstateReporting.Database.Entities.Contract
+                                                                                  {
+                                                                                      EstateId = TestData.EstateId,
+                                                                                      OperatorId = TestData.OperatorId2,
+                                                                                      Description = TestData.ContractDescription,
+                                                                                      ContractId = TestData.ContractId2
+                                                                                  };
+
         public static EstateReporting.Database.Entities.ContractProduct ContractProductEntity = new EstateReporting.Database.Entities.ContractProduct
                                                                                                 {
                                                                                                     EstateId = TestData.EstateId,
@@ -735,6 +764,26 @@
                                                                                                     ProductName = TestData.ProductName,
                                                                                                     DisplayText = TestData.ProductDisplayText
                                                                                                 };
+
+        public static EstateReporting.Database.Entities.ContractProduct ContractProductEntity2 = new EstateReporting.Database.Entities.ContractProduct
+                                                                                                {
+                                                                                                    EstateId = TestData.EstateId,
+                                                                                                    ContractId = TestData.ContractId2,
+                                                                                                    Value = TestData.ProductFixedValue,
+                                                                                                    ProductId = TestData.ProductId2,
+                                                                                                    ProductName = TestData.ProductName,
+                                                                                                    DisplayText = TestData.ProductDisplayText
+                                                                                                };
+
+        public static EstateReporting.Database.Entities.ContractProduct ContractProductEntity3 = new EstateReporting.Database.Entities.ContractProduct
+                                                                                                 {
+                                                                                                     EstateId = TestData.EstateId,
+                                                                                                     ContractId = TestData.ContractId2,
+                                                                                                     Value = TestData.ProductFixedValue,
+                                                                                                     ProductId = TestData.ProductId3,
+                                                                                                     ProductName = TestData.ProductName,
+                                                                                                     DisplayText = TestData.ProductDisplayText
+                                                                                                 };
 
         public static EstateReporting.Database.Entities.ContractProductTransactionFee ContractProductTransactionFeeEntity = new EstateReporting.Database.Entities.ContractProductTransactionFee
         {
@@ -757,5 +806,27 @@
                                                                             CalculationType = CalculationType.Fixed
                                                                         }
                                                                     };
+
+        public static List<Contract> MerchantContracts = new List<Contract>
+                                                         {
+                                                             new Contract
+                                                             {
+                                                                 ContractId = TestData.ContractId,
+                                                                 EstateId = TestData.EstateId,
+                                                                 Description = TestData.ContractDescription,
+                                                                 OperatorId = TestData.OperatorId,
+                                                                 OperatorName = TestData.OperatorName,
+                                                                 Products = new List<Product>
+                                                                            {
+                                                                                new Product
+                                                                                {
+                                                                                    ProductId = TestData.ProductId,
+                                                                                    Value = TestData.ProductFixedValue,
+                                                                                    DisplayText = TestData.ProductDisplayText,
+                                                                                    Name = TestData.ProductName
+                                                                                }
+                                                                            }
+                                                             }
+                                                         };
     }
 }

@@ -56,6 +56,49 @@
         #region Methods
 
         /// <summary>
+        /// Gets the merchant contracts.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<ContractResponse>> GetMerchantContracts(String accessToken,
+                                                                       Guid estateId,
+                                                                       Guid merchantId,
+                                                                       CancellationToken cancellationToken)
+        {
+            List<ContractResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contracts");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<ContractResponse>>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception =
+                    new Exception($"Error getting merchant contracts for merchant Id {merchantId} in estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        /// <summary>
         /// Adds the device to merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

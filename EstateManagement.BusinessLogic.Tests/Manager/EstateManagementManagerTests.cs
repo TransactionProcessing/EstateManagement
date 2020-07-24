@@ -176,5 +176,17 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             transactionFees.ShouldHaveSingleItem();
             transactionFees.First().TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
         }
+
+        [Fact]
+        public async Task EstateManagementManager_GetMerchantContracts_MerchantContractsReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetMerchantContracts(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantContracts);
+
+            List<Contract> merchantContracts = await this.EstateManagementManager.GetMerchantContracts(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+
+            merchantContracts.ShouldNotBeNull();
+            merchantContracts.ShouldHaveSingleItem();
+            merchantContracts.Single().ContractId.ShouldBe(TestData.ContractId);
+        }
     }
 }

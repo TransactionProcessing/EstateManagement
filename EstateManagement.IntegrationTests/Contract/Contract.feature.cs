@@ -514,6 +514,201 @@ this.FeatureBackground();
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Get Merchant Contracts")]
+        [Xunit.TraitAttribute("FeatureTitle", "Contract")]
+        [Xunit.TraitAttribute("Description", "Get Merchant Contracts")]
+        public virtual void GetMerchantContracts()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Merchant Contracts", null, tagsOfScenario, argumentsOfScenario);
+#line 97
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "AddressLine1",
+                            "Town",
+                            "Region",
+                            "Country",
+                            "ContactName",
+                            "EmailAddress",
+                            "EstateName"});
+                table18.AddRow(new string[] {
+                            "Test Merchant 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant1.co.uk",
+                            "Test Estate 1"});
+                table18.AddRow(new string[] {
+                            "Test Merchant 2",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant2.co.uk",
+                            "Test Estate 2"});
+#line 99
+ testRunner.Given("I create the following merchants", ((string)(null)), table18, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "ContractDescription"});
+                table19.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract"});
+                table19.AddRow(new string[] {
+                            "Test Estate 2",
+                            "Test Operator 1",
+                            "Operator 1 Contract"});
+#line 104
+ testRunner.Given("I create a contract with the following values", ((string)(null)), table19, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "ContractDescription",
+                            "ProductName",
+                            "DisplayText",
+                            "Value"});
+                table20.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "100 KES Topup",
+                            "100 KES",
+                            "100.00"});
+                table20.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "Variable Topup",
+                            "Custom",
+                            ""});
+                table20.AddRow(new string[] {
+                            "Test Estate 2",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "100 KES Topup",
+                            "100 KES",
+                            "100.00"});
+                table20.AddRow(new string[] {
+                            "Test Estate 2",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "Variable Topup",
+                            "Custom",
+                            ""});
+#line 109
+ testRunner.When("I create the following Products", ((string)(null)), table20, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "ContractDescription",
+                            "ProductName",
+                            "CalculationType",
+                            "FeeDescription",
+                            "Value"});
+                table21.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "100 KES Topup",
+                            "Fixed",
+                            "Merchant Commission",
+                            "2.00"});
+                table21.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "100 KES Topup",
+                            "Percentage",
+                            "Merchant Commission",
+                            "0.025"});
+                table21.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "Variable Topup",
+                            "Fixed",
+                            "Merchant Commission",
+                            "2.50"});
+                table21.AddRow(new string[] {
+                            "Test Estate 2",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "100 KES Topup",
+                            "Percentage",
+                            "Merchant Commission",
+                            "0.85"});
+                table21.AddRow(new string[] {
+                            "Test Estate 2",
+                            "Test Operator 1",
+                            "Operator 1 Contract",
+                            "Variable Topup",
+                            "Percentage",
+                            "Merchant Commission",
+                            "0.85"});
+#line 116
+ testRunner.When("I add the following Transaction Fees", ((string)(null)), table21, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ContractDescription",
+                            "ProductName"});
+                table22.AddRow(new string[] {
+                            "Operator 1 Contract",
+                            "100 KES Topup"});
+                table22.AddRow(new string[] {
+                            "Operator 1 Contract",
+                            "Variable Topup"});
+#line 124
+ testRunner.Then("I get the Merchant Contracts for \'Test Merchant 1\' for \'Test Estate 1\' the follow" +
+                        "ing contract details are returned", ((string)(null)), table22, "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ContractDescription",
+                            "ProductName"});
+                table23.AddRow(new string[] {
+                            "Operator 1 Contract",
+                            "100 KES Topup"});
+                table23.AddRow(new string[] {
+                            "Operator 1 Contract",
+                            "Variable Topup"});
+#line 129
+ testRunner.Then("I get the Merchant Contracts for \'Test Merchant 2\' for \'Test Estate 2\' the follow" +
+                        "ing contract details are returned", ((string)(null)), table23, "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.3.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable

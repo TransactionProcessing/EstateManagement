@@ -164,6 +164,22 @@
         }
 
         /// <summary>
+        /// Gets the merchant contracts.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<Contract>> GetMerchantContracts(Guid estateId,
+                                                               Guid merchantId,
+                                                               CancellationToken cancellationToken)
+        {
+            List<Contract> contractModels = await this.EstateManagementRepository.GetMerchantContracts(estateId, merchantId, cancellationToken);
+
+            return contractModels;
+        }
+
+        /// <summary>
         /// Gets the merchants.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
@@ -190,11 +206,7 @@
                                                                              Guid productId,
                                                                              CancellationToken cancellationToken)
         {
-            return await this.EstateManagementRepository.GetTransactionFeesForProduct(estateId, 
-                                                                                      merchantId,
-                                                                                      contractId,
-                                                                                      productId,
-                                                                                      cancellationToken);
+            return await this.EstateManagementRepository.GetTransactionFeesForProduct(estateId, merchantId, contractId, productId, cancellationToken);
         }
 
         #endregion

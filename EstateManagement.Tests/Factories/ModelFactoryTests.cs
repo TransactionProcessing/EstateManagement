@@ -492,5 +492,26 @@ namespace EstateManagement.Tests.Factories
             transactionFeeResponseList.ShouldNotBeEmpty();
             transactionFeeResponseList.Count.ShouldBe(transactionFeeModelList.Count);
         }
+
+        [Fact]
+        public void ModelFactory_ContractList_IsConverted()
+        {
+            List<Contract> contractModel = new List<Contract>
+                                           {
+                                               TestData.ContractModel
+                                           };
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            var contractResponses = modelFactory.ConvertFrom(contractModel);
+
+            contractResponses.ShouldNotBeNull();
+            contractResponses.ShouldHaveSingleItem();
+            contractResponses.Single().EstateId.ShouldBe(contractModel.Single().EstateId);
+            contractResponses.Single().OperatorId.ShouldBe(contractModel.Single().OperatorId);
+            contractResponses.Single().ContractId.ShouldBe(contractModel.Single().ContractId);
+            contractResponses.Single().Description.ShouldBe(contractModel.Single().Description);
+            contractResponses.Single().Products.ShouldBeNull();
+        }
     }
 }

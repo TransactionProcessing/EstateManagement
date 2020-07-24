@@ -703,6 +703,37 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [Then(@"I get the Merchant Contracts for '(.*)' for '(.*)' the following contract details are returned")]
+        public async Task ThenIGetTheMerchantContractsForForTheFollowingContractDetailsAreReturned(String merchantName, String estateName, Table table)
+        {
+            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+
+            Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+            String token = this.TestingContext.AccessToken;
+            if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+            {
+                token = estateDetails.AccessToken;
+            }
+
+            List<ContractResponse> contracts = await this.TestingContext.DockerHelper.EstateClient.GetMerchantContracts(token, estateDetails.EstateId, merchantId, CancellationToken.None);
+
+            contracts.ShouldNotBeNull();
+            contracts.ShouldHaveSingleItem();
+            ContractResponse contract = contracts.Single();
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+                String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
+
+                contract.Description.ShouldBe(contractDescription);
+                contract.Products.Any(p => p.Name == productName).ShouldBeTrue();
+
+            }
+        }
+
+
         [Then(@"I get the Transaction Fees for '(.*)' on the '(.*)' contract for '(.*)' the following fees are returned")]
         public async Task ThenIGetTheTransactionFeesForOnTheContractForTheFollowingFeesAreReturned(String productName, String contractName, String estateName, Table table)
         {
