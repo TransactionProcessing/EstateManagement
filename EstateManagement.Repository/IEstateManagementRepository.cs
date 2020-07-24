@@ -40,6 +40,17 @@
                                CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the merchant contracts.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<Contract>> GetMerchantContracts(Guid estateId,
+                                                  Guid merchantId,
+                                                  CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the merchants.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>

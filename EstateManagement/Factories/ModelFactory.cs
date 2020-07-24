@@ -17,6 +17,20 @@
     {
         #region Methods
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contracts">The contracts.</param>
+        /// <returns></returns>
+        public List<ContractResponse> ConvertFrom(List<Contract> contracts)
+        {
+            List<ContractResponse> result = new List<ContractResponse>();
+
+            contracts.ForEach(c => result.Add(this.ConvertFrom(c)));
+
+            return result;
+        }
+
         public ContractResponse ConvertFrom(Contract contract)
         {
             if (contract == null)

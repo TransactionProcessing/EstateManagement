@@ -94,4 +94,43 @@ Scenario: Get Transaction Fees for a Product
 	| CalculationType | FeeDescription      | Value |
 	| Percentage      | Merchant Commission | 0.85  |
 
+Scenario: Get Merchant Contracts
+
+	Given I create the following merchants
+	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
+	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
+	| Test Merchant 2 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant2.co.uk | Test Estate 2 |
+	
+	Given I create a contract with the following values
+	| EstateName    | OperatorName    | ContractDescription |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract |
+
+	When I create the following Products
+	| EstateName    | OperatorName    | ContractDescription | ProductName    | DisplayText | Value  |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        |
+
+	When I add the following Transaction Fees
+	| EstateName    | OperatorName    | ContractDescription | ProductName    | CalculationType | FeeDescription      | Value |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Fixed           | Merchant Commission | 2.00  |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.025 |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Fixed           | Merchant Commission | 2.50  |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.85  |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Percentage      | Merchant Commission | 0.85  |
+
+	Then I get the Merchant Contracts for 'Test Merchant 1' for 'Test Estate 1' the following contract details are returned
+	| ContractDescription | ProductName    |
+	| Operator 1 Contract | 100 KES Topup  |
+	| Operator 1 Contract | Variable Topup |
+
+	Then I get the Merchant Contracts for 'Test Merchant 2' for 'Test Estate 2' the following contract details are returned
+	| ContractDescription | ProductName    |
+	| Operator 1 Contract | 100 KES Topup  |
+	| Operator 1 Contract | Variable Topup |
+
+	
+
 	
