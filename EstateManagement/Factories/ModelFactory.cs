@@ -43,6 +43,7 @@
                                                     ContractId = contract.ContractId,
                                                     EstateId = contract.EstateId,
                                                     OperatorId = contract.OperatorId,
+                                                    OperatorName = contract.OperatorName,
                                                     Description = contract.Description
                                                 };
 

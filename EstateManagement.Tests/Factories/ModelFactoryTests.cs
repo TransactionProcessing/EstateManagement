@@ -398,6 +398,7 @@ namespace EstateManagement.Tests.Factories
             contractResponse.ShouldNotBeNull();
             contractResponse.EstateId.ShouldBe(contractModel.EstateId);
             contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
+            contractResponse.OperatorName.ShouldBe(contractModel.OperatorName);
             contractResponse.ContractId.ShouldBe(contractModel.ContractId);
             contractResponse.Description.ShouldBe(contractModel.Description);
             contractResponse.Products.ShouldBeNull();
