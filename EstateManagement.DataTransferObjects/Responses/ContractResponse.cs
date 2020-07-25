@@ -39,6 +39,14 @@ namespace EstateManagement.DataTransferObjects.Responses
         public Guid OperatorId { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the operator.
+        /// </summary>
+        /// <value>
+        /// The name of the operator.
+        /// </value>
+        public String OperatorName { get; set; }
+
+        /// <summary>
         /// Gets or sets the products.
         /// </summary>
         /// <value>
