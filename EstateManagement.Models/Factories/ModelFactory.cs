@@ -221,7 +221,11 @@
                                                                                        TransactionFeeId = f.TransactionFeeId,
                                                                                        Value = f.Value,
                                                                                        Description = f.Description,
-                                                                                       CalculationType = (CalculationType)f.CalculationType});
+                                                                                       CalculationType = (CalculationType)f.CalculationType,
+                                                                                       FeeType = (FeeType)f.FeeType,
+                                                                                       IsEnabled = f.IsEnabled
+                                                                                           }
+                                                                                   );
                                            });
 
             return productTransactionFeesModelList;
