@@ -8,6 +8,7 @@
     using Models.Estate;
     using Models.Merchant;
     using CalculationType = DataTransferObjects.CalculationType;
+    using FeeType = DataTransferObjects.FeeType;
 
     /// <summary>
     /// 
@@ -264,6 +265,7 @@
                                                                                            Description = tf.Description,
                                                                                        };
                                         transactionFee.CalculationType = Enum.Parse<CalculationType>(tf.CalculationType.ToString());
+                                        transactionFee.FeeType = Enum.Parse<FeeType>(tf.FeeType.ToString());
 
                                         result.Add(transactionFee);
                                     });

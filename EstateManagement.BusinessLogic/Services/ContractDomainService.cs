@@ -95,8 +95,14 @@
         /// <param name="productId">The product identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="calculationType">Type of the calculation.</param>
+        /// <param name="feeType">Type of the fee.</param>
         /// <param name="value">The value.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Contract Id [{contractId}] must be created to add products
+        /// or
+        /// Product Id [{productId}] not added to contract [{contractAggregate.Description}]
+        /// </exception>
         /// <exception cref="System.InvalidOperationException">Contract Id [{contractId}] must be created to add products
         /// or
         /// Product Id [{productId}] not added to contract [{contractAggregate.Description}]</exception>
@@ -105,6 +111,7 @@
                                                                 Guid productId,
                                                                 String description,
                                                                 CalculationType calculationType,
+                                                                FeeType feeType,
                                                                 Decimal value,
                                                                 CancellationToken cancellationToken)
         {
@@ -124,11 +131,31 @@
                 throw new InvalidOperationException($"Product Id [{productId}] not added to contract [{contractAggregate.Description}]");
             }
 
-            contractAggregate.AddTransactionFee(product, transactionFeeId, description, calculationType, value);
+            contractAggregate.AddTransactionFee(product, transactionFeeId, description, calculationType, feeType, value);
 
             await this.ContractAggregateRepository.SaveChanges(contractAggregate, cancellationToken);
         }
 
+        /// <summary>
+        /// Disables the transaction fee for product.
+        /// </summary>
+        /// <param name="transactionFeeId">The transaction fee identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public async Task DisableTransactionFeeForProduct(Guid transactionFeeId,
+                                                          Guid contractId,
+                                                          Guid productId,
+                                                          CancellationToken cancellationToken)
+        {
+            // Get the contract aggregate
+            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+            
+            contractAggregate.DisableTransactionFee(productId, transactionFeeId);
+
+            await this.ContractAggregateRepository.SaveChanges(contractAggregate, cancellationToken);
+        }
+        
         /// <summary>
         /// Creates the contract.
         /// </summary>

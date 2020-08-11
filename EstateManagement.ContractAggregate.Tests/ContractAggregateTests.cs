@@ -215,9 +215,11 @@ namespace EstateManagement.ContractAggregate.Tests
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public void ContractAggregate_AddTransactionFee_FixedValueProduct_TransactionFeeAdded(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_FixedValueProduct_TransactionFeeAdded(CalculationType calculationType, FeeType feeType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -226,7 +228,7 @@ namespace EstateManagement.ContractAggregate.Tests
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
 
-            aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, TestData.TransactionFeeValue);
+            aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeType, TestData.TransactionFeeValue);
 
             List<Product> productsAfterFeeAdded = aggregate.GetProducts();
             Product productWithFees = productsAfterFeeAdded.Single();
@@ -236,13 +238,16 @@ namespace EstateManagement.ContractAggregate.Tests
             fee.Description.ShouldBe(TestData.TransactionFeeDescription);
             fee.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
             fee.CalculationType.ShouldBe(calculationType);
+            fee.FeeType.ShouldBe(feeType);
             fee.Value.ShouldBe(TestData.TransactionFeeValue);
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidFeeId_ErrorThrown(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidFeeId_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -253,16 +258,20 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.AddTransactionFee(product, Guid.Empty, TestData.TransactionFeeDescription, calculationType, TestData.TransactionFeeValue);
+                                                    aggregate.AddTransactionFee(product, Guid.Empty, TestData.TransactionFeeDescription, calculationType, feeType, TestData.TransactionFeeValue);
                                                 });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed, null)]
-        [InlineData(CalculationType.Fixed, "")]
-        [InlineData(CalculationType.Percentage, null)]
-        [InlineData(CalculationType.Percentage, "")]
-        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidFeeDescription_ErrorThrown(CalculationType calculationType, String feeDescription)
+        [InlineData(CalculationType.Fixed,FeeType.Merchant, null)]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant, "")]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, null)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, "")]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, null)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, "")]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, null)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, "")]
+        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidFeeDescription_ErrorThrown(CalculationType calculationType, FeeType feeType, String feeDescription)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -273,14 +282,16 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.AddTransactionFee(product, TestData.TransactionFeeId, feeDescription, calculationType, TestData.TransactionFeeValue);
+                                                    aggregate.AddTransactionFee(product, TestData.TransactionFeeId, feeDescription, calculationType, feeType, TestData.TransactionFeeValue);
                                                 });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public void ContractAggregate_AddTransactionFee_VariableValueProduct_TransactionFeeAdded(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_VariableValueProduct_TransactionFeeAdded(CalculationType calculationType, FeeType feeType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -289,7 +300,7 @@ namespace EstateManagement.ContractAggregate.Tests
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
 
-            aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, TestData.TransactionFeeValue);
+            aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeType, TestData.TransactionFeeValue);
 
             List<Product> productsAfterFeeAdded = aggregate.GetProducts();
             Product productWithFees = productsAfterFeeAdded.Single();
@@ -299,13 +310,16 @@ namespace EstateManagement.ContractAggregate.Tests
             fee.Description.ShouldBe(TestData.TransactionFeeDescription);
             fee.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
             fee.CalculationType.ShouldBe(calculationType);
+            fee.FeeType.ShouldBe(feeType);
             fee.Value.ShouldBe(TestData.TransactionFeeValue);
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidFeeId_ErrorThrown(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidFeeId_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -316,16 +330,20 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.AddTransactionFee(product, Guid.Empty, TestData.TransactionFeeDescription, calculationType, TestData.TransactionFeeValue);
+                                                    aggregate.AddTransactionFee(product, Guid.Empty, TestData.TransactionFeeDescription, calculationType, feeType, TestData.TransactionFeeValue);
                                                 });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed, null)]
-        [InlineData(CalculationType.Fixed, "")]
-        [InlineData(CalculationType.Percentage, null)]
-        [InlineData(CalculationType.Percentage, "")]
-        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidFeeDescription_ErrorThrown(CalculationType calculationType, String feeDescription)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant, null)]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant, "")]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, null)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, "")]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, null)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, "")]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, null)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, "")]
+        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidFeeDescription_ErrorThrown(CalculationType calculationType, FeeType feeType, String feeDescription)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -336,28 +354,32 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.AddTransactionFee(product, TestData.TransactionFeeId, feeDescription, calculationType, TestData.TransactionFeeValue);
+                                                    aggregate.AddTransactionFee(product, TestData.TransactionFeeId, feeDescription, calculationType, feeType, TestData.TransactionFeeValue);
                                                 });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public void ContractAggregate_AddTransactionFee_NullProduct_ErrorThrown(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_NullProduct_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.AddTransactionFee(null, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, TestData.TransactionFeeValue);
+                                                    aggregate.AddTransactionFee(null, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeType, TestData.TransactionFeeValue);
                                                 });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public void ContractAggregate_AddTransactionFee_ProductNotFound_ErrorThrown(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_ProductNotFound_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -365,12 +387,14 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<InvalidOperationException>(() =>
                                                 {
-                                                    aggregate.AddTransactionFee(new Product(), TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType,TestData.TransactionFeeValue);
+                                                    aggregate.AddTransactionFee(new Product(), TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeType,TestData.TransactionFeeValue);
                                                 });
         }
 
-        [Fact]
-        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidCalculationType_ErrorThrown()
+        [Theory]
+        [InlineData(FeeType.Merchant)]
+        [InlineData(FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidCalculationType_ErrorThrown(FeeType feeType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -381,16 +405,14 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentOutOfRangeException>(() =>
                                                       {
-                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, (CalculationType)99, TestData.TransactionFeeValue);
+                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, (CalculationType)99, feeType, TestData.TransactionFeeValue);
                                                       });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed,0)]
-        [InlineData(CalculationType.Percentage,0)]
-        [InlineData(CalculationType.Fixed, -1)]
-        [InlineData(CalculationType.Percentage, -1)]
-        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidFeeValue_ErrorThrown(CalculationType calculationType, Decimal feeValue)
+        [InlineData(CalculationType.Percentage)]
+        [InlineData(CalculationType.Fixed)]
+        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidFeeType_ErrorThrown(CalculationType calculationType)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -401,16 +423,20 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentOutOfRangeException>(() =>
                                                       {
-                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeValue);
+                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, (FeeType)99, TestData.TransactionFeeValue);
                                                       });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed, 0)]
-        [InlineData(CalculationType.Percentage, 0)]
-        [InlineData(CalculationType.Fixed, -1)]
-        [InlineData(CalculationType.Percentage, -1)]
-        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidFeeValue_ErrorThrown(CalculationType calculationType, Decimal feeValue)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant,0)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, 0)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, 0)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, 0)]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant, -1)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, -1)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, -1)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, -1)]
+        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidFeeValue_ErrorThrown(CalculationType calculationType, FeeType feeType, Decimal feeValue)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -421,12 +447,20 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentOutOfRangeException>(() =>
                                                       {
-                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeValue);
+                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeType, feeValue);
                                                       });
         }
 
-        [Fact]
-        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidCalculationType_ErrorThrown()
+        [Theory]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant, 0)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, 0)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, 0)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, 0)]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant, -1)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant, -1)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider, -1)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider, -1)]
+        public void ContractAggregate_AddTransactionFee_FixedValueProduct_InvalidFeeValue_ErrorThrown(CalculationType calculationType, FeeType feeType, Decimal feeValue)
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
@@ -437,8 +471,103 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Should.Throw<ArgumentOutOfRangeException>(() =>
                                                       {
-                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, (CalculationType)99, TestData.TransactionFeeValue);
+                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType,feeType, feeValue);
                                                       });
+        }
+
+        [Theory]
+        [InlineData(FeeType.Merchant)]
+        [InlineData(FeeType.ServiceProvider)]
+        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidCalculationType_ErrorThrown(FeeType feeType)
+        {
+            ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
+            aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText);
+
+            List<Product> products = aggregate.GetProducts();
+            Product product = products.Single();
+
+            Should.Throw<ArgumentOutOfRangeException>(() =>
+                                                      {
+                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, (CalculationType)99, feeType, TestData.TransactionFeeValue);
+                                                      });
+        }
+
+        [Theory]
+        [InlineData(CalculationType.Percentage)]
+        [InlineData(CalculationType.Fixed)]
+        public void ContractAggregate_AddTransactionFee_VariableValueProduct_InvalidFeeType_ErrorThrown(CalculationType calculationType)
+        {
+            ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
+            aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText);
+
+            List<Product> products = aggregate.GetProducts();
+            Product product = products.Single();
+
+            Should.Throw<ArgumentOutOfRangeException>(() =>
+                                                      {
+                                                          aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType,(FeeType)99, TestData.TransactionFeeValue);
+                                                      });
+        }
+
+        [Theory]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void ContractAggregate_DisableTransactionFee_TransactionFeeIsDisabled(CalculationType calculationType, FeeType feeType)
+        {
+            ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
+            aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText);
+
+            List<Product> products = aggregate.GetProducts();
+            Product product = products.Single();
+
+            aggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription, calculationType, feeType, TestData.TransactionFeeValue);
+
+            List<Product> productsAfterFeeAdded = aggregate.GetProducts();
+            Product productWithFees = productsAfterFeeAdded.Single();
+            productWithFees.TransactionFees.ShouldHaveSingleItem();
+            TransactionFee fee = productWithFees.TransactionFees.Single();
+            fee.IsEnabled.ShouldBeTrue();
+
+            aggregate.DisableTransactionFee(TestData.ProductId, TestData.TransactionFeeId);
+
+            productsAfterFeeAdded = aggregate.GetProducts();
+            productWithFees = productsAfterFeeAdded.Single();
+            productWithFees.TransactionFees.ShouldHaveSingleItem();
+            fee = productWithFees.TransactionFees.Single();
+            fee.IsEnabled.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void ContractAggregate_DisableTransactionFee_ProductNotFound_ErrorThrown()
+        {
+            ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
+            aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.DisableTransactionFee(TestData.ProductId, TestData.TransactionFeeId);
+                                                    });
+        }
+
+        [Fact]
+        public void ContractAggregate_DisableTransactionFee_TransactionFeeNotFound_ErrorThrown()
+        {
+            ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
+            aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText);
+
+            List<Product> products = aggregate.GetProducts();
+            Product product = products.Single();
+            
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.DisableTransactionFee(TestData.ProductId, TestData.TransactionFeeId);
+                                                    });
         }
     }
 }

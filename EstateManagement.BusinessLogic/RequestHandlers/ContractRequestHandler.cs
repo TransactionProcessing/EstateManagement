@@ -15,7 +15,8 @@
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AddTransactionFeeForProductToContractRequest, System.String}" />
     public class ContractRequestHandler : IRequestHandler<CreateContractRequest, String>,
                                           IRequestHandler<AddProductToContractRequest, String>,
-                                          IRequestHandler<AddTransactionFeeForProductToContractRequest, String>
+                                          IRequestHandler<AddTransactionFeeForProductToContractRequest, String>,
+                                          IRequestHandler<DisableTransactionFeeForProductRequest,String>
     {
         #region Fields
 
@@ -94,11 +95,28 @@
                                                                                    request.ProductId,
                                                                                    request.Description,
                                                                                    request.CalculationType,
+                                                                                   request.FeeType,
                                                                                    request.Value,
                                                                                    cancellationToken);
             return string.Empty;
         }
 
         #endregion
+
+        /// <summary>
+        /// Handles a request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>
+        /// Response from the request
+        /// </returns>
+        public async Task<String> Handle(DisableTransactionFeeForProductRequest request,
+                                         CancellationToken cancellationToken)
+        {
+            await this.ContractDomainService.DisableTransactionFeeForProduct(request.TransactionFeeId, request.ContractId, request.ProductId, cancellationToken);
+
+            return string.Empty;
+        }
     }
 }

@@ -193,6 +193,7 @@ namespace EstateManagement.IntegrationTests.Common
 
         public void AddTransactionFee(Guid transactionFeeId,
                                       CalculationType calculationType,
+                                      FeeType feeType,
                                       String description,
                                       Decimal value)
         {
@@ -200,6 +201,7 @@ namespace EstateManagement.IntegrationTests.Common
                               {
                                   TransactionFeeId = transactionFeeId,
                                   CalculationType = calculationType,
+                                  FeeType = feeType,
                                   Description = description,
                                   Value = value
                               };
@@ -227,6 +229,7 @@ namespace EstateManagement.IntegrationTests.Common
         public Guid TransactionFeeId { get; set; }
 
         public CalculationType CalculationType { get; set; }
+        public FeeType FeeType { get; set; }
 
         public String Description { get; set; }
 

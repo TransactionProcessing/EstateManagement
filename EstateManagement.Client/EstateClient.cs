@@ -249,6 +249,42 @@
             return response;
         }
 
+        public async Task DisableTransactionFeeForProduct(String accessToken,
+                                                          Guid estateId,
+                                                          Guid contractId,
+                                                          Guid productId,
+                                                          Guid transactionFeeId,
+                                                          CancellationToken cancellationToken)
+        {
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}/products/{productId}/transactionFees/{transactionFeeId}");
+
+            try
+            {
+                String requestSerialised = String.Empty;
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception =
+                    new
+                        Exception($"Error disabling transaction fee Id [{transactionFeeId}] for product [{productId}] on contract [{contractId}] for estate {estateId}.",
+                                  ex);
+
+                throw exception;
+            }
+        }
+
         /// <summary>
         /// Assigns the operator to merchant.
         /// </summary>

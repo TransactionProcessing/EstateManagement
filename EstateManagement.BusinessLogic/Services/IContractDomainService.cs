@@ -37,6 +37,7 @@
         /// <param name="productId">The product identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="calculationType">Type of the calculation.</param>
+        /// <param name="feeType">Type of the fee.</param>
         /// <param name="value">The value.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
@@ -45,7 +46,21 @@
                                                    Guid productId,
                                                    String description,
                                                    CalculationType calculationType,
+                                                   FeeType feeType,
                                                    Decimal value,
+                                                   CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Disables the transaction fee for product.
+        /// </summary>
+        /// <param name="transactionFeeId">The transaction fee identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task DisableTransactionFeeForProduct(Guid transactionFeeId,
+                                                   Guid contractId,
+                                                   Guid productId,
                                                    CancellationToken cancellationToken);
 
         /// <summary>

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using BusinessLogic.Requests;
     using ContractAggregate;
     using EstateAggregate;
@@ -651,6 +652,8 @@
 
         public static Guid TransactionFeeId = Guid.Parse("B83FCCCE-0D45-4FC2-8952-ED277A124BDB");
 
+        public static Guid TransactionFeeId1 = Guid.Parse("2680A005-797C-4501-B1BB-2ACE124B352A");
+
         public static String TransactionFeeDescription = "Commission for Merchant";
 
         public static Decimal TransactionFeeValue = 0.5m;
@@ -667,6 +670,7 @@
                                                                 TestData.TransactionFeeId,
                                                                 TestData.TransactionFeeDescription,
                                                                 CalculationType.Fixed,
+                                                                FeeType.Merchant,
                                                                 TestData.TransactionFeeValue);
 
         public static ContractAggregate CreatedContractAggregateWithAProduct()
@@ -676,6 +680,21 @@
             contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
             contractAggregate.AddFixedValueProduct(TestData.ProductId,TestData.ProductName,TestData.ProductDisplayText,
                                                    TestData.ProductFixedValue);
+
+            return contractAggregate;
+        }
+
+        public static ContractAggregate CreatedContractAggregateWithAProductAndTransactionFee(CalculationType calculationType, FeeType feeType)
+        {
+            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+            contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+            contractAggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText,
+                                                   TestData.ProductFixedValue);
+
+            Product product = contractAggregate.GetProducts().Single(p => p.ProductId == TestData.ProductId);
+            contractAggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription,
+                                                calculationType, feeType, TestData.TransactionFeeValue);
 
             return contractAggregate;
         }
@@ -828,5 +847,10 @@
                                                                             }
                                                              }
                                                          };
+
+        public static DisableTransactionFeeForProductRequest DisableTransactionFeeForProductRequest = DisableTransactionFeeForProductRequest.Create(TestData.ContractId,
+                                                                                                                                                    TestData.EstateId,
+                                                                                                                                                    TestData.ProductId,
+                                                                                                                                                    TestData.TransactionFeeId);
     }
 }

@@ -56,5 +56,19 @@ namespace EstateManagement.BusinessLogic.Tests.RequestHandler
                                 await handler.Handle(request, CancellationToken.None);
                             });
         }
+
+        [Fact]
+        public void ContractRequestHandler_DisableTransactionFeeForProductRequest_IsHandled()
+        {
+            Mock<IContractDomainService> contractDomainService = new Mock<IContractDomainService>();
+            ContractRequestHandler handler = new ContractRequestHandler(contractDomainService.Object);
+
+            DisableTransactionFeeForProductRequest request = TestData.DisableTransactionFeeForProductRequest;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+        }
     }
 }

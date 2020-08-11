@@ -63,6 +63,23 @@
                                                                                                   CancellationToken cancellationToken);
 
         /// <summary>
+        /// Disables the transaction fee for product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="transactionFeeId">The transaction fee identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task DisableTransactionFeeForProduct(String accessToken,
+                                             Guid estateId,
+                                             Guid contractId,
+                                             Guid productId,
+                                             Guid transactionFeeId,
+                                             CancellationToken cancellationToken);
+
+        /// <summary>
         /// Assigns the operator to merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
