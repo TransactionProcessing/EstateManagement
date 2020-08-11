@@ -5,6 +5,7 @@
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
+    using BusinessLogic.Requests;
     using Common;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
@@ -233,16 +234,13 @@
                 return this.Forbid();
             }
 
-            //// Create the command
-            //AddTransactionFeeForProductToContractRequest command = AddTransactionFeeForProductToContractRequest.Create(contractId, estateId,
-            //                                                                                                           productId,
-            //                                                                                                           transactionFeeId,
-            //                                                                                                           addTransactionFeeForProductToContractRequest.Description,
-            //                                                                                                           calculationType,
-            //                                                                                                           addTransactionFeeForProductToContractRequest.Value);
+            // Create the command
+            DisableTransactionFeeForProductRequest command = DisableTransactionFeeForProductRequest.Create(contractId, estateId,
+                                                                                                                       productId,
+                                                                                                                       transactionFeeId);
 
             // Route the command
-            //await this.Mediator.Send(command, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
             // return the result
             return this.Ok($"{ContractController.ControllerRoute}/{contractId}/products/{productId}/transactionFees/{transactionFeeId}");

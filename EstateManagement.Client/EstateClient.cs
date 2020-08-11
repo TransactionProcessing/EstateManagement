@@ -271,7 +271,7 @@
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
+                await this.HandleResponse(httpResponse, cancellationToken);
             }
             catch (Exception ex)
             {

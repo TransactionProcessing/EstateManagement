@@ -560,9 +560,6 @@ namespace EstateManagement.ContractAggregate.Tests
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
             aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText);
-
-            List<Product> products = aggregate.GetProducts();
-            Product product = products.Single();
             
             Should.Throw<InvalidOperationException>(() =>
                                                     {
