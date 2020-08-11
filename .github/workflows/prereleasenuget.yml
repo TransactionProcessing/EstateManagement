@@ -38,11 +38,11 @@ jobs:
         
     - name: Build and Publish Nuget Packages
       run: |
-        dotnet pack "EstateManagement.Client\EstateManagement.Client.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets -c Release            
-        dotnet nuget push Nugets/EstateManagement.Client.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
-        dotnet pack "EstateManagement.Estate.DomainEvents\EstateManagement.Estate.DomainEvents.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.Estate.DomainEvents.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
-        dotnet pack "EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.Merchant.DomainEvents.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
-        dotnet pack "EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj" /p:PackageVersion=${{ steps.get_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.Contract.DomainEvents.${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet pack "EstateManagement.Client\EstateManagement.Client.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release            
+        dotnet nuget push Nugets/EstateManagement.Client.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet pack "EstateManagement.Estate.DomainEvents\EstateManagement.Estate.DomainEvents.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
+        dotnet nuget push Nugets/EstateManagement.Estate.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet pack "EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
+        dotnet nuget push Nugets/EstateManagement.Merchant.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet pack "EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
+        dotnet nuget push Nugets/EstateManagement.Contract.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
