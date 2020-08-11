@@ -25,7 +25,7 @@ Background:
 	| EstateName    |
 	| Test Estate 1 |
 	| Test Estate 2 |
-	
+
 	Given I have created the following operators
 	| EstateName    | OperatorName    | RequireCustomMerchantNumber | RequireCustomTerminalNumber |
 	| Test Estate 1 | Test Operator 1 | True                        | True                        |

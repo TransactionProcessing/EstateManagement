@@ -205,15 +205,18 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
         }
 
         [Theory]
-        [InlineData(CalculationType.Percentage)]
-        [InlineData(CalculationType.Fixed)]
-        public void AddTransactionFeeForProductToContractRequest_CanBeCreated_IsCreated(CalculationType calculationType)
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        public void AddTransactionFeeForProductToContractRequest_CanBeCreated_IsCreated(CalculationType calculationType, FeeType feeType)
         {
             AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest = AddTransactionFeeForProductToContractRequest.Create(TestData.ContractId,TestData.EstateId,
                                                                                                                                                             TestData.ProductId,
                                                                                                                                                             TestData.TransactionFeeId,
                                                                                                                                                             TestData.TransactionFeeDescription,
                                                                                                                                                             calculationType,
+                                                                                                                                                            feeType,
                                                                                                                                                             TestData.TransactionFeeValue);
 
             addTransactionFeeForProductToContractRequest.ShouldNotBeNull();
@@ -223,8 +226,23 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             addTransactionFeeForProductToContractRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
             addTransactionFeeForProductToContractRequest.Description.ShouldBe(TestData.TransactionFeeDescription);
             addTransactionFeeForProductToContractRequest.CalculationType.ShouldBe(calculationType);
+            addTransactionFeeForProductToContractRequest.FeeType.ShouldBe(feeType);
             addTransactionFeeForProductToContractRequest.Value.ShouldBe(TestData.TransactionFeeValue);
+        }
 
+        [Fact]
+        public void DisableTransactionFeeForProductRequest_CanBeCreated_IsCreated()
+        {
+            DisableTransactionFeeForProductRequest disableTransactionFeeForProductRequest = DisableTransactionFeeForProductRequest.Create(TestData.ContractId, TestData.EstateId,
+                                                                                                                                                TestData.ProductId,
+                                                                                                                                                TestData.TransactionFeeId);
+
+            disableTransactionFeeForProductRequest.ShouldNotBeNull();
+            disableTransactionFeeForProductRequest.ContractId.ShouldBe(TestData.ContractId);
+            disableTransactionFeeForProductRequest.EstateId.ShouldBe(TestData.EstateId);
+            disableTransactionFeeForProductRequest.ProductId.ShouldBe(TestData.ProductId);
+            disableTransactionFeeForProductRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
+            
         }
     }
 }

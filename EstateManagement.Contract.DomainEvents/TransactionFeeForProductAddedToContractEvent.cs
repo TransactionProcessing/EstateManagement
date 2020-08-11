@@ -32,6 +32,7 @@
         /// <param name="transactionFeeId">The transaction fee identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="calculationType">Type of the calculation.</param>
+        /// <param name="feeType">Type of the fee.</param>
         /// <param name="value">The value.</param>
         private TransactionFeeForProductAddedToContractEvent(Guid aggregateId,
                                                              Guid eventId,
@@ -40,6 +41,7 @@
                                                              Guid transactionFeeId,
                                                              String description,
                                                              Int32 calculationType,
+                                                             Int32 feeType,
                                                              Decimal value) : base(aggregateId, eventId)
         {
             this.ContractId = aggregateId;
@@ -48,6 +50,7 @@
             this.TransactionFeeId = transactionFeeId;
             this.Description = description;
             this.CalculationType = calculationType;
+            this.FeeType = feeType;
             this.Value = value;
         }
 
@@ -63,6 +66,15 @@
         /// </value>
         [JsonProperty]
         public Int32 CalculationType { get; private set; }
+
+        /// <summary>
+        /// Gets the type of the fee.
+        /// </summary>
+        /// <value>
+        /// The type of the fee.
+        /// </value>
+        [JsonProperty]
+        public Int32 FeeType { get; private set; }
 
         /// <summary>
         /// Gets the contract identifier.
@@ -131,6 +143,8 @@
         /// <param name="transactionFeeId">The transaction fee identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="calculationType">Type of the calculation.</param>
+        /// <param name="feeType">Type of the fee.</param>
+        /// <param name="value">The value.</param>
         /// <returns></returns>
         public static TransactionFeeForProductAddedToContractEvent Create(Guid aggregateId,
                                                                           Guid estateId,
@@ -138,9 +152,10 @@
                                                                           Guid transactionFeeId,
                                                                           String description,
                                                                           Int32 calculationType,
+                                                                          Int32 feeType,
                                                                           Decimal value)
         {
-            return new TransactionFeeForProductAddedToContractEvent(aggregateId, Guid.NewGuid(), estateId, productId, transactionFeeId, description, calculationType, value);
+            return new TransactionFeeForProductAddedToContractEvent(aggregateId, Guid.NewGuid(), estateId, productId, transactionFeeId, description, calculationType, feeType, value);
         }
 
         #endregion

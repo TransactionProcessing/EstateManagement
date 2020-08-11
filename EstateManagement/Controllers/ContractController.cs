@@ -5,6 +5,7 @@
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
+    using BusinessLogic.Requests;
     using Common;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
@@ -186,6 +187,7 @@
             Guid transactionFeeId = Guid.NewGuid();
 
             Models.Contract.CalculationType calculationType = (Models.Contract.CalculationType)addTransactionFeeForProductToContractRequest.CalculationType;
+            Models.Contract.FeeType feeType = (Models.Contract.FeeType)addTransactionFeeForProductToContractRequest.FeeType;
 
             // Create the command
             AddTransactionFeeForProductToContractRequest command = AddTransactionFeeForProductToContractRequest.Create(contractId,estateId,
@@ -193,6 +195,7 @@
                                                                                                                        transactionFeeId,
                                                                                                                        addTransactionFeeForProductToContractRequest.Description,
                                                                                                                        calculationType,
+                                                                                                                       feeType,
                                                                                                                        addTransactionFeeForProductToContractRequest.Value);
 
             // Route the command
@@ -207,6 +210,40 @@
                                     ProductId = productId,
                                     TransactionFeeId = transactionFeeId
                                 });
+        }
+
+        [HttpPost]
+        [Route("{contractId}/products/{productId}/transactionFees/{transactionFeeId}")]
+        public async Task<IActionResult> DisableTransactionFeeForProduct([FromRoute] Guid estateId,
+                                                                               [FromRoute] Guid contractId,
+                                                                               [FromRoute] Guid productId,
+                                                                               [FromRoute] Guid transactionFeeId,
+                                                                               CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            // Create the command
+            DisableTransactionFeeForProductRequest command = DisableTransactionFeeForProductRequest.Create(contractId, estateId,
+                                                                                                                       productId,
+                                                                                                                       transactionFeeId);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok($"{ContractController.ControllerRoute}/{contractId}/products/{productId}/transactionFees/{transactionFeeId}");
         }
 
         /// <summary>

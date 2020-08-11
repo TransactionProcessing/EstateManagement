@@ -21,6 +21,7 @@
         /// <param name="transactionFeeId">The transaction fee identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="calculationType">Type of the calculation.</param>
+        /// <param name="feeType">Type of the fee.</param>
         /// <param name="value">The value.</param>
         private AddTransactionFeeForProductToContractRequest(Guid contractId,
                                                              Guid estateId,
@@ -28,6 +29,7 @@
                                                              Guid transactionFeeId,
                                                              String description,
                                                              CalculationType calculationType,
+                                                             FeeType feeType,
                                                              Decimal value)
         {
             this.ContractId = contractId;
@@ -36,6 +38,7 @@
             this.TransactionFeeId = transactionFeeId;
             this.Description = description;
             this.CalculationType = calculationType;
+            this.FeeType = feeType;
             this.Value = value;
         }
 
@@ -50,6 +53,14 @@
         /// The type of the calculation.
         /// </value>
         public CalculationType CalculationType { get; }
+
+        /// <summary>
+        /// Gets the type of the fee.
+        /// </summary>
+        /// <value>
+        /// The type of the fee.
+        /// </value>
+        public FeeType FeeType { get; }
 
         /// <summary>
         /// Gets the value.
@@ -112,6 +123,7 @@
         /// <param name="transactionFeeId">The transaction fee identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="calculationType">Type of the calculation.</param>
+        /// <param name="feeType">Type of the fee.</param>
         /// <param name="value">The value.</param>
         /// <returns></returns>
         public static AddTransactionFeeForProductToContractRequest Create(Guid contractId,
@@ -120,9 +132,10 @@
                                                                           Guid transactionFeeId,
                                                                           String description,
                                                                           CalculationType calculationType,
+                                                                          FeeType feeType,
                                                                           Decimal value)
         {
-            return new AddTransactionFeeForProductToContractRequest(contractId, estateId, productId, transactionFeeId, description, calculationType, value);
+            return new AddTransactionFeeForProductToContractRequest(contractId, estateId, productId, transactionFeeId, description, calculationType, feeType, value);
         }
 
         #endregion

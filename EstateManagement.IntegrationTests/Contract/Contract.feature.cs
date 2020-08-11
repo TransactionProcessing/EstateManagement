@@ -282,6 +282,7 @@ this.FeatureBackground();
                             "ContractDescription",
                             "ProductName",
                             "CalculationType",
+                            "FeeType",
                             "FeeDescription",
                             "Value"});
                 table10.AddRow(new string[] {
@@ -290,6 +291,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "Fixed",
+                            "Merchant",
                             "Merchant Commission",
                             "2.00"});
                 table10.AddRow(new string[] {
@@ -298,6 +300,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Fixed",
+                            "Merchant",
                             "Merchant Commission",
                             "2.00"});
                 table10.AddRow(new string[] {
@@ -306,6 +309,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "Percentage",
+                            "Merchant",
                             "Merchant Commission",
                             "0.75"});
                 table10.AddRow(new string[] {
@@ -314,6 +318,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Percentage",
+                            "Merchant",
                             "Merchant Commission",
                             "0.75"});
 #line 51
@@ -413,6 +418,7 @@ this.FeatureBackground();
                             "ContractDescription",
                             "ProductName",
                             "CalculationType",
+                            "FeeType",
                             "FeeDescription",
                             "Value"});
                 table13.AddRow(new string[] {
@@ -421,6 +427,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "Fixed",
+                            "Merchant",
                             "Merchant Commission",
                             "2.00"});
                 table13.AddRow(new string[] {
@@ -429,6 +436,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "Percentage",
+                            "Merchant",
                             "Merchant Commission",
                             "0.025"});
                 table13.AddRow(new string[] {
@@ -437,6 +445,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Fixed",
+                            "Merchant",
                             "Merchant Commission",
                             "2.50"});
                 table13.AddRow(new string[] {
@@ -445,6 +454,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "Percentage",
+                            "Merchant",
                             "Merchant Commission",
                             "0.85"});
                 table13.AddRow(new string[] {
@@ -453,6 +463,7 @@ this.FeatureBackground();
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Percentage",
+                            "Merchant",
                             "Merchant Commission",
                             "0.85"});
 #line 72
@@ -461,15 +472,18 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "CalculationType",
                             "FeeDescription",
-                            "Value"});
+                            "Value",
+                            "FeeType"});
                 table14.AddRow(new string[] {
                             "Fixed",
                             "Merchant Commission",
-                            "2.00"});
+                            "2.00",
+                            "Merchant"});
                 table14.AddRow(new string[] {
                             "Percentage",
                             "Merchant Commission",
-                            "0.025"});
+                            "0.025",
+                            "Merchant"});
 #line 80
  testRunner.Then("I get the Transaction Fees for \'100 KES Topup\' on the \'Operator 1 Contract\' contr" +
                         "act for \'Test Estate 1\' the following fees are returned", ((string)(null)), table14, "Then ");
@@ -477,11 +491,13 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "CalculationType",
                             "FeeDescription",
-                            "Value"});
+                            "Value",
+                            "FeeType"});
                 table15.AddRow(new string[] {
                             "Fixed",
                             "Merchant Commission",
-                            "2.50"});
+                            "2.50",
+                            "Merchant"});
 #line 85
  testRunner.Then("I get the Transaction Fees for \'Variable Topup\' on the \'Operator 1 Contract\' cont" +
                         "ract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table15, "Then ");
@@ -489,11 +505,13 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "CalculationType",
                             "FeeDescription",
-                            "Value"});
+                            "Value",
+                            "FeeType"});
                 table16.AddRow(new string[] {
                             "Percentage",
                             "Merchant Commission",
-                            "0.85"});
+                            "0.85",
+                            "Merchant"});
 #line 89
  testRunner.Then("I get the Transaction Fees for \'100 KES Topup\' on the \'Operator 1 Contract\' contr" +
                         "act for \'Test Estate 2\' the following fees are returned", ((string)(null)), table16, "Then ");
@@ -501,11 +519,13 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "CalculationType",
                             "FeeDescription",
-                            "Value"});
+                            "Value",
+                            "FeeType"});
                 table17.AddRow(new string[] {
                             "Percentage",
                             "Merchant Commission",
-                            "0.85"});
+                            "0.85",
+                            "Merchant"});
 #line 93
  testRunner.Then("I get the Transaction Fees for \'Variable Topup\' on the \'Operator 1 Contract\' cont" +
                         "ract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table17, "Then ");
@@ -635,7 +655,8 @@ this.FeatureBackground();
                             "ProductName",
                             "CalculationType",
                             "FeeDescription",
-                            "Value"});
+                            "Value",
+                            "FeeType"});
                 table21.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
@@ -643,7 +664,8 @@ this.FeatureBackground();
                             "100 KES Topup",
                             "Fixed",
                             "Merchant Commission",
-                            "2.00"});
+                            "2.00",
+                            "Merchant"});
                 table21.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
@@ -651,7 +673,8 @@ this.FeatureBackground();
                             "100 KES Topup",
                             "Percentage",
                             "Merchant Commission",
-                            "0.025"});
+                            "0.025",
+                            "Merchant"});
                 table21.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
@@ -659,7 +682,8 @@ this.FeatureBackground();
                             "Variable Topup",
                             "Fixed",
                             "Merchant Commission",
-                            "2.50"});
+                            "2.50",
+                            "Merchant"});
                 table21.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
@@ -667,7 +691,8 @@ this.FeatureBackground();
                             "100 KES Topup",
                             "Percentage",
                             "Merchant Commission",
-                            "0.85"});
+                            "0.85",
+                            "Merchant"});
                 table21.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
@@ -675,7 +700,8 @@ this.FeatureBackground();
                             "Variable Topup",
                             "Percentage",
                             "Merchant Commission",
-                            "0.85"});
+                            "0.85",
+                            "Merchant"});
 #line 116
  testRunner.When("I add the following Transaction Fees", ((string)(null)), table21, "When ");
 #line hidden

@@ -1,7 +1,6 @@
 ﻿namespace EstateManagement.DataTransferObjects.Requests
 {
     using System;
-    using System.Security.Cryptography;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -28,6 +27,15 @@
         /// </value>
         [JsonProperty("description")]
         public String Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the fee.
+        /// </summary>
+        /// <value>
+        /// The type of the fee.
+        /// </value>
+        [JsonProperty("fee_type")]
+        public FeeType FeeType { get; set; }
 
         /// <summary>
         /// Gets or sets the value.

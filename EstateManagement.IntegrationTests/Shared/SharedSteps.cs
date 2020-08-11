@@ -57,10 +57,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 this.TestingContext.AddEstateDetails(response.EstateId, estateName);
 
                 this.TestingContext.Logger.LogInformation($"Estate {estateName} created with Id {response.EstateId}");
-            }
-
-            foreach (TableRow tableRow in table.Rows)
-            {
+            
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
 
                 EstateResponse estate = null;
@@ -685,8 +682,13 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                                                 CalculationType =
                                                                                                                     SpecflowTableHelper
                                                                                                                         .GetEnumValue<CalculationType>(tableRow,
-                                                                                                                                                       "CalculationType")
-                                                                                                            };
+                                                                                                                                                       "CalculationType"),
+                                                                                                                FeeType = 
+                                                                                                                    SpecflowTableHelper
+                                                                                                                        .GetEnumValue<FeeType>(tableRow,
+                                                                                                                                                       "FeeType")
+
+                };
 
                 AddTransactionFeeForProductToContractResponse addTransactionFeeForProductToContractResponse =
                     await this.TestingContext.DockerHelper.EstateClient.AddTransactionFeeForProductToContract(token,
@@ -698,6 +700,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 
                 product.AddTransactionFee(addTransactionFeeForProductToContractResponse.TransactionFeeId,
                                           addTransactionFeeForProductToContractRequest.CalculationType,
+                                          addTransactionFeeForProductToContractRequest.FeeType,
                                           addTransactionFeeForProductToContractRequest.Description,
                                           addTransactionFeeForProductToContractRequest.Value);
             }
@@ -763,11 +766,15 @@ namespace EstateManagement.IntegrationTests.Shared
                                 foreach (TableRow tableRow in table.Rows)
                                 {
                                     CalculationType calculationType = SpecflowTableHelper.GetEnumValue<CalculationType>(tableRow, "CalculationType");
+                                    FeeType feeType = SpecflowTableHelper.GetEnumValue<FeeType>(tableRow, "FeeType");
                                     String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
-                                    Decimal feeValue = Decimal.Round(SpecflowTableHelper.GetDecimalValue(tableRow, "Value"), 2,MidpointRounding.AwayFromZero);
+                                    Decimal feeValue = SpecflowTableHelper.GetDecimalValue(tableRow, "Value");
 
                                     Boolean feeFound =
-                                        transactionFees.Any(f => f.CalculationType == calculationType && f.Description == feeDescription && f.Value == feeValue);
+                                        transactionFees.Any(f => f.CalculationType == calculationType 
+                                                                 && f.Description == feeDescription 
+                                                                 && f.Value == feeValue
+                                                                 && f.FeeType ==  feeType);
 
                                     feeFound.ShouldBeTrue();
                                 }

@@ -67,9 +67,11 @@ namespace EstateManagement.ContractAggregate.Tests
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public void TransactionFeeForProductAddedToContractEvent_CanBeCreated_IsCreated(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public void TransactionFeeForProductAddedToContractEvent_CanBeCreated_IsCreated(CalculationType calculationType,FeeType feeType)
         {
             TransactionFeeForProductAddedToContractEvent transactionFeeForProductAddedToContractEvent = TransactionFeeForProductAddedToContractEvent.Create(TestData.ContractId,
                                                                                                                                                             TestData.EstateId,
@@ -77,6 +79,7 @@ namespace EstateManagement.ContractAggregate.Tests
                                                                                                                                                             TestData.TransactionFeeId,
                                                                                                                                                             TestData.TransactionFeeDescription,
                                                                                                                                                             (Int32)calculationType,
+                                                                                                                                                            (Int32)feeType,
                                                                                                                                                             TestData.TransactionFeeValue);
 
             transactionFeeForProductAddedToContractEvent.ShouldNotBeNull();
@@ -89,7 +92,24 @@ namespace EstateManagement.ContractAggregate.Tests
             transactionFeeForProductAddedToContractEvent.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
             transactionFeeForProductAddedToContractEvent.Description.ShouldBe(TestData.TransactionFeeDescription);
             transactionFeeForProductAddedToContractEvent.CalculationType.ShouldBe((Int32)calculationType);
+            transactionFeeForProductAddedToContractEvent.FeeType.ShouldBe((Int32)feeType);
             transactionFeeForProductAddedToContractEvent.Value.ShouldBe(TestData.TransactionFeeValue);
+        }
+
+        [Fact]
+        public void TransactionFeeForProductDisabledEvent_CanBeCreated_IsCreated()
+        {
+            TransactionFeeForProductDisabledEvent transactionFeeForProductDisabledEvent =
+                TransactionFeeForProductDisabledEvent.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.TransactionFeeId);
+
+            transactionFeeForProductDisabledEvent.ShouldNotBeNull();
+            transactionFeeForProductDisabledEvent.AggregateId.ShouldBe(TestData.ContractId);
+            transactionFeeForProductDisabledEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
+            transactionFeeForProductDisabledEvent.EventId.ShouldNotBe(Guid.Empty);
+            transactionFeeForProductDisabledEvent.ContractId.ShouldBe(TestData.ContractId);
+            transactionFeeForProductDisabledEvent.EstateId.ShouldBe(TestData.EstateId);
+            transactionFeeForProductDisabledEvent.ProductId.ShouldBe(TestData.ProductId);
+            transactionFeeForProductDisabledEvent.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
         }
     }
 }

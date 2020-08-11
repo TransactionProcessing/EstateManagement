@@ -15,6 +15,14 @@
         public CalculationType CalculationType { get; set; }
 
         /// <summary>
+        /// Gets or sets the type of the fee.
+        /// </summary>
+        /// <value>
+        /// The type of the fee.
+        /// </value>
+        public FeeType FeeType { get; set; }
+
+        /// <summary>
         /// Gets or sets the description.
         /// </summary>
         /// <value>

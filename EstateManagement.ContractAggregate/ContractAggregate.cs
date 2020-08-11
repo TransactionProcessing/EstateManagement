@@ -126,12 +126,15 @@
         /// <param name="transactionFeeId">The transaction fee identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="calculationType">Type of the calculation.</param>
+        /// <param name="feeType">Type of the fee.</param>
         /// <param name="value">The value.</param>
+        /// <exception cref="InvalidOperationException">Product Id {product.ProductId} is not a valid product on this contract</exception>
         /// <exception cref="System.InvalidOperationException">Product Id {productId} is not a valid product on this contract</exception>
         public void AddTransactionFee(Product product,
                                       Guid transactionFeeId,
                                       String description,
                                       CalculationType calculationType,
+                                      FeeType feeType,
                                       Decimal value)
         {
             Guard.ThrowIfInvalidGuid(transactionFeeId, typeof(ArgumentNullException), "Transaction Fee Id cannot be an empty Guid");
@@ -146,11 +149,50 @@
             }
 
             Guard.ThrowIfInvalidEnum(typeof(CalculationType), calculationType, nameof(calculationType));
+            Guard.ThrowIfInvalidEnum(typeof(FeeType), feeType, nameof(feeType));
 
             TransactionFeeForProductAddedToContractEvent transactionFeeForProductAddedToContractEvent =
-                TransactionFeeForProductAddedToContractEvent.Create(this.AggregateId, this.EstateId, product.ProductId, transactionFeeId, description, (Int32)calculationType, value);
+                TransactionFeeForProductAddedToContractEvent.Create(this.AggregateId, this.EstateId, product.ProductId, transactionFeeId, description, (Int32)calculationType, (Int32)feeType, value);
 
             this.ApplyAndPend(transactionFeeForProductAddedToContractEvent);
+        }
+
+        /// <summary>
+        /// Disables the transaction fee.
+        /// </summary>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="transactionFeeId">The transaction fee identifier.</param>
+        public void DisableTransactionFee(Guid productId,
+                                          Guid transactionFeeId)
+        {
+            if (this.Products.Any(p => p.ProductId == productId) == false)
+            {
+                throw new InvalidOperationException($"Product Id {productId} is not a valid product on this contract");
+            }
+
+            Product product = this.Products.Single(p => p.ProductId == productId);
+
+            if (product.TransactionFees.Any(f => f.TransactionFeeId == transactionFeeId) == false)
+            {
+                throw new InvalidOperationException($"Transaction Fee Id {transactionFeeId} is not a valid for product {product.Name} on this contract");
+            }
+
+            TransactionFeeForProductDisabledEvent transactionFeeForProductDisabledEvent = TransactionFeeForProductDisabledEvent.Create(this.AggregateId,
+                                                                                                                                       this.EstateId,
+                                                                                                                                       productId,
+                                                                                                                                       transactionFeeId);
+
+            this.ApplyAndPend(transactionFeeForProductDisabledEvent);
+        }
+
+        private void PlayEvent(TransactionFeeForProductDisabledEvent domainEvent)
+        {
+            // Find the product
+            Product product = this.Products.Single(p => p.ProductId == domainEvent.ProductId);
+            TransactionFee transactionFee = product.TransactionFees.Single(t => t.TransactionFeeId == domainEvent.TransactionFeeId);
+
+            transactionFee.IsEnabled = false;
+
         }
 
         /// <summary>
@@ -309,7 +351,9 @@
                                             Description = domainEvent.Description,
                                             CalculationType = (Models.Contract.CalculationType)domainEvent.CalculationType,
                                             TransactionFeeId = domainEvent.TransactionFeeId,
-                                            Value = domainEvent.Value
+                                            Value = domainEvent.Value,
+                                            IsEnabled = true,
+                                            FeeType = (Models.Contract.FeeType)domainEvent.FeeType
                                         });
         }
 

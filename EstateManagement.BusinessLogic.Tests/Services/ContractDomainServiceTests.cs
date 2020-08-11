@@ -198,9 +198,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public async Task ContractDomainService_AddTransactionFeeForProductToContract_TransactionFeeIsAddedToProduct(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public async Task ContractDomainService_AddTransactionFeeForProductToContract_TransactionFeeIsAddedToProduct(CalculationType calculationType,FeeType feeType)
         {
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
@@ -215,15 +217,18 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                                           TestData.ProductId,
                                                                                           TestData.TransactionFeeDescription,
                                                                                           calculationType,
+                                                                                          feeType,
                                                                                           TestData.TransactionFeeValue,
                                                                                           CancellationToken.None);
                             });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public async Task ContractDomainService_AddTransactionFeeForProductToContract_ContractNotCreated_ErrorThrown(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public async Task ContractDomainService_AddTransactionFeeForProductToContract_ContractNotCreated_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
@@ -238,15 +243,18 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                                           TestData.ProductId,
                                                                                           TestData.TransactionFeeDescription,
                                                                                           calculationType,
+                                                                                          feeType,
                                                                                           TestData.TransactionFeeValue,
                                                                                           CancellationToken.None);
                             });
         }
 
         [Theory]
-        [InlineData(CalculationType.Fixed)]
-        [InlineData(CalculationType.Percentage)]
-        public async Task ContractDomainService_AddTransactionFeeForProductToContract_ProductNotFound_ErrorThrown(CalculationType calculationType)
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public async Task ContractDomainService_AddTransactionFeeForProductToContract_ProductNotFound_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
             Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
             Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
@@ -261,9 +269,32 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                                                                   Guid.Parse("63662476-6C0F-42A8-BFD6-0C2F4B4D3144"), 
                                                                                                                   TestData.TransactionFeeDescription,
                                                                                                                   calculationType,
+                                                                                                                  feeType,
                                                                                                                   TestData.TransactionFeeValue,
                                                                                                                   CancellationToken.None);
                                                     });
+        }
+
+        [Theory]
+        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
+        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
+        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
+        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
+        public async Task ContractDomainService_DisableTransactionFeeForProduct_TransactionFeeDisabled(CalculationType calculationType, FeeType feeType)
+        {
+            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
+            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                                       .ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(calculationType, feeType));
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Should.NotThrow(async () =>
+                            {
+                                await domainService.DisableTransactionFeeForProduct(TestData.TransactionFeeId,
+                                                                                          TestData.ContractId,
+                                                                                          TestData.ProductId,
+                                                                                          CancellationToken.None);
+                            });
         }
     }
 }
