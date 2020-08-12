@@ -41,7 +41,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetEstate_EstateRetrieved(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -64,7 +63,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetEstate_EstateNotFound_ErrorThrown(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -85,7 +83,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetMerchants_MerchantRetrieved(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -119,7 +116,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetMerchants_NoMerchantsFound_NullMerchantsReturned(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -143,7 +139,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetContract_ContractRetrieved(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -166,7 +161,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetContract_IncludeProducts_ContractRetrieved(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -189,7 +183,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetContract_IncludeProductsWithFees_ContractRetrieved(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -212,7 +205,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetContract_ContractNotFound_ErrorThrown(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -232,7 +224,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetTransactionFeesForProduct_TransactionFeesForProductRetrieved(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -254,7 +245,6 @@ namespace EstateManagement.Repository.Tests
 
         [Theory]
         [InlineData(TestDatabaseType.InMemory)]
-        [InlineData(TestDatabaseType.SqliteInMemory)]
         public async Task EstateManagementRepository_GetMerchantContracts_MerchantContractsRetrieved(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
@@ -309,10 +299,7 @@ namespace EstateManagement.Repository.Tests
             {
                 throw new NotSupportedException($"Database type [{databaseType}] not supported");
             }
-
-
-
-
+            
             return context;
         }
     }

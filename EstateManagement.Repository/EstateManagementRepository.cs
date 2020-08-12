@@ -253,7 +253,8 @@
 
             List<ContractProductTransactionFee> transactionFees = await context
                                                                         .ContractProductTransactionFees
-                                                                        .Where(c => c.EstateId == estateId && c.ContractId == contractId && c.ProductId == productId)
+                                                                        .Where(c => c.EstateId == estateId && c.ContractId == contractId && c.ProductId == productId
+                                                                               && c.IsEnabled == true)
                                                                         .ToListAsync(cancellationToken);
 
             List<TransactionFee> transactionFeeModels = this.ModelFactory.ConvertFrom(transactionFees);
