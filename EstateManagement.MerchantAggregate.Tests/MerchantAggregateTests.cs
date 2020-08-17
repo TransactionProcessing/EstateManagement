@@ -204,6 +204,20 @@ namespace EstateManagement.MerchantAggregate.Tests
             merchantModel.Devices.Single().Value.ShouldBe(TestData.DeviceIdentifier);
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void MerchantAggregate_AddDevice_DeviceIdentifierInvalid_ErrorThrown(String deviceIdentifier)
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    aggregate.AddDevice(TestData.DeviceId, deviceIdentifier);
+                                                });
+        }
+
         [Fact]
         public void MerchantAggregate_AddDevice_MerchantNotCreated_ErrorThrown()
         {

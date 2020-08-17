@@ -200,6 +200,8 @@
         public void AddDevice(Guid deviceId,
                               String deviceIdentifier)
         {
+            Guard.ThrowIfNullOrEmpty(deviceIdentifier, typeof(ArgumentNullException), "Device Identifier cannot be null or empty");
+
             this.EnsureMerchantHasBeenCreated();
             this.EnsureMerchantHasSpaceForDevice();
             // TODO: Reintroduce when merchant can request > 1 device
@@ -209,7 +211,7 @@
 
             this.ApplyAndPend(deviceAddedToMerchantEvent);
         }
-
+        
         /// <summary>
         /// Adds the security user.
         /// </summary>
