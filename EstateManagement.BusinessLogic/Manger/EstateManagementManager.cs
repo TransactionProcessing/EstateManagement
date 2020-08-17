@@ -151,6 +151,13 @@
             String projectionState =
                 await this.EventStoreContext.GetPartitionStateFromProjection("MerchantBalanceCalculator", $"MerchantBalanceHistory-{merchantId:N}", cancellationToken);
 
+            // Protect from projection not running
+            if (projectionState == "{}")
+            {
+                // merchant details not returned from projection
+                throw new NotFoundException($"Error finding MerchantBalanceHistory stream for Merchant Id [{merchantId}] on Estate [{estateId}]");
+            }
+
             JObject parsedState = JObject.Parse(projectionState);
             JToken? merchantRecord = parsedState["merchants"][$"{merchantId}"];
 

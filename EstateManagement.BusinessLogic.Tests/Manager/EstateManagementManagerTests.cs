@@ -132,6 +132,19 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetMerchantBalance_ProjectionReturnsNoState_ErrorThrown()
+        {
+            String projectionState = "{}";
+
+            this.EventStoreContext.Setup(e => e.GetPartitionStateFromProjection(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(projectionState);
+
+            Should.Throw<NotFoundException>(async () =>
+                                            {
+                                                await this.EstateManagementManager.GetMerchantBalance(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+                                            });
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetMerchants_MerchantListIsReturned()
         {
             this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Merchant>
