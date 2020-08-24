@@ -99,6 +99,66 @@
             return this.ModelFactory.ConvertFrom(contract, contractProducts, contractProductFees);
         }
 
+        public async Task<List<ContractModel>> GetContracts(Guid estateId,
+                                                     CancellationToken cancellationToken)
+        {
+            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            var x = await (from c in context.Contracts
+                           join cp in context.ContractProducts on c.ContractId equals cp.ContractId
+                           join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
+                           where c.EstateId == estateId
+                           select new
+                           {
+                               Contract = c,
+                               Product = cp,
+                               Operator = eo
+                           }).ToListAsync(cancellationToken);
+
+            List<ContractModel> contracts = new List<ContractModel>();
+
+            foreach (var test in x)
+            {
+                // attempt to find the contract
+                ContractModel contract = contracts.SingleOrDefault(c => c.ContractId == test.Contract.ContractId);
+
+                if (contract == null)
+                {
+                    // create the contract
+                    contract = new ContractModel
+                    {
+                        EstateId = test.Contract.EstateId,
+                        OperatorId = test.Contract.OperatorId,
+                        OperatorName = test.Operator.Name,
+                        Products = new List<Product>(),
+                        Description = test.Contract.Description,
+                        IsCreated = true,
+                        ContractId = test.Contract.ContractId
+                    };
+
+                    contracts.Add(contract);
+                }
+
+                // Now add the product if not already added
+                Boolean productFound = contract.Products.Any(p => p.ProductId == test.Product.ProductId);
+
+                if (productFound == false)
+                {
+                    // Not already there so need to add it
+                    contract.Products.Add(new Product
+                    {
+                        ProductId = test.Product.ProductId,
+                        TransactionFees = null,
+                        Value = test.Product.Value,
+                        Name = test.Product.ProductName,
+                        DisplayText = test.Product.DisplayText
+                    });
+                }
+            }
+
+            return contracts;
+        }
+
         /// <summary>
         /// Gets the estate.
         /// </summary>

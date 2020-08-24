@@ -131,6 +131,38 @@ Scenario: Get Merchant Contracts
 	| Operator 1 Contract | 100 KES Topup  |
 	| Operator 1 Contract | Variable Topup |
 
+Scenario: Get Estate Contracts
+	
+	Given I create a contract with the following values
+	| EstateName    | OperatorName    | ContractDescription |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract |
+
+	When I create the following Products
+	| EstateName    | OperatorName    | ContractDescription | ProductName    | DisplayText | Value  |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        |
+
+	When I add the following Transaction Fees
+	| EstateName    | OperatorName    | ContractDescription | ProductName    | CalculationType | FeeDescription      | Value | FeeType  |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Fixed           | Merchant Commission | 2.00  | Merchant |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.025 | Merchant |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Fixed           | Merchant Commission | 2.50  | Merchant |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.85  | Merchant |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Percentage      | Merchant Commission | 0.85  | Merchant |
+
+	Then I get the Contracts for 'Test Estate 1' the following contract details are returned
+	| ContractDescription | ProductName    |
+	| Operator 1 Contract | 100 KES Topup  |
+	| Operator 1 Contract | Variable Topup |
+
+	Then I get the Contracts for 'Test Estate 2' the following contract details are returned
+	| ContractDescription | ProductName    |
+	| Operator 1 Contract | 100 KES Topup  |
+	| Operator 1 Contract | Variable Topup |
+
 	
 
 	

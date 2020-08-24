@@ -179,6 +179,17 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetContracts_ContractAreReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetContracts(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Contract>() {TestData.ContractModelWithProductsAndTransactionFees});
+
+            List<Contract> contractModelList = await this.EstateManagementManager.GetContracts(TestData.EstateId, CancellationToken.None);
+
+            contractModelList.ShouldNotBeNull();
+            contractModelList.ShouldNotBeEmpty();
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetTransactionFeesForProduct_TransactionFeesAreReturned()
         {
             this.EstateManagementRepository.Setup(e => e.GetTransactionFeesForProduct(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.ProductTransactionFees);

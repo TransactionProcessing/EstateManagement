@@ -706,6 +706,35 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [Then(@"I get the Contracts for '(.*)' the following contract details are returned")]
+        public async Task ThenIGetTheContractsForTheFollowingContractDetailsAreReturned(String estateName, Table table)
+        {
+            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+
+            String token = this.TestingContext.AccessToken;
+            if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+            {
+                token = estateDetails.AccessToken;
+            }
+
+            List<ContractResponse> contracts = await this.TestingContext.DockerHelper.EstateClient.GetContracts(token, estateDetails.EstateId, CancellationToken.None);
+
+            contracts.ShouldNotBeNull();
+            contracts.ShouldHaveSingleItem();
+            ContractResponse contract = contracts.Single();
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+                String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
+
+                contract.Description.ShouldBe(contractDescription);
+                contract.Products.Any(p => p.Name == productName).ShouldBeTrue();
+
+            }
+        }
+
+
         [Then(@"I get the Merchant Contracts for '(.*)' for '(.*)' the following contract details are returned")]
         public async Task ThenIGetTheMerchantContractsForForTheFollowingContractDetailsAreReturned(String merchantName, String estateName, Table table)
         {

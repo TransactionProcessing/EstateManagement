@@ -275,6 +275,29 @@ namespace EstateManagement.Repository.Tests
             merchantContractsModelList[1].Products.Count.ShouldBe(2);
         }
 
+        [Theory]
+        [InlineData(TestDatabaseType.InMemory)]
+        public async Task EstateManagementRepository_GetContracts_ContractsRetrieved(TestDatabaseType testDatabaseType)
+        {
+            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            context.Contracts.Add(TestData.ContractEntity);
+            context.ContractProducts.Add(TestData.ContractProductEntity);
+            context.EstateOperators.Add(TestData.EstateOperatorEntity);
+            await context.SaveChangesAsync();
+
+            Mock<IDbContextFactory<EstateReportingContext>> dbContextFactory = new Mock<IDbContextFactory<EstateReportingContext>>();
+            Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
+
+            dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ContractModel);
+            EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
+
+            List<Models.Contract.Contract> contractModelList = await estateManagementRepository.GetContracts(TestData.EstateId, CancellationToken.None);
+
+            contractModelList.ShouldNotBeNull();
+            contractModelList.ShouldNotBeEmpty();
+        }
+        
         private static async Task<EstateReportingContext> GetContext(String databaseName, TestDatabaseType databaseType = TestDatabaseType.InMemory)
         {
             EstateReportingContext context = null;

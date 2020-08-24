@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Claims;
     using System.Threading;
@@ -103,6 +104,37 @@
             }
 
             return this.Ok(this.ModelFactory.ConvertFrom(contract));
+        }
+
+        /// <summary>
+        /// Gets the contract.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> GetContracts([FromRoute] Guid estateId,
+                                                     CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            List<Contract> contracts = await this.EstateManagementManager.GetContracts(estateId, cancellationToken);
+
+            return this.Ok(this.ModelFactory.ConvertFrom(contracts));
+
         }
 
         /// <summary>
