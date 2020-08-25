@@ -104,55 +104,59 @@
         {
             EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
-            var x = await (from c in context.Contracts
-                           join cp in context.ContractProducts on c.ContractId equals cp.ContractId
+            var query = await (from c in context.Contracts
+                           join cp in context.ContractProducts on c.ContractId equals cp.ContractId into cps
+                           from contractprouduct in cps.DefaultIfEmpty() 
                            join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
                            where c.EstateId == estateId
                            select new
                            {
                                Contract = c,
-                               Product = cp,
+                               Product = contractprouduct,
                                Operator = eo
                            }).ToListAsync(cancellationToken);
 
             List<ContractModel> contracts = new List<ContractModel>();
 
-            foreach (var test in x)
+            foreach (var contractData in query)
             {
                 // attempt to find the contract
-                ContractModel contract = contracts.SingleOrDefault(c => c.ContractId == test.Contract.ContractId);
+                ContractModel contract = contracts.SingleOrDefault(c => c.ContractId == contractData.Contract.ContractId);
 
                 if (contract == null)
                 {
                     // create the contract
                     contract = new ContractModel
                     {
-                        EstateId = test.Contract.EstateId,
-                        OperatorId = test.Contract.OperatorId,
-                        OperatorName = test.Operator.Name,
+                        EstateId = contractData.Contract.EstateId,
+                        OperatorId = contractData.Contract.OperatorId,
+                        OperatorName = contractData.Operator.Name,
                         Products = new List<Product>(),
-                        Description = test.Contract.Description,
+                        Description = contractData.Contract.Description,
                         IsCreated = true,
-                        ContractId = test.Contract.ContractId
+                        ContractId = contractData.Contract.ContractId
                     };
 
                     contracts.Add(contract);
                 }
 
                 // Now add the product if not already added
-                Boolean productFound = contract.Products.Any(p => p.ProductId == test.Product.ProductId);
+                Boolean productFound = contract.Products.Any(p => p.ProductId == contractData.Product.ProductId);
 
                 if (productFound == false)
                 {
-                    // Not already there so need to add it
-                    contract.Products.Add(new Product
+                    if (contractData.Product != null)
                     {
-                        ProductId = test.Product.ProductId,
-                        TransactionFees = null,
-                        Value = test.Product.Value,
-                        Name = test.Product.ProductName,
-                        DisplayText = test.Product.DisplayText
-                    });
+                        // Not already there so need to add it
+                        contract.Products.Add(new Product
+                                              {
+                                                  ProductId = contractData.Product.ProductId,
+                                                  TransactionFees = null,
+                                                  Value = contractData.Product.Value,
+                                                  Name = contractData.Product.ProductName,
+                                                  DisplayText = contractData.Product.DisplayText
+                                              });
+                    }
                 }
             }
 
