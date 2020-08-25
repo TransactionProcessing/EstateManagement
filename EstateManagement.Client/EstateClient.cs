@@ -56,49 +56,6 @@
         #region Methods
 
         /// <summary>
-        /// Gets the merchant contracts.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task<List<ContractResponse>> GetMerchantContracts(String accessToken,
-                                                                       Guid estateId,
-                                                                       Guid merchantId,
-                                                                       CancellationToken cancellationToken)
-        {
-            List<ContractResponse> response = null;
-
-            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contracts");
-
-            try
-            {
-                // Add the access token to the client headers
-                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-                // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
-
-                // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
-
-                // call was successful so now deserialise the body to the response object
-                response = JsonConvert.DeserializeObject<List<ContractResponse>>(content);
-            }
-            catch (Exception ex)
-            {
-                // An exception has occurred, add some additional information to the message
-                Exception exception =
-                    new Exception($"Error getting merchant contracts for merchant Id {merchantId} in estate {estateId}.", ex);
-
-                throw exception;
-            }
-
-            return response;
-        }
-
-        /// <summary>
         /// Adds the device to merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -247,42 +204,6 @@
             }
 
             return response;
-        }
-
-        public async Task DisableTransactionFeeForProduct(String accessToken,
-                                                          Guid estateId,
-                                                          Guid contractId,
-                                                          Guid productId,
-                                                          Guid transactionFeeId,
-                                                          CancellationToken cancellationToken)
-        {
-            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}/products/{productId}/transactionFees/{transactionFeeId}");
-
-            try
-            {
-                String requestSerialised = String.Empty;
-
-                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
-
-                // Add the access token to the client headers
-                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-                // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
-
-                // Process the response
-                await this.HandleResponse(httpResponse, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                // An exception has occurred, add some additional information to the message
-                Exception exception =
-                    new
-                        Exception($"Error disabling transaction fee Id [{transactionFeeId}] for product [{productId}] on contract [{contractId}] for estate {estateId}.",
-                                  ex);
-
-                throw exception;
-            }
         }
 
         /// <summary>
@@ -611,6 +532,81 @@
             return response;
         }
 
+        public async Task DisableTransactionFeeForProduct(String accessToken,
+                                                          Guid estateId,
+                                                          Guid contractId,
+                                                          Guid productId,
+                                                          Guid transactionFeeId,
+                                                          CancellationToken cancellationToken)
+        {
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}/products/{productId}/transactionFees/{transactionFeeId}");
+
+            try
+            {
+                String requestSerialised = string.Empty;
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                await this.HandleResponse(httpResponse, cancellationToken);
+            }
+            catch(Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception =
+                    new Exception($"Error disabling transaction fee Id [{transactionFeeId}] for product [{productId}] on contract [{contractId}] for estate {estateId}.",
+                                  ex);
+
+                throw exception;
+            }
+        }
+
+        /// <summary>
+        /// Gets the contracts.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<ContractResponse>> GetContracts(String accessToken,
+                                                               Guid estateId,
+                                                               CancellationToken cancellationToken)
+        {
+            List<ContractResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<ContractResponse>>(content);
+            }
+            catch(Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting contracts for estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         /// <summary>
         /// Gets the estate.
         /// </summary>
@@ -728,6 +724,48 @@
             {
                 // An exception has occurred, add some additional information to the message
                 Exception exception = new Exception($"Error getting balance for merchant Id {merchantId} in estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Gets the merchant contracts.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<ContractResponse>> GetMerchantContracts(String accessToken,
+                                                                       Guid estateId,
+                                                                       Guid merchantId,
+                                                                       CancellationToken cancellationToken)
+        {
+            List<ContractResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contracts");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<ContractResponse>>(content);
+            }
+            catch(Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting merchant contracts for merchant Id {merchantId} in estate {estateId}.", ex);
 
                 throw exception;
             }

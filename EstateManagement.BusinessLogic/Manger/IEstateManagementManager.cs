@@ -25,6 +25,15 @@
                                             CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the contracts.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<Contract>> GetContracts(Guid estateId,
+                                          CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the contract.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>

@@ -63,23 +63,6 @@
                                                                                                   CancellationToken cancellationToken);
 
         /// <summary>
-        /// Disables the transaction fee for product.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="transactionFeeId">The transaction fee identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task DisableTransactionFeeForProduct(String accessToken,
-                                             Guid estateId,
-                                             Guid contractId,
-                                             Guid productId,
-                                             Guid transactionFeeId,
-                                             CancellationToken cancellationToken);
-
-        /// <summary>
         /// Assigns the operator to merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -173,6 +156,34 @@
                                                     CancellationToken cancellationToken);
 
         /// <summary>
+        /// Disables the transaction fee for product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="transactionFeeId">The transaction fee identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task DisableTransactionFeeForProduct(String accessToken,
+                                             Guid estateId,
+                                             Guid contractId,
+                                             Guid productId,
+                                             Guid transactionFeeId,
+                                             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the contracts.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<ContractResponse>> GetContracts(String accessToken,
+                                                  Guid estateId,
+                                                  CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the estate.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -208,6 +219,19 @@
                                                          Guid estateId,
                                                          Guid merchantId,
                                                          CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the merchant contracts.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<ContractResponse>> GetMerchantContracts(String accessToken,
+                                                          Guid estateId,
+                                                          Guid merchantId,
+                                                          CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the merchant.
@@ -251,19 +275,6 @@
                                                               Guid merchantId,
                                                               MakeMerchantDepositRequest makeMerchantDepositRequest,
                                                               CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the merchant contracts.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<List<ContractResponse>> GetMerchantContracts(String accessToken,
-                                                         Guid estateId,
-                                                         Guid merchantId,
-                                                         CancellationToken cancellationToken);
 
         #endregion
     }
