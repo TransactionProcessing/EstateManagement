@@ -184,6 +184,21 @@
                                                   CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the contract.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ContractResponse> GetContract(String accessToken,
+                                                  Guid estateId,
+                                                  Guid contractId,
+                                                  Boolean includeProducts,
+                                                  Boolean includeProductsWithFees,
+                                                  CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the estate.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
