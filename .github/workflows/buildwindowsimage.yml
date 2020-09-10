@@ -17,14 +17,14 @@ jobs:
 
     - name: Get the version
       id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      uses: battila7/get-version-action@v2
 
-- name: Build Docker Images 
+    - name: Build Docker Images 
       run: |
-        docker build . --file EstateManagement/Dockerfilewindows --tag stuartferguson/estatemanagementwindows:latest --tag stuartferguson/estatemanagementwindows:${{ steps.get_version.outputs.VERSION }}
+        docker build . --file EstateManagement/Dockerfilewindows --tag stuartferguson/estatemanagementwindows:latest --tag stuartferguson/estatemanagementwindows:${{ steps.get_version.outputs.version }}
 
-- name: Publish Images to Docker Hub
+    - name: Publish Images to Docker Hub
       run: |
         docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
         docker push stuartferguson/estatemanagementwindows:latest
-        docker push stuartferguson/estatemanagementwindows:${{ steps.get_version.outputs.VERSION }}      
+        docker push stuartferguson/estatemanagementwindows:${{ steps.get_version.outputs.version }}      
