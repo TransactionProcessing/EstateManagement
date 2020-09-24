@@ -99,7 +99,7 @@ namespace EstateManagement
 
         private static EventStoreClientSettings EventStoreClientSettings;
 
-        private void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
+        private static void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
         {
             if (settings == null)
             {
@@ -158,8 +158,8 @@ namespace EstateManagement
             }
             else
             {
-                services.AddEventStoreClient(this.ConfigureEventStoreSettings);
-                services.AddEventStoreProjectionManagerClient(this.ConfigureEventStoreSettings);
+                services.AddEventStoreClient(Startup.ConfigureEventStoreSettings);
+                services.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
 
                 services.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
             }
