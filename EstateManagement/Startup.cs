@@ -8,6 +8,7 @@ namespace EstateManagement
     using System.Net.Http;
     using System.Reflection;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Common;
     using BusinessLogic.EventHandling;
@@ -19,10 +20,12 @@ namespace EstateManagement
     using Controllers;
     using EstateReporting.Database;
     using EventStore.Client;
+    using HealthChecks.UI.Client;
     using IdentityModel.AspNetCore.OAuth2Introspection;
     using MediatR;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -32,6 +35,7 @@ namespace EstateManagement
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -57,9 +61,16 @@ namespace EstateManagement
     using ILogger = Microsoft.Extensions.Logging.ILogger;
     using TokenValidatedContext = Microsoft.AspNetCore.Authentication.JwtBearer.TokenValidatedContext;
 
+    /// <summary>
+    /// 
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="webHostEnvironment">The web host environment.</param>
         public Startup(IWebHostEnvironment webHostEnvironment)
         {
             IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(webHostEnvironment.ContentRootPath)
@@ -69,20 +80,68 @@ namespace EstateManagement
             Startup.Configuration = builder.Build();
             Startup.WebHostEnvironment = webHostEnvironment;
         }
-        
+
+        /// <summary>
+        /// Gets or sets the configuration.
+        /// </summary>
+        /// <value>
+        /// The configuration.
+        /// </value>
         public static IConfigurationRoot Configuration { get; set; }
 
+        /// <summary>
+        /// Gets or sets the web host environment.
+        /// </summary>
+        /// <value>
+        /// The web host environment.
+        /// </value>
         public static IWebHostEnvironment WebHostEnvironment { get; set; }
 
+        private static EventStoreClientSettings EventStoreClientSettings;
+
+        private static void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
+        {
+            if (settings == null)
+            {
+                settings = new EventStoreClientSettings();
+            }
+
+            settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
+                                                      {
+                                                          SslOptions =
+                                                          {
+                                                              RemoteCertificateValidationCallback = (sender,
+                                                                                                     certificate,
+                                                                                                     chain,
+                                                                                                     errors) => true,
+                                                          }
+                                                      };
+            settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
+            settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
+                                            {
+                                                Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString")),
+                                            };
+
+            settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
+                                                              Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
+            Startup.EventStoreClientSettings = settings;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigurationReader.Initialise(Startup.Configuration);
+
+            Startup.ConfigureEventStoreSettings();
+
             this.ConfigureMiddlewareServices(services);
 
             services.AddTransient<IMediator, Mediator>();
             services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
-
-            ConfigurationReader.Initialise(Startup.Configuration);
             
             Boolean useConnectionStringConfig = Boolean.Parse(ConfigurationReader.GetValue("AppSettings", "UseConnectionStringConfig"));
             
@@ -99,51 +158,9 @@ namespace EstateManagement
             }
             else
             {
-                services.AddEventStoreClient((settings) =>
-                {
-                    settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
-                    {
-                        SslOptions =
-                                                                                               {
-                                                                                                   RemoteCertificateValidationCallback = (sender,
-                                                                                                                                          certificate,
-                                                                                                                                          chain,
-                                                                                                                                          errors) => true,
-                                                                                               }
-                    };
-                    settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
-                    settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
-                    {
-                        Address =
-                                                            new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString")),
-                    };
-                    settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
-                                                                       Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
-                });
+                services.AddEventStoreClient(Startup.ConfigureEventStoreSettings);
+                services.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
 
-
-
-                services.AddEventStoreProjectionManagerClient((settings) =>
-                {
-                    settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
-                    {
-                        SslOptions =
-                                                                                                                {
-                                                                                                                    RemoteCertificateValidationCallback = (sender,
-                                                                                                                                                           certificate,
-                                                                                                                                                           chain,
-                                                                                                                                                           errors) => true,
-                                                                                                                }
-                    };
-                    settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
-                    settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
-                    {
-                        Address =
-                                                            new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString"))
-                    };
-                    settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
-                                                                      Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
-                });
                 services.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
             }
 
@@ -203,9 +220,31 @@ namespace EstateManagement
             });
             services.AddSingleton<HttpClient>();
         }
-
+        
+        /// <summary>
+        /// Configures the middleware services.
+        /// </summary>
+        /// <param name="services">The services.</param>
         private void ConfigureMiddlewareServices(IServiceCollection services)
         {
+            services.AddHealthChecks()
+                    .AddSqlServer(connectionString:ConfigurationReader.GetConnectionString("HealthCheck"),
+                                  healthQuery:"SELECT 1;",
+                                  name:"Read Model Server",
+                                  failureStatus:HealthStatus.Degraded,
+                                  tags:new string[] {"db", "sql", "sqlserver"})
+                    .AddEventStore(Startup.EventStoreClientSettings,
+                                   userCredentials: Startup.EventStoreClientSettings.DefaultCredentials,
+                                   name: "Eventstore",
+                                     failureStatus: HealthStatus.Unhealthy,
+                                     tags: new string[] { "db", "eventstore" })
+                    .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("SecurityConfiguration", "Authority")}/.well-known/openid-configuration"),
+                         name:"Security Service",
+                         httpMethod:HttpMethod.Get,
+                         failureStatus:HealthStatus.Unhealthy,
+                         tags: new string[] { "security", "authorisation" });
+
+
             services.AddApiVersioning(
                                       options =>
                                       {
@@ -274,6 +313,13 @@ namespace EstateManagement
             services.AddMvcCore().AddApplicationPart(assembly).AddControllersAsServices();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configures the specified application.
+        /// </summary>
+        /// <param name="app">The application.</param>
+        /// <param name="env">The env.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="provider">The provider.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
                               IApiVersionDescriptionProvider provider)
         {
@@ -306,6 +352,11 @@ namespace EstateManagement
             app.UseEndpoints(endpoints =>
                              {
                                  endpoints.MapControllers();
+                                 endpoints.MapHealthChecks("health", new HealthCheckOptions()
+                                                                      {
+                                                                          Predicate = _ => true,
+                                                                          ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                                                                      });
                              });
             app.UseSwagger();
 
@@ -346,7 +397,6 @@ namespace EstateManagement
         /// </summary>
         /// <param name="applicationBuilder">The application builder.</param>
         /// <param name="startProjections">if set to <c>true</c> [start projections].</param>
-        /// <returns></returns>
         public static async Task PreWarm(this IApplicationBuilder applicationBuilder,
                                          Boolean startProjections = false)
         {
@@ -370,7 +420,6 @@ namespace EstateManagement
         /// <summary>
         /// Starts the event store projections.
         /// </summary>
-        /// <returns></returns>
         private static async Task StartEventStoreProjections()
         {
             // TODO: Refactor
