@@ -135,8 +135,8 @@ namespace EstateManagement
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigurationReader.Initialise(Startup.Configuration);
-            
-            this.ConfigureEventStoreSettings();
+
+            Startup.ConfigureEventStoreSettings();
 
             this.ConfigureMiddlewareServices(services);
 
