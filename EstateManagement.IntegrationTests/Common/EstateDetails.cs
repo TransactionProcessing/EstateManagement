@@ -66,7 +66,7 @@ namespace EstateManagement.IntegrationTests.Common
 
         public Guid GetMerchantId(String merchantName)
         {
-            return this.Merchants.Single(m => m.Key == merchantName).Value;
+            return this.Merchants.SingleOrDefault(m => m.Key == merchantName).Value;
         }
 
         public Guid GetOperatorId(String operatorName)

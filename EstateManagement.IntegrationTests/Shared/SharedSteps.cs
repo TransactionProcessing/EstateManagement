@@ -509,14 +509,19 @@ namespace EstateManagement.IntegrationTests.Shared
         
         private async Task<EstateResponse> GetEstate(String estateName)
         {
-            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+            Guid estateId = Guid.NewGuid();
             String token = this.TestingContext.AccessToken;
-            if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+            if (estateDetails != null)
             {
-                token = estateDetails.AccessToken;
+                estateId = estateDetails.EstateId;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
             }
-
-            EstateResponse estate = await this.TestingContext.DockerHelper.EstateClient.GetEstate(token, estateDetails.EstateId, CancellationToken.None)
+            
+            EstateResponse estate = await this.TestingContext.DockerHelper.EstateClient.GetEstate(token, estateId, CancellationToken.None)
                                               .ConfigureAwait(false);
             return estate;
         }
@@ -810,5 +815,38 @@ namespace EstateManagement.IntegrationTests.Shared
                             });
 
         }
+
+        [When(@"I get the estate ""(.*)"" an error is returned")]
+        public void WhenIGetTheEstateAnErrorIsReturned(String estateName)
+        {
+            Exception exception = Should.Throw<Exception>(async () =>
+                                                          {
+                                                              await this.GetEstate(estateName).ConfigureAwait(false);
+                                                          });
+            exception.InnerException.ShouldBeOfType<KeyNotFoundException>();
+        }
+
+        [When(@"I get the merchant ""(.*)"" for estate ""(.*)"" an error is returned")]
+        public void WhenIGetTheMerchantForEstateAnErrorIsReturned(String merchantName, String estateName)
+        {
+        
+            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+            
+            Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+            String token = this.TestingContext.AccessToken;
+            if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+            {
+                token = estateDetails.AccessToken;
+            }
+            
+            Exception exception = Should.Throw<Exception>(async () =>
+                                                          {
+                                                              await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+                                                          });
+            exception.InnerException.ShouldBeOfType<KeyNotFoundException>();
+        }
+
+
     }
 }
