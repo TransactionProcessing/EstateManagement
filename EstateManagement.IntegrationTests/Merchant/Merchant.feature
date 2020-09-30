@@ -35,6 +35,13 @@ Background:
 	| EmailAddress                  | Password | GivenName  | FamilyName | EstateName    |
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |
 	| estateuser1@testestate2.co.uk | 123456   | TestEstate | User1      | Test Estate 2 |
+
+Scenario: Get Invalid Merchant - System Login
+	When I get the merchant "Test Merchant 1" for estate "Test Estate 1" an error is returned
+
+Scenario: Get Invalid Merchant - Estate User
+	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
+	When I get the merchant "Test Merchant 1" for estate "Test Estate 1" an error is returned
 	
 Scenario: Create Merchant - System Login	 
 	When I create the following merchants

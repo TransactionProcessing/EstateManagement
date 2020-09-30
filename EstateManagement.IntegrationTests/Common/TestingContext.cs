@@ -29,9 +29,7 @@
         {
             String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
 
-            EstateDetails estateDetails = this.Estates.SingleOrDefault(e => e.EstateName == estateName);
-
-            estateDetails.ShouldNotBeNull();
+            EstateDetails estateDetails = this.GetEstateDetails(estateName);
 
             return estateDetails;
         }
@@ -44,8 +42,6 @@
         public EstateDetails GetEstateDetails(String estateName)
         {
             EstateDetails estateDetails = this.Estates.SingleOrDefault(e => e.EstateName == estateName);
-
-            estateDetails.ShouldNotBeNull();
 
             return estateDetails;
         }

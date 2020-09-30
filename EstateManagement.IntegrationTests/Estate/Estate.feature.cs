@@ -520,6 +520,126 @@ this.FeatureBackground();
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Get Invalid Estate - System Login")]
+        [Xunit.TraitAttribute("FeatureTitle", "Estate")]
+        [Xunit.TraitAttribute("Description", "Get Invalid Estate - System Login")]
+        public virtual void GetInvalidEstate_SystemLogin()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Invalid Estate - System Login", null, tagsOfScenario, argumentsOfScenario);
+#line 96
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+#line 97
+ testRunner.When("I get the estate \"Test Estate 1\" an error is returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Get Invalid Estate - Estate user")]
+        [Xunit.TraitAttribute("FeatureTitle", "Estate")]
+        [Xunit.TraitAttribute("Description", "Get Invalid Estate - Estate user")]
+        public virtual void GetInvalidEstate_EstateUser()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Invalid Estate - Estate user", null, tagsOfScenario, argumentsOfScenario);
+#line 99
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+                TechTalk.SpecFlow.Table table50 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName"});
+                table50.AddRow(new string[] {
+                            "Test Estate 1"});
+#line 100
+ testRunner.Given("I have created the following estates", ((string)(null)), table50, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table51 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "RequireCustomMerchantNumber",
+                            "RequireCustomTerminalNumber"});
+                table51.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "True",
+                            "True"});
+                table51.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 2",
+                            "True",
+                            "True"});
+#line 103
+ testRunner.And("I have created the following operators", ((string)(null)), table51, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table52 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EmailAddress",
+                            "Password",
+                            "GivenName",
+                            "FamilyName",
+                            "EstateName"});
+                table52.AddRow(new string[] {
+                            "estateuser1@testestate1.co.uk",
+                            "123456",
+                            "TestEstate",
+                            "User1",
+                            "Test Estate 1"});
+#line 107
+ testRunner.And("I have created the following security users", ((string)(null)), table52, "And ");
+#line hidden
+#line 110
+ testRunner.And("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
+                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 111
+ testRunner.When("I get the estate \"Test Estate 2\" an error is returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.3.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable
