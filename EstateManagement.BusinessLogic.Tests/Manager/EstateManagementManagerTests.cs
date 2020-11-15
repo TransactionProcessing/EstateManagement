@@ -119,7 +119,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchantBalance_MerchantBalanceIsReturned()
         {
-            String projectionState = "{\r\n  \"merchants\": {\r\n    \"" + $"{TestData.MerchantId}" + "\": {\r\n      \"MerchantId\": \"b3054488-ccfc-4bfe-9b0c-ad7ac10b16e8\",\r\n      \"MerchantName\": \"Test Merchant 2\",\r\n      \"AvailableBalance\": 1000.00,\r\n      \"Balance\": 1000.00,\r\n      \"LastDepositDateTime\": null,\r\n      \"LastSaleDateTime\": null,\r\n      \"PendingBalanceUpdates\": []\r\n    }\r\n  },\r\n  \"debug\": []\r\n}";
+            String projectionState = "{\r\n      \"merchantId\": \"b3054488-ccfc-4bfe-9b0c-ad7ac10b16e8\",\r\n      \"merchantName\": \"Test Merchant 2\",\r\n      \"availableBalance\": 1000.00,\r\n      \"balance\": 1000.00,\r\n      \"lastDepositDateTime\": null,\r\n      \"lastSaleDateTime\": null,\r\n      \"pendingBalanceUpdates\": []\r\n    }";
 
             this.EventStoreContext.Setup(e => e.GetPartitionStateFromProjection(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(projectionState);
 
