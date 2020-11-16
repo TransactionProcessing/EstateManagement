@@ -163,22 +163,21 @@
                                                               CancellationToken cancellationToken)
         {
             String projectionState =
-                await this.EventStoreContext.GetPartitionStateFromProjection("MerchantBalanceCalculator", $"MerchantBalanceHistory-{merchantId:N}", cancellationToken);
+                await this.EventStoreContext.GetPartitionStateFromProjection("MerchantBalanceCalculator", $"MerchantArchive-{merchantId:N}", cancellationToken);
 
             // Protect from projection not running
             if (projectionState == "{}")
             {
                 // merchant details not returned from projection
-                throw new NotFoundException($"Error finding MerchantBalanceHistory stream for Merchant Id [{merchantId}] on Estate [{estateId}]");
+                throw new NotFoundException($"Error finding Merchant Archive stream for Merchant Id [{merchantId}] on Estate [{estateId}] - partition Id [MerchantArchive-{merchantId:N}]");
             }
 
-            JObject parsedState = JObject.Parse(projectionState);
-            JToken? merchantRecord = parsedState["merchants"][$"{merchantId}"];
+            JObject merchantRecord = JObject.Parse(projectionState);
 
             return new MerchantBalance
                    {
-                       AvailableBalance = decimal.Parse(merchantRecord["AvailableBalance"].ToString()),
-                       Balance = decimal.Parse(merchantRecord["Balance"].ToString()),
+                       AvailableBalance = decimal.Parse(merchantRecord["availableBalance"].ToString()),
+                       Balance = decimal.Parse(merchantRecord["balance"].ToString()),
                        EstateId = estateId,
                        MerchantId = merchantId
                    };

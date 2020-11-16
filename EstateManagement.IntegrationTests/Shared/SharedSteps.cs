@@ -165,9 +165,14 @@ namespace EstateManagement.IntegrationTests.Shared
                     token = estateDetails.AccessToken;
                 }
 
-                MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+                await Retry.For(async () =>
+                                {
+                                    MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient
+                                                                          .GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None)
+                                                                          .ConfigureAwait(false);
 
-                merchant.MerchantName.ShouldBe(merchantName);
+                                    merchant.MerchantName.ShouldBe(merchantName);
+                                });
             }
         }
 

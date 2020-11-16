@@ -209,8 +209,8 @@ namespace EstateManagement.IntegrationTests.Common
 
                         try
                         {
-                            Logger.LogInformation($"Creating projection [{projectionName}]");
-                            await projectionClient.CreateContinuousAsync(projectionName, projection).ConfigureAwait(false);
+                            Logger.LogInformation($"Creating projection [{projectionName}] from file [{file.FullName}]");
+                            await projectionClient.CreateContinuousAsync(projectionName, projection, trackEmittedStreams:true).ConfigureAwait(false);
                         }
                         catch (Exception e)
                         {
