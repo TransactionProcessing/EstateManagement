@@ -169,7 +169,7 @@
             if (projectionState == "{}")
             {
                 // merchant details not returned from projection
-                throw new NotFoundException($"Error finding MerchantBalanceHistory stream for Merchant Id [{merchantId}] on Estate [{estateId}]");
+                throw new NotFoundException($"Error finding Merchant Archive stream for Merchant Id [{merchantId}] on Estate [{estateId}] - partition Id [MerchantArchive-{merchantId:N}]");
             }
 
             JObject merchantRecord = JObject.Parse(projectionState);
