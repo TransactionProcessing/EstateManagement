@@ -10,6 +10,7 @@ using ContractModel = EstateManagement.Models.Contract.Contract;
 using ContractEntity = EstateReporting.Database.Entities.Contract;
 using ContractProductEntity = EstateReporting.Database.Entities.ContractProduct;
 using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
+using ContractProductTransactionFeeModel = EstateManagement.Models.Contract.TransactionFee;
 
 using MerchantEntity = EstateReporting.Database.Entities.Merchant;
 using MerchantAddressEntity = EstateReporting.Database.Entities.MerchantAddress;
@@ -602,12 +603,12 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                                         };
 
             ModelFactory modelFactory = new ModelFactory();
-            List<TransactionFee> transactionFeesModelList = modelFactory.ConvertFrom(contractProductsTransactionFees);
+            List<ContractProductTransactionFeeModel> transactionFeesModelList = modelFactory.ConvertFrom(contractProductsTransactionFees);
 
             transactionFeesModelList.ShouldNotBeNull();
             transactionFeesModelList.ShouldHaveSingleItem();
 
-            TransactionFee contractProductTransactionFee = transactionFeesModelList.Single();
+            ContractProductTransactionFeeModel contractProductTransactionFee = transactionFeesModelList.Single();
             ContractProductTransactionFee expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
             contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.TransactionFeeId);
             contractProductTransactionFee.Description.ShouldBe(expectedContractProductTransactionFee.Description);
@@ -649,7 +650,7 @@ namespace EstateManagement.BusinessLogic.Tests
             contractProduct.TransactionFees.ShouldNotBeNull();
             contractProduct.TransactionFees.ShouldHaveSingleItem();
 
-            TransactionFee contractProductTransactionFee = contractProduct.TransactionFees.Single();
+            ContractProductTransactionFeeModel contractProductTransactionFee = contractProduct.TransactionFees.Single();
             ContractProductTransactionFee expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
             contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.TransactionFeeId);
             contractProductTransactionFee.Description.ShouldBe(expectedContractProductTransactionFee.Description);

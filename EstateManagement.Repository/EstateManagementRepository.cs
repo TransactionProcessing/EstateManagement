@@ -15,6 +15,7 @@
     using Shared.EntityFramework;
     using Shared.Exceptions;
     using Contract = EstateReporting.Database.Entities.Contract;
+    using TransactionFeeModel = Models.Contract.TransactionFee;
     using EstateModel = Models.Estate.Estate;
     using MerchantModel = Models.Merchant.Merchant;
     using ContractModel = Models.Contract.Contract;
@@ -307,11 +308,11 @@
         /// <param name="productId">The product identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<List<TransactionFee>> GetTransactionFeesForProduct(Guid estateId,
-                                                                             Guid merchantId,
-                                                                             Guid contractId,
-                                                                             Guid productId,
-                                                                             CancellationToken cancellationToken)
+        public async Task<List<TransactionFeeModel>> GetTransactionFeesForProduct(Guid estateId,
+                                                                                  Guid merchantId,
+                                                                                  Guid contractId,
+                                                                                  Guid productId,
+                                                                                  CancellationToken cancellationToken)
         {
             EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
@@ -321,7 +322,7 @@
                                                                                && c.IsEnabled == true)
                                                                         .ToListAsync(cancellationToken);
 
-            List<TransactionFee> transactionFeeModels = this.ModelFactory.ConvertFrom(transactionFees);
+            List<TransactionFeeModel> transactionFeeModels = this.ModelFactory.ConvertFrom(transactionFees);
 
             return transactionFeeModels;
         }

@@ -21,6 +21,7 @@
     using Merchant = Models.Merchant.Merchant;
     using Operator = Models.Estate.Operator;
     using SecurityUser = Models.SecurityUser;
+    using TransactionFeeModel = Models.Contract.TransactionFee;
 
     public class TestData
     {
@@ -744,9 +745,9 @@
                                                                       ProductId = TestData.ProductId,
                                                                       DisplayText = TestData.ProductDisplayText,
                                                                       Name = TestData.ProductName,
-                                                                      TransactionFees = new List<TransactionFee>
+                                                                      TransactionFees = new List<TransactionFeeModel>
                                                                                         {
-                                                                                            new TransactionFee
+                                                                                            new TransactionFeeModel
                                                                                             {
                                                                                                 TransactionFeeId = TestData.TransactionFeeId,
                                                                                                 Description = TestData.TransactionFeeDescription,
@@ -815,9 +816,9 @@
                                                                                                     CalculationType = 0
                                                                                                 };
 
-        public static List<TransactionFee> ProductTransactionFees = new List<TransactionFee>
+        public static List<TransactionFeeModel> ProductTransactionFees = new List<TransactionFeeModel>
                                                                     {
-                                                                        new TransactionFee
+                                                                        new TransactionFeeModel
                                                                         {
                                                                             TransactionFeeId = TestData.TransactionFeeId,
                                                                             Description = TestData.TransactionFeeDescription,
