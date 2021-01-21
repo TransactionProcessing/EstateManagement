@@ -241,7 +241,7 @@ namespace EstateManagement.IntegrationTests.Common
 
             await RemoveEstateReadModel().ConfigureAwait(false);
 
-            if (EnumerableExtensions.Any(this.Containers))
+            if (this.Containers.Any())
             {
                 foreach (IContainerService containerService in this.Containers)
                 {
@@ -251,7 +251,7 @@ namespace EstateManagement.IntegrationTests.Common
                 }
             }
 
-            if (EnumerableExtensions.Any(this.TestNetworks))
+            if (this.TestNetworks.Any())
             {
                 foreach (INetworkService networkService in this.TestNetworks)
                 {
