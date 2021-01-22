@@ -21,7 +21,6 @@ namespace EstateManagement
     using EstateReporting.Database;
     using EventStore.Client;
     using HealthChecks.UI.Client;
-    using IdentityModel.AspNetCore.OAuth2Introspection;
     using MediatR;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -293,7 +292,7 @@ namespace EstateManagement
                                   options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                                   {
                                       ValidateIssuer = true,
-                                      ValidateAudience = true,
+                                      ValidateAudience = false,
                                       ValidAudience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName"),
                                       ValidIssuer = ConfigurationReader.GetValue("SecurityConfiguration", "Authority"),
                                   };
