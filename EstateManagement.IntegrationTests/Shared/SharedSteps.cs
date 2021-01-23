@@ -751,21 +751,24 @@ namespace EstateManagement.IntegrationTests.Shared
                 token = estateDetails.AccessToken;
             }
 
-            List<ContractResponse> contracts = await this.TestingContext.DockerHelper.EstateClient.GetContracts(token, estateDetails.EstateId, CancellationToken.None);
+            await Retry.For(async () =>
+                            {
+                                List<ContractResponse> contracts =
+                                    await this.TestingContext.DockerHelper.EstateClient.GetContracts(token, estateDetails.EstateId, CancellationToken.None);
 
-            contracts.ShouldNotBeNull();
-            contracts.ShouldHaveSingleItem();
-            ContractResponse contract = contracts.Single();
+                                contracts.ShouldNotBeNull();
+                                contracts.ShouldHaveSingleItem();
+                                ContractResponse contract = contracts.Single();
+                                contract.Products.ShouldNotBeNull();
+                                foreach (TableRow tableRow in table.Rows)
+                                {
+                                    String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+                                    String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
 
-            foreach (TableRow tableRow in table.Rows)
-            {
-                String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
-                String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
-
-                contract.Description.ShouldBe(contractDescription);
-                contract.Products.Any(p => p.Name == productName).ShouldBeTrue();
-
-            }
+                                    contract.Description.ShouldBe(contractDescription);
+                                    contract.Products.Any(p => p.Name == productName).ShouldBeTrue();
+                                }
+                            });
         }
 
 
