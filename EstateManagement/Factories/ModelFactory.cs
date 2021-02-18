@@ -237,6 +237,33 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="merchantBalanceHistories">The merchant balance histories.</param>
+        /// <returns></returns>
+        public List<MerchantBalanceHistoryResponse> ConvertFrom(List<MerchantBalanceHistory> merchantBalanceHistories)
+        {
+            List<MerchantBalanceHistoryResponse> result = new List<MerchantBalanceHistoryResponse>();
+
+            merchantBalanceHistories.ForEach(m => result.Add(new MerchantBalanceHistoryResponse
+                                                             {
+                                                                 MerchantId = m.MerchantId,
+                                                                 Balance = m.Balance,
+                                                                 ChangeAmount = m.ChangeAmount,
+                                                                 EntryDateTime = m.EntryDateTime,
+                                                                 EntryType = m.EntryType,
+                                                                 EstateId = m.EstateId,
+                                                                 EventId = m.EventId,
+                                                                 In = m.In,
+                                                                 Out = m.Out,
+                                                                 Reference = m.Reference,
+                                                                 TransactionId = m.TransactionId
+                                                             }));
+
+            return result;
+        }
+        
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="merchants">The merchants.</param>
         /// <returns></returns>
         public List<MerchantResponse> ConvertFrom(List<Merchant> merchants)

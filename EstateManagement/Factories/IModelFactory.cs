@@ -1,5 +1,6 @@
 ﻿namespace EstateManagement.Factories
 {
+    using System;
     using System.Collections.Generic;
     using DataTransferObjects.Responses;
     using Models.Contract;
@@ -49,6 +50,13 @@
         /// <param name="merchantBalance">The merchant balance.</param>
         /// <returns></returns>
         MerchantBalanceResponse ConvertFrom(MerchantBalance merchantBalance);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchantBalanceHistories">The merchant balance histories.</param>
+        /// <returns></returns>
+        List<MerchantBalanceHistoryResponse> ConvertFrom(List<MerchantBalanceHistory> merchantBalanceHistories);
 
         /// <summary>
         /// Converts from.

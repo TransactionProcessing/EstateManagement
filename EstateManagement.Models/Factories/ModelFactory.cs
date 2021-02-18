@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using Contract;
+    using EstateReporting.Database.ViewEntities;
+    using Merchant;
     using EstateModel = Estate.Estate;
     using EstateEntity = EstateReporting.Database.Entities.Estate;
     using EstateOperatorEntity = EstateReporting.Database.Entities.EstateOperator;
@@ -24,6 +26,8 @@
     using ContractEntity = EstateReporting.Database.Entities.Contract;
     using ContractProductEntity = EstateReporting.Database.Entities.ContractProduct;
     using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
+    using MerchantBalanceHistoryModel = EstateManagement.Models.Merchant.MerchantBalanceHistory;
+    using MerchantBalanceHistoryEntity = EstateReporting.Database.Entities.MerchantBalanceHistory;
 
     /// <summary>
     /// 
@@ -229,6 +233,31 @@
                                            });
 
             return productTransactionFeesModelList;
+        }
+
+        public List<MerchantBalanceHistoryModel> ConvertFrom(List<MerchantBalanceView> merchantBalanceHistories)
+        {
+            List<MerchantBalanceHistoryModel> merchantBalanceHistoryModelList = new List<MerchantBalanceHistoryModel>();
+
+            merchantBalanceHistories.ForEach(m =>
+                                             {
+                                                 merchantBalanceHistoryModelList.Add(new MerchantBalanceHistoryModel
+                                                                                     {
+                                                                                         MerchantId = m.MerchantId,
+                                                                                         Balance = m.Balance,
+                                                                                         ChangeAmount = m.ChangeAmount,
+                                                                                         EntryDateTime = m.EntryDateTime,
+                                                                                         EntryType = m.EntryType,
+                                                                                         EstateId = m.EstateId,
+                                                                                         EventId = m.EventId,
+                                                                                         In = m.In,
+                                                                                         Out = m.Out,
+                                                                                         Reference = m.Reference,
+                                                                                         TransactionId = m.TransactionId
+                                                                                     });
+                                             });
+
+            return merchantBalanceHistoryModelList;
         }
 
         #endregion

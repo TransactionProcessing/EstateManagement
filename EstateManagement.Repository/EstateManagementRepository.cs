@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using EstateReporting.Database;
     using EstateReporting.Database.Entities;
+    using EstateReporting.Database.ViewEntities;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
     using Microsoft.Extensions.WebEncoders.Testing;
@@ -19,6 +20,7 @@
     using EstateModel = Models.Estate.Estate;
     using MerchantModel = Models.Merchant.Merchant;
     using ContractModel = Models.Contract.Contract;
+    using MerchantBalanceHistoryModel = Models.Merchant.MerchantBalanceHistory;
 
     /// <summary>
     /// 
@@ -31,7 +33,7 @@
         /// <summary>
         /// The context factory
         /// </summary>
-        private readonly IDbContextFactory<EstateReportingContext> ContextFactory;
+        private readonly Shared.EntityFramework.IDbContextFactory<EstateReportingContext> ContextFactory;
 
         /// <summary>
         /// The model factory
@@ -47,7 +49,7 @@
         /// </summary>
         /// <param name="contextFactory">The context factory.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementRepository(IDbContextFactory<EstateReportingContext> contextFactory,
+        public EstateManagementRepository(Shared.EntityFramework.IDbContextFactory<EstateReportingContext> contextFactory,
                                           IModelFactory modelFactory)
         {
             this.ContextFactory = contextFactory;
@@ -297,6 +299,19 @@
             }
 
             return models;
+        }
+
+        public async Task<List<MerchantBalanceHistoryModel>> GetMerchantBalanceHistory(Guid estateId,
+                                                                                       Guid merchantId,
+                                                                                       CancellationToken cancellationToken)
+        {
+            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            List<MerchantBalanceView> merchantBalanceHistories = await context.MerchantBalanceView.Where(m => m.MerchantId == merchantId).OrderByDescending(o => o.EntryDateTime).Take(100).ToListAsync(cancellationToken);
+
+            List<MerchantBalanceHistoryModel> merchantBalanceHistoryModels = this.ModelFactory.ConvertFrom(merchantBalanceHistories);
+
+            return merchantBalanceHistoryModels;
         }
 
         /// <summary>

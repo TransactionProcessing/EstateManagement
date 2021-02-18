@@ -305,6 +305,67 @@
             return this.Ok(this.ModelFactory.ConvertFrom(merchantBalance));
         }
 
+        [HttpGet]
+        [Route("{merchantId}/balancehistory")]
+        public async Task<IActionResult> GetMerchantBalanceHistory([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
+        {
+            String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
+            String merchantRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("MerchantRoleName")) ? "Merchant" : Environment.GetEnvironmentVariable("MerchantRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[]
+                                                         {
+                                                             estateRoleName,
+                                                             merchantRoleName
+                                                         }) == false)
+            {
+                return this.Forbid();
+            }
+
+            Claim estateIdClaim = null;
+            Claim merchantIdClaim = null;
+
+            // Determine the users role
+            if (this.User.IsInRole(estateRoleName))
+            {
+                // Estate user
+                // Get the Estate Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+            }
+
+            if (this.User.IsInRole(merchantRoleName))
+            {
+                // Get the merchant Id claim from the user
+                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
+                merchantIdClaim = ClaimsHelper.GetUserClaim(this.User, "MerchantId");
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(merchantId, merchantIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            List<MerchantBalanceHistory> merchantBalanceHistory = await this.EstateManagementManager.GetMerchantBalanceHistory(estateId, merchantId, cancellationToken);
+
+            if (merchantBalanceHistory.Any() == false)
+            {
+                throw new NotFoundException($"No Merchant Balance history found with estate Id {estateId} and merchant Id {merchantId}");
+            }
+
+            return this.Ok(this.ModelFactory.ConvertFrom(merchantBalanceHistory));
+        }
+
+        /// <summary>
+        /// Makes the deposit.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="makeMerchantDepositRequest">The make merchant deposit request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{merchantId}/deposits")]
         public async Task<IActionResult> MakeDeposit([FromRoute] Guid estateId,
@@ -362,16 +423,16 @@
 
         }
 
-                                                        /// <summary>
-                                                        /// Assigns the operator.
-                                                        /// </summary>
-                                                        /// <param name="estateId">The estate identifier.</param>
-                                                        /// <param name="merchantId">The merchant identifier.</param>
-                                                        /// <param name="assignOperatorRequest">The assign operator request.</param>
-                                                        /// <param name="cancellationToken">The cancellation token.</param>
-                                                        /// <returns></returns>
-                                                        [HttpPost]
-                                                        [Route("{merchantId}/operators")]
+        /// <summary>
+        /// Assigns the operator.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="assignOperatorRequest">The assign operator request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{merchantId}/operators")]
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
                                                         [FromRoute] Guid merchantId,
                                                         AssignOperatorRequestDTO assignOperatorRequest,
@@ -407,6 +468,14 @@
                                 });
         }
 
+        /// <summary>
+        /// Creates the merchant user.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="createMerchantUserRequest">The create merchant user request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{merchantId}/users")]
         public async Task<IActionResult> CreateMerchantUser([FromRoute] Guid estateId, 
@@ -448,6 +517,14 @@
                                 });
         }
 
+        /// <summary>
+        /// Adds the device.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="addMerchantDeviceRequest">The add merchant device request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{merchantId}/devices")]
         public async Task<IActionResult> AddDevice([FromRoute] Guid estateId,
@@ -487,6 +564,15 @@
         }
 
         #endregion
+        /// <summary>
+        /// Gets the transaction fees for product.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [Route("{merchantId}/contracts/{contractId}/products/{productId}/transactionFees")]
         [HttpGet]
         public async Task<IActionResult> GetTransactionFeesForProduct([FromRoute] Guid estateId,
@@ -539,6 +625,13 @@
             return this.Ok(this.ModelFactory.ConvertFrom(transactionFees));
         }
 
+        /// <summary>
+        /// Gets the merchant contracts.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [Route("{merchantId}/contracts")]
         [HttpGet]
         public async Task<IActionResult> GetMerchantContracts([FromRoute] Guid estateId,
