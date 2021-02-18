@@ -22,6 +22,7 @@ namespace EstateManagement.Repository.Tests
     using Contract = EstateReporting.Database.Entities.Contract;
     using Merchant = Models.Merchant.Merchant;
     using ContractProductTransactionFeeModel = Models.Contract.TransactionFee;
+    using MerchantBalanceHistory = Models.Merchant.MerchantBalanceHistory;
 
     public class EstateManagementRepositoryTests
     {
@@ -59,11 +60,12 @@ namespace EstateManagement.Repository.Tests
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
             dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
-            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Estate>(), It.IsAny<List<EstateOperator>>(), It.IsAny<List<EstateSecurityUser>>())).Returns(new Models.Estate.Estate());
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Estate>(), It.IsAny<List<EstateOperator>>(), It.IsAny<List<EstateSecurityUser>>()))
+                        .Returns(new Models.Estate.Estate());
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
             Models.Estate.Estate estateModel = await estateManagementRepository.GetEstate(TestData.EstateId, CancellationToken.None);
-            
+
             estateModel.ShouldNotBeNull();
         }
 
@@ -77,13 +79,11 @@ namespace EstateManagement.Repository.Tests
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
             dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
-            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Estate>(), It.IsAny<List<EstateOperator>>(), It.IsAny<List<EstateSecurityUser>>())).Returns(new Models.Estate.Estate());
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Estate>(), It.IsAny<List<EstateOperator>>(), It.IsAny<List<EstateSecurityUser>>()))
+                        .Returns(new Models.Estate.Estate());
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
-            Should.Throw<NotFoundException>(async () =>
-                                            {
-                                                await estateManagementRepository.GetEstate(TestData.EstateId, CancellationToken.None);
-                                            });
+            Should.Throw<NotFoundException>(async () => { await estateManagementRepository.GetEstate(TestData.EstateId, CancellationToken.None); });
         }
 
 
@@ -125,7 +125,7 @@ namespace EstateManagement.Repository.Tests
         public async Task EstateManagementRepository_GetMerchants_NoMerchantsFound_NullMerchantsReturned(TestDatabaseType testDatabaseType)
         {
             EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
-            
+
             var dbContextFactory = this.GetMockDbContextFactory();
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
@@ -157,10 +157,12 @@ namespace EstateManagement.Repository.Tests
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
             dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
-            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ContractModel);
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>()))
+                        .Returns(TestData.ContractModel);
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
-            Models.Contract.Contract contractModel = await estateManagementRepository.GetContract(TestData.EstateId, TestData.ContractId, false, false, CancellationToken.None);
+            Models.Contract.Contract contractModel =
+                await estateManagementRepository.GetContract(TestData.EstateId, TestData.ContractId, false, false, CancellationToken.None);
 
             contractModel.ShouldNotBeNull();
         }
@@ -179,10 +181,12 @@ namespace EstateManagement.Repository.Tests
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
             dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
-            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ContractModel);
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>()))
+                        .Returns(TestData.ContractModel);
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
-            Models.Contract.Contract contractModel = await estateManagementRepository.GetContract(TestData.EstateId, TestData.ContractId, true, false, CancellationToken.None);
+            Models.Contract.Contract contractModel =
+                await estateManagementRepository.GetContract(TestData.EstateId, TestData.ContractId, true, false, CancellationToken.None);
 
             contractModel.ShouldNotBeNull();
         }
@@ -201,10 +205,12 @@ namespace EstateManagement.Repository.Tests
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
             dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
-            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ContractModel);
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>()))
+                        .Returns(TestData.ContractModel);
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
-            Models.Contract.Contract contractModel = await estateManagementRepository.GetContract(TestData.EstateId, TestData.ContractId, false, true, CancellationToken.None);
+            Models.Contract.Contract contractModel =
+                await estateManagementRepository.GetContract(TestData.EstateId, TestData.ContractId, false, true, CancellationToken.None);
 
             contractModel.ShouldNotBeNull();
         }
@@ -219,12 +225,17 @@ namespace EstateManagement.Repository.Tests
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
             dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
-            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ContractModel);
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>()))
+                        .Returns(TestData.ContractModel);
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
             Should.Throw<NotFoundException>(async () =>
                                             {
-                                                await estateManagementRepository.GetContract(TestData.EstateId, TestData.ContractId, false, false, CancellationToken.None);
+                                                await estateManagementRepository.GetContract(TestData.EstateId,
+                                                                                             TestData.ContractId,
+                                                                                             false,
+                                                                                             false,
+                                                                                             CancellationToken.None);
                                             });
         }
 
@@ -243,7 +254,12 @@ namespace EstateManagement.Repository.Tests
             modelFactory.Setup(m => m.ConvertFrom(It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ProductTransactionFees);
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
-            List<ContractProductTransactionFeeModel> transactionFeesModel = await estateManagementRepository.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ProductId, CancellationToken.None);
+            List<ContractProductTransactionFeeModel> transactionFeesModel =
+                await estateManagementRepository.GetTransactionFeesForProduct(TestData.EstateId,
+                                                                              TestData.MerchantId,
+                                                                              TestData.ContractId,
+                                                                              TestData.ProductId,
+                                                                              CancellationToken.None);
 
             transactionFeesModel.ShouldNotBeNull();
             transactionFeesModel.ShouldHaveSingleItem();
@@ -271,7 +287,8 @@ namespace EstateManagement.Repository.Tests
             modelFactory.Setup(m => m.ConvertFrom(It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ProductTransactionFees);
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
-            List<Models.Contract.Contract> merchantContractsModelList = await estateManagementRepository.GetMerchantContracts(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            List<Models.Contract.Contract> merchantContractsModelList =
+                await estateManagementRepository.GetMerchantContracts(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 
             merchantContractsModelList.ShouldNotBeNull();
             merchantContractsModelList.Count.ShouldBe(2);
@@ -295,7 +312,8 @@ namespace EstateManagement.Repository.Tests
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
 
             dbContextFactory.Setup(d => d.GetContext(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(context);
-            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>())).Returns(TestData.ContractModel);
+            modelFactory.Setup(m => m.ConvertFrom(It.IsAny<Contract>(), It.IsAny<List<ContractProduct>>(), It.IsAny<List<ContractProductTransactionFee>>()))
+                        .Returns(TestData.ContractModel);
             EstateManagementRepository estateManagementRepository = new EstateManagementRepository(dbContextFactory.Object, modelFactory.Object);
 
             List<Models.Contract.Contract> contractModelList = await estateManagementRepository.GetContracts(TestData.EstateId, CancellationToken.None);
@@ -303,15 +321,15 @@ namespace EstateManagement.Repository.Tests
             contractModelList.ShouldNotBeNull();
             contractModelList.ShouldNotBeEmpty();
         }
-        
-        private static async Task<EstateReportingContext> GetContext(String databaseName, TestDatabaseType databaseType = TestDatabaseType.InMemory)
+
+        private static async Task<EstateReportingContext> GetContext(String databaseName,
+                                                                     TestDatabaseType databaseType = TestDatabaseType.InMemory)
         {
             EstateReportingContext context = null;
             if (databaseType == TestDatabaseType.InMemory)
             {
-                DbContextOptionsBuilder<EstateReportingContext> builder = new DbContextOptionsBuilder<EstateReportingContext>()
-                                                                          .UseInMemoryDatabase(databaseName)
-                                                                          .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                DbContextOptionsBuilder<EstateReportingContext> builder = new DbContextOptionsBuilder<EstateReportingContext>().UseInMemoryDatabase(databaseName)
+                    .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
                 context = new EstateReportingContext(builder.Options);
             }
             else if (databaseType == TestDatabaseType.SqliteInMemory)
@@ -328,14 +346,15 @@ namespace EstateManagement.Repository.Tests
             {
                 throw new NotSupportedException($"Database type [{databaseType}] not supported");
             }
-            
+
             return context;
         }
     }
 
-        public enum TestDatabaseType
-        {
-            InMemory = 0,
-            SqliteInMemory = 1
-        }
+    public enum TestDatabaseType
+    {
+        InMemory = 0,
+
+        SqliteInMemory = 1
     }
+}

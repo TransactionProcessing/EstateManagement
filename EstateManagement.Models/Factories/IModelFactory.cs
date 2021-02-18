@@ -3,6 +3,7 @@ using EstateEntity = EstateReporting.Database.Entities.Estate;
 using EstateOperatorEntity = EstateReporting.Database.Entities.EstateOperator;
 using EstateSecurityUserEntity = EstateReporting.Database.Entities.EstateSecurityUser;
 using MerchantModel = EstateManagement.Models.Merchant.Merchant;
+using MerchantBalanceHistoryModel = EstateManagement.Models.Merchant.MerchantBalanceHistory;
 using MerchantEntity = EstateReporting.Database.Entities.Merchant;
 using MerchantAddressEntity = EstateReporting.Database.Entities.MerchantAddress;
 using MerchantContactEntity = EstateReporting.Database.Entities.MerchantContact;
@@ -18,6 +19,7 @@ using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.Co
 namespace EstateManagement.Models.Factories
 {
     using System.Collections.Generic;
+    using EstateReporting.Database.ViewEntities;
 
     /// <summary>
     /// 
@@ -71,6 +73,13 @@ namespace EstateManagement.Models.Factories
         /// <param name="productTransactionFees">The product transaction fees.</param>
         /// <returns></returns>
         List<TransactionFeeModel> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchantBalanceHistories">The merchant balance histories.</param>
+        /// <returns></returns>
+        List<MerchantBalanceHistoryModel> ConvertFrom(List<MerchantBalanceView> merchantBalanceHistories);
 
         #endregion
     }

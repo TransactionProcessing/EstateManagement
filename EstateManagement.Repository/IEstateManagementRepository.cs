@@ -69,6 +69,17 @@
                                           CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the merchant balance history.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(Guid estateId,
+                                                                     Guid merchantId,
+                                                                     CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the transaction fees for product.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
