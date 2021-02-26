@@ -301,6 +301,13 @@
             return models;
         }
 
+        /// <summary>
+        /// Gets the merchant balance history.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<List<MerchantBalanceHistoryModel>> GetMerchantBalanceHistory(Guid estateId,
                                                                                        Guid merchantId,
                                                                                        CancellationToken cancellationToken)

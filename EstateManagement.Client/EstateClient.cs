@@ -532,6 +532,15 @@
             return response;
         }
 
+        /// <summary>
+        /// Disables the transaction fee for product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="transactionFeeId">The transaction fee identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task DisableTransactionFeeForProduct(String accessToken,
                                                           Guid estateId,
                                                           Guid contractId,
@@ -770,6 +779,48 @@
             {
                 // An exception has occurred, add some additional information to the message
                 Exception exception = new Exception($"Error getting balance for merchant Id {merchantId} in estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Gets the merchant balance history.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<MerchantBalanceHistoryResponse>> GetMerchantBalanceHistory(String accessToken,
+                                                                      Guid estateId,
+                                                                      Guid merchantId,
+                                                                      CancellationToken cancellationToken)
+        {
+            List<MerchantBalanceHistoryResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/balancehistory");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<MerchantBalanceHistoryResponse>>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting balance history for merchant Id {merchantId} in estate {estateId}.", ex);
 
                 throw exception;
             }
