@@ -9,36 +9,25 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    public class ContactAddedEvent : DomainEvent
+    public record ContactAddedEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContactAddedEvent"/> class.
-        /// </summary>
-        [ExcludeFromCodeCoverage]
-        public ContactAddedEvent()
-        {
-            //We need this for serialisation, so just embrace the DDD crime
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContactAddedEvent"/> class.
+        /// Initializes a new instance of the <see cref="ContactAddedEvent" /> class.
         /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="eventId">The event identifier.</param>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="contactId">The contact identifier.</param>
         /// <param name="contactName">Name of the contact.</param>
         /// <param name="contactPhoneNumber">The contact phone number.</param>
         /// <param name="contactEmailAddress">The contact email address.</param>
-        private ContactAddedEvent(Guid aggregateId,
-                                  Guid eventId,
+        public ContactAddedEvent(Guid aggregateId,
                                   Guid estateId,
                                   Guid contactId,
                                   String contactName,
                                   String contactPhoneNumber,
-                                  String contactEmailAddress) : base(aggregateId, eventId)
+                                  String contactEmailAddress) : base(aggregateId, Guid.NewGuid())
         {
             this.MerchantId = aggregateId;
             this.EstateId = estateId;
@@ -58,8 +47,7 @@
         /// <value>
         /// The contact email address.
         /// </value>
-        [JsonProperty]
-        public String ContactEmailAddress { get; private set; }
+        public String ContactEmailAddress { get; init; }
 
         /// <summary>
         /// Gets the contact identifier.
@@ -67,8 +55,7 @@
         /// <value>
         /// The contact identifier.
         /// </value>
-        [JsonProperty]
-        public Guid ContactId { get; private set; }
+        public Guid ContactId { get; init; }
 
         /// <summary>
         /// Gets the name of the contact.
@@ -76,8 +63,7 @@
         /// <value>
         /// The name of the contact.
         /// </value>
-        [JsonProperty]
-        public String ContactName { get; private set; }
+        public String ContactName { get; init; }
 
         /// <summary>
         /// Gets the contact phone number.
@@ -85,8 +71,7 @@
         /// <value>
         /// The contact phone number.
         /// </value>
-        [JsonProperty]
-        public String ContactPhoneNumber { get; private set; }
+        public String ContactPhoneNumber { get; init; }
 
         /// <summary>
         /// Gets the estate identifier.
@@ -94,8 +79,7 @@
         /// <value>
         /// The estate identifier.
         /// </value>
-        [JsonProperty]
-        public Guid EstateId { get; private set; }
+        public Guid EstateId { get; init; }
 
         /// <summary>
         /// Gets the merchant identifier.
@@ -103,32 +87,7 @@
         /// <value>
         /// The merchant identifier.
         /// </value>
-        [JsonProperty]
-        public Guid MerchantId { get; private set; }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contactId">The contact identifier.</param>
-        /// <param name="contactName">Name of the contact.</param>
-        /// <param name="contactPhoneNumber">The contact phone number.</param>
-        /// <param name="contactEmailAddress">The contact email address.</param>
-        /// <returns></returns>
-        public static ContactAddedEvent Create(Guid aggregateId,
-                                               Guid estateId,
-                                               Guid contactId,
-                                               String contactName,
-                                               String contactPhoneNumber,
-                                               String contactEmailAddress)
-        {
-            return new ContactAddedEvent(aggregateId, Guid.NewGuid(), estateId, contactId, contactName, contactPhoneNumber, contactEmailAddress);
-        }
+        public Guid MerchantId { get; init; }
 
         #endregion
     }

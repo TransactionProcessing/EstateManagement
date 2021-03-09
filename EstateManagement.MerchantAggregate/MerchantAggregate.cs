@@ -8,6 +8,7 @@
     using Models;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.General;
 
@@ -157,7 +158,7 @@
         {
             this.EnsureMerchantHasBeenCreated();
 
-            AddressAddedEvent addressAddedEvent = AddressAddedEvent.Create(this.AggregateId,
+            AddressAddedEvent addressAddedEvent = new AddressAddedEvent(this.AggregateId,
                                                                            this.EstateId,
                                                                            addressId,
                                                                            addressLine1,
@@ -169,7 +170,7 @@
                                                                            postalCode,
                                                                            country);
 
-            this.ApplyAndPend(addressAddedEvent);
+            this.ApplyAndAppend(addressAddedEvent);
         }
 
         /// <summary>
@@ -187,9 +188,9 @@
             this.EnsureMerchantHasBeenCreated();
 
             ContactAddedEvent contactAddedEvent =
-                ContactAddedEvent.Create(this.AggregateId, this.EstateId, contactId, contactName, contactPhoneNumber, contactEmailAddress);
+                new ContactAddedEvent(this.AggregateId, this.EstateId, contactId, contactName, contactPhoneNumber, contactEmailAddress);
 
-            this.ApplyAndPend(contactAddedEvent);
+            this.ApplyAndAppend(contactAddedEvent);
         }
 
         /// <summary>
@@ -207,9 +208,9 @@
             // TODO: Reintroduce when merchant can request > 1 device
             //this.EnsureNotDuplicateDevice(deviceId, deviceIdentifier);
 
-            DeviceAddedToMerchantEvent deviceAddedToMerchantEvent = DeviceAddedToMerchantEvent.Create(this.AggregateId, this.EstateId, deviceId, deviceIdentifier);
+            DeviceAddedToMerchantEvent deviceAddedToMerchantEvent = new DeviceAddedToMerchantEvent(this.AggregateId, this.EstateId, deviceId, deviceIdentifier);
 
-            this.ApplyAndPend(deviceAddedToMerchantEvent);
+            this.ApplyAndAppend(deviceAddedToMerchantEvent);
         }
         
         /// <summary>
@@ -222,9 +223,9 @@
         {
             this.EnsureMerchantHasBeenCreated();
 
-            SecurityUserAddedEvent securityUserAddedEvent = SecurityUserAddedEvent.Create(this.AggregateId, this.EstateId, securityUserId, emailAddress);
+            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(this.AggregateId, this.EstateId, securityUserId, emailAddress);
 
-            this.ApplyAndPend(securityUserAddedEvent);
+            this.ApplyAndAppend(securityUserAddedEvent);
         }
 
         public void AssignOperator(Guid operatorId,
@@ -236,9 +237,9 @@
             this.EnsureOperatorHasNotAlreadyBeenAssigned(operatorId);
 
             OperatorAssignedToMerchantEvent operatorAssignedToMerchantEvent =
-                OperatorAssignedToMerchantEvent.Create(this.AggregateId, this.EstateId, operatorId, operatorName, merchantNumber, terminalNumber);
+                new OperatorAssignedToMerchantEvent(this.AggregateId, this.EstateId, operatorId, operatorName, merchantNumber, terminalNumber);
 
-            this.ApplyAndPend(operatorAssignedToMerchantEvent);
+            this.ApplyAndAppend(operatorAssignedToMerchantEvent);
         }
 
         /// <summary>
@@ -264,9 +265,9 @@
             // Ensure this merchant has not already been created
             this.EnsureMerchantNotAlreadyCreated();
 
-            MerchantCreatedEvent merchantCreatedEvent = MerchantCreatedEvent.Create(this.AggregateId, estateId, merchantName, dateCreated);
+            MerchantCreatedEvent merchantCreatedEvent = new MerchantCreatedEvent(this.AggregateId, estateId, merchantName, dateCreated);
 
-            this.ApplyAndPend(merchantCreatedEvent);
+            this.ApplyAndAppend(merchantCreatedEvent);
         }
 
         /// <summary>
@@ -384,8 +385,8 @@
             if (source == MerchantDepositSource.Manual)
             {
                 ManualDepositMadeEvent manualDepositMadeEvent =
-                    ManualDepositMadeEvent.Create(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount);
-                this.ApplyAndPend(manualDepositMadeEvent);
+                    new ManualDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount);
+                this.ApplyAndAppend(manualDepositMadeEvent);
             }
             else if (source == MerchantDepositSource.Automatic)
             {
@@ -425,7 +426,7 @@
         /// Plays the event.
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
-        protected override void PlayEvent(DomainEvent domainEvent)
+        public override void PlayEvent(IDomainEvent domainEvent)
         {
             this.PlayEvent((dynamic)domainEvent);
         }

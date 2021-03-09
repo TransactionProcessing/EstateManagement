@@ -12,6 +12,8 @@
     using Models.Merchant;
     using Newtonsoft.Json.Linq;
     using Repository;
+    using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.Exceptions;
 
@@ -26,7 +28,7 @@
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
 
         /// <summary>
         /// The estate management repository
@@ -41,7 +43,7 @@
         /// <summary>
         /// The merchant aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<MerchantAggregate> MerchantAggregateRepository;
+        private readonly IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> MerchantAggregateRepository;
 
         /// <summary>
         /// The model factory
@@ -60,8 +62,8 @@
         /// <param name="estateManagementRepository">The estate management repository.</param>
         /// <param name="eventStoreContext">The event store context.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementManager(IAggregateRepository<EstateAggregate> estateAggregateRepository,
-                                       IAggregateRepository<MerchantAggregate> merchantAggregateRepository,
+        public EstateManagementManager(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
+                                       IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
                                        IEstateManagementRepository estateManagementRepository,
                                        IEventStoreContext eventStoreContext,
                                        IModelFactory modelFactory)

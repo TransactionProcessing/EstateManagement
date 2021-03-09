@@ -13,6 +13,8 @@
     using Models.Estate;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
+    using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
 
     /// <summary>
@@ -26,12 +28,12 @@
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
 
         /// <summary>
         /// The merchant aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<MerchantAggregate> MerchantAggregateRepository;
+        private readonly IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> MerchantAggregateRepository;
 
         /// <summary>
         /// The security service client
@@ -48,8 +50,8 @@
         /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         /// <param name="merchantAggregateRepository">The merchant aggregate repository.</param>
         /// <param name="securityServiceClient">The security service client.</param>
-        public MerchantDomainService(IAggregateRepository<EstateAggregate> estateAggregateRepository,
-                                     IAggregateRepository<MerchantAggregate> merchantAggregateRepository,
+        public MerchantDomainService(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
+                                     IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
                                      ISecurityServiceClient securityServiceClient)
         {
             this.EstateAggregateRepository = estateAggregateRepository;

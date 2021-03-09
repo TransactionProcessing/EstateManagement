@@ -9,33 +9,22 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    [JsonObject]
-    public class DeviceAddedToMerchantEvent : DomainEvent
+    
+    public record DeviceAddedToMerchantEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MerchantCreatedEvent" /> class.
         /// </summary>
-        [ExcludeFromCodeCoverage]
-        public DeviceAddedToMerchantEvent()
-        {
-            //We need this for serialisation, so just embrace the DDD crime
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MerchantCreatedEvent" /> class.
-        /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="eventId">The event identifier.</param>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="deviceIdentifier">The device identifier.</param>
-        private DeviceAddedToMerchantEvent(Guid aggregateId,
-                                           Guid eventId,
+        public DeviceAddedToMerchantEvent(Guid aggregateId,
                                            Guid estateId,
                                            Guid deviceId,
-                                           String deviceIdentifier) : base(aggregateId, eventId)
+                                           String deviceIdentifier) : base(aggregateId, Guid.NewGuid())
         {
             this.MerchantId = aggregateId;
             this.EstateId = estateId;
@@ -53,8 +42,7 @@
         /// <value>
         /// The device identifier.
         /// </value>
-        [JsonProperty]
-        public Guid DeviceId { get; private set; }
+        public Guid DeviceId { get; init; }
 
         /// <summary>
         /// Gets the device identifier.
@@ -62,8 +50,7 @@
         /// <value>
         /// The device identifier.
         /// </value>
-        [JsonProperty]
-        public String DeviceIdentifier { get; private set; }
+        public String DeviceIdentifier { get; init; }
 
         /// <summary>
         /// Gets the estate identifier.
@@ -71,8 +58,7 @@
         /// <value>
         /// The estate identifier.
         /// </value>
-        [JsonProperty]
-        public Guid EstateId { get; private set; }
+        public Guid EstateId { get; init; }
 
         /// <summary>
         /// Gets the merchant identifier.
@@ -80,28 +66,7 @@
         /// <value>
         /// The merchant identifier.
         /// </value>
-        [JsonProperty]
-        public Guid MerchantId { get; private set; }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="deviceId">The device identifier.</param>
-        /// <param name="deviceIdentifier">The device identifier.</param>
-        /// <returns></returns>
-        public static DeviceAddedToMerchantEvent Create(Guid aggregateId,
-                                                        Guid estateId,
-                                                        Guid deviceId,
-                                                        String deviceIdentifier)
-        {
-            return new DeviceAddedToMerchantEvent(aggregateId, Guid.NewGuid(), estateId, deviceId, deviceIdentifier);
-        }
+        public Guid MerchantId { get; init; }
 
         #endregion
     }

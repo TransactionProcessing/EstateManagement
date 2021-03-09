@@ -9,37 +9,25 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    [JsonObject]
-    public class ManualDepositMadeEvent : DomainEvent
+    public record ManualDepositMadeEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ManualDepositMadeEvent"/> class.
-        /// </summary>
-        [ExcludeFromCodeCoverage]
-        public ManualDepositMadeEvent()
-        {
-            //We need this for serialisation, so just embrace the DDD crime
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ManualDepositMadeEvent"/> class.
+        /// Initializes a new instance of the <see cref="ManualDepositMadeEvent" /> class.
         /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="eventId">The event identifier.</param>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="depositId">The deposit identifier.</param>
         /// <param name="reference">The reference.</param>
         /// <param name="depositDateTime">The deposit date time.</param>
         /// <param name="amount">The amount.</param>
-        private ManualDepositMadeEvent(Guid aggregateId,
-                                       Guid eventId,
+        public ManualDepositMadeEvent(Guid aggregateId,
                                        Guid estateId,
                                        Guid depositId,
                                        String reference,
                                        DateTime depositDateTime,
-                                       Decimal amount) : base(aggregateId, eventId)
+                                       Decimal amount) : base(aggregateId, Guid.NewGuid())
         {
             this.EstateId = estateId;
             this.MerchantId = aggregateId;
@@ -59,8 +47,7 @@
         /// <value>
         /// The amount.
         /// </value>
-        [JsonProperty]
-        public Decimal Amount { get; }
+        public Decimal Amount { get; init; }
 
         /// <summary>
         /// Gets the deposit date time.
@@ -68,8 +55,7 @@
         /// <value>
         /// The deposit date time.
         /// </value>
-        [JsonProperty]
-        public DateTime DepositDateTime { get; }
+        public DateTime DepositDateTime { get; init; }
 
         /// <summary>
         /// Gets the deposit identifier.
@@ -77,8 +63,7 @@
         /// <value>
         /// The deposit identifier.
         /// </value>
-        [JsonProperty]
-        public Guid DepositId { get; }
+        public Guid DepositId { get; init; }
 
         /// <summary>
         /// Gets the estate identifier.
@@ -86,8 +71,7 @@
         /// <value>
         /// The estate identifier.
         /// </value>
-        [JsonProperty]
-        public Guid EstateId { get; }
+        public Guid EstateId { get; init; }
 
         /// <summary>
         /// Gets the merchant identifier.
@@ -95,8 +79,7 @@
         /// <value>
         /// The merchant identifier.
         /// </value>
-        [JsonProperty]
-        public Guid MerchantId { get; }
+        public Guid MerchantId { get; init; }
 
         /// <summary>
         /// Gets the reference.
@@ -104,32 +87,8 @@
         /// <value>
         /// The reference.
         /// </value>
-        [JsonProperty]
-        public String Reference { get; }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="depositId">The deposit identifier.</param>
-        /// <param name="reference">The reference.</param>
-        /// <param name="depositDateTime">The deposit date time.</param>
-        /// <param name="amount">The amount.</param>
-        /// <returns></returns>
-        public static ManualDepositMadeEvent Create(Guid aggregateId,
-                                                    Guid estateId,
-                                                    Guid depositId,
-                                                    String reference,
-                                                    DateTime depositDateTime,
-                                                    Decimal amount)
-        {
-            return new ManualDepositMadeEvent(aggregateId, Guid.NewGuid(), estateId, depositId, reference, depositDateTime, amount);
-        }
+        /// init; }
+        public String Reference { get; init; }
 
         #endregion
     }

@@ -1,37 +1,23 @@
 ﻿namespace EstateManagement.Estate.DomainEvents
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.EventSourcing;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    [JsonObject]
-    public class EstateCreatedEvent : DomainEvent
+    /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEventRecord.DomainEvent" />
+    public record EstateCreatedEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateCreatedEvent" /> class.
         /// </summary>
-        [ExcludeFromCodeCoverage]
-        public EstateCreatedEvent()
-        {
-            //We need this for serialisation, so just embrace the DDD crime
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EstateCreatedEvent" /> class.
-        /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="eventId">The event identifier.</param>
         /// <param name="estateName">Name of the estate.</param>
-        private EstateCreatedEvent(Guid aggregateId,
-                                   Guid eventId,
-                                   String estateName) : base(aggregateId, eventId)
+        public EstateCreatedEvent(Guid aggregateId,
+                                  String estateName) : base(aggregateId, Guid.NewGuid())
         {
             this.EstateId = aggregateId;
             this.EstateName = estateName;
@@ -47,8 +33,7 @@
         /// <value>
         /// The estate identifier.
         /// </value>
-        [JsonProperty]
-        public Guid EstateId { get; private set; }
+        public Guid EstateId { get; init; }
 
         /// <summary>
         /// Gets the name of the estate.
@@ -56,12 +41,9 @@
         /// <value>
         /// The name of the estate.
         /// </value>
-        [JsonProperty]
-        public String EstateName { get; private set; }
+        public String EstateName { get; init; }
 
         #endregion
-
-        #region Methods
 
         /// <summary>
         /// Creates the specified aggregate identifier.
@@ -69,12 +51,5 @@
         /// <param name="aggregateId">The aggregate identifier.</param>
         /// <param name="estateName">Name of the estate.</param>
         /// <returns></returns>
-        public static EstateCreatedEvent Create(Guid aggregateId,
-                                                String estateName)
-        {
-            return new EstateCreatedEvent(aggregateId, Guid.NewGuid(), estateName);
-        }
-
-        #endregion
     }
 }

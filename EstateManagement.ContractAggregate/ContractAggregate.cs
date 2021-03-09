@@ -7,13 +7,14 @@
     using Contract.DomainEvents;
     using Models.Contract;
     using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.General;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Shared.EventStore.EventStore.Aggregate" />
+    /// <seealso cref="Aggregate" />
     public class ContractAggregate : Aggregate
     {
         #region Fields
@@ -115,8 +116,8 @@
             }
 
             FixedValueProductAddedToContractEvent fixedValueProductAddedToContractEvent =
-                FixedValueProductAddedToContractEvent.Create(this.AggregateId, this.EstateId, productId, productName, displayText, value);
-            this.ApplyAndPend(fixedValueProductAddedToContractEvent);
+                new FixedValueProductAddedToContractEvent(this.AggregateId, this.EstateId, productId, productName, displayText, value);
+            this.ApplyAndAppend(fixedValueProductAddedToContractEvent);
         }
 
         /// <summary>
@@ -152,9 +153,9 @@
             Guard.ThrowIfInvalidEnum(typeof(FeeType), feeType, nameof(feeType));
 
             TransactionFeeForProductAddedToContractEvent transactionFeeForProductAddedToContractEvent =
-                TransactionFeeForProductAddedToContractEvent.Create(this.AggregateId, this.EstateId, product.ProductId, transactionFeeId, description, (Int32)calculationType, (Int32)feeType, value);
+                new TransactionFeeForProductAddedToContractEvent(this.AggregateId, this.EstateId, product.ProductId, transactionFeeId, description, (Int32)calculationType, (Int32)feeType, value);
 
-            this.ApplyAndPend(transactionFeeForProductAddedToContractEvent);
+            this.ApplyAndAppend(transactionFeeForProductAddedToContractEvent);
         }
 
         /// <summary>
@@ -177,12 +178,12 @@
                 throw new InvalidOperationException($"Transaction Fee Id {transactionFeeId} is not a valid for product {product.Name} on this contract");
             }
 
-            TransactionFeeForProductDisabledEvent transactionFeeForProductDisabledEvent = TransactionFeeForProductDisabledEvent.Create(this.AggregateId,
+            TransactionFeeForProductDisabledEvent transactionFeeForProductDisabledEvent = new TransactionFeeForProductDisabledEvent(this.AggregateId,
                                                                                                                                        this.EstateId,
                                                                                                                                        productId,
                                                                                                                                        transactionFeeId);
 
-            this.ApplyAndPend(transactionFeeForProductDisabledEvent);
+            this.ApplyAndAppend(transactionFeeForProductDisabledEvent);
         }
 
         private void PlayEvent(TransactionFeeForProductDisabledEvent domainEvent)
@@ -216,8 +217,8 @@
             }
 
             VariableValueProductAddedToContractEvent variableValueProductAddedToContractEvent =
-                VariableValueProductAddedToContractEvent.Create(this.AggregateId, this.EstateId, productId, productName, displayText);
-            this.ApplyAndPend(variableValueProductAddedToContractEvent);
+                new VariableValueProductAddedToContractEvent(this.AggregateId, this.EstateId, productId, productName, displayText);
+            this.ApplyAndAppend(variableValueProductAddedToContractEvent);
         }
 
         /// <summary>
@@ -244,8 +245,8 @@
             Guard.ThrowIfInvalidGuid(operatorId, typeof(ArgumentNullException), "Operator Id must not be an empty Guid");
             Guard.ThrowIfNullOrEmpty(description, typeof(ArgumentNullException), "Contract description must not be null or empty");
 
-            ContractCreatedEvent contractCreatedEvent = ContractCreatedEvent.Create(this.AggregateId, estateId, operatorId, description);
-            this.ApplyAndPend(contractCreatedEvent);
+            ContractCreatedEvent contractCreatedEvent = new ContractCreatedEvent(this.AggregateId, estateId, operatorId, description);
+            this.ApplyAndAppend(contractCreatedEvent);
         }
 
         /// <summary>
@@ -291,7 +292,7 @@
         /// Plays the event.
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
-        protected override void PlayEvent(DomainEvent domainEvent)
+        public override void PlayEvent(IDomainEvent domainEvent)
         {
             this.PlayEvent((dynamic)domainEvent);
         }

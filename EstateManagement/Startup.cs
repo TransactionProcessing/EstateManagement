@@ -17,11 +17,14 @@ namespace EstateManagement
     using BusinessLogic.Requests;
     using BusinessLogic.Services;
     using Common;
+    using Contract.DomainEvents;
     using Controllers;
+    using Estate.DomainEvents;
     using EstateReporting.Database;
     using EventStore.Client;
     using HealthChecks.UI.Client;
     using MediatR;
+    using Merchant.DomainEvents;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -46,9 +49,12 @@ namespace EstateManagement
     using Repository;
     using SecurityService.Client;
     using Shared.DomainDrivenDesign.CommandHandling;
+    using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EntityFramework;
     using Shared.EntityFramework.ConnectionStringConfiguration;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
+    using Shared.EventStore.Extensions;
     using Shared.Extensions;
     using Shared.General;
     using Shared.Logger;
@@ -159,7 +165,7 @@ namespace EstateManagement
             {
                 services.AddEventStoreClient(Startup.ConfigureEventStoreSettings);
                 services.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
-
+                services.AddEventStorePersistentSubscriptionsClient(Startup.ConfigureEventStoreSettings);
                 services.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
             }
 
@@ -183,9 +189,9 @@ namespace EstateManagement
 
             DomainEventTypesToSilentlyHandle eventTypesToSilentlyHandle = new DomainEventTypesToSilentlyHandle(handlerEventTypesToSilentlyHandle);
             services.AddTransient<IEventStoreContext, EventStoreContext>();
-            services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate>, AggregateRepository<EstateAggregate.EstateAggregate>>();
-            services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate>, AggregateRepository<MerchantAggregate.MerchantAggregate>>();
-            services.AddSingleton<IAggregateRepository<ContractAggregate.ContractAggregate>, AggregateRepository<ContractAggregate.ContractAggregate>>();
+            services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>>();
+            services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            services.AddSingleton<IAggregateRepository<ContractAggregate.ContractAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<ContractAggregate.ContractAggregate, DomainEventRecord.DomainEvent>>();
             services.AddSingleton<IEstateDomainService, EstateDomainService>();
             services.AddSingleton<IMerchantDomainService, MerchantDomainService>();
             services.AddSingleton<IContractDomainService, ContractDomainService>();
@@ -193,7 +199,13 @@ namespace EstateManagement
             services.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
             services.AddSingleton<ISecurityServiceClient, SecurityServiceClient>();
 
-            //// request & notification handlers
+            ContractCreatedEvent c = new ContractCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "");
+            MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
+            EstateCreatedEvent e = new EstateCreatedEvent(Guid.NewGuid(), "");
+
+            TypeProvider.LoadDomainEventsTypeDynamically();
+
+            // request & notification handlers
             services.AddTransient<ServiceFactory>(context =>
             {
                 return t => context.GetService(t);
