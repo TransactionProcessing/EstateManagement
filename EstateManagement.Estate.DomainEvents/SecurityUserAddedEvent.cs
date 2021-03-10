@@ -9,31 +9,19 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    [JsonObject]
-    public class SecurityUserAddedEvent : DomainEvent
+    public record SecurityUserAddedEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SecurityUserAddedEvent" /> class.
-        /// </summary>
-        [ExcludeFromCodeCoverage]
-        public SecurityUserAddedEvent()
-        {
-            //We need this for serialisation, so just embrace the DDD crime
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EstateCreatedEvent" /> class.
         /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="eventId">The event identifier.</param>
         /// <param name="securityUserId">The security user identifier.</param>
         /// <param name="emailAddress">The email address.</param>
-        private SecurityUserAddedEvent(Guid aggregateId,
-                                       Guid eventId,
+        public SecurityUserAddedEvent(Guid aggregateId,
                                        Guid securityUserId,
-                                       String emailAddress) : base(aggregateId, eventId)
+                                       String emailAddress) : base(aggregateId, Guid.NewGuid())
         {
             this.EstateId = aggregateId;
             this.SecurityUserId = securityUserId;
@@ -50,8 +38,7 @@
         /// <value>
         /// The email address.
         /// </value>
-        [JsonProperty]
-        public String EmailAddress { get; private set; }
+        public String EmailAddress { get; init; }
 
         /// <summary>
         /// Gets the estate identifier.
@@ -59,8 +46,7 @@
         /// <value>
         /// The estate identifier.
         /// </value>
-        [JsonProperty]
-        public Guid EstateId { get; private set; }
+        public Guid EstateId { get; init; }
 
         /// <summary>
         /// Gets the security user identifier.
@@ -68,27 +54,10 @@
         /// <value>
         /// The security user identifier.
         /// </value>
-        [JsonProperty]
-        public Guid SecurityUserId { get; private set; }
+        public Guid SecurityUserId { get; init; }
 
         #endregion
 
-        #region Methods
-
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="securityUserId">The security user identifier.</param>
-        /// <param name="emailAddress">The email address.</param>
-        /// <returns></returns>
-        public static SecurityUserAddedEvent Create(Guid aggregateId,
-                                                    Guid securityUserId,
-                                                    String emailAddress)
-        {
-            return new SecurityUserAddedEvent(aggregateId, Guid.NewGuid(), securityUserId, emailAddress);
-        }
-
-        #endregion
+        
     }
 }

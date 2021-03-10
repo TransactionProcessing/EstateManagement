@@ -11,6 +11,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using EstateAggregate;
     using Models.Contract;
     using Moq;
+    using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
@@ -21,10 +23,10 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public void ContractDomainService_CreateContract_ContractIsCreated()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                      .ReturnsAsync(TestData.EstateAggregateWithOperator());
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
@@ -42,11 +44,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public void ContractDomainService_CreateContract_ContractAlreadyCreated_ErrorThrown()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                      .ReturnsAsync(TestData.EstateAggregateWithOperator());
 
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
 
@@ -63,9 +65,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public void ContractDomainService_CreateContract_EstateNotCreated_ErrorThrown()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
 
@@ -82,9 +84,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public void ContractDomainService_CreateContract_NoOperatorCreatedForEstate_ErrorThrown()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
 
@@ -101,9 +103,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public void ContractDomainService_CreateContract_OperatorNotFoundForEstate_ErrorThrown()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
 
@@ -120,8 +122,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_AddProductToContract_FixedValue_ProductAddedToContract()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
@@ -140,8 +142,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_AddProductToContract_FixedValue_ContractNotCreated_ErrorThrown()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
@@ -160,8 +162,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_AddProductToContract_VariableValue_ProductAddedToContract()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
@@ -180,8 +182,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_AddProductToContract_VariableValue_ContractNotCreated_ErrorThrown()
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
 
             ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
@@ -204,8 +206,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
         public async Task ContractDomainService_AddTransactionFeeForProductToContract_TransactionFeeIsAddedToProduct(CalculationType calculationType,FeeType feeType)
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.CreatedContractAggregateWithAProduct);
 
@@ -230,8 +232,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
         public async Task ContractDomainService_AddTransactionFeeForProductToContract_ContractNotCreated_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.EmptyContractAggregate);
 
@@ -256,8 +258,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
         public async Task ContractDomainService_AddTransactionFeeForProductToContract_ProductNotFound_ErrorThrown(CalculationType calculationType, FeeType feeType)
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.CreatedContractAggregateWithAProduct);
 
@@ -282,8 +284,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
         public async Task ContractDomainService_DisableTransactionFeeForProduct_TransactionFeeDisabled(CalculationType calculationType, FeeType feeType)
         {
-            Mock<IAggregateRepository<EstateAggregate>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            Mock<IAggregateRepository<ContractAggregate>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(calculationType, feeType));
 

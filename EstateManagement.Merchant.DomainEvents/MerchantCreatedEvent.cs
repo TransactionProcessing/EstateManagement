@@ -9,33 +9,22 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    [JsonObject]
-    public class MerchantCreatedEvent : DomainEvent
+    
+    public record MerchantCreatedEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MerchantCreatedEvent" /> class.
         /// </summary>
-        [ExcludeFromCodeCoverage]
-        public MerchantCreatedEvent()
-        {
-            //We need this for serialisation, so just embrace the DDD crime
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MerchantCreatedEvent" /> class.
-        /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="eventId">The event identifier.</param>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="merchantName">Name of the merchant.</param>
         /// <param name="dateCreated">The date created.</param>
-        private MerchantCreatedEvent(Guid aggregateId,
-                                     Guid eventId,
+        public MerchantCreatedEvent(Guid aggregateId,
                                      Guid estateId,
                                      String merchantName,
-                                     DateTime dateCreated) : base(aggregateId, eventId)
+                                     DateTime dateCreated) : base(aggregateId, Guid.NewGuid())
         {
             this.EstateId = estateId;
             this.MerchantId = aggregateId;
@@ -53,8 +42,7 @@
         /// <value>
         /// The date created.
         /// </value>
-        [JsonProperty]
-        public DateTime DateCreated { get; private set; }
+        public DateTime DateCreated { get; init; }
 
         /// <summary>
         /// Gets the estate identifier.
@@ -62,8 +50,7 @@
         /// <value>
         /// The estate identifier.
         /// </value>
-        [JsonProperty]
-        public Guid EstateId { get; private set; }
+        public Guid EstateId { get; init; }
 
         /// <summary>
         /// Gets the merchant identifier.
@@ -71,8 +58,7 @@
         /// <value>
         /// The merchant identifier.
         /// </value>
-        [JsonProperty]
-        public Guid MerchantId { get; private set; }
+        public Guid MerchantId { get; init; }
 
         /// <summary>
         /// Gets the name of the estate.
@@ -80,28 +66,7 @@
         /// <value>
         /// The name of the estate.
         /// </value>
-        [JsonProperty]
-        public String MerchantName { get; private set; }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantName">Name of the merchant.</param>
-        /// <param name="dateCreated">The date created.</param>
-        /// <returns></returns>
-        public static MerchantCreatedEvent Create(Guid aggregateId,
-                                                  Guid estateId,
-                                                  String merchantName,
-                                                  DateTime dateCreated)
-        {
-            return new MerchantCreatedEvent(aggregateId, Guid.NewGuid(), estateId, merchantName, dateCreated);
-        }
+        public String MerchantName { get; init; }
 
         #endregion
     }

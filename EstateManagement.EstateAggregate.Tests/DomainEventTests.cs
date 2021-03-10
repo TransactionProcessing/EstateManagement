@@ -14,11 +14,10 @@ namespace EstateManagement.EstateAggregate.Tests
         [Fact]
         public void EstateCreatedEvent_CanBeCreated_IsCreated()
         {
-            EstateCreatedEvent estateCreatedEvent = EstateCreatedEvent.Create(TestData.EstateId, TestData.EstateName);
+            EstateCreatedEvent estateCreatedEvent = new EstateCreatedEvent(TestData.EstateId, TestData.EstateName);
 
             estateCreatedEvent.ShouldNotBeNull();
             estateCreatedEvent.AggregateId.ShouldBe(TestData.EstateId);
-            estateCreatedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             estateCreatedEvent.EventId.ShouldNotBe(Guid.Empty);
             estateCreatedEvent.EstateId.ShouldBe(TestData.EstateId);
             estateCreatedEvent.EstateName.ShouldBe(TestData.EstateName);
@@ -27,15 +26,14 @@ namespace EstateManagement.EstateAggregate.Tests
         [Fact]
         public void OperatorAddedToEstateEvent_CanBeCreated_IsCreated()
         {
-            OperatorAddedToEstateEvent operatorAddedToEstateEvent = OperatorAddedToEstateEvent.Create(TestData.EstateId,
-                                                                                                      TestData.OperatorId,
-                                                                                                      TestData.OperatorName,
-                                                                                                      TestData.RequireCustomMerchantNumberFalse,
-                                                                                                      TestData.RequireCustomTerminalNumberFalse);
+            OperatorAddedToEstateEvent operatorAddedToEstateEvent = new OperatorAddedToEstateEvent(TestData.EstateId,
+                                                                                                                   TestData.OperatorId,
+                                                                                                                   TestData.OperatorName,
+                                                                                                                   TestData.RequireCustomMerchantNumberFalse,
+                                                                                                                   TestData.RequireCustomTerminalNumberFalse);
 
             operatorAddedToEstateEvent.ShouldNotBeNull();
             operatorAddedToEstateEvent.AggregateId.ShouldBe(TestData.EstateId);
-            operatorAddedToEstateEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             operatorAddedToEstateEvent.EventId.ShouldNotBe(Guid.Empty);
             operatorAddedToEstateEvent.EstateId.ShouldBe(TestData.EstateId);
             operatorAddedToEstateEvent.OperatorId.ShouldBe(TestData.OperatorId);
@@ -47,13 +45,12 @@ namespace EstateManagement.EstateAggregate.Tests
         [Fact]
         public void SecurityUserAddedEvent_CanBeCreated_IsCreated()
         {
-            SecurityUserAddedEvent securityUserAddedEvent = SecurityUserAddedEvent.Create(TestData.EstateId,
+            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(TestData.EstateId,
                                                                                                       TestData.SecurityUserId,
                                                                                                       TestData.EstateUserEmailAddress);
 
             securityUserAddedEvent.ShouldNotBeNull();
             securityUserAddedEvent.AggregateId.ShouldBe(TestData.EstateId);
-            securityUserAddedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             securityUserAddedEvent.EventId.ShouldNotBe(Guid.Empty);
             securityUserAddedEvent.EstateId.ShouldBe(TestData.EstateId);
             securityUserAddedEvent.SecurityUserId.ShouldBe(TestData.SecurityUserId);

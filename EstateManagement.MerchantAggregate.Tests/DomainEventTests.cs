@@ -13,11 +13,10 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void MerchantCreatedEvent_CanBeCreated_IsCreated()
         {
             MerchantCreatedEvent merchantCreatedEvent =
-                MerchantCreatedEvent.Create(TestData.MerchantId, TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+                new MerchantCreatedEvent(TestData.MerchantId, TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
             merchantCreatedEvent.ShouldNotBeNull();
             merchantCreatedEvent.AggregateId.ShouldBe(TestData.MerchantId);
-            merchantCreatedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             merchantCreatedEvent.EventId.ShouldNotBe(Guid.Empty);
             merchantCreatedEvent.EstateId.ShouldBe(TestData.EstateId);
             merchantCreatedEvent.DateCreated.ShouldBe(TestData.DateMerchantCreated);
@@ -29,7 +28,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void AddressAddedEvent_CanBeCreated_IsCreated()
         {
             AddressAddedEvent addressAddedEvent =
-                AddressAddedEvent.Create(TestData.MerchantId, TestData.EstateId,TestData.MerchantAddressId,
+                new AddressAddedEvent(TestData.MerchantId, TestData.EstateId,TestData.MerchantAddressId,
                                          TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
                                          TestData.MerchantAddressLine3, TestData.MerchantAddressLine4,
                                          TestData.MerchantTown, TestData.MerchantRegion,
@@ -37,7 +36,6 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             addressAddedEvent.ShouldNotBeNull();
             addressAddedEvent.AggregateId.ShouldBe(TestData.MerchantId);
-            addressAddedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             addressAddedEvent.EventId.ShouldNotBe(Guid.Empty);
             addressAddedEvent.EstateId.ShouldBe(TestData.EstateId);
             addressAddedEvent.MerchantId.ShouldBe(TestData.MerchantId);
@@ -56,13 +54,12 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void ContactAddedEvent_CanBeCreated_IsCreated()
         {
             ContactAddedEvent contactAddedEvent =
-                ContactAddedEvent.Create(TestData.MerchantId, TestData.EstateId, TestData.MerchantContactId,
+                new ContactAddedEvent(TestData.MerchantId, TestData.EstateId, TestData.MerchantContactId,
                                          TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
                                          TestData.MerchantContactEmailAddress);
 
             contactAddedEvent.ShouldNotBeNull();
             contactAddedEvent.AggregateId.ShouldBe(TestData.MerchantId);
-            contactAddedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             contactAddedEvent.EventId.ShouldNotBe(Guid.Empty);
             contactAddedEvent.EstateId.ShouldBe(TestData.EstateId);
             contactAddedEvent.MerchantId.ShouldBe(TestData.MerchantId);
@@ -76,7 +73,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void OperatorAssignedToMerchantEvent_CanBeCreated_IsCreated()
         {
             OperatorAssignedToMerchantEvent operatorAssignedToMerchantEvent =
-                OperatorAssignedToMerchantEvent.Create(TestData.MerchantId,
+                new OperatorAssignedToMerchantEvent(TestData.MerchantId,
                                                        TestData.EstateId,
                                                        TestData.OperatorId,
                                                        TestData.OperatorName,
@@ -85,7 +82,6 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             operatorAssignedToMerchantEvent.ShouldNotBeNull();
             operatorAssignedToMerchantEvent.AggregateId.ShouldBe(TestData.MerchantId);
-            operatorAssignedToMerchantEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             operatorAssignedToMerchantEvent.EventId.ShouldNotBe(Guid.Empty);
             operatorAssignedToMerchantEvent.EstateId.ShouldBe(TestData.EstateId);
             operatorAssignedToMerchantEvent.MerchantId.ShouldBe(TestData.MerchantId);
@@ -98,7 +94,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         [Fact]
         public void SecurityUserAddedEvent_CanBeCreated_IsCreated()
         {
-            SecurityUserAddedEvent securityUserAddedEvent = SecurityUserAddedEvent.Create(TestData.MerchantId,
+            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(TestData.MerchantId,
                 TestData.EstateId,
                                                                                           TestData.SecurityUserId,
                                                                                           TestData.EstateUserEmailAddress);
@@ -106,7 +102,6 @@ namespace EstateManagement.MerchantAggregate.Tests
             securityUserAddedEvent.ShouldNotBeNull();
             securityUserAddedEvent.AggregateId.ShouldBe(TestData.MerchantId);
             securityUserAddedEvent.MerchantId.ShouldBe(TestData.MerchantId);
-            securityUserAddedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             securityUserAddedEvent.EventId.ShouldNotBe(Guid.Empty);
             securityUserAddedEvent.EstateId.ShouldBe(TestData.EstateId);
             securityUserAddedEvent.SecurityUserId.ShouldBe(TestData.SecurityUserId);
@@ -117,11 +112,10 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void DeviceAddedToMerchantEvent_CanBeCreated_IsCreated()
         {
             DeviceAddedToMerchantEvent deviceAddedToMerchantEvent =
-                DeviceAddedToMerchantEvent.Create(TestData.MerchantId, TestData.EstateId, TestData.DeviceId, TestData.DeviceIdentifier);
+                new DeviceAddedToMerchantEvent(TestData.MerchantId, TestData.EstateId, TestData.DeviceId, TestData.DeviceIdentifier);
 
             deviceAddedToMerchantEvent.ShouldNotBeNull();
             deviceAddedToMerchantEvent.AggregateId.ShouldBe(TestData.MerchantId);
-            deviceAddedToMerchantEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             deviceAddedToMerchantEvent.EventId.ShouldNotBe(Guid.Empty);
             deviceAddedToMerchantEvent.EstateId.ShouldBe(TestData.EstateId);
             deviceAddedToMerchantEvent.MerchantId.ShouldBe(TestData.MerchantId);
@@ -132,7 +126,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         [Fact]
         public void ManualDepositMadeEvent_CanBeCreated_IsCreated()
         {
-            ManualDepositMadeEvent manualDepositMadeEvent = ManualDepositMadeEvent.Create(TestData.MerchantId, 
+            ManualDepositMadeEvent manualDepositMadeEvent = new ManualDepositMadeEvent(TestData.MerchantId, 
                                                                                           TestData.EstateId,
                                                                                           TestData.DepositId,
                                                                                           TestData.DepositReference,
@@ -141,7 +135,6 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             manualDepositMadeEvent.ShouldNotBeNull();
             manualDepositMadeEvent.AggregateId.ShouldBe(TestData.MerchantId);
-            manualDepositMadeEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             manualDepositMadeEvent.EventId.ShouldNotBe(Guid.Empty);
             manualDepositMadeEvent.EstateId.ShouldBe(TestData.EstateId);
             manualDepositMadeEvent.MerchantId.ShouldBe(TestData.MerchantId);

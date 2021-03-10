@@ -18,6 +18,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Models.Merchant;
     using Moq;
     using Repository;
+    using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.Exceptions;
     using Shouldly;
@@ -26,8 +28,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
     public class EstateManagementManagerTests
     {
-        private readonly Mock<IAggregateRepository<EstateAggregate>> EstateAggregateRepository;
-        private readonly Mock<IAggregateRepository<MerchantAggregate>> MerchantAggregateRepository;
+        private readonly Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> EstateAggregateRepository;
+        private readonly Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> MerchantAggregateRepository;
         private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
         private readonly Mock<IEventStoreContext> EventStoreContext;
         private readonly Mock<IModelFactory> ModelFactory;
@@ -36,8 +38,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
         public EstateManagementManagerTests()
         {
-            this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate>>();
-            this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate>>();
+            this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
             this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
             this.EventStoreContext = new Mock<IEventStoreContext>();
 

@@ -9,6 +9,8 @@
     using EstateAggregate;
     using Models.Contract;
     using Models.Estate;
+    using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
 
     /// <summary>
@@ -22,12 +24,12 @@
         /// <summary>
         /// The contract aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<ContractAggregate> ContractAggregateRepository;
+        private readonly IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent> ContractAggregateRepository;
 
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
 
         #endregion
 
@@ -38,8 +40,8 @@
         /// </summary>
         /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         /// <param name="contractAggregateRepository">The contract aggregate repository.</param>
-        public ContractDomainService(IAggregateRepository<EstateAggregate> estateAggregateRepository,
-                                     IAggregateRepository<ContractAggregate> contractAggregateRepository)
+        public ContractDomainService(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
+                                     IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent> contractAggregateRepository)
         {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.ContractAggregateRepository = contractAggregateRepository;

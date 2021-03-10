@@ -15,12 +15,11 @@ namespace EstateManagement.ContractAggregate.Tests
         [Fact]
         public void ContractCreatedEvent_CanBeCreated_IsCreated()
         {
-            ContractCreatedEvent contractCreatedEvent = ContractCreatedEvent.Create(TestData.ContractId, TestData.EstateId,
+            ContractCreatedEvent contractCreatedEvent = new ContractCreatedEvent(TestData.ContractId, TestData.EstateId,
                                                                                     TestData.OperatorId, TestData.ContractDescription);
 
             contractCreatedEvent.ShouldNotBeNull();
             contractCreatedEvent.AggregateId.ShouldBe(TestData.ContractId);
-            contractCreatedEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             contractCreatedEvent.EventId.ShouldNotBe(Guid.Empty);
             contractCreatedEvent.ContractId.ShouldBe(TestData.ContractId);
             contractCreatedEvent.Description.ShouldBe(TestData.ContractDescription);
@@ -31,14 +30,13 @@ namespace EstateManagement.ContractAggregate.Tests
         [Fact]
         public void ProductAddedToContractEvent_CanBeCreated_IsCreated()
         {
-            FixedValueProductAddedToContractEvent fixedValueProductAddedToContractEvent = FixedValueProductAddedToContractEvent.Create(TestData.ContractId, TestData.EstateId,
+            FixedValueProductAddedToContractEvent fixedValueProductAddedToContractEvent = new FixedValueProductAddedToContractEvent(TestData.ContractId, TestData.EstateId,
                                                                                                                              TestData.ProductId, TestData.ProductName,
                                                                                                                              TestData.ProductDisplayText,
                                                                                                                              TestData.ProductFixedValue);
 
             fixedValueProductAddedToContractEvent.ShouldNotBeNull();
             fixedValueProductAddedToContractEvent.AggregateId.ShouldBe(TestData.ContractId);
-            fixedValueProductAddedToContractEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             fixedValueProductAddedToContractEvent.EventId.ShouldNotBe(Guid.Empty);
             fixedValueProductAddedToContractEvent.ContractId.ShouldBe(TestData.ContractId);
             fixedValueProductAddedToContractEvent.EstateId.ShouldBe(TestData.EstateId);
@@ -51,13 +49,12 @@ namespace EstateManagement.ContractAggregate.Tests
         [Fact]
         public void VariableValueProductAddedToContractEvent_CanBeCreated_IsCreated()
         {
-            VariableValueProductAddedToContractEvent variableValueProductAddedToContractEvent = VariableValueProductAddedToContractEvent.Create(TestData.ContractId, TestData.EstateId,
+            VariableValueProductAddedToContractEvent variableValueProductAddedToContractEvent = new VariableValueProductAddedToContractEvent(TestData.ContractId, TestData.EstateId,
                                                                                                                                              TestData.ProductId, TestData.ProductName,
                                                                                                                                              TestData.ProductDisplayText);
 
             variableValueProductAddedToContractEvent.ShouldNotBeNull();
             variableValueProductAddedToContractEvent.AggregateId.ShouldBe(TestData.ContractId);
-            variableValueProductAddedToContractEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             variableValueProductAddedToContractEvent.EventId.ShouldNotBe(Guid.Empty);
             variableValueProductAddedToContractEvent.ContractId.ShouldBe(TestData.ContractId);
             variableValueProductAddedToContractEvent.EstateId.ShouldBe(TestData.EstateId);
@@ -73,7 +70,7 @@ namespace EstateManagement.ContractAggregate.Tests
         [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
         public void TransactionFeeForProductAddedToContractEvent_CanBeCreated_IsCreated(CalculationType calculationType,FeeType feeType)
         {
-            TransactionFeeForProductAddedToContractEvent transactionFeeForProductAddedToContractEvent = TransactionFeeForProductAddedToContractEvent.Create(TestData.ContractId,
+            TransactionFeeForProductAddedToContractEvent transactionFeeForProductAddedToContractEvent = new TransactionFeeForProductAddedToContractEvent(TestData.ContractId,
                                                                                                                                                             TestData.EstateId,
                                                                                                                                                             TestData.ProductId,
                                                                                                                                                             TestData.TransactionFeeId,
@@ -84,7 +81,6 @@ namespace EstateManagement.ContractAggregate.Tests
 
             transactionFeeForProductAddedToContractEvent.ShouldNotBeNull();
             transactionFeeForProductAddedToContractEvent.AggregateId.ShouldBe(TestData.ContractId);
-            transactionFeeForProductAddedToContractEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             transactionFeeForProductAddedToContractEvent.EventId.ShouldNotBe(Guid.Empty);
             transactionFeeForProductAddedToContractEvent.ContractId.ShouldBe(TestData.ContractId);
             transactionFeeForProductAddedToContractEvent.EstateId.ShouldBe(TestData.EstateId);
@@ -100,11 +96,10 @@ namespace EstateManagement.ContractAggregate.Tests
         public void TransactionFeeForProductDisabledEvent_CanBeCreated_IsCreated()
         {
             TransactionFeeForProductDisabledEvent transactionFeeForProductDisabledEvent =
-                TransactionFeeForProductDisabledEvent.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.TransactionFeeId);
+                new TransactionFeeForProductDisabledEvent(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.TransactionFeeId);
 
             transactionFeeForProductDisabledEvent.ShouldNotBeNull();
             transactionFeeForProductDisabledEvent.AggregateId.ShouldBe(TestData.ContractId);
-            transactionFeeForProductDisabledEvent.EventCreatedDateTime.ShouldNotBe(DateTime.MinValue);
             transactionFeeForProductDisabledEvent.EventId.ShouldNotBe(Guid.Empty);
             transactionFeeForProductDisabledEvent.ContractId.ShouldBe(TestData.ContractId);
             transactionFeeForProductDisabledEvent.EstateId.ShouldBe(TestData.EstateId);

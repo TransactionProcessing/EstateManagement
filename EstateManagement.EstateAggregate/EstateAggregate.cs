@@ -8,6 +8,7 @@
     using Models;
     using Models.Estate;
     using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.General;
 
@@ -99,9 +100,9 @@
             this.CheckOperatorHasNotAlreadyBeenCreated(operatorId, operatorName);
 
             OperatorAddedToEstateEvent operatorAddedToEstateEvent =
-                OperatorAddedToEstateEvent.Create(this.AggregateId, operatorId, operatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
+                new OperatorAddedToEstateEvent(this.AggregateId, operatorId, operatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
 
-            this.ApplyAndPend(operatorAddedToEstateEvent);
+            this.ApplyAndAppend(operatorAddedToEstateEvent);
         }
 
         /// <summary>
@@ -114,9 +115,9 @@
         {
             this.CheckEstateHasBeenCreated();
 
-            SecurityUserAddedEvent securityUserAddedEvent = SecurityUserAddedEvent.Create(this.AggregateId, securityUserId, emailAddress);
+            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(this.AggregateId, securityUserId, emailAddress);
 
-            this.ApplyAndPend(securityUserAddedEvent);
+            this.ApplyAndAppend(securityUserAddedEvent);
         }
 
         /// <summary>
@@ -139,9 +140,9 @@
 
             this.CheckEstateHasNotAlreadyBeenCreated();
 
-            EstateCreatedEvent estateCreatedEvent = EstateCreatedEvent.Create(this.AggregateId, estateName);
+            EstateCreatedEvent estateCreatedEvent = new EstateCreatedEvent(this.AggregateId, estateName);
 
-            this.ApplyAndPend(estateCreatedEvent);
+            this.ApplyAndAppend(estateCreatedEvent);
         }
 
         /// <summary>
@@ -205,7 +206,7 @@
         /// Plays the event.
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
-        protected override void PlayEvent(DomainEvent domainEvent)
+        public override void PlayEvent(IDomainEvent domainEvent)
         {
             this.PlayEvent((dynamic)domainEvent);
         }
