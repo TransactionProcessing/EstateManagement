@@ -426,6 +426,62 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [Given(@"I create the following identity resources")]
+        public async Task GivenICreateTheFollowingIdentityResources(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                // Get the scopes
+                String userClaims = SpecflowTableHelper.GetStringRowValue(tableRow, "UserClaims");
+
+                CreateIdentityResourceRequest createIdentityResourceRequest = new CreateIdentityResourceRequest
+                                                                              {
+                                                                                  Name = SpecflowTableHelper.GetStringRowValue(tableRow, "Name"),
+                                                                                  Claims = string.IsNullOrEmpty(userClaims) ? null : userClaims.Split(",").ToList(),
+                                                                                  Description = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
+                                                                                  DisplayName = SpecflowTableHelper.GetStringRowValue(tableRow, "DisplayName")
+                                                                              };
+
+                await this.CreateIdentityResource(createIdentityResourceRequest, CancellationToken.None).ConfigureAwait(false);
+            }
+        }
+
+        private async Task CreateIdentityResource(CreateIdentityResourceRequest createIdentityResourceRequest,
+                                                                             CancellationToken cancellationToken)
+        {
+            CreateIdentityResourceResponse createIdentityResourceResponse = null;
+
+            List<IdentityResourceDetails> identityResourceList = await this.TestingContext.DockerHelper.SecurityServiceClient.GetIdentityResources(cancellationToken);
+
+            if (identityResourceList == null || identityResourceList.Any() == false)
+            {
+                createIdentityResourceResponse = await this
+                                                                                 .TestingContext.DockerHelper.SecurityServiceClient
+                                                                                 .CreateIdentityResource(createIdentityResourceRequest, cancellationToken)
+                                                                                 .ConfigureAwait(false);
+                createIdentityResourceResponse.ShouldNotBeNull();
+                createIdentityResourceResponse.IdentityResourceName.ShouldNotBeNullOrEmpty();
+
+                this.TestingContext.IdentityResources.Add(createIdentityResourceResponse.IdentityResourceName);
+            }
+            else
+            {
+                if (identityResourceList.Where(i => i.Name == createIdentityResourceRequest.Name).Any())
+                {
+                    return;
+                }
+
+                createIdentityResourceResponse = await this
+                                                       .TestingContext.DockerHelper.SecurityServiceClient
+                                                       .CreateIdentityResource(createIdentityResourceRequest, cancellationToken)
+                                                       .ConfigureAwait(false);
+                createIdentityResourceResponse.ShouldNotBeNull();
+                createIdentityResourceResponse.IdentityResourceName.ShouldNotBeNullOrEmpty();
+
+                this.TestingContext.IdentityResources.Add(createIdentityResourceResponse.IdentityResourceName);
+            }
+        }
+
         [Given(@"the following clients exist")]
         public async Task GivenTheFollowingClientsExist(Table table)
         {
@@ -550,7 +606,6 @@ namespace EstateManagement.IntegrationTests.Shared
                 }
             }
             
-            Console.WriteLine(token);
             EstateResponse estate = await this.TestingContext.DockerHelper.EstateClient.GetEstate(token, estateId, CancellationToken.None)
                                               .ConfigureAwait(false);
             return estate;

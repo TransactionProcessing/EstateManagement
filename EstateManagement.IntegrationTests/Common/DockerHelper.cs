@@ -107,7 +107,8 @@ namespace EstateManagement.IntegrationTests.Common
                                                                                                     "stuartferguson/securityservice",
                                                                                                     testNetwork,
                                                                                                     traceFolder,
-                                                                                                    dockerCredentials);
+                                                                                                    dockerCredentials,
+                                                                                                    true);
 
             IContainerService estateReportingContainer = DockerHelper.SetupEstateReportingContainer(this.EstateReportingContainerName,
                                                                                                     this.Logger,

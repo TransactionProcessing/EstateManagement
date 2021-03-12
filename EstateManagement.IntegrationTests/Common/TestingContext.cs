@@ -13,9 +13,12 @@
         {
             this.Estates = new List<EstateDetails>();
             this.Clients = new List<ClientDetails>();
+            this.IdentityResources = new List<String>();
         }
         
         public NlogLogger Logger { get; set; }
+
+        public List<String> IdentityResources;
 
         public DockerHelper DockerHelper { get; set; }
 
