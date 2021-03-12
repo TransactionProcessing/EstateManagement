@@ -550,6 +550,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 }
             }
             
+            Console.WriteLine(token);
             EstateResponse estate = await this.TestingContext.DockerHelper.EstateClient.GetEstate(token, estateId, CancellationToken.None)
                                               .ConfigureAwait(false);
             return estate;
