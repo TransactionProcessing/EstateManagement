@@ -82,6 +82,7 @@ namespace EstateManagement.IntegrationTests.Common
             this.TestNetworks.Add(testNetwork);
 
             IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, "eventstore/eventstore:20.10.0-buster-slim", testNetwork, traceFolder);
+            this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
 
             await Retry.For(async () =>
                             {
@@ -137,7 +138,6 @@ namespace EstateManagement.IntegrationTests.Common
             // Cache the ports
             this.EstateManagementPort = estateManagementContainer.ToHostExposedEndpoint($"{DockerHelper.EstateManagementDockerPort}/tcp").Port;
             this.SecurityServicePort = securityServiceContainer.ToHostExposedEndpoint($"{DockerHelper.SecurityServiceDockerPort}/tcp").Port;
-            this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
             this.EstateReportingPort= estateReportingContainer.ToHostExposedEndpoint($"{DockerHelper.EstateReportingDockerPort}/tcp").Port;
 
             // Setup the base address resolvers
@@ -150,8 +150,6 @@ namespace EstateManagement.IntegrationTests.Common
 
             // TODO: Load up the projections
             await this.LoadEventStoreProjections().ConfigureAwait(false);
-
-            await this.PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
         }
 
         private async Task LoadEventStoreProjections()
@@ -205,8 +203,6 @@ namespace EstateManagement.IntegrationTests.Common
 
         public override async Task StopContainersForScenarioRun()
         {
-            await CleanUpSubscriptionServiceConfiguration().ConfigureAwait(false);
-
             await RemoveEstateReadModel().ConfigureAwait(false);
 
             if (this.Containers.Any())
@@ -281,57 +277,6 @@ namespace EstateManagement.IntegrationTests.Common
             await client.CreateAsync("$ce-EstateAggregate", "Reporting", settings);
             await client.CreateAsync("$ce-MerchantAggregate", "Reporting", settings);
             await client.CreateAsync("$ce-ContractAggregate", "Reporting", settings);
-        }
-
-        protected async Task CleanUpSubscriptionServiceConfiguration()
-        {
-            String connectionString = Setup.GetLocalConnectionString("SubscriptionServiceConfiguration");
-
-            await using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
-
-                // Delete the Event Store Server
-                await this.DeleteEventStoreServer(connection).ConfigureAwait(false);
-
-                // Delete the Subscriptions
-                await this.DeleteSubscriptions(connection).ConfigureAwait(false);
-                
-                await connection.CloseAsync().ConfigureAwait(false);
-            }
-        }
-
-        protected async Task InsertEventStoreServer(SqlConnection openConnection, String eventStoreContainerName)
-        {
-            String esConnectionString = $"ConnectTo=tcp://admin:changeit@{eventStoreContainerName}:{DockerHelper.EventStoreTcpDockerPort};VerboseLogging=true;";
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"INSERT INTO EventStoreServer(EventStoreServerId, ConnectionString,Name) SELECT '{this.TestId}', '{esConnectionString}', 'TestEventStore'";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-        
-        protected async Task DeleteEventStoreServer(SqlConnection openConnection)
-        {
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"DELETE FROM EventStoreServer WHERE EventStoreServerId = '{this.TestId}'";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-
-        protected async Task DeleteSubscriptions(SqlConnection openConnection)
-        {
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"DELETE FROM Subscription WHERE EventStoreId = '{this.TestId}'";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-
-        protected async Task InsertSubscription(SqlConnection openConnection, String streamName, String groupName, String endPointUri)
-        {
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"INSERT INTO subscription(SubscriptionId, EventStoreId, StreamName, GroupName, EndPointUri, StreamPosition) SELECT '{Guid.NewGuid()}', '{this.TestId}', '{streamName}', '{groupName}', '{endPointUri}', null";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
         }
     }
 }
