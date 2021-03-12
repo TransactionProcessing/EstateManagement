@@ -11,6 +11,7 @@
     using MerchantAggregate;
     using Models;
     using Models.Estate;
+    using NLog;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
     using Shared.DomainDrivenDesign.EventSourcing;
@@ -264,7 +265,7 @@
             }
 
             merchantAggregate.AddDevice(deviceId, deviceIdentifier);
-
+            
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 

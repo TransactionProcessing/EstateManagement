@@ -14,7 +14,7 @@ Background:
 
 	Given the following api resources exist
 	| ResourceName     | DisplayName            | Secret  | Scopes           | UserClaims                 |
-	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | MerchantId, EstateId, role |
+	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | merchantId, estateId, role |
 
 	Given the following clients exist
 	| ClientId      | ClientName     | Secret  | AllowedScopes    | AllowedGrantTypes  |
@@ -154,14 +154,6 @@ Scenario: Get Merchants for Estate - System Login
 	| Test Operator 1 | Test Merchant 4 | 00000001       | 10000001       | Test Estate 2 |
 	| Test Operator 1 | Test Merchant 5 | 00000001       | 10000001       | Test Estate 2 |
 
-	When I create the following security users
-	| EmailAddress                      | Password | GivenName    | FamilyName | MerchantName    | EstateName    |
-	| merchantuser1@testmerchant1.co.uk | 123456   | TestMerchant | User1      | Test Merchant 1 | Test Estate 1 |
-	| merchantuser1@testmerchant2.co.uk | 123456   | TestMerchant | User1      | Test Merchant 2 | Test Estate 1 |
-	| merchantuser1@testmerchant3.co.uk | 123456   | TestMerchant | User1      | Test Merchant 3 | Test Estate 1 |
-	| merchantuser1@testmerchant4.co.uk | 123456   | TestMerchant | User1      | Test Merchant 4 | Test Estate 2 |
-	| merchantuser1@testmerchant5.co.uk | 123456   | TestMerchant | User1      | Test Merchant 5 | Test Estate 2 |
-
 	When I add the following devices to the merchant
 	| DeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1      | Test Merchant 1 | Test Estate 1 |
@@ -169,6 +161,14 @@ Scenario: Get Merchants for Estate - System Login
 	| TestDevice3      | Test Merchant 3 | Test Estate 1 |
 	| TestDevice4      | Test Merchant 4 | Test Estate 2 |
 	| TestDevice5      | Test Merchant 5 | Test Estate 2 |
+
+	When I create the following security users
+	| EmailAddress                      | Password | GivenName    | FamilyName | MerchantName    | EstateName    |
+	| merchantuser1@testmerchant1.co.uk | 123456   | TestMerchant | User1      | Test Merchant 1 | Test Estate 1 |
+	| merchantuser1@testmerchant2.co.uk | 123456   | TestMerchant | User1      | Test Merchant 2 | Test Estate 1 |
+	| merchantuser1@testmerchant3.co.uk | 123456   | TestMerchant | User1      | Test Merchant 3 | Test Estate 1 |
+	| merchantuser1@testmerchant4.co.uk | 123456   | TestMerchant | User1      | Test Merchant 4 | Test Estate 2 |
+	| merchantuser1@testmerchant5.co.uk | 123456   | TestMerchant | User1      | Test Merchant 5 | Test Estate 2 |
 
 	When I get the merchants for 'Test Estate 1' then 3 merchants will be returned
 
@@ -192,14 +192,6 @@ Scenario: Get Merchants for Estate - Estate Login
 	| Test Operator 1 | Test Merchant 4 | 00000001       | 10000001       | Test Estate 2 |
 	| Test Operator 1 | Test Merchant 5 | 00000001       | 10000001       | Test Estate 2 |
 
-	When I create the following security users
-	| EmailAddress                      | Password | GivenName    | FamilyName | MerchantName    | EstateName    |
-	| merchantuser1@testmerchant1.co.uk | 123456   | TestMerchant | User1      | Test Merchant 1 | Test Estate 1 |
-	| merchantuser1@testmerchant2.co.uk | 123456   | TestMerchant | User1      | Test Merchant 2 | Test Estate 1 |
-	| merchantuser1@testmerchant3.co.uk | 123456   | TestMerchant | User1      | Test Merchant 3 | Test Estate 1 |
-	| merchantuser1@testmerchant4.co.uk | 123456   | TestMerchant | User1      | Test Merchant 4 | Test Estate 2 |
-	| merchantuser1@testmerchant5.co.uk | 123456   | TestMerchant | User1      | Test Merchant 5 | Test Estate 2 |
-
 	When I add the following devices to the merchant
 	| DeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1      | Test Merchant 1 | Test Estate 1 |
@@ -207,6 +199,14 @@ Scenario: Get Merchants for Estate - Estate Login
 	| TestDevice3      | Test Merchant 3 | Test Estate 1 |
 	| TestDevice4      | Test Merchant 4 | Test Estate 2 |
 	| TestDevice5      | Test Merchant 5 | Test Estate 2 |
+
+	When I create the following security users
+	| EmailAddress                      | Password | GivenName    | FamilyName | MerchantName    | EstateName    |
+	| merchantuser1@testmerchant1.co.uk | 123456   | TestMerchant | User1      | Test Merchant 1 | Test Estate 1 |
+	| merchantuser1@testmerchant2.co.uk | 123456   | TestMerchant | User1      | Test Merchant 2 | Test Estate 1 |
+	| merchantuser1@testmerchant3.co.uk | 123456   | TestMerchant | User1      | Test Merchant 3 | Test Estate 1 |
+	| merchantuser1@testmerchant4.co.uk | 123456   | TestMerchant | User1      | Test Merchant 4 | Test Estate 2 |
+	| merchantuser1@testmerchant5.co.uk | 123456   | TestMerchant | User1      | Test Merchant 5 | Test Estate 2 |
 
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 

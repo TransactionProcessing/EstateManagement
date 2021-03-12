@@ -12,7 +12,7 @@ Background:
 
 	Given the following api resources exist
 	| ResourceName     | DisplayName            | Secret  | Scopes           | UserClaims                 |
-	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | MerchantId, EstateId, role |
+	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | merchantId, estateId, role |
 
 	Given the following clients exist
 	| ClientId      | ClientName     | Secret  | AllowedScopes    | AllowedGrantTypes  |

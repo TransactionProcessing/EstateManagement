@@ -116,7 +116,7 @@ namespace EstateManagement.IntegrationTests.Merchant
                         "Estate Managememt REST",
                         "Secret1",
                         "estateManagement",
-                        "MerchantId, EstateId, role"});
+                        "merchantId, estateId, role"});
 #line 15
  testRunner.Given("the following api resources exist", ((string)(null)), table57, "Given ");
 #line hidden
@@ -1272,76 +1272,76 @@ this.FeatureBackground();
  testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table85, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table86 = new TechTalk.SpecFlow.Table(new string[] {
+                            "DeviceIdentifier",
+                            "MerchantName",
+                            "EstateName"});
+                table86.AddRow(new string[] {
+                            "TestDevice1",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+                table86.AddRow(new string[] {
+                            "TestDevice2",
+                            "Test Merchant 2",
+                            "Test Estate 1"});
+                table86.AddRow(new string[] {
+                            "TestDevice3",
+                            "Test Merchant 3",
+                            "Test Estate 1"});
+                table86.AddRow(new string[] {
+                            "TestDevice4",
+                            "Test Merchant 4",
+                            "Test Estate 2"});
+                table86.AddRow(new string[] {
+                            "TestDevice5",
+                            "Test Merchant 5",
+                            "Test Estate 2"});
+#line 195
+ testRunner.When("I add the following devices to the merchant", ((string)(null)), table86, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table87 = new TechTalk.SpecFlow.Table(new string[] {
                             "EmailAddress",
                             "Password",
                             "GivenName",
                             "FamilyName",
                             "MerchantName",
                             "EstateName"});
-                table86.AddRow(new string[] {
+                table87.AddRow(new string[] {
                             "merchantuser1@testmerchant1.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table86.AddRow(new string[] {
+                table87.AddRow(new string[] {
                             "merchantuser1@testmerchant2.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 2",
                             "Test Estate 1"});
-                table86.AddRow(new string[] {
+                table87.AddRow(new string[] {
                             "merchantuser1@testmerchant3.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 3",
                             "Test Estate 1"});
-                table86.AddRow(new string[] {
+                table87.AddRow(new string[] {
                             "merchantuser1@testmerchant4.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 4",
                             "Test Estate 2"});
-                table86.AddRow(new string[] {
+                table87.AddRow(new string[] {
                             "merchantuser1@testmerchant5.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 5",
                             "Test Estate 2"});
-#line 195
- testRunner.When("I create the following security users", ((string)(null)), table86, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table87 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table87.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-                table87.AddRow(new string[] {
-                            "TestDevice2",
-                            "Test Merchant 2",
-                            "Test Estate 1"});
-                table87.AddRow(new string[] {
-                            "TestDevice3",
-                            "Test Merchant 3",
-                            "Test Estate 1"});
-                table87.AddRow(new string[] {
-                            "TestDevice4",
-                            "Test Merchant 4",
-                            "Test Estate 2"});
-                table87.AddRow(new string[] {
-                            "TestDevice5",
-                            "Test Merchant 5",
-                            "Test Estate 2"});
 #line 203
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table87, "When ");
+ testRunner.When("I create the following security users", ((string)(null)), table87, "When ");
 #line hidden
 #line 211
  testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +

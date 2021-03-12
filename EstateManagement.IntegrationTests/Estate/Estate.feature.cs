@@ -114,7 +114,7 @@ namespace EstateManagement.IntegrationTests.Estate
                         "Estate Managememt REST",
                         "Secret1",
                         "estateManagement",
-                        "MerchantId, EstateId, role"});
+                        "merchantId, estateId, role"});
 #line 13
  testRunner.Given("the following api resources exist", ((string)(null)), table32, "Given ");
 #line hidden
