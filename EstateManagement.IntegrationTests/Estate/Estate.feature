@@ -15,15 +15,9 @@ Background:
 	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | merchantId, estateId, role |
 
 	Given the following clients exist
-	| ClientId      | ClientName     | Secret  | AllowedScopes                         | AllowedGrantTypes  |
-	| serviceClient | Service Client | Secret1 | estateManagement                      | client_credentials |
-	| estateClient  | Estate Client  | Secret1 | estateManagement,openid,email,profile | password           |
-
-	Given I create the following identity resources
-	| Name    | DisplayName          | Description                                                 | UserClaims                                                             |
-	| openid  | Your user identifier |                                                             | sub                                                                    |
-	| profile | User profile         | Your user profile information (first name, last name, etc.) | name,role,email,given_name,middle_name,family_name,EstateId,MerchantId |
-	| email   | Email                | Email and Email Verified Flags                              | email_verified,email                                                   |
+	| ClientId      | ClientName     | Secret  | AllowedScopes    | AllowedGrantTypes  |
+	| serviceClient | Service Client | Secret1 | estateManagement | client_credentials |
+	| estateClient  | Estate Client  | Secret1 | estateManagement | password           |
 
 	Given I have a token to access the estate management resource
 	| ClientId      | 
