@@ -251,8 +251,6 @@
         {
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
-            Shared.Logger.Logger.LogInformation($"Aggregate rehydrated merchant: {merchantAggregate.Name}");
-
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false)
             {
@@ -266,14 +264,9 @@
                 throw new InvalidOperationException($"Estate Id {estateId} has not been created");
             }
 
-            Shared.Logger.Logger.LogInformation($"About to add device {deviceIdentifier} to merchant: {merchantAggregate.Name}");
             merchantAggregate.AddDevice(deviceId, deviceIdentifier);
-
-            Shared.Logger.Logger.LogInformation($"device {deviceIdentifier} added to merchant: {merchantAggregate.Name}");
-
+            
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
-
-            Shared.Logger.Logger.LogInformation($"changes to merchant: {merchantAggregate.Name} saved");
         }
 
         /// <summary>
