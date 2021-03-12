@@ -74,13 +74,19 @@ namespace EstateManagement.IntegrationTests.Common
             this.EstateReportingContainerName = $"estatereporting{testGuid:N}";
             this.SubscriptionServiceContainerName = $"subscription{testGuid:N}";
 
+            String eventStoreAddress = $"http://{this.EventStoreContainerName}";
+
             (String, String,String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
 
             INetworkService testNetwork = DockerHelper.SetupTestNetwork();
             this.TestNetworks.Add(testNetwork);
 
-            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, "eventstore/eventstore:20.6.0-buster-slim", testNetwork, traceFolder, usesEventStore2006OrLater: true);
+            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, "eventstore/eventstore:20.10.0-buster-slim", testNetwork, traceFolder);
 
+            await Retry.For(async () =>
+                            {
+                                await this.PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
+                            }, retryFor: TimeSpan.FromMinutes(2), retryInterval: TimeSpan.FromSeconds(30));
 
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName, this.Logger,
                                                                                                       "estatemanagement", new List<INetworkService>
@@ -89,7 +95,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                                                                                               Setup.DatabaseServerNetwork
                                                                                                                           }, traceFolder, null,
                                                                                                       this.SecurityServiceContainerName,
-                                                                                                      this.EventStoreContainerName,
+                                                                                                      eventStoreAddress,
                                                                                                       (Setup.SqlServerContainerName,
                                                                                                       "sa",
                                                                                                       "thisisalongpassword123!"),
@@ -113,6 +119,7 @@ namespace EstateManagement.IntegrationTests.Common
                                                                                                     traceFolder,
                                                                                                     dockerCredentials,
                                                                                                     this.SecurityServiceContainerName,
+                                                                                                    eventStoreAddress,
                                                                                                     (Setup.SqlServerContainerName,
                                                                                                     "sa",
                                                                                                     "thisisalongpassword123!"),
@@ -145,26 +152,6 @@ namespace EstateManagement.IntegrationTests.Common
             await this.LoadEventStoreProjections().ConfigureAwait(false);
 
             await this.PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
-
-            IContainerService subscriptionServiceContainer = DockerHelper.SetupSubscriptionServiceContainer(this.SubscriptionServiceContainerName,
-                                                                                                            this.Logger,
-                                                                                                            "stuartferguson/subscriptionservicehost",
-                                                                                                            new List<INetworkService>
-                                                                                                            {
-                                                                                                                testNetwork,
-                                                                                                                Setup.DatabaseServerNetwork
-                                                                                                            },
-                                                                                                            traceFolder,
-                                                                                                            dockerCredentials,
-                                                                                                            this.SecurityServiceContainerName,
-                                                                                                            (Setup.SqlServerContainerName,
-                                                                                                            "sa",
-                                                                                                            "thisisalongpassword123!"),
-                                                                                                            this.TestId,
-                                                                                                            ("serviceClient", "Secret1"),
-                                                                                                            true);
-
-            this.Containers.Add(subscriptionServiceContainer);
         }
 
         private async Task LoadEventStoreProjections()
@@ -181,26 +168,7 @@ namespace EstateManagement.IntegrationTests.Common
                 {
                     FileInfo[] files = di.GetFiles();
 
-                    EventStoreClientSettings eventStoreClientSettings = new EventStoreClientSettings
-                                                                        {
-                                                                            ConnectivitySettings = new EventStoreClientConnectivitySettings
-                                                                                                   {
-                                                                                                       Address = new Uri($"https://{ipAddresses.First().ToString()}:{this.EventStoreHttpPort}")
-                                                                                                   },
-                                                                            CreateHttpMessageHandler = () => new SocketsHttpHandler
-                                                                                                             {
-                                                                                                                 SslOptions =
-                                                                                                                 {
-                                                                                                                     RemoteCertificateValidationCallback = (sender,
-                                                                                                                                                            certificate,
-                                                                                                                                                            chain,
-                                                                                                                                                            errors) => true,
-                                                                                                                 }
-                                                                                                             },
-                                                                            DefaultCredentials = new UserCredentials("admin","changeit")
-
-                };
-                    EventStoreProjectionManagementClient projectionClient = new EventStoreProjectionManagementClient(eventStoreClientSettings);
+                    EventStoreProjectionManagementClient projectionClient = new EventStoreProjectionManagementClient(ConfigureEventStoreSettings(this.EventStoreHttpPort));
 
                     foreach (FileInfo file in files)
                     {
@@ -280,36 +248,39 @@ namespace EstateManagement.IntegrationTests.Common
             }
         }
 
+        private static EventStoreClientSettings ConfigureEventStoreSettings(Int32 eventStoreHttpPort)
+        {
+            String connectionString = $"http://127.0.0.1:{eventStoreHttpPort}";
+
+            EventStoreClientSettings settings = new EventStoreClientSettings();
+            settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
+                                                      {
+                                                          SslOptions =
+                                                          {
+                                                              RemoteCertificateValidationCallback = (sender,
+                                                                                                     certificate,
+                                                                                                     chain,
+                                                                                                     errors) => true,
+                                                          }
+                                                      };
+            settings.ConnectionName = "Specflow";
+            settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
+                                            {
+                                                Address = new Uri(connectionString),
+                                            };
+
+            settings.DefaultCredentials = new UserCredentials("admin", "changeit");
+            return settings;
+        }
+
         protected async Task PopulateSubscriptionServiceConfiguration()
         {
-            String connectionString = Setup.GetLocalConnectionString("SubscriptionServiceConfiguration");
+            EventStorePersistentSubscriptionsClient client = new EventStorePersistentSubscriptionsClient(ConfigureEventStoreSettings(this.EventStoreHttpPort));
 
-            await using(SqlConnection connection = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
-                
-                    // Create an Event Store Server
-                    await this.InsertEventStoreServer(connection,this.EventStoreContainerName).ConfigureAwait(false);
-
-                    String endPointUri = $"http://{this.EstateReportingContainerName}:5005/api/domainevents";
-                    // Add Route for Estate Aggregate Events
-                    await this.InsertSubscription(connection, "$ce-EstateAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-
-                    // Add Route for Merchant Aggregate Events
-                    await this.InsertSubscription(connection, "$ce-MerchantAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-
-                    // Add Route for Contract Aggregate Events
-                    await this.InsertSubscription(connection, "$ce-ContractAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-
-                    await connection.CloseAsync().ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    throw;
-                }
-            }
+            PersistentSubscriptionSettings settings = new PersistentSubscriptionSettings(resolveLinkTos: true);
+            await client.CreateAsync("$ce-EstateAggregate", "Reporting", settings);
+            await client.CreateAsync("$ce-MerchantAggregate", "Reporting", settings);
+            await client.CreateAsync("$ce-ContractAggregate", "Reporting", settings);
         }
 
         protected async Task CleanUpSubscriptionServiceConfiguration()
