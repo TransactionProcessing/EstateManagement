@@ -115,7 +115,7 @@
         {
             this.CheckEstateHasBeenCreated();
 
-            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(this.AggregateId, securityUserId, emailAddress);
+            SecurityUserAddedToEstateEvent securityUserAddedEvent = new SecurityUserAddedToEstateEvent(this.AggregateId, securityUserId, emailAddress);
 
             this.ApplyAndAppend(securityUserAddedEvent);
         }
@@ -259,7 +259,7 @@
             }
         }
 
-        private void PlayEvent(SecurityUserAddedEvent domainEvent)
+        private void PlayEvent(SecurityUserAddedToEstateEvent domainEvent)
         {
             SecurityUser securityUser = SecurityUser.Create(domainEvent.SecurityUserId, domainEvent.EmailAddress);
 

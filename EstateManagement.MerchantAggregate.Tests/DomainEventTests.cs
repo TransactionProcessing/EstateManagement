@@ -94,7 +94,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         [Fact]
         public void SecurityUserAddedEvent_CanBeCreated_IsCreated()
         {
-            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(TestData.MerchantId,
+            SecurityUserAddedToMerchantEvent securityUserAddedEvent = new SecurityUserAddedToMerchantEvent(TestData.MerchantId,
                 TestData.EstateId,
                                                                                           TestData.SecurityUserId,
                                                                                           TestData.EstateUserEmailAddress);

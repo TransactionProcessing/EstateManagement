@@ -5,19 +5,19 @@
     using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.EventSourcing;
     
-    public record SecurityUserAddedEvent : DomainEventRecord.DomainEvent
+    public record SecurityUserAddedToMerchantEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="SecurityUserAddedEvent" /> class.
+        /// Initializes a new instance of the <see cref="SecurityUserAddedToMerchantEvent" /> class.
         /// </summary>
         /// <param name="aggregateId">The aggregate identifier.</param>
         /// <param name="eventId">The event identifier.</param>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="securityUserId">The security user identifier.</param>
         /// <param name="emailAddress">The email address.</param>
-        public SecurityUserAddedEvent(Guid aggregateId,
+        public SecurityUserAddedToMerchantEvent(Guid aggregateId,
                                        Guid estateId,
                                        Guid securityUserId,
                                        String emailAddress) : base(aggregateId, Guid.NewGuid())

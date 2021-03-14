@@ -9,7 +9,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    public record SecurityUserAddedEvent : DomainEventRecord.DomainEvent
+    public record SecurityUserAddedToEstateEvent : DomainEventRecord.DomainEvent
     {
         #region Constructors
 
@@ -19,7 +19,7 @@
         /// <param name="aggregateId">The aggregate identifier.</param>
         /// <param name="securityUserId">The security user identifier.</param>
         /// <param name="emailAddress">The email address.</param>
-        public SecurityUserAddedEvent(Guid aggregateId,
+        public SecurityUserAddedToEstateEvent(Guid aggregateId,
                                        Guid securityUserId,
                                        String emailAddress) : base(aggregateId, Guid.NewGuid())
         {

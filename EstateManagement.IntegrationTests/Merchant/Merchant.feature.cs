@@ -1061,76 +1061,76 @@ this.FeatureBackground();
  testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table81, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table82 = new TechTalk.SpecFlow.Table(new string[] {
+                            "DeviceIdentifier",
+                            "MerchantName",
+                            "EstateName"});
+                table82.AddRow(new string[] {
+                            "TestDevice1",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+                table82.AddRow(new string[] {
+                            "TestDevice2",
+                            "Test Merchant 2",
+                            "Test Estate 1"});
+                table82.AddRow(new string[] {
+                            "TestDevice3",
+                            "Test Merchant 3",
+                            "Test Estate 1"});
+                table82.AddRow(new string[] {
+                            "TestDevice4",
+                            "Test Merchant 4",
+                            "Test Estate 2"});
+                table82.AddRow(new string[] {
+                            "TestDevice5",
+                            "Test Merchant 5",
+                            "Test Estate 2"});
+#line 157
+ testRunner.When("I add the following devices to the merchant", ((string)(null)), table82, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table83 = new TechTalk.SpecFlow.Table(new string[] {
                             "EmailAddress",
                             "Password",
                             "GivenName",
                             "FamilyName",
                             "MerchantName",
                             "EstateName"});
-                table82.AddRow(new string[] {
+                table83.AddRow(new string[] {
                             "merchantuser1@testmerchant1.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table82.AddRow(new string[] {
+                table83.AddRow(new string[] {
                             "merchantuser1@testmerchant2.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 2",
                             "Test Estate 1"});
-                table82.AddRow(new string[] {
+                table83.AddRow(new string[] {
                             "merchantuser1@testmerchant3.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 3",
                             "Test Estate 1"});
-                table82.AddRow(new string[] {
+                table83.AddRow(new string[] {
                             "merchantuser1@testmerchant4.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 4",
                             "Test Estate 2"});
-                table82.AddRow(new string[] {
+                table83.AddRow(new string[] {
                             "merchantuser1@testmerchant5.co.uk",
                             "123456",
                             "TestMerchant",
                             "User1",
                             "Test Merchant 5",
                             "Test Estate 2"});
-#line 157
- testRunner.When("I create the following security users", ((string)(null)), table82, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table83 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table83.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-                table83.AddRow(new string[] {
-                            "TestDevice2",
-                            "Test Merchant 2",
-                            "Test Estate 1"});
-                table83.AddRow(new string[] {
-                            "TestDevice3",
-                            "Test Merchant 3",
-                            "Test Estate 1"});
-                table83.AddRow(new string[] {
-                            "TestDevice4",
-                            "Test Merchant 4",
-                            "Test Estate 2"});
-                table83.AddRow(new string[] {
-                            "TestDevice5",
-                            "Test Merchant 5",
-                            "Test Estate 2"});
 #line 165
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table83, "When ");
+ testRunner.When("I create the following security users", ((string)(null)), table83, "When ");
 #line hidden
 #line 173
  testRunner.When("I get the merchants for \'Test Estate 1\' then 3 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
