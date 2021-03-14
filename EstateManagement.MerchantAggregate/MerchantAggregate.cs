@@ -223,7 +223,7 @@
         {
             this.EnsureMerchantHasBeenCreated();
 
-            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(this.AggregateId, this.EstateId, securityUserId, emailAddress);
+            SecurityUserAddedToMerchantEvent securityUserAddedEvent = new SecurityUserAddedToMerchantEvent(this.AggregateId, this.EstateId, securityUserId, emailAddress);
 
             this.ApplyAndAppend(securityUserAddedEvent);
         }
@@ -591,7 +591,7 @@
         /// Plays the event.
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
-        private void PlayEvent(SecurityUserAddedEvent domainEvent)
+        private void PlayEvent(SecurityUserAddedToMerchantEvent domainEvent)
         {
             SecurityUser securityUser = SecurityUser.Create(domainEvent.SecurityUserId, domainEvent.EmailAddress);
 

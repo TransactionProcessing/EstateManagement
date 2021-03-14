@@ -45,7 +45,7 @@ namespace EstateManagement.EstateAggregate.Tests
         [Fact]
         public void SecurityUserAddedEvent_CanBeCreated_IsCreated()
         {
-            SecurityUserAddedEvent securityUserAddedEvent = new SecurityUserAddedEvent(TestData.EstateId,
+            SecurityUserAddedToEstateEvent securityUserAddedEvent = new SecurityUserAddedToEstateEvent(TestData.EstateId,
                                                                                                       TestData.SecurityUserId,
                                                                                                       TestData.EstateUserEmailAddress);
 
