@@ -219,8 +219,8 @@
 
             String merchantRoleName = Environment.GetEnvironmentVariable("MerchantRoleName");
             createUserRequest.Roles.Add(String.IsNullOrEmpty(merchantRoleName) ? "Merchant" : merchantRoleName);
-            createUserRequest.Claims.Add("EstateId", estateId.ToString());
-            createUserRequest.Claims.Add("MerchantId", merchantId.ToString());
+            createUserRequest.Claims.Add("estateId", estateId.ToString());
+            createUserRequest.Claims.Add("merchantId", merchantId.ToString());
 
             CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
 

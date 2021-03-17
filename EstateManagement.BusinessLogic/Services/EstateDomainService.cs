@@ -125,7 +125,7 @@
             // Check if role has been overridden
             String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
             createUserRequest.Roles.Add(String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName);
-            createUserRequest.Claims.Add("EstateId", estateId.ToString());
+            createUserRequest.Claims.Add("estateId", estateId.ToString());
             
             CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
 
