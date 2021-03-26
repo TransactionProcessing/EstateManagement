@@ -28,10 +28,17 @@ jobs:
     - name: 'Get Previous tag'
       id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@1.0.0"
+
+    - name: Bump release version
+      id: bump_version
+      uses: christian-draeger/increment-semantic-version@1.0.2
+      with:
+            current-version: ${{ steps.previoustag.outputs.tag }}
+            version-fragment: 'bug' # This is only used to increment the minor versions
     
     - name: Print Version
       id: next_version
-      run: echo ::set-output name=VERSION::${{ steps.previoustag.outputs.tag }}-build$GITHUB_RUN_NUMBER
+      run: echo ::set-output name=VERSION::${{ steps.bump_version.outputs.next-version }}-build$GITHUB_RUN_NUMBER
         
     - name: Build and Publish Nuget Packages
       run: |
