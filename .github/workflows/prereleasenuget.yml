@@ -29,12 +29,11 @@ jobs:
       id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@1.0.0"
 
-    - name: Bump release version
-      id: bump_version
-      uses: christian-draeger/increment-semantic-version@1.0.2
+    - name: 'Get next minor version'
+      id: semvers
+      uses: "WyriHaximus/github-action-next-semvers@v1"
       with:
-            current-version: ${{ steps.previoustag.outputs.tag }}
-            version-fragment: 'bug' # This is only used to increment the minor versions
+        version: ${{ steps.previoustag.outputs.tag }}
     
     - name: Print Version
       id: next_version
