@@ -37,7 +37,7 @@ jobs:
     
     - name: Print Version
       id: next_version
-      run: echo ::set-output name=VERSION::${{ steps.bump_version.outputs.next-version }}-build$GITHUB_RUN_NUMBER
+      run: echo ::set-output name=VERSION::${{ steps.semvers.outputs.patch }}-build$GITHUB_RUN_NUMBER
         
     - name: Build and Publish Nuget Packages
       run: |
