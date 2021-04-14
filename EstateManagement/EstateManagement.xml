@@ -1,0 +1,594 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EstateManagement</name>
+    </assembly>
+    <members>
+        <member name="M:EstateManagement.Common.ClaimsHelper.GetUserClaim(System.Security.Claims.ClaimsPrincipal,System.String,System.String)">
+            <summary>
+            Gets the user claims.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="customClaimType">Type of the custom claim.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException">No claim [{customClaimType}] found for user id [{userIdClaim.Value}</exception>
+        </member>
+        <member name="M:EstateManagement.Common.ClaimsHelper.IsPasswordToken(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Determines whether [is client token] [the specified user].
+            </summary>
+            <param name="user">The user.</param>
+            <returns>
+              <c>true</c> if [is client token] [the specified user]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EstateManagement.Common.ClaimsHelper.ValidateRouteParameter``1(``0,System.Security.Claims.Claim)">
+            <summary>
+            Validates the route parameter.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="routeParameter">The route parameter.</param>
+            <param name="userClaim">The user claim.</param>
+        </member>
+        <member name="M:EstateManagement.Common.ClaimsHelper.IsUserRolesValid(System.Security.Claims.ClaimsPrincipal,System.String[])">
+            <summary>
+            Determines whether [is user roles valid] [the specified user].
+            </summary>
+            <param name="user">The user.</param>
+            <param name="allowedRoles">The allowed roles.</param>
+            <returns>
+              <c>true</c> if [is user roles valid] [the specified user]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:EstateManagement.Common.SwaggerDefaultValues">
+            <summary>
+            Represents the Swagger/Swashbuckle operation filter used to document the implicit API version parameter.
+            </summary>
+            <remarks>This <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter"/> is only required due to bugs in the <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator"/>.
+            Once they are fixed and published, this class can be removed.</remarks>
+        </member>
+        <member name="M:EstateManagement.Common.SwaggerDefaultValues.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <summary>
+            Applies the filter to the specified operation using the given context.
+            </summary>
+            <param name="operation">The operation to apply the filter to.</param>
+            <param name="context">The current operation filter context.</param>
+        </member>
+        <member name="T:EstateManagement.Common.SwaggerJsonConverter">
+            <summary>
+            
+            </summary>
+            <seealso cref="T:Newtonsoft.Json.JsonConverter" />
+        </member>
+        <member name="P:EstateManagement.Common.SwaggerJsonConverter.CanRead">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Newtonsoft.Json.JsonConverter" /> can read JSON.
+            </summary>
+            <value>
+              <c>true</c> if this <see cref="T:Newtonsoft.Json.JsonConverter" /> can read JSON; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:EstateManagement.Common.SwaggerJsonConverter.CanConvert(System.Type)">
+            <summary>
+            Determines whether this instance can convert the specified object type.
+            </summary>
+            <param name="objectType">Type of the object.</param>
+            <returns>
+              <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EstateManagement.Common.SwaggerJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads the JSON representation of the object.
+            </summary>
+            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader" /> to read from.</param>
+            <param name="objectType">Type of the object.</param>
+            <param name="existingValue">The existing value of object being read.</param>
+            <param name="serializer">The calling serializer.</param>
+            <returns>
+            The object value.
+            </returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:EstateManagement.Common.SwaggerJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes the JSON representation of the object.
+            </summary>
+            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter" /> to write to.</param>
+            <param name="value">The value.</param>
+            <param name="serializer">The calling serializer.</param>
+        </member>
+        <member name="T:EstateManagement.Controllers.ContractController">
+            <summary>
+            
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="F:EstateManagement.Controllers.ContractController.Mediator">
+            <summary>
+            The mediator
+            </summary>
+        </member>
+        <member name="M:EstateManagement.Controllers.ContractController.#ctor(MediatR.IMediator,EstateManagement.BusinessLogic.Manger.IEstateManagementManager,EstateManagement.Factories.IModelFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EstateManagement.Controllers.ContractController"/> class.
+            </summary>
+            <param name="mediator">The mediator.</param>
+        </member>
+        <member name="M:EstateManagement.Controllers.ContractController.GetContract(System.Guid,System.Guid,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Gets the contract.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="contractId">The contract identifier.</param>
+            <param name="includeProducts">if set to <c>true</c> [include products].</param>
+            <param name="includeProductsWithFees">if set to <c>true</c> [include products with fees].</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.ContractController.GetContracts(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the contracts.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.ContractController.AddProductToContract(System.Guid,System.Guid,EstateManagement.DataTransferObjects.Requests.AddProductToContractRequest,System.Threading.CancellationToken)">
+            <summary>
+            Adds the product to contract.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="contractId">The contract identifier.</param>
+            <param name="addProductToContractRequest">The add product to contract request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.ContractController.AddTransactionFeeForProductToContract(System.Guid,System.Guid,System.Guid,EstateManagement.DataTransferObjects.Requests.AddTransactionFeeForProductToContractRequest,System.Threading.CancellationToken)">
+            <summary>
+            Adds the transaction fee for product to contract.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="contractId">The contract identifier.</param>
+            <param name="productId">The product identifier.</param>
+            <param name="addTransactionFeeForProductToContractRequest">The add transaction fee for product to contract request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.ContractController.DisableTransactionFeeForProduct(System.Guid,System.Guid,System.Guid,System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Disables the transaction fee for product.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="contractId">The contract identifier.</param>
+            <param name="productId">The product identifier.</param>
+            <param name="transactionFeeId">The transaction fee identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.ContractController.CreateContract(System.Guid,EstateManagement.DataTransferObjects.Requests.CreateContractRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates the contract.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="createContractRequest">The create contract request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="F:EstateManagement.Controllers.ContractController.ControllerName">
+            <summary>
+            The controller name
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.ContractController.ControllerRoute">
+            <summary>
+            The controller route
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.EstateController.Mediator">
+            <summary>
+            The mediator
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.EstateController.EstateManagementManager">
+            <summary>
+            The estate management manager
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.EstateController.ModelFactory">
+            <summary>
+            The model factory
+            </summary>
+        </member>
+        <member name="M:EstateManagement.Controllers.EstateController.#ctor(MediatR.IMediator,EstateManagement.BusinessLogic.Manger.IEstateManagementManager,EstateManagement.Factories.IModelFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EstateManagement.Controllers.EstateController" /> class.
+            </summary>
+            <param name="mediator">The mediator.</param>
+            <param name="estateManagementManager">The estate management manager.</param>
+            <param name="modelFactory">The model factory.</param>
+        </member>
+        <member name="M:EstateManagement.Controllers.EstateController.CreateEstate(EstateManagement.DataTransferObjects.Requests.CreateEstateRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates the estate.
+            </summary>
+            <param name="createEstateRequest">The create estate request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.EstateController.GetEstate(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the estate.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <exception cref="T:Shared.Exceptions.NotFoundException">Estate not found with estate Id {estateId}</exception>
+        </member>
+        <member name="M:EstateManagement.Controllers.EstateController.CreateEstateUser(System.Guid,EstateManagement.DataTransferObjects.Requests.CreateEstateUserRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates the estate user.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="createEstateUserRequest">The create estate user request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="F:EstateManagement.Controllers.EstateController.ControllerName">
+            <summary>
+            The controller name
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.EstateController.ControllerRoute">
+            <summary>
+            The controller route
+            </summary>
+        </member>
+        <member name="T:EstateManagement.Controllers.MerchantController">
+            <summary>
+            
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="F:EstateManagement.Controllers.MerchantController.Mediator">
+            <summary>
+            The mediator
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.MerchantController.EstateManagementManager">
+            <summary>
+            The estate management manager
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.MerchantController.ModelFactory">
+            <summary>
+            The model factory
+            </summary>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.#ctor(MediatR.IMediator,EstateManagement.BusinessLogic.Manger.IEstateManagementManager,EstateManagement.Factories.IModelFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EstateManagement.Controllers.EstateController" /> class.
+            </summary>
+            <param name="mediator">The mediator.</param>
+            <param name="estateManagementManager">The estate management manager.</param>
+            <param name="modelFactory">The model factory.</param>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.CreateMerchant(System.Guid,EstateManagement.DataTransferObjects.Requests.CreateMerchantRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates the merchant.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="createMerchantRequest">The create merchant request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.GetMerchants(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the merchants.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <exception cref="T:Shared.Exceptions.NotFoundException">No Merchants found for estate Id {estateId}</exception>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.GetMerchant(System.Guid,System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the merchant.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <exception cref="T:Shared.Exceptions.NotFoundException">Merchant not found with estate Id {estateId} and merchant Id {merchantId}</exception>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.GetMerchantBalance(System.Guid,System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the merchant balance.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <exception cref="T:Shared.Exceptions.NotFoundException">Merchant Balance details not found with estate Id {estateId} and merchant Id {merchantId}</exception>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.MakeDeposit(System.Guid,System.Guid,EstateManagement.DataTransferObjects.Requests.MakeMerchantDepositRequest,System.Threading.CancellationToken)">
+            <summary>
+            Makes the deposit.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="makeMerchantDepositRequest">The make merchant deposit request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.AssignOperator(System.Guid,System.Guid,EstateManagement.DataTransferObjects.Requests.AssignOperatorRequest,System.Threading.CancellationToken)">
+            <summary>
+            Assigns the operator.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="assignOperatorRequest">The assign operator request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.CreateMerchantUser(System.Guid,System.Guid,EstateManagement.DataTransferObjects.Requests.CreateMerchantUserRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates the merchant user.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="createMerchantUserRequest">The create merchant user request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.AddDevice(System.Guid,System.Guid,EstateManagement.DataTransferObjects.Requests.AddMerchantDeviceRequest,System.Threading.CancellationToken)">
+            <summary>
+            Adds the device.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="addMerchantDeviceRequest">The add merchant device request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.GetTransactionFeesForProduct(System.Guid,System.Guid,System.Guid,System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the transaction fees for product.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="contractId">The contract identifier.</param>
+            <param name="productId">The product identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Controllers.MerchantController.GetMerchantContracts(System.Guid,System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the merchant contracts.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="merchantId">The merchant identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="F:EstateManagement.Controllers.MerchantController.ControllerName">
+            <summary>
+            The controller name
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.MerchantController.ControllerRoute">
+            <summary>
+            The controller route
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.OperatorController.Mediator">
+            <summary>
+            The mediator
+            </summary>
+        </member>
+        <member name="M:EstateManagement.Controllers.OperatorController.#ctor(MediatR.IMediator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EstateManagement.Controllers.OperatorController"/> class.
+            </summary>
+            <param name="mediator">The mediator.</param>
+        </member>
+        <member name="M:EstateManagement.Controllers.OperatorController.CreateOperator(System.Guid,EstateManagement.DataTransferObjects.Requests.CreateOperatorRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates the operator.
+            </summary>
+            <param name="estateId">The estate identifier.</param>
+            <param name="createOperatorRequest">The create operator request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="F:EstateManagement.Controllers.OperatorController.ControllerName">
+            <summary>
+            The controller name
+            </summary>
+        </member>
+        <member name="F:EstateManagement.Controllers.OperatorController.ControllerRoute">
+            <summary>
+            The controller route
+            </summary>
+        </member>
+        <member name="T:EstateManagement.Factories.IModelFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Contract.Contract})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="contract">The contract.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(EstateManagement.Models.Contract.Contract)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="contract">The contract.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(EstateManagement.Models.Estate.Estate)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="estate">The estate.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(EstateManagement.Models.Merchant.Merchant,EstateManagement.Models.Merchant.MerchantBalance)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchant">The merchant.</param>
+            <param name="merchantBalance">The merchant balance.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(EstateManagement.Models.Merchant.MerchantBalance)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchantBalance">The merchant balance.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Merchant.MerchantBalanceHistory})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchantBalanceHistories">The merchant balance histories.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Merchant.Merchant})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchants">The merchants.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.IModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Contract.TransactionFee})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="transactionFees">The transaction fees.</param>
+            <returns></returns>
+        </member>
+        <member name="T:EstateManagement.Factories.ModelFactory">
+            <summary>
+            
+            </summary>
+            <seealso cref="T:EstateManagement.Factories.IModelFactory" />
+        </member>
+        <member name="M:EstateManagement.Factories.ModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Contract.Contract})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="contracts">The contracts.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.ModelFactory.ConvertFrom(EstateManagement.Models.Estate.Estate)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="estate">The estate.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.ModelFactory.ConvertFrom(EstateManagement.Models.Merchant.Merchant,EstateManagement.Models.Merchant.MerchantBalance)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchant">The merchant.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.ModelFactory.ConvertFrom(EstateManagement.Models.Merchant.MerchantBalance)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchantBalance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.ModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Merchant.MerchantBalanceHistory})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchantBalanceHistories">The merchant balance histories.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.ModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Merchant.Merchant})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="merchants">The merchants.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EstateManagement.Factories.ModelFactory.ConvertFrom(System.Collections.Generic.List{EstateManagement.Models.Contract.TransactionFee})">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="transactionFees">The transaction fees.</param>
+            <returns></returns>
+        </member>
+        <member name="T:EstateManagement.Startup">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:EstateManagement.Startup.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EstateManagement.Startup"/> class.
+            </summary>
+            <param name="webHostEnvironment">The web host environment.</param>
+        </member>
+        <member name="P:EstateManagement.Startup.Configuration">
+            <summary>
+            Gets or sets the configuration.
+            </summary>
+            <value>
+            The configuration.
+            </value>
+        </member>
+        <member name="P:EstateManagement.Startup.WebHostEnvironment">
+            <summary>
+            Gets or sets the web host environment.
+            </summary>
+            <value>
+            The web host environment.
+            </value>
+        </member>
+        <member name="M:EstateManagement.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services.
+            </summary>
+            <param name="services">The services.</param>
+        </member>
+        <member name="M:EstateManagement.Startup.ConfigureMiddlewareServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the middleware services.
+            </summary>
+            <param name="services">The services.</param>
+        </member>
+        <member name="M:EstateManagement.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            Configures the specified application.
+            </summary>
+            <param name="app">The application.</param>
+            <param name="env">The env.</param>
+            <param name="loggerFactory">The logger factory.</param>
+            <param name="provider">The provider.</param>
+        </member>
+        <member name="M:EstateManagement.StartupExtensions.PreWarm(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Boolean)">
+            <summary>
+            Pres the warm.
+            </summary>
+            <param name="applicationBuilder">The application builder.</param>
+            <param name="startProjections">if set to <c>true</c> [start projections].</param>
+        </member>
+        <member name="M:EstateManagement.StartupExtensions.StartEventStoreProjections">
+            <summary>
+            Starts the event store projections.
+            </summary>
+        </member>
+    </members>
+</doc>

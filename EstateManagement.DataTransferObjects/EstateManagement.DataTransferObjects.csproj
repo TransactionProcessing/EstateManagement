@@ -5,6 +5,10 @@
     <DebugType>None</DebugType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
+    <DocumentationFile>D:\Projects\StuartFerguson\EstateManagement\EstateManagement.DataTransferObjects\EstateManagement.DataTransferObjects.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />

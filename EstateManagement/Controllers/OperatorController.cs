@@ -17,7 +17,6 @@ namespace EstateManagement.Controllers
     [ExcludeFromCodeCoverage]
     [Route(OperatorController.ControllerRoute)]
     [ApiController]
-    [ApiVersion("1.0")]
     public class OperatorController : ControllerBase
     {
         /// <summary>
@@ -43,6 +42,7 @@ namespace EstateManagement.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("")]
+        [ProducesResponseType(typeof(CreateOperatorResponse), 201)]
         public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
             Guid operatorId = Guid.NewGuid();

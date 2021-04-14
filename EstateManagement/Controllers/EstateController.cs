@@ -27,7 +27,6 @@
     [ExcludeFromCodeCoverage]
     [Route(EstateController.ControllerRoute)]
     [ApiController]
-    [ApiVersion("1.0")]
     [Authorize]
     public class EstateController : ControllerBase
     {
@@ -79,6 +78,7 @@
         /// <returns></returns>
         [HttpPost]
         [Route("")]
+        [ProducesResponseType(typeof(CreateEstateResponse), 201)]
         public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequestDTO createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
@@ -113,6 +113,7 @@
         /// <exception cref="NotFoundException">Estate not found with estate Id {estateId}</exception>
         [HttpGet]
         [Route("{estateId}")]
+        [ProducesResponseType(typeof(EstateResponse), 201)]
         public async Task<IActionResult> GetEstate([FromRoute] Guid estateId,
                                                    CancellationToken cancellationToken)
         {
@@ -140,8 +141,16 @@
             return this.Ok(this.ModelFactory.ConvertFrom(estate));
         }
 
+        /// <summary>
+        /// Creates the estate user.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createEstateUserRequest">The create estate user request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{estateId}/users")]
+        [ProducesResponseType(typeof(CreateEstateUserResponse), 201)]
         public async Task<IActionResult> CreateEstateUser([FromRoute] Guid estateId,
                                                           [FromBody] CreateEstateUserRequestDTO createEstateUserRequest,
                                                           CancellationToken cancellationToken)
