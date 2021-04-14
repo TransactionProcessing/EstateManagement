@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.DataTransferObjects.Responses
 {
     using System;
+    using Newtonsoft.Json;
 
     public class ContractProductTransactionFee
     {
@@ -12,6 +13,7 @@
         /// <value>
         /// The type of the calculation.
         /// </value>
+        [JsonProperty("calculation_type")]
         public CalculationType CalculationType { get; set; }
 
         /// <summary>
@@ -20,6 +22,7 @@
         /// <value>
         /// The type of the fee.
         /// </value>
+        [JsonProperty("fee_type")]
         public FeeType FeeType { get; set; }
 
         /// <summary>
@@ -28,6 +31,7 @@
         /// <value>
         /// The description.
         /// </value>
+        [JsonProperty("description")]
         public String Description { get; set; }
 
         /// <summary>
@@ -36,6 +40,7 @@
         /// <value>
         /// The transaction fee identifier.
         /// </value>
+        [JsonProperty("transaction_fee_id")]
         public Guid TransactionFeeId { get; set; }
 
         /// <summary>
@@ -44,6 +49,7 @@
         /// <value>
         /// The value.
         /// </value>
+        [JsonProperty("value")]
         public Decimal Value { get; set; }
 
         #endregion

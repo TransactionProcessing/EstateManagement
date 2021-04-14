@@ -28,8 +28,11 @@
     using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.MakeMerchantDepositRequest;
     using EstateManagement.Common;
     using System.Security.Claims;
+    using Common.Examples;
     using Microsoft.AspNetCore.Authorization;
     using Models.Contract;
+    using Swashbuckle.AspNetCore.Annotations;
+    using Swashbuckle.AspNetCore.Filters;
 
     /// <summary>
     /// 
@@ -90,7 +93,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        [ProducesResponseType(typeof(CreateMerchantResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(CreateMerchantResponse))]
+        [SwaggerResponseExample(201, typeof(CreateMerchantResponseExample))]
         public async Task<IActionResult> CreateMerchant([FromRoute] Guid estateId,
                                                         [FromBody] CreateMerchantRequestDTO createMerchantRequest,
                                                         CancellationToken cancellationToken)
@@ -150,7 +154,8 @@
         /// <exception cref="NotFoundException">No Merchants found for estate Id {estateId}</exception>
         [HttpGet]
         [Route("")]
-        [ProducesResponseType(typeof(List<MerchantResponse>), 200)]
+        [SwaggerResponse(200, "Created", typeof(List<MerchantResponse>))]
+        [SwaggerResponseExample(200, typeof(MerchantResponseListExample))]
         public async Task<IActionResult> GetMerchants([FromRoute] Guid estateId, CancellationToken cancellationToken)
         {
             // Get the Estate Id claim from the user
@@ -187,7 +192,8 @@
         /// <exception cref="NotFoundException">Merchant not found with estate Id {estateId} and merchant Id {merchantId}</exception>
         [HttpGet]
         [Route("{merchantId}")]
-        [ProducesResponseType(typeof(MerchantResponse), 200)]
+        [SwaggerResponse(200, "Created", typeof(MerchantResponse))]
+        [SwaggerResponseExample(200, typeof(MerchantResponseExample))]
         public async Task<IActionResult> GetMerchant([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
         {
             String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
@@ -256,7 +262,8 @@
         /// <exception cref="NotFoundException">Merchant Balance details not found with estate Id {estateId} and merchant Id {merchantId}</exception>
         [HttpGet]
         [Route("{merchantId}/balance")]
-        [ProducesResponseType(typeof(MerchantBalance), 200)]
+        [SwaggerResponse(200, "Created", typeof(MerchantBalanceResponse))]
+        [SwaggerResponseExample(200, typeof(MerchantBalanceResponseExample))]
         public async Task<IActionResult> GetMerchantBalance([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
         {
             String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
@@ -310,7 +317,8 @@
 
         [HttpGet]
         [Route("{merchantId}/balancehistory")]
-        [ProducesResponseType(typeof(List<MerchantBalanceHistoryResponse>), 200)]
+        [SwaggerResponse(200, "OK", typeof(List<MerchantBalanceHistoryResponse>))]
+        [SwaggerResponseExample(200, typeof(MerchantBalanceHistoryResponseListExample))]
         public async Task<IActionResult> GetMerchantBalanceHistory([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
         {
             String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
@@ -372,7 +380,9 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{merchantId}/deposits")]
-        [ProducesResponseType(typeof(MakeMerchantDepositResponse), 200)]
+        [SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
+        [SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
+
         public async Task<IActionResult> MakeDeposit([FromRoute] Guid estateId,
                                                      [FromRoute] Guid merchantId,
                                                      [FromBody] MakeMerchantDepositRequestDTO makeMerchantDepositRequest,
@@ -439,6 +449,8 @@
         [HttpPost]
         [Route("{merchantId}/operators")]
         [ProducesResponseType(typeof(AssignOperatorResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(AssignOperatorResponse))]
+        [SwaggerResponseExample(201, typeof(AssignOperatorResponseExample))]
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
                                                         [FromRoute] Guid merchantId,
                                                         AssignOperatorRequestDTO assignOperatorRequest,
@@ -484,7 +496,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{merchantId}/users")]
-        [ProducesResponseType(typeof(CreateMerchantUserResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(CreateMerchantUserResponse))]
+        [SwaggerResponseExample(201, typeof(CreateMerchantUserResponseExample))]
         public async Task<IActionResult> CreateMerchantUser([FromRoute] Guid estateId, 
                                                             [FromRoute] Guid merchantId,
                                                             [FromBody] CreateMerchantUserRequestDTO createMerchantUserRequest,
@@ -534,7 +547,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{merchantId}/devices")]
-        [ProducesResponseType(typeof(AddMerchantDeviceResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(AddMerchantDeviceResponse))]
+        [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
         public async Task<IActionResult> AddDevice([FromRoute] Guid estateId,
                                                     [FromRoute] Guid merchantId,
                                                     [FromBody] AddMerchantDeviceRequestDTO addMerchantDeviceRequest,
@@ -584,6 +598,8 @@
         [Route("{merchantId}/contracts/{contractId}/products/{productId}/transactionFees")]
         [HttpGet]
         [ProducesResponseType(typeof(List<ContractProductTransactionFee>), 200)]
+        [SwaggerResponse(200, "OK", typeof(List<ContractProductTransactionFee>))]
+        [SwaggerResponseExample(200, typeof(ContractProductTransactionFeeResponseListExample))]
         public async Task<IActionResult> GetTransactionFeesForProduct([FromRoute] Guid estateId,
                                                                       [FromRoute] Guid merchantId,
                                                                       [FromRoute] Guid contractId,
@@ -643,7 +659,8 @@
         /// <returns></returns>
         [Route("{merchantId}/contracts")]
         [HttpGet]
-        [ProducesResponseType(typeof(List<ContractResponse>), 200)]
+        [SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        [SwaggerResponseExample(200, typeof(ContractResponseListExample))]
         public async Task<IActionResult> GetMerchantContracts([FromRoute] Guid estateId,
                                                                       [FromRoute] Guid merchantId,
                                                                       CancellationToken cancellationToken)

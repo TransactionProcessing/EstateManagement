@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     public class ContractProduct
     {
@@ -11,6 +12,7 @@
         /// <value>
         /// The display text.
         /// </value>
+        [JsonProperty("display_text")]
         public String DisplayText { get; set; }
 
         /// <summary>
@@ -19,6 +21,7 @@
         /// <value>
         /// The name.
         /// </value>
+        [JsonProperty("name")]
         public String Name { get; set; }
 
         /// <summary>
@@ -27,6 +30,7 @@
         /// <value>
         /// The product identifier.
         /// </value>
+        [JsonProperty("product_id")]
         public Guid ProductId { get; set; }
 
         /// <summary>
@@ -35,6 +39,7 @@
         /// <value>
         /// The transaction fees.
         /// </value>
+        [JsonProperty("transaction_fees")]
         public List<ContractProductTransactionFee> TransactionFees { get; set; }
 
         /// <summary>
@@ -43,6 +48,7 @@
         /// <value>
         /// The value.
         /// </value>
+        [JsonProperty("value")]
         public Decimal? Value { get; set; }
     }
 }
