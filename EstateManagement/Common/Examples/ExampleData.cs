@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 namespace EstateManagement.Common.Examples
 {
     using DataTransferObjects.Requests;
+    using DataTransferObjects.Responses;
+    using Swashbuckle.AspNetCore.Filters;
+    
 
     internal static class ExampleData
     {
@@ -38,6 +41,7 @@ namespace EstateManagement.Common.Examples
 
         internal static String EstateUserPassword = "Password";
         internal static String EstateUserEmailAddress = "exampleuser@exampleestate.com";
+        internal static String MerchantUserEmailAddress = "exampleuser@examplemerchant.com";
 
         internal static String EstateUserFamilyName = "ExampleFamily";
 

@@ -4,6 +4,8 @@ using System.Text;
 
 namespace EstateManagement.DataTransferObjects.Responses
 {
+    using Newtonsoft.Json;
+
     public class ContractResponse
     {
         /// <summary>
@@ -12,6 +14,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The contract identifier.
         /// </value>
+        [JsonProperty("contract_id")]
         public Guid ContractId { get; set; }
 
         /// <summary>
@@ -20,6 +23,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The description.
         /// </value>
+        [JsonProperty("description")]
         public String Description { get; set; }
 
         /// <summary>
@@ -28,6 +32,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The estate identifier.
         /// </value>
+        [JsonProperty("estate_id")]
         public Guid EstateId { get; set; }
 
         /// <summary>
@@ -36,6 +41,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The operator identifier.
         /// </value>
+        [JsonProperty("operator_id")]
         public Guid OperatorId { get; set; }
 
         /// <summary>
@@ -44,6 +50,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The name of the operator.
         /// </value>
+        [JsonProperty("operator_name")]
         public String OperatorName { get; set; }
 
         /// <summary>
@@ -52,6 +59,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The products.
         /// </value>
+        [JsonProperty("products")]
         public List<ContractProduct> Products { get; set; }
 
     }

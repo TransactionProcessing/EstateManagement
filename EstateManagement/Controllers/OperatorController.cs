@@ -8,11 +8,14 @@ namespace EstateManagement.Controllers
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using BusinessLogic.Requests;
+    using Common.Examples;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
     using Shared.DomainDrivenDesign.CommandHandling;
+    using Swashbuckle.AspNetCore.Annotations;
+    using Swashbuckle.AspNetCore.Filters;
 
     [ExcludeFromCodeCoverage]
     [Route(OperatorController.ControllerRoute)]
@@ -42,7 +45,8 @@ namespace EstateManagement.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        [ProducesResponseType(typeof(CreateOperatorResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(CreateOperatorResponse))]
+        [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
         public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
             Guid operatorId = Guid.NewGuid();

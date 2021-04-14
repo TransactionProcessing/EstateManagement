@@ -1,9 +1,10 @@
 ﻿namespace EstateManagement.Common.Examples
 {
+    using System.Collections.Generic;
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
 
-    public class ContactResponseExample : IExamplesProvider<ContactResponse>
+    public partial class ContactResponseExample : IExamplesProvider<ContactResponse>
     {
         public ContactResponse GetExamples()
         {

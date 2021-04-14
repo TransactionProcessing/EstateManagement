@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using BusinessLogic.Requests;
     using Common;
+    using Common.Examples;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using MediatR;
@@ -22,6 +23,8 @@
     using EstateManagement.BusinessLogic.Manger;
     using Models.Contract;
     using Shared.Exceptions;
+    using Swashbuckle.AspNetCore.Annotations;
+    using Swashbuckle.AspNetCore.Filters;
 
     /// <summary>
     /// 
@@ -75,7 +78,8 @@
         /// <returns></returns>
         [HttpGet]
         [Route("{contractId}")]
-        [ProducesResponseType(typeof(ContractResponse), 200)]
+        [SwaggerResponse(200, "OK", typeof(ContractResponse))]
+        [SwaggerResponseExample(200, typeof(ContractResponseExample))]
         public async Task<IActionResult> GetContract([FromRoute] Guid estateId, 
                                                      [FromRoute] Guid contractId,
                                                      [FromQuery] Boolean includeProducts,
@@ -114,7 +118,8 @@
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        [ProducesResponseType(typeof(List<ContractResponse>), 200)]
+        [SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        [SwaggerResponseExample(200, typeof(ContractResponseListExample))]
         public async Task<IActionResult> GetContracts([FromRoute] Guid estateId,
                                                      CancellationToken cancellationToken)
         {
@@ -148,7 +153,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{contractId}/products")]
-        [ProducesResponseType(typeof(AddProductToContractResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(AddProductToContractResponse))]
+        [SwaggerResponseExample(201, typeof(AddProductToContractResponseExample))]
         public async Task<IActionResult> AddProductToContract([FromRoute] Guid estateId,
                                                               [FromRoute] Guid contractId,
                                                               [FromBody] AddProductToContractRequestDTO addProductToContractRequest,
@@ -198,7 +204,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{contractId}/products/{productId}/transactionFees")]
-        [ProducesResponseType(typeof(AddTransactionFeeForProductToContractResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(AddTransactionFeeForProductToContractResponse))]
+        [SwaggerResponseExample(201, typeof(AddTransactionFeeForProductToContractResponseExample))]
         public async Task<IActionResult> AddTransactionFeeForProductToContract([FromRoute] Guid estateId,
                                                                                [FromRoute] Guid contractId,
                                                                                [FromRoute] Guid productId,
@@ -258,6 +265,7 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{contractId}/products/{productId}/transactionFees/{transactionFeeId}")]
+        [SwaggerResponse(200, "OK")]
         public async Task<IActionResult> DisableTransactionFeeForProduct([FromRoute] Guid estateId,
                                                                                [FromRoute] Guid contractId,
                                                                                [FromRoute] Guid productId,
@@ -299,7 +307,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        [ProducesResponseType(typeof(CreateContractResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(CreateContractResponse))]
+        [SwaggerResponseExample(201, typeof(CreateContractResponseExample))]
         public async Task<IActionResult> CreateContract([FromRoute] Guid estateId,
                                                         [FromBody] CreateContractRequestDTO createContractRequest,
                                                         CancellationToken cancellationToken)

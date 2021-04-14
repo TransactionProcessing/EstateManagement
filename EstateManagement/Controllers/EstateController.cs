@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using BusinessLogic.Manger;
     using Common;
+    using Common.Examples;
     using DataTransferObjects;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
@@ -19,6 +20,8 @@
     using EstateManagement.BusinessLogic.Requests;
     using Microsoft.AspNetCore.Authorization;
     using Models.Estate;
+    using Swashbuckle.AspNetCore.Annotations;
+    using Swashbuckle.AspNetCore.Filters;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
     using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
     using CreateEstateUserRequest = BusinessLogic.Requests.CreateEstateUserRequest;
@@ -78,7 +81,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        [ProducesResponseType(typeof(CreateEstateResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(CreateEstateResponse))]
+        [SwaggerResponseExample(201, typeof(CreateEstateResponseExample))]
         public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequestDTO createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
@@ -113,7 +117,8 @@
         /// <exception cref="NotFoundException">Estate not found with estate Id {estateId}</exception>
         [HttpGet]
         [Route("{estateId}")]
-        [ProducesResponseType(typeof(EstateResponse), 201)]
+        [SwaggerResponse(200, "OK", typeof(EstateResponse))]
+        [SwaggerResponseExample(200, typeof(EstateResponseExample))]
         public async Task<IActionResult> GetEstate([FromRoute] Guid estateId,
                                                    CancellationToken cancellationToken)
         {
@@ -150,7 +155,8 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{estateId}/users")]
-        [ProducesResponseType(typeof(CreateEstateUserResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(CreateEstateUserResponse))]
+        [SwaggerResponseExample(201, typeof(CreateEstateUserResponseExample))]
         public async Task<IActionResult> CreateEstateUser([FromRoute] Guid estateId,
                                                           [FromBody] CreateEstateUserRequestDTO createEstateUserRequest,
                                                           CancellationToken cancellationToken)
