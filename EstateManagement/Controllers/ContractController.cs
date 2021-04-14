@@ -30,7 +30,6 @@
     [ExcludeFromCodeCoverage]
     [Route(ContractController.ControllerRoute)]
     [ApiController]
-    [ApiVersion("1.0")]
     public class ContractController : ControllerBase
     {
         #region Fields
@@ -76,6 +75,7 @@
         /// <returns></returns>
         [HttpGet]
         [Route("{contractId}")]
+        [ProducesResponseType(typeof(ContractResponse), 200)]
         public async Task<IActionResult> GetContract([FromRoute] Guid estateId, 
                                                      [FromRoute] Guid contractId,
                                                      [FromQuery] Boolean includeProducts,
@@ -107,13 +107,14 @@
         }
 
         /// <summary>
-        /// Gets the contract.
+        /// Gets the contracts.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
         [Route("")]
+        [ProducesResponseType(typeof(List<ContractResponse>), 200)]
         public async Task<IActionResult> GetContracts([FromRoute] Guid estateId,
                                                      CancellationToken cancellationToken)
         {
@@ -147,6 +148,7 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{contractId}/products")]
+        [ProducesResponseType(typeof(AddProductToContractResponse), 201)]
         public async Task<IActionResult> AddProductToContract([FromRoute] Guid estateId,
                                                               [FromRoute] Guid contractId,
                                                               [FromBody] AddProductToContractRequestDTO addProductToContractRequest,
@@ -196,6 +198,7 @@
         /// <returns></returns>
         [HttpPost]
         [Route("{contractId}/products/{productId}/transactionFees")]
+        [ProducesResponseType(typeof(AddTransactionFeeForProductToContractResponse), 201)]
         public async Task<IActionResult> AddTransactionFeeForProductToContract([FromRoute] Guid estateId,
                                                                                [FromRoute] Guid contractId,
                                                                                [FromRoute] Guid productId,
@@ -244,6 +247,15 @@
                                 });
         }
 
+        /// <summary>
+        /// Disables the transaction fee for product.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="productId">The product identifier.</param>
+        /// <param name="transactionFeeId">The transaction fee identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{contractId}/products/{productId}/transactionFees/{transactionFeeId}")]
         public async Task<IActionResult> DisableTransactionFeeForProduct([FromRoute] Guid estateId,
@@ -287,6 +299,7 @@
         /// <returns></returns>
         [HttpPost]
         [Route("")]
+        [ProducesResponseType(typeof(CreateContractResponse), 201)]
         public async Task<IActionResult> CreateContract([FromRoute] Guid estateId,
                                                         [FromBody] CreateContractRequestDTO createContractRequest,
                                                         CancellationToken cancellationToken)

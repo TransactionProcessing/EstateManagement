@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     public class MerchantResponse
     {
@@ -17,6 +18,7 @@
         /// <value>
         /// The addresses.
         /// </value>
+        [JsonProperty("addresses")]
         public List<AddressResponse> Addresses { get; set; }
 
         /// <summary>
@@ -25,6 +27,7 @@
         /// <value>
         /// The contacts.
         /// </value>
+        [JsonProperty("contacts")]
         public List<ContactResponse> Contacts { get; set; }
 
         /// <summary>
@@ -33,6 +36,7 @@
         /// <value>
         /// The devices.
         /// </value>
+        [JsonProperty("devices")]
         public Dictionary<Guid, String> Devices { get; set; }
 
         /// <summary>
@@ -41,6 +45,7 @@
         /// <value>
         /// The estate identifier.
         /// </value>
+        [JsonProperty("estate_id")]
         public Guid EstateId { get; set; }
 
         /// <summary>
@@ -49,6 +54,7 @@
         /// <value>
         /// The merchant identifier.
         /// </value>
+        [JsonProperty("merchant_id")]
         public Guid MerchantId { get; set; }
 
         /// <summary>
@@ -57,6 +63,7 @@
         /// <value>
         /// The name of the merchant.
         /// </value>
+        [JsonProperty("merchant_name")]
         public String MerchantName { get; set; }
 
         /// <summary>
@@ -65,6 +72,7 @@
         /// <value>
         /// The operators.
         /// </value>
+        [JsonProperty("operators")]
         public List<MerchantOperatorResponse> Operators { get; set; }
 
         /// <summary>
@@ -73,6 +81,7 @@
         /// <value>
         /// The available balance.
         /// </value>
+        [JsonProperty("available_balance")]
         public Decimal AvailableBalance { get; set; }
 
         /// <summary>
@@ -81,6 +90,7 @@
         /// <value>
         /// The balance.
         /// </value>
+        [JsonProperty("balance")]
         public Decimal Balance { get; set; }
 
         #endregion

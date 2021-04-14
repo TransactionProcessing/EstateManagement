@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace EstateManagement.DataTransferObjects.Responses
 {
+    using Newtonsoft.Json;
+
     /// <summary>
     /// 
     /// </summary>
@@ -17,6 +19,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The event identifier.
         /// </value>
+        [JsonProperty("event_id")]
         public Guid EventId { get; set; }
 
         /// <summary>
@@ -25,6 +28,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The estate identifier.
         /// </value>
+        [JsonProperty("estate_id")]
         public Guid EstateId { get; set; }
 
         /// <summary>
@@ -33,6 +37,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The merchant identifier.
         /// </value>
+        [JsonProperty("merchant_id")]
         public Guid MerchantId { get; set; }
 
         /// <summary>
@@ -41,6 +46,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The balance.
         /// </value>
+        [JsonProperty("balance")]
         public Decimal Balance { get; set; }
 
         /// <summary>
@@ -49,6 +55,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The change amount.
         /// </value>
+        [JsonProperty("change_amount")]
         public Decimal ChangeAmount { get; set; }
 
         /// <summary>
@@ -57,6 +64,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The type of the entry.
         /// </value>
+        [JsonProperty("entry_type")]
         public string EntryType { get; set; }
 
         /// <summary>
@@ -65,6 +73,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The in.
         /// </value>
+        [JsonProperty("in")]
         public Decimal? In { get; set; }
 
         /// <summary>
@@ -73,6 +82,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The out.
         /// </value>
+        [JsonProperty("out")]
         public Decimal? Out { get; set; }
 
         /// <summary>
@@ -81,6 +91,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The entry date time.
         /// </value>
+        [JsonProperty("entry_date_time")]
         public DateTime EntryDateTime { get; set; }
 
         /// <summary>
@@ -89,6 +100,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The reference.
         /// </value>
+        [JsonProperty("reference")]
         public string Reference { get; set; }
 
         /// <summary>
@@ -97,6 +109,7 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// <value>
         /// The transaction identifier.
         /// </value>
+        [JsonProperty("transaction_id")]
         public Guid TransactionId { get; set; }
     }
 }

@@ -1,0 +1,1244 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EstateManagement.DataTransferObjects</name>
+    </assembly>
+    <members>
+        <member name="T:EstateManagement.DataTransferObjects.CalculationType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:EstateManagement.DataTransferObjects.CalculationType.Fixed">
+            <summary>
+            The fixed
+            </summary>
+        </member>
+        <member name="F:EstateManagement.DataTransferObjects.CalculationType.Percentage">
+            <summary>
+            The percentage
+            </summary>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.FeeType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:EstateManagement.DataTransferObjects.FeeType.Merchant">
+            <summary>
+            The merchant
+            </summary>
+        </member>
+        <member name="F:EstateManagement.DataTransferObjects.FeeType.ServiceProvider">
+            <summary>
+            The service provider
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddMerchantDeviceRequest.DeviceIdentifier">
+            <summary>
+            Gets or sets the device identifier.
+            </summary>
+            <value>
+            The device identifier.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.AddProductToContractRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddProductToContractRequest.DisplayText">
+            <summary>
+            Gets or sets the display text.
+            </summary>
+            <value>
+            The display text.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddProductToContractRequest.ProductName">
+            <summary>
+            Gets or sets the name of the product.
+            </summary>
+            <value>
+            The name of the product.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddProductToContractRequest.Value">
+            <summary>
+            Gets or sets the value.
+            </summary>
+            <value>
+            The value.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.Address">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.AddressLine1">
+            <summary>
+            Gets or sets the address line1.
+            </summary>
+            <value>
+            The address line1.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.AddressLine2">
+            <summary>
+            Gets or sets the address line2.
+            </summary>
+            <value>
+            The address line2.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.AddressLine3">
+            <summary>
+            Gets or sets the address line3.
+            </summary>
+            <value>
+            The address line3.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.AddressLine4">
+            <summary>
+            Gets or sets the address line4.
+            </summary>
+            <value>
+            The address line4.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.Country">
+            <summary>
+            Gets or sets the country.
+            </summary>
+            <value>
+            The country.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.PostalCode">
+            <summary>
+            Gets or sets the postal code.
+            </summary>
+            <value>
+            The postal code.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.Region">
+            <summary>
+            Gets or sets the region.
+            </summary>
+            <value>
+            The region.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Address.Town">
+            <summary>
+            Gets or sets the town.
+            </summary>
+            <value>
+            The town.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.AddTransactionFeeForProductToContractRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddTransactionFeeForProductToContractRequest.CalculationType">
+            <summary>
+            Gets or sets the type of the calculation.
+            </summary>
+            <value>
+            The type of the calculation.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddTransactionFeeForProductToContractRequest.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+            <value>
+            The description.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddTransactionFeeForProductToContractRequest.FeeType">
+            <summary>
+            Gets or sets the type of the fee.
+            </summary>
+            <value>
+            The type of the fee.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AddTransactionFeeForProductToContractRequest.Value">
+            <summary>
+            Gets or sets the value.
+            </summary>
+            <value>
+            The value.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.AssignOperatorRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AssignOperatorRequest.MerchantNumber">
+            <summary>
+            Gets or sets the merchant number.
+            </summary>
+            <value>
+            The merchant number.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AssignOperatorRequest.OperatorId">
+            <summary>
+            Gets or sets the operator identifier.
+            </summary>
+            <value>
+            The operator identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.AssignOperatorRequest.TerminalNumber">
+            <summary>
+            Gets or sets the terminal number.
+            </summary>
+            <value>
+            The terminal number.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.Contact">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Contact.ContactName">
+            <summary>
+            Gets or sets the name of the contact.
+            </summary>
+            <value>
+            The name of the contact.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Contact.EmailAddress">
+            <summary>
+            Gets or sets the email address.
+            </summary>
+            <value>
+            The email address.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.Contact.PhoneNumber">
+            <summary>
+            Gets or sets the phone number.
+            </summary>
+            <value>
+            The phone number.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateContractRequest.OperatorId">
+            <summary>
+            Gets or sets the operator identifier.
+            </summary>
+            <value>
+            The operator identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateContractRequest.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+            <value>
+            The description.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateEstateRequest.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateEstateRequest.EstateName">
+            <summary>
+            Gets or sets the name of the estate.
+            </summary>
+            <value>
+            The name of the estate.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateEstateUserRequest.Password">
+            <summary>
+            Gets or sets the password.
+            </summary>
+            <value>
+            The password.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateEstateUserRequest.GivenName">
+            <summary>
+            Gets or sets the name of the given.
+            </summary>
+            <value>
+            The name of the given.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateEstateUserRequest.MiddleName">
+            <summary>
+            Gets or sets the name of the middle.
+            </summary>
+            <value>
+            The name of the middle.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateEstateUserRequest.FamilyName">
+            <summary>
+            Gets or sets the name of the family.
+            </summary>
+            <value>
+            The name of the family.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.CreateMerchantRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateMerchantRequest.Address">
+            <summary>
+            Gets or sets the address.
+            </summary>
+            <value>
+            The address.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateMerchantRequest.Contact">
+            <summary>
+            Gets or sets the contact.
+            </summary>
+            <value>
+            The contact.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateMerchantRequest.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateMerchantUserRequest.Password">
+            <summary>
+            Gets or sets the password.
+            </summary>
+            <value>
+            The password.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateMerchantUserRequest.GivenName">
+            <summary>
+            Gets or sets the name of the given.
+            </summary>
+            <value>
+            The name of the given.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateMerchantUserRequest.MiddleName">
+            <summary>
+            Gets or sets the name of the middle.
+            </summary>
+            <value>
+            The name of the middle.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateMerchantUserRequest.FamilyName">
+            <summary>
+            Gets or sets the name of the family.
+            </summary>
+            <value>
+            The name of the family.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.CreateOperatorRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateOperatorRequest.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateOperatorRequest.RequireCustomMerchantNumber">
+            <summary>
+            Gets or sets a value indicating whether [require custom merchant number].
+            </summary>
+            <value>
+              <c>true</c> if [require custom merchant number]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.CreateOperatorRequest.RequireCustomTerminalNumber">
+            <summary>
+            Gets or sets a value indicating whether [require custom terminal number].
+            </summary>
+            <value>
+              <c>true</c> if [require custom terminal number]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Requests.MakeMerchantDepositRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.MakeMerchantDepositRequest.Amount">
+            <summary>
+            Gets or sets the amount.
+            </summary>
+            <value>
+            The amount.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.MakeMerchantDepositRequest.DepositDateTime">
+            <summary>
+            Gets or sets the deposit date time.
+            </summary>
+            <value>
+            The deposit date time.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.MakeMerchantDepositRequest.Reference">
+            <summary>
+            Gets or sets the reference.
+            </summary>
+            <value>
+            The reference.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Requests.MakeMerchantDepositRequest.Source">
+            <summary>
+            Gets or sets the source.
+            </summary>
+            <value>
+            The source.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddMerchantDeviceResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddMerchantDeviceResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddMerchantDeviceResponse.DeviceId">
+            <summary>
+            Gets or sets the device identifier.
+            </summary>
+            <value>
+            The device identifier.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Responses.AddProductToContractResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddProductToContractResponse.ContractId">
+            <summary>
+            Gets or sets the contract identifier.
+            </summary>
+            <value>
+            The contract identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddProductToContractResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddProductToContractResponse.ProductId">
+            <summary>
+            Gets or sets the product identifier.
+            </summary>
+            <value>
+            The product identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.AddressId">
+            <summary>
+            Gets or sets the address identifier.
+            </summary>
+            <value>
+            The address identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.AddressLine1">
+            <summary>
+            Gets the address line1.
+            </summary>
+            <value>
+            The address line1.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.AddressLine2">
+            <summary>
+            Gets the address line2.
+            </summary>
+            <value>
+            The address line2.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.AddressLine3">
+            <summary>
+            Gets the address line3.
+            </summary>
+            <value>
+            The address line3.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.AddressLine4">
+            <summary>
+            Gets the address line4.
+            </summary>
+            <value>
+            The address line4.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.Country">
+            <summary>
+            Gets the country.
+            </summary>
+            <value>
+            The country.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.PostalCode">
+            <summary>
+            Gets the postal code.
+            </summary>
+            <value>
+            The postal code.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.Region">
+            <summary>
+            Gets the region.
+            </summary>
+            <value>
+            The region.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddressResponse.Town">
+            <summary>
+            Gets the town.
+            </summary>
+            <value>
+            The town.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddTransactionFeeForProductToContractResponse.ContractId">
+            <summary>
+            Gets or sets the contract identifier.
+            </summary>
+            <value>
+            The contract identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddTransactionFeeForProductToContractResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddTransactionFeeForProductToContractResponse.ProductId">
+            <summary>
+            Gets or sets the product identifier.
+            </summary>
+            <value>
+            The product identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AddTransactionFeeForProductToContractResponse.TransactionFeeId">
+            <summary>
+            Gets or sets the transaction fee identifier.
+            </summary>
+            <value>
+            The transaction fee identifier.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Responses.AssignOperatorResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AssignOperatorResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AssignOperatorResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.AssignOperatorResponse.OperatorId">
+            <summary>
+            Gets or sets the operator identifier.
+            </summary>
+            <value>
+            The operator identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContactResponse.ContactEmailAddress">
+            <summary>
+            Gets the contact email address.
+            </summary>
+            <value>
+            The contact email address.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContactResponse.ContactId">
+            <summary>
+            Gets the contact identifier.
+            </summary>
+            <value>
+            The contact identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContactResponse.ContactName">
+            <summary>
+            Gets the name of the contact.
+            </summary>
+            <value>
+            The name of the contact.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContactResponse.ContactPhoneNumber">
+            <summary>
+            Gets the contact phone number.
+            </summary>
+            <value>
+            The contact phone number.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProduct.DisplayText">
+            <summary>
+            Gets or sets the display text.
+            </summary>
+            <value>
+            The display text.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProduct.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProduct.ProductId">
+            <summary>
+            Gets or sets the product identifier.
+            </summary>
+            <value>
+            The product identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProduct.TransactionFees">
+            <summary>
+            Gets or sets the transaction fees.
+            </summary>
+            <value>
+            The transaction fees.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProduct.Value">
+            <summary>
+            Gets or sets the value.
+            </summary>
+            <value>
+            The value.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProductTransactionFee.CalculationType">
+            <summary>
+            Gets or sets the type of the calculation.
+            </summary>
+            <value>
+            The type of the calculation.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProductTransactionFee.FeeType">
+            <summary>
+            Gets or sets the type of the fee.
+            </summary>
+            <value>
+            The type of the fee.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProductTransactionFee.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+            <value>
+            The description.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProductTransactionFee.TransactionFeeId">
+            <summary>
+            Gets or sets the transaction fee identifier.
+            </summary>
+            <value>
+            The transaction fee identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractProductTransactionFee.Value">
+            <summary>
+            Gets or sets the value.
+            </summary>
+            <value>
+            The value.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractResponse.ContractId">
+            <summary>
+            Gets or sets the contract identifier.
+            </summary>
+            <value>
+            The contract identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractResponse.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+            <value>
+            The description.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractResponse.OperatorId">
+            <summary>
+            Gets or sets the operator identifier.
+            </summary>
+            <value>
+            The operator identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractResponse.OperatorName">
+            <summary>
+            Gets or sets the name of the operator.
+            </summary>
+            <value>
+            The name of the operator.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.ContractResponse.Products">
+            <summary>
+            Gets or sets the products.
+            </summary>
+            <value>
+            The products.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateContractResponse.ContractId">
+            <summary>
+            Gets or sets the contract identifier.
+            </summary>
+            <value>
+            The contract identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateContractResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateContractResponse.OperatorId">
+            <summary>
+            Gets or sets the operator identifier.
+            </summary>
+            <value>
+            The operator identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateEstateResponse.EstateId">
+            <summary>
+            Gets or sets the name of the estate.
+            </summary>
+            <value>
+            The name of the estate.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Responses.CreateEstateUserResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateEstateUserResponse.EstateId">
+            <summary>
+            Gets or sets the name of the estate.
+            </summary>
+            <value>
+            The name of the estate.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateEstateUserResponse.UserId">
+            <summary>
+            Gets or sets the user identifier.
+            </summary>
+            <value>
+            The user identifier.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Responses.CreateMerchantResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateMerchantResponse.AddressId">
+            <summary>
+            Gets or sets the address identifier.
+            </summary>
+            <value>
+            The address identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateMerchantResponse.ContactId">
+            <summary>
+            Gets or sets the contact identifier.
+            </summary>
+            <value>
+            The contact identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateMerchantResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateMerchantResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateMerchantUserResponse.EstateId">
+            <summary>
+            Gets or sets the name of the estate.
+            </summary>
+            <value>
+            The name of the estate.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateMerchantUserResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateMerchantUserResponse.UserId">
+            <summary>
+            Gets or sets the user identifier.
+            </summary>
+            <value>
+            The user identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateOperatorResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.CreateOperatorResponse.OperatorId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateOperatorResponse.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateOperatorResponse.OperatorId">
+            <summary>
+            Gets the operator identifier.
+            </summary>
+            <value>
+            The operator identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateOperatorResponse.RequireCustomMerchantNumber">
+            <summary>
+            Gets a value indicating whether [require custom merchant number].
+            </summary>
+            <value>
+              <c>true</c> if [require custom merchant number]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateOperatorResponse.RequireCustomTerminalNumber">
+            <summary>
+            Gets a value indicating whether [require customterminal number].
+            </summary>
+            <value>
+              <c>true</c> if [require customterminal number]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Responses.EstateResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateResponse.EstateName">
+            <summary>
+            Gets or sets the name of the estate.
+            </summary>
+            <value>
+            The name of the estate.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateResponse.Operators">
+            <summary>
+            Gets or sets the operators.
+            </summary>
+            <value>
+            The operators.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.EstateResponse.SecurityUsers">
+            <summary>
+            Gets or sets the security users.
+            </summary>
+            <value>
+            The security users.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MakeMerchantDepositResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MakeMerchantDepositResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MakeMerchantDepositResponse.DepositId">
+            <summary>
+            Gets or sets the device identifier.
+            </summary>
+            <value>
+            The device identifier.
+            </value>
+        </member>
+        <member name="T:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.EventId">
+            <summary>
+            Gets or sets the event identifier.
+            </summary>
+            <value>
+            The event identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.Balance">
+            <summary>
+            Gets or sets the balance.
+            </summary>
+            <value>
+            The balance.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.ChangeAmount">
+            <summary>
+            Gets or sets the change amount.
+            </summary>
+            <value>
+            The change amount.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.EntryType">
+            <summary>
+            Gets or sets the type of the entry.
+            </summary>
+            <value>
+            The type of the entry.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.In">
+            <summary>
+            Gets or sets the in.
+            </summary>
+            <value>
+            The in.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.Out">
+            <summary>
+            Gets or sets the out.
+            </summary>
+            <value>
+            The out.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.EntryDateTime">
+            <summary>
+            Gets or sets the entry date time.
+            </summary>
+            <value>
+            The entry date time.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.Reference">
+            <summary>
+            Gets or sets the reference.
+            </summary>
+            <value>
+            The reference.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceHistoryResponse.TransactionId">
+            <summary>
+            Gets or sets the transaction identifier.
+            </summary>
+            <value>
+            The transaction identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceResponse.AvailableBalance">
+            <summary>
+            Gets or sets the available balance.
+            </summary>
+            <value>
+            The available balance.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantBalanceResponse.Balance">
+            <summary>
+            Gets or sets the balance.
+            </summary>
+            <value>
+            The balance.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse.OperatorId">
+            <summary>
+            Gets the operator identifier.
+            </summary>
+            <value>
+            The operator identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse.MerchantNumber">
+            <summary>
+            Gets or sets the merchant number.
+            </summary>
+            <value>
+            The merchant number.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse.TerminalNumber">
+            <summary>
+            Gets or sets the terminal number.
+            </summary>
+            <value>
+            The terminal number.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.Addresses">
+            <summary>
+            Gets or sets the addresses.
+            </summary>
+            <value>
+            The addresses.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.Contacts">
+            <summary>
+            Gets or sets the contacts.
+            </summary>
+            <value>
+            The contacts.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.Devices">
+            <summary>
+            Gets or sets the devices.
+            </summary>
+            <value>
+            The devices.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.EstateId">
+            <summary>
+            Gets or sets the estate identifier.
+            </summary>
+            <value>
+            The estate identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.MerchantId">
+            <summary>
+            Gets or sets the merchant identifier.
+            </summary>
+            <value>
+            The merchant identifier.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.MerchantName">
+            <summary>
+            Gets or sets the name of the merchant.
+            </summary>
+            <value>
+            The name of the merchant.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.Operators">
+            <summary>
+            Gets or sets the operators.
+            </summary>
+            <value>
+            The operators.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.AvailableBalance">
+            <summary>
+            Gets or sets the available balance.
+            </summary>
+            <value>
+            The available balance.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.MerchantResponse.Balance">
+            <summary>
+            Gets or sets the balance.
+            </summary>
+            <value>
+            The balance.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.SecurityUserResponse.EmailAddress">
+            <summary>
+            Gets or sets the email address.
+            </summary>
+            <value>
+            The email address.
+            </value>
+        </member>
+        <member name="P:EstateManagement.DataTransferObjects.Responses.SecurityUserResponse.SecurityUserId">
+            <summary>
+            Gets or sets the security user identifier.
+            </summary>
+            <value>
+            The security user identifier.
+            </value>
+        </member>
+    </members>
+</doc>
