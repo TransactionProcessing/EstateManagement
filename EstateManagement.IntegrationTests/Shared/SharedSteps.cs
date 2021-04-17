@@ -5,6 +5,7 @@ using System.Text;
 namespace EstateManagement.IntegrationTests.Shared
 {
     using System.ComponentModel.Design;
+    using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using DataTransferObjects;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
+    using global::Shared.Logger;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
@@ -332,6 +334,53 @@ namespace EstateManagement.IntegrationTests.Shared
                 this.TestingContext.Logger.LogInformation($"Deposit Reference {makeMerchantDepositRequest.Reference} made for Merchant {merchantName}");
             }
         }
+
+        [Then(@"the following entries appear in the merchants balance history")]
+        public async Task ThenTheFollowingEntriesAppearInTheMerchantsBalanceHistory(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                
+                var merchantBalanceHistoryResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchantBalanceHistory(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+
+                // Look through the list for the balance entry we are on
+                var depositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now).AddHours(-1);
+                var reference = SpecflowTableHelper.GetStringRowValue(tableRow, "Reference");
+                var entryType = SpecflowTableHelper.GetStringRowValue(tableRow, "EntryType");
+                var changeAmount = SpecflowTableHelper.GetDecimalValue(tableRow, "ChangeAmount");
+                var balance = SpecflowTableHelper.GetDecimalValue(tableRow, "Balance");
+                
+                this.TestingContext.Logger.LogInformation($"DateTime {depositDateTime} reference {reference} entrytype {entryType} changeAmount {changeAmount} balance {balance}");
+                var balanceEntry = merchantBalanceHistoryResponse.SingleOrDefault(m => m.Reference == reference && m.EntryDateTime == depositDateTime && m.EntryType == entryType &&
+                                                                                       m.ChangeAmount == changeAmount && m.Balance == balance);
+
+                balanceEntry.ShouldNotBeNull();
+
+                if (entryType == "C")
+                {
+                    var inValue = SpecflowTableHelper.GetDecimalValue(tableRow, "In");
+                    balanceEntry.In.ShouldBe(inValue);
+                }
+
+                if (entryType == "D")
+                {
+                    var outValue = SpecflowTableHelper.GetDecimalValue(tableRow, "Out");
+                    balanceEntry.Out.ShouldBe(outValue);
+                }
+            }
+        }
+
 
         [Then(@"the merchant balances are as follows")]
         public async Task ThenTheMerchantBalancesAreAsFollows(Table table)
