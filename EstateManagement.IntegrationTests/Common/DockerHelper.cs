@@ -278,6 +278,7 @@ namespace EstateManagement.IntegrationTests.Common
             await client.CreateAsync("$ce-EstateAggregate", "Reporting", settings);
             await client.CreateAsync("$ce-MerchantAggregate", "Reporting", settings);
             await client.CreateAsync("$ce-ContractAggregate", "Reporting", settings);
+            await client.CreateAsync("$ce-MerchantBalanceHistory", "Reporting", settings);
         }
     }
 }
