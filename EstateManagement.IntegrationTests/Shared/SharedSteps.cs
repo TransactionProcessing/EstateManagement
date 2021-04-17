@@ -14,6 +14,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using global::Shared.Logger;
+    using Newtonsoft.Json;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
@@ -367,6 +368,8 @@ namespace EstateManagement.IntegrationTests.Shared
                 var balance = SpecflowTableHelper.GetDecimalValue(tableRow, "Balance");
                 
                 this.TestingContext.Logger.LogInformation($"DateTime {depositDateTime} reference {reference} entrytype {entryType} changeAmount {changeAmount} balance {balance}");
+                Console.WriteLine($"DateTime {depositDateTime} reference {reference} entrytype {entryType} changeAmount {changeAmount} balance {balance}");
+                Console.WriteLine(JsonConvert.SerializeObject(merchantBalanceHistoryResponse));
                 var balanceEntry = merchantBalanceHistoryResponse.SingleOrDefault(m => m.Reference == reference && m.EntryDateTime == depositDateTime && m.EntryType == entryType &&
                                                                                        m.ChangeAmount == changeAmount && m.Balance == balance);
 
