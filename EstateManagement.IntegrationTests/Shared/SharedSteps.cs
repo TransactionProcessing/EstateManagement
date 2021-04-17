@@ -351,9 +351,14 @@ namespace EstateManagement.IntegrationTests.Shared
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
                 Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                List<MerchantBalanceHistoryResponse> merchantBalanceHistoryResponse = null;
+                await Retry.For(async () =>
+                                {
+                                    merchantBalanceHistoryResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchantBalanceHistory(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+                                    merchantBalanceHistoryResponse.ShouldNotBeNull();
+                                    merchantBalanceHistoryResponse.ShouldNotBeEmpty();
+                                });
                 
-                var merchantBalanceHistoryResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchantBalanceHistory(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
-
                 // Look through the list for the balance entry we are on
                 var depositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now).AddHours(-1);
                 var reference = SpecflowTableHelper.GetStringRowValue(tableRow, "Reference");
