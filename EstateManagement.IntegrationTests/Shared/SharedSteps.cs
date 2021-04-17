@@ -361,7 +361,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                 });
                 
                 // Look through the list for the balance entry we are on
-                var depositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now).AddHours(-1);
+                var depositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now);
                 var reference = SpecflowTableHelper.GetStringRowValue(tableRow, "Reference");
                 var entryType = SpecflowTableHelper.GetStringRowValue(tableRow, "EntryType");
                 var changeAmount = SpecflowTableHelper.GetDecimalValue(tableRow, "ChangeAmount");
