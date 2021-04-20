@@ -605,10 +605,13 @@
         public static Guid DepositId = Guid.Parse("A15460B1-9665-4C3E-861D-3B65D0EBEF19");
 
         public static String DepositReference = "Test Deposit 1";
+        public static String DepositReference2 = "Test Deposit 2";
 
         public static DateTime DepositDateTime = new DateTime(2019, 11, 16);
+        public static DateTime DepositDateTime2 = new DateTime(2019, 11, 16);
 
         public static Decimal DepositAmount = 1000.00m;
+        public static Decimal DepositAmount2 = 1200.00m;
 
         public static MerchantDepositSource MerchantDepositSourceManual = MerchantDepositSource.Manual;
 

@@ -11,12 +11,14 @@
     using MerchantAggregate;
     using Models;
     using Models.Estate;
+    using Models.Merchant;
     using NLog;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
+    using Operator = Models.Estate.Operator;
 
     /// <summary>
     /// 
@@ -307,15 +309,18 @@
             {
                 throw new InvalidOperationException($"Estate Id {estateId} has not been created");
             }
-
-            String depositData = $"{depositDateTime.ToString("yyyymmdd hh:mm:ss.fff")}-{reference}-{amount:N2)}-{source}";
-            Guid depositId = this.GenerateGuidFromString(depositData);
-
-            merchantAggregate.MakeDeposit(depositId, source,reference,depositDateTime,amount);
+            
+            merchantAggregate.MakeDeposit(source,reference,depositDateTime,amount);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
 
-            return depositId;
+            Merchant merchant = merchantAggregate.GetMerchant();
+
+            // Find the deposit
+            Deposit deposit = merchant.Deposits.Single(d => d.Reference == reference && d.DepositDateTime == depositDateTime && d.Source == source &&
+                                                                      d.Amount == amount);
+
+            return deposit.DepositId;
         }
 
         /// <summary>
