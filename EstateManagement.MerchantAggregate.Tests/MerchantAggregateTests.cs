@@ -261,15 +261,54 @@ namespace EstateManagement.MerchantAggregate.Tests
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Deposits.ShouldHaveSingleItem();
             merchantModel.Deposits.Single().Source.ShouldBe(TestData.MerchantDepositSourceManual);
-            merchantModel.Deposits.Single().DepositId.ShouldBe(TestData.DepositId);
+            //merchantModel.Deposits.Single().DepositId.ShouldNotBe(TestData.DepositId);
             merchantModel.Deposits.Single().DepositDateTime.ShouldBe(TestData.DepositDateTime);
             merchantModel.Deposits.Single().Reference.ShouldBe(TestData.DepositReference);
             merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount);
+        }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_TwoDeposits_BothDepositsMade()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, TestData.DepositReference2, TestData.DepositDateTime2, TestData.DepositAmount2);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Deposits.Count.ShouldBe(2);
+        }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_TwoDepositsSameDetailsApartFromAmounts_BothDepositsMade()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021,1,1,0,0,0), 650.00m);
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 1, 1, 0, 0, 0), 934.00m);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Deposits.Count.ShouldBe(2);
+        }
+
+        [Fact]
+        public void MerchantAggregate_MakeDeposit_TwoDepositsOneMonthApartSameDetails_BothDepositsMade()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 1, 1, 0, 0, 0), 650.00m);
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 2, 1, 0, 0, 0), 650.00m);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Deposits.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -279,22 +318,22 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             Should.Throw<InvalidOperationException>(() =>
                                                     {
-                                                        aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                        aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
                                                     });
         }
 
         [Fact]
-        public void MerchantAggregate_MakeDeposit_DuplicateDepositId_ErrorThrown()
+        public void MerchantAggregate_MakeDeposit_DuplicateDeposit_ErrorThrown()
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Deposits.ShouldHaveSingleItem();
 
             Should.Throw<InvalidOperationException>(() =>
                                                     {
-                                                        aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                        aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
                                                     });
         }
 
@@ -306,7 +345,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             
             Should.Throw<InvalidOperationException>(() =>
                                                     {
-                                                        aggregate.MakeDeposit(TestData.DepositId, MerchantDepositSource.NotSet, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                        aggregate.MakeDeposit(MerchantDepositSource.NotSet, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
                                                     });
         }
 
@@ -318,7 +357,7 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             Should.Throw<NotSupportedException>(() =>
                                                     {
-                                                        aggregate.MakeDeposit(TestData.DepositId, TestData.MerchantDepositSourceAutomatic, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+                                                        aggregate.MakeDeposit(TestData.MerchantDepositSourceAutomatic, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
                                                     });
         }
 

@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
     using Merchant.DomainEvents;
     using Models;
     using Models.Merchant;
@@ -364,6 +366,25 @@
         }
 
         /// <summary>
+        /// Generates the unique identifier from string.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns></returns>
+        private Guid GenerateGuidFromString(String input)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                //Generate hash from the key
+                Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+                Byte[] j = bytes.Skip(Math.Max(0, bytes.Count() - 16)).ToArray(); //Take last 16
+
+                //Create our Guid.
+                return new Guid(j);
+            }
+        }
+
+        /// <summary>
         /// Makes the deposit.
         /// </summary>
         /// <param name="depositId">The deposit identifier.</param>
@@ -371,12 +392,14 @@
         /// <param name="reference">The reference.</param>
         /// <param name="depositDateTime">The deposit date time.</param>
         /// <param name="amount">The amount.</param>
-        public void MakeDeposit(Guid depositId,
-                                MerchantDepositSource source,
+        public void MakeDeposit(MerchantDepositSource source,
                                 String reference,
                                 DateTime depositDateTime,
                                 Decimal amount)
         {
+            String depositData = $"{depositDateTime.ToString("yyyyMMdd hh:mm:ss.fff")}-{reference}-{amount:N2}-{source}";
+            Guid depositId = this.GenerateGuidFromString(depositData);
+
             this.EnsureMerchantHasBeenCreated();
             this.EnsureNotDuplicateDeposit(depositId);
             // TODO: Change amount to a value object (PositiveAmount VO)
