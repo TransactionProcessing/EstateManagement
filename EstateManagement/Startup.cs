@@ -229,7 +229,19 @@ namespace EstateManagement
             {
                 return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
             });
-            services.AddSingleton<HttpClient>();
+            
+            HttpClientHandler httpClientHandler = new HttpClientHandler
+                                                {
+                                                    ServerCertificateCustomValidationCallback = (message,
+                                                                                                 certificate2,
+                                                                                                 arg3,
+                                                                                                 arg4) =>
+                                                                                                {
+                                                                                                    return true;
+                                                                                                }
+                                                };
+            HttpClient httpClient = new HttpClient(httpClientHandler);
+            services.AddSingleton<HttpClient>(httpClient);
         }
         
         /// <summary>
@@ -285,28 +297,33 @@ namespace EstateManagement
             });
 
             services.AddSwaggerExamplesFromAssemblyOf<SwaggerJsonConverter>();
-
+            
             services.AddAuthentication(options =>
                                        {
                                            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                                            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                                            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                                           
+
                                        })
-                .AddJwtBearer(options =>
-                              {
-                                  //options.SaveToken = true;
-                                  options.Authority = ConfigurationReader.GetValue("SecurityConfiguration", "Authority");
-                                  options.Audience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName");
-                                  options.RequireHttpsMetadata = false;
-                                  options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                    .AddJwtBearer(options =>
                                   {
-                                      ValidateIssuer = true,
-                                      ValidateAudience = false,
-                                      ValidAudience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName"),
-                                      ValidIssuer = ConfigurationReader.GetValue("SecurityConfiguration", "Authority"),
-                                  };
-                                  options.IncludeErrorDetails = true;
-                              });
+                                      options.BackchannelHttpHandler = new HttpClientHandler
+                                                                        {
+                                                                            ServerCertificateCustomValidationCallback =
+                                                                                (message, certificate, chain, sslPolicyErrors) => true
+                                                                        };
+                                      options.Authority = ConfigurationReader.GetValue("SecurityConfiguration", "Authority");
+                                      options.Audience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName");
+                                  
+                                      options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                                                                          {
+                                                                              ValidateAudience = false,
+                                                                              ValidAudience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName"),
+                                                                              ValidIssuer = ConfigurationReader.GetValue("SecurityConfiguration", "Authority"),
+                                                                          };
+                                      options.IncludeErrorDetails = true;
+                                  });
 
             services.AddControllers().AddNewtonsoftJson(options =>
                                                         {
@@ -355,7 +372,7 @@ namespace EstateManagement
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
                              {
                                  endpoints.MapControllers();
