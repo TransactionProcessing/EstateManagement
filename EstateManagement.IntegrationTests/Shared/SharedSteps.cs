@@ -410,12 +410,20 @@ namespace EstateManagement.IntegrationTests.Shared
                 Decimal availableBalance = SpecflowTableHelper.GetDecimalValue(tableRow, "AvailableBalance");
                 Decimal balance = SpecflowTableHelper.GetDecimalValue(tableRow, "Balance");
 
-                MerchantBalanceResponse merchantBalanceResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchantBalance(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+                await Retry.For(async () =>
+                                {
+                                    MerchantBalanceResponse merchantBalanceResponse = await this.TestingContext.DockerHelper.EstateClient
+                                                                                                .GetMerchantBalance(token,
+                                                                                                    estateDetails.EstateId,
+                                                                                                    merchantId,
+                                                                                                    CancellationToken.None).ConfigureAwait(false);
 
-                merchantBalanceResponse.EstateId.ShouldBe(estateDetails.EstateId);
-                merchantBalanceResponse.MerchantId.ShouldBe(merchantId);
-                merchantBalanceResponse.AvailableBalance.ShouldBe(availableBalance);
-                merchantBalanceResponse.Balance.ShouldBe(balance);
+                                    merchantBalanceResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                                    merchantBalanceResponse.MerchantId.ShouldBe(merchantId);
+                                    merchantBalanceResponse.AvailableBalance.ShouldBe(availableBalance);
+                                    merchantBalanceResponse.Balance.ShouldBe(balance);
+                                });
+
             }
         }
 
