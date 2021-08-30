@@ -943,6 +943,9 @@
 
         private static Guid TransactionId = Guid.Parse("5E3755D1-17DE-4101-9728-75162BAA0A22");
 
+        public static DateTime HistoryStartDate = new DateTime(2021, 8, 29);
+        public static DateTime HistoryEndDate = new DateTime(2021,8,30);
+
         public static List<MerchantBalanceView> MerchantBalanceHistoryEntities =>
             new List<MerchantBalanceView>
             {

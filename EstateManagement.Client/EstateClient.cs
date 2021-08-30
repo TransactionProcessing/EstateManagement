@@ -797,11 +797,13 @@
         public async Task<List<MerchantBalanceHistoryResponse>> GetMerchantBalanceHistory(String accessToken,
                                                                       Guid estateId,
                                                                       Guid merchantId,
+                                                                      DateTime startDateTime,
+                                                                      DateTime endDateTime,
                                                                       CancellationToken cancellationToken)
         {
             List<MerchantBalanceHistoryResponse> response = null;
 
-            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/balancehistory");
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/balancehistory?startDateTime={startDateTime:yyyy-MM-dd}&endDateTime={endDateTime:yyyy-MM-dd}");
 
             try
             {

@@ -315,11 +315,21 @@
             return this.Ok(this.ModelFactory.ConvertFrom(merchantBalance));
         }
 
+        /// <summary>
+        /// Gets the merchant balance history.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="startDateTime">The start date time.</param>
+        /// <param name="endDateTime">The end date time.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="Shared.Exceptions.NotFoundException">No Merchant Balance history found with estate Id {estateId} and merchant Id {merchantId}</exception>
         [HttpGet]
         [Route("{merchantId}/balancehistory")]
         [SwaggerResponse(200, "OK", typeof(List<MerchantBalanceHistoryResponse>))]
         [SwaggerResponseExample(200, typeof(MerchantBalanceHistoryResponseListExample))]
-        public async Task<IActionResult> GetMerchantBalanceHistory([FromRoute] Guid estateId, [FromRoute] Guid merchantId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMerchantBalanceHistory([FromRoute] Guid estateId, [FromRoute] Guid merchantId, [FromQuery] DateTime startDateTime, [FromQuery] DateTime endDateTime, CancellationToken cancellationToken)
         {
             String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
             String merchantRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("MerchantRoleName")) ? "Merchant" : Environment.GetEnvironmentVariable("MerchantRoleName");
@@ -360,7 +370,13 @@
                 return this.Forbid();
             }
 
-            List<MerchantBalanceHistory> merchantBalanceHistory = await this.EstateManagementManager.GetMerchantBalanceHistory(estateId, merchantId, cancellationToken);
+            if (startDateTime == DateTime.MinValue || endDateTime == DateTime.MinValue)
+            {
+                return this.BadRequest("Both a start date and end date must be provided.");
+            }
+
+            List<MerchantBalanceHistory> merchantBalanceHistory = await this.EstateManagementManager.GetMerchantBalanceHistory(estateId, merchantId, 
+                                                                                    startDateTime, endDateTime, cancellationToken);
 
             if (merchantBalanceHistory.Any() == false)
             {
