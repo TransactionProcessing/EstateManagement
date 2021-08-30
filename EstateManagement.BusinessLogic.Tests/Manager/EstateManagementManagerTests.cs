@@ -218,13 +218,14 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchantBalanceHistory_MerchantBalanceHistory()
         {
-            this.EstateManagementRepository.Setup(e => e.GetMerchantBalanceHistory(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<MerchantBalanceHistory>
+            this.EstateManagementRepository.Setup(e => e.GetMerchantBalanceHistory(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateTime>(),
+                                                                                   It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<MerchantBalanceHistory>
                 {
                     TestData.MerchantBalanceHistoryIn,
                     TestData.MerchantBalanceHistoryOut
                 });
 
-            List<MerchantBalanceHistory> merchantBalanceHistory = await this.EstateManagementManager.GetMerchantBalanceHistory(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            List<MerchantBalanceHistory> merchantBalanceHistory = await this.EstateManagementManager.GetMerchantBalanceHistory(TestData.EstateId, TestData.MerchantId, TestData.HistoryStartDate, TestData.HistoryEndDate, CancellationToken.None);
 
             merchantBalanceHistory.ShouldNotBeNull();
             merchantBalanceHistory.Count.ShouldBe(2);

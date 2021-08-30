@@ -320,7 +320,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 
                 MakeMerchantDepositRequest makeMerchantDepositRequest = new MakeMerchantDepositRequest
                 {
-                    DepositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now),
+                    DepositDateTime = SpecflowTableHelper.GetDateTimeForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now),
                     Source = MerchantDepositSource.Manual,
                     Reference = SpecflowTableHelper.GetStringRowValue(tableRow,"Reference"),
                     Amount = SpecflowTableHelper.GetDecimalValue(tableRow, "Amount")
@@ -336,8 +336,8 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
-        [Then(@"the following entries appear in the merchants balance history")]
-        public async Task ThenTheFollowingEntriesAppearInTheMerchantsBalanceHistory(Table table)
+        [Then(@"the following entries appear in the merchants balance history between '(.*)' and '(.*)'")]
+        public async Task ThenTheFollowingEntriesAppearInTheMerchantsBalanceHistoryBetweenAnd(string startDate, string endDate, Table table)
         {
             foreach (TableRow tableRow in table.Rows)
             {
@@ -349,19 +349,25 @@ namespace EstateManagement.IntegrationTests.Shared
                     token = estateDetails.AccessToken;
                 }
 
+                // get dates
+                var startDateTime = SpecflowTableHelper.GetDateForDateString(startDate, DateTime.Now);
+                var endDateTime = SpecflowTableHelper.GetDateForDateString(endDate, DateTime.Now).AddDays(1);
+
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
                 Guid merchantId = estateDetails.GetMerchantId(merchantName);
                 List<MerchantBalanceHistoryResponse> merchantBalanceHistoryResponse = null;
                 await Retry.For(async () =>
                                 {
-                                    merchantBalanceHistoryResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchantBalanceHistory(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+                                    merchantBalanceHistoryResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchantBalanceHistory(token, estateDetails.EstateId, merchantId, 
+                                        startDateTime , endDateTime, CancellationToken.None).ConfigureAwait(false);
                                     merchantBalanceHistoryResponse.ShouldNotBeNull();
                                     merchantBalanceHistoryResponse.ShouldNotBeEmpty();
+                                    merchantBalanceHistoryResponse.Count.ShouldBe(table.RowCount);
                                 });
                 
                 // Look through the list for the balance entry we are on
-                var depositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now);
+                var depositDateTime = SpecflowTableHelper.GetDateTimeForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now);
                 var reference = SpecflowTableHelper.GetStringRowValue(tableRow, "Reference");
                 var entryType = SpecflowTableHelper.GetStringRowValue(tableRow, "EntryType");
                 var changeAmount = SpecflowTableHelper.GetDecimalValue(tableRow, "ChangeAmount");
@@ -370,8 +376,9 @@ namespace EstateManagement.IntegrationTests.Shared
                 this.TestingContext.Logger.LogInformation($"DateTime {depositDateTime} reference {reference} entrytype {entryType} changeAmount {changeAmount} balance {balance}");
                 Console.WriteLine($"DateTime {depositDateTime} reference {reference} entrytype {entryType} changeAmount {changeAmount} balance {balance}");
                 Console.WriteLine(JsonConvert.SerializeObject(merchantBalanceHistoryResponse));
-                var balanceEntry = merchantBalanceHistoryResponse.SingleOrDefault(m => m.Reference == reference && m.EntryDateTime == depositDateTime && m.EntryType == entryType &&
-                                                                                       m.ChangeAmount == changeAmount && m.Balance == balance);
+                var balanceEntry = merchantBalanceHistoryResponse.SingleOrDefault(m => m.Reference == reference && m.EntryDateTime.Date == depositDateTime.Date 
+                                                                                                                && m.EntryType == entryType &&
+                                                                                                            m.ChangeAmount == changeAmount && m.Balance == balance);
 
                 balanceEntry.ShouldNotBeNull();
 
@@ -388,7 +395,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 }
             }
         }
-
+        
 
         [Then(@"the merchant balances are as follows")]
         public async Task ThenTheMerchantBalancesAreAsFollows(Table table)

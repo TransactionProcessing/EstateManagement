@@ -85,6 +85,8 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(Guid estateId, Guid merchantId,
+                                                                     DateTime startDateTime,
+                                                                     DateTime endDateTime,
                                                                      CancellationToken cancellationToken);
 
         /// <summary>

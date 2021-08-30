@@ -128,18 +128,27 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	
 	When I make the following manual merchant deposits 
 	| Reference | Amount  | DateTime  | MerchantName    | EstateName    |
-	| Deposit1  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
-	| Deposit2  | 1000.00 | Today     | Test Merchant 1 | Test Estate 1 |
+	| Deposit1  | 500.00  | LastMonth | Test Merchant 1 | Test Estate 1 |
+	| Deposit2  | 1000.00 | LastWeek  | Test Merchant 1 | Test Estate 1 |
+	| Deposit3  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
+	| Deposit4  | 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
 
 	Then the merchant balances are as follows
 	| Balance | AvailableBalance | MerchantName    | EstateName    |
-	| 2000.00 | 2000.00          | Test Merchant 1 | Test Estate 1 |
+	| 2900.00 | 2900.00          | Test Merchant 1 | Test Estate 1 |
 
-	Then the following entries appear in the merchants balance history
+	Then the following entries appear in the merchants balance history between 'LastMonth' and 'Today'
 	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
-	| Yesterday | Opening Balance  | D         | 0       | 0   | 0            | 0       | Test Merchant 1 | Test Estate 1 |
-	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 1000.00 | Test Merchant 1 | Test Estate 1 |
-	| Today     | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2000.00 | Test Merchant 1 | Test Estate 1 |
+	| LastMonth | Opening Balance  | D         | 0       | 0   | 0            | 0       | Test Merchant 1 | Test Estate 1 |
+	| LastMonth | Merchant Deposit | C         | 500.00  | 0   | 500.00       | 500.00  | Test Merchant 1 | Test Estate 1 |
+	| LastWeek  | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 1500.00 | Test Merchant 1 | Test Estate 1 |
+	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
+	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |	
+
+	Then the following entries appear in the merchants balance history between 'Yesterday' and 'Today'
+	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
+	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
+	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |
 
 @PRTest
 Scenario: Get Merchants for Estate - System Login

@@ -190,13 +190,18 @@
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="startDateTime"></param>
+        /// <param name="endDateTime"></param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public async Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(Guid estateId,
                                                                                   Guid merchantId,
+                                                                                  DateTime startDateTime,
+                                                                                  DateTime endDateTime,
                                                                                   CancellationToken cancellationToken)
         {
-            List<MerchantBalanceHistory> merchantBalanceHistoryModels = await this.EstateManagementRepository.GetMerchantBalanceHistory(estateId, merchantId, cancellationToken);
+            List<MerchantBalanceHistory> merchantBalanceHistoryModels = await this.EstateManagementRepository.GetMerchantBalanceHistory(estateId, merchantId, 
+                startDateTime, endDateTime, cancellationToken);
 
             return merchantBalanceHistoryModels;
         }

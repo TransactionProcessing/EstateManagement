@@ -85,6 +85,34 @@ namespace EstateManagement.IntegrationTests.Common
         }
 
         /// <summary>
+        /// Gets the date time for date string.
+        /// </summary>
+        /// <param name="dateString">The date string.</param>
+        /// <param name="today">The today.</param>
+        /// <returns></returns>
+        public static DateTime GetDateTimeForDateString(String dateString,
+                                                    DateTime today)
+        {
+            switch (dateString.ToUpper())
+            {
+                case "TODAY":
+                    return today;
+                case "YESTERDAY":
+                    return today.AddDays(-1);
+                case "LASTWEEK":
+                    return today.AddDays(-7);
+                case "LASTMONTH":
+                    return today.AddMonths(-1);
+                case "LASTYEAR":
+                    return today.AddYears(-1);
+                case "TOMORROW":
+                    return today.AddDays(1);
+                default:
+                    return DateTime.Parse(dateString);
+            }
+        }
+
+        /// <summary>
         /// Gets the enum value.
         /// </summary>
         /// <typeparam name="T"></typeparam>
