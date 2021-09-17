@@ -132,6 +132,8 @@
         /// </value>
         public String Name { get; private set; }
 
+        public SettlementSchedule SettlementSchedule { get; private set; }
+
         #endregion
 
         #region Methods
@@ -418,6 +420,18 @@
             }
         }
 
+        public void SetSettlementSchedule(SettlementSchedule settlementSchedule)
+        {
+            // Check if there has actually been a change or not, if not ignore the request
+            if (this.SettlementSchedule == settlementSchedule)
+                return;
+
+            SettlementScheduleChangedEvent settlementScheduleChangedEvent =
+                new SettlementScheduleChangedEvent(this.AggregateId, this.EstateId, (Int32)settlementSchedule);
+
+            this.ApplyAndAppend(settlementScheduleChangedEvent);
+        }
+
         /// <summary>
         /// Ensures the not duplicate deposit.
         /// </summary>
@@ -619,6 +633,11 @@
             SecurityUser securityUser = SecurityUser.Create(domainEvent.SecurityUserId, domainEvent.EmailAddress);
 
             this.SecurityUsers.Add(securityUser);
+        }
+
+        private void PlayEvent(SettlementScheduleChangedEvent domainEvent)
+        {
+            this.SettlementSchedule = (SettlementSchedule)domainEvent.SettlementSchedule;
         }
 
         /// <summary>

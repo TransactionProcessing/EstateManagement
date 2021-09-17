@@ -4,7 +4,9 @@
     using DataTransferObjects;
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class ContractResponseListExample : IExamplesProvider<List<ContractResponse>>
     {
         public List<ContractResponse> GetExamples()

@@ -1,10 +1,12 @@
 ﻿namespace EstateManagement.Common.Examples
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using DataTransferObjects;
     using DataTransferObjects.Requests;
     using Swashbuckle.AspNetCore.Filters;
 
+    [ExcludeFromCodeCoverage]
     public class AddTransactionFeeForProductToContractRequestExample : IMultipleExamplesProvider<AddTransactionFeeForProductToContractRequest>
     {
         public IEnumerable<SwaggerExample<AddTransactionFeeForProductToContractRequest>> GetExamples()

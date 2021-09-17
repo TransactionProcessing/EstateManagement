@@ -1007,6 +1007,44 @@
             return response;
         }
 
+        public async Task SetMerchantSettlementSchedule(String accessToken,
+                                                        Guid estateId,
+                                                        Guid merchantId,
+                                                        SetSettlementScheduleRequest setSettlementScheduleRequest,
+                                                        CancellationToken cancellationToken)
+        {
+            MakeMerchantDepositResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(setSettlementScheduleRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                //this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Patch, requestUri);
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                requestMessage.Content = httpContent;
+                //HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.SendAsync(requestMessage, cancellationToken);
+
+                // Process the response
+                await this.HandleResponse(httpResponse, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error setting settlement interval for merchant {merchantId} for estate {estateId}.", ex);
+
+                throw exception;
+            }
+        }
+
         /// <summary>
         /// Builds the request URL.
         /// </summary>

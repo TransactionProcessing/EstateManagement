@@ -9,6 +9,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using BusinessLogic.Services;
     using EstateAggregate;
     using MerchantAggregate;
+    using Models;
     using Moq;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
@@ -514,6 +515,84 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                                                 TestData.DepositAmount,
                                                                                                 CancellationToken.None);
                                                     });
+        }
+
+        [Theory]
+        [InlineData(SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly)]
+        public async Task MerchantDomainService_SetMerchantSettlementSchedule_MerchantSettlementIntervalIsSet(SettlementSchedule settlementSchedule)
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
+
+            Should.NotThrow(async () =>
+            {
+                await domainService.SetMerchantSettlementSchedule(TestData.EstateId,
+                                                       TestData.MerchantId,
+                                                       settlementSchedule,
+                                                       CancellationToken.None);
+            });
+        }
+
+        [Theory]
+        [InlineData(SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly)]
+        public async Task MerchantDomainService_SetMerchantSettlementSchedule_EstateNotCreated_ErrorThrown(SettlementSchedule settlementSchedule)
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
+
+            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
+
+            Should.Throw<InvalidOperationException>(async () =>
+            {
+                await domainService.SetMerchantSettlementSchedule(TestData.EstateId,
+                                                        TestData.MerchantId,
+                                                        settlementSchedule,
+                                                        CancellationToken.None);
+            });
+        }
+
+        [Theory]
+        [InlineData(SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly)]
+        public async Task MerchantDomainService_SetMerchantSettlementSchedule_MerchantNotCreated_ErrorThrown(SettlementSchedule settlementSchedule)
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
+            merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
+
+            Should.Throw<InvalidOperationException>(async () =>
+            {
+                await domainService.SetMerchantSettlementSchedule(TestData.EstateId,
+                                                        TestData.MerchantId,
+                                                        settlementSchedule,
+                                                        CancellationToken.None);
+            });
         }
     }
 }

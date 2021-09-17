@@ -123,6 +123,11 @@
                                  Decimal amount,
                                  CancellationToken cancellationToken);
 
+        Task SetMerchantSettlementSchedule(Guid estateId,
+                                           Guid merchantId,
+                                           Models.SettlementSchedule settlementSchedule,
+                                           CancellationToken cancellationToken);
+
         #endregion
     }
 }

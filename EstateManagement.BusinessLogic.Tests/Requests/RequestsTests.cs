@@ -242,7 +242,17 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             disableTransactionFeeForProductRequest.EstateId.ShouldBe(TestData.EstateId);
             disableTransactionFeeForProductRequest.ProductId.ShouldBe(TestData.ProductId);
             disableTransactionFeeForProductRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
-            
+        }
+
+        [Fact]
+        public void SetMerchantSettlementScheduleRequest_CanBeCreated_IsCreated()
+        {
+            SetMerchantSettlementScheduleRequest setMerchantSettlementScheduleRequest = SetMerchantSettlementScheduleRequest.Create(TestData.EstateId, TestData.MerchantId,TestData.SettlementSchedule);
+
+            setMerchantSettlementScheduleRequest.ShouldNotBeNull();
+            setMerchantSettlementScheduleRequest.EstateId.ShouldBe(TestData.EstateId);
+            setMerchantSettlementScheduleRequest.MerchantId.ShouldBe(TestData.MerchantId);
+            setMerchantSettlementScheduleRequest.SettlementSchedule.ShouldBe(TestData.SettlementSchedule);
         }
     }
 }

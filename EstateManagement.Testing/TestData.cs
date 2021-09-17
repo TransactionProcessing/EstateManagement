@@ -946,6 +946,11 @@
         public static DateTime HistoryStartDate = new DateTime(2021, 8, 29);
         public static DateTime HistoryEndDate = new DateTime(2021,8,30);
 
+        public static SettlementSchedule SettlementSchedule = SettlementSchedule.Immediate;
+
+        public static SetMerchantSettlementScheduleRequest SetMerchantSettlementScheduleRequest => SetMerchantSettlementScheduleRequest.Create(TestData.EstateId,
+                                                                                                                                               TestData.MerchantId, TestData.SettlementSchedule);
+
         public static List<MerchantBalanceView> MerchantBalanceHistoryEntities =>
             new List<MerchantBalanceView>
             {

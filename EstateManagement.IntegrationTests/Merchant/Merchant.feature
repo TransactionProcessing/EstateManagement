@@ -230,4 +230,18 @@ Scenario: Get Merchants for Estate - Estate Login
 
 	When I get the merchants for 'Test Estate 2' then 2 merchants will be returned
 
+Scenario: Set Merchant Settlement Schedule - Estate User	
+	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
+
+	Given I create the following merchants
+	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
+	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
+	| Test Merchant 2 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
+	| Test Merchant 3 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
+
+	When I set the merchants settlement schedule
+	| MerchantName    | EstateName    | SettlementSchedule |
+	| Test Merchant 1 | Test Estate 1 | Immediate          |
+	| Test Merchant 2 | Test Estate 1 | Weekly             |
+	| Test Merchant 3 | Test Estate 1 | Monthly            |
 

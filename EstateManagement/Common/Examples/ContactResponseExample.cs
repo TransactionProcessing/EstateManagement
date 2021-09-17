@@ -3,7 +3,9 @@
     using System.Collections.Generic;
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public partial class ContactResponseExample : IExamplesProvider<ContactResponse>
     {
         public ContactResponse GetExamples()

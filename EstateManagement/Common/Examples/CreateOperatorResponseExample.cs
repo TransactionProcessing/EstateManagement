@@ -2,7 +2,9 @@
 {
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class CreateOperatorResponseExample : IExamplesProvider<CreateOperatorResponse>
     {
         public CreateOperatorResponse GetExamples()

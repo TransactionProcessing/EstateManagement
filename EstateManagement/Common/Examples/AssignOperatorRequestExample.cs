@@ -2,7 +2,9 @@
 {
     using DataTransferObjects.Requests;
     using Swashbuckle.AspNetCore.Filters;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class AssignOperatorRequestExample : IExamplesProvider<AssignOperatorRequest>
     {
         public AssignOperatorRequest GetExamples()

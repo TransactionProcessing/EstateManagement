@@ -3,7 +3,9 @@
     using DataTransferObjects;
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class ContractProductTransactionFeeResponseExample : IExamplesProvider<ContractProductTransactionFee>
     {
         public ContractProductTransactionFee GetExamples()

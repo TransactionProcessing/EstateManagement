@@ -142,7 +142,20 @@ namespace EstateManagement.MerchantAggregate.Tests
             manualDepositMadeEvent.Reference.ShouldBe(TestData.DepositReference);
             manualDepositMadeEvent.DepositDateTime.ShouldBe(TestData.DepositDateTime);
             manualDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount);
+        }
 
+        [Fact]
+        public void SettlementScheduleChangedEvent_CanBeCreated_IsCreated()
+        {
+            SettlementScheduleChangedEvent settlementScheduleChangedEvent =
+                new SettlementScheduleChangedEvent(TestData.MerchantId, TestData.EstateId, (Int32)TestData.SettlementSchedule);
+
+            settlementScheduleChangedEvent.ShouldNotBeNull();
+            settlementScheduleChangedEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            settlementScheduleChangedEvent.EventId.ShouldNotBe(Guid.Empty);
+            settlementScheduleChangedEvent.EstateId.ShouldBe(TestData.EstateId);
+            settlementScheduleChangedEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            settlementScheduleChangedEvent.SettlementSchedule.ShouldBe((Int32)TestData.SettlementSchedule);
         }
     }
 }

@@ -7,7 +7,9 @@ namespace EstateManagement.Common.Examples
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
-    
+    using System.Diagnostics.CodeAnalysis;
+
+    [ExcludeFromCodeCoverage]
 
     internal static class ExampleData
     {

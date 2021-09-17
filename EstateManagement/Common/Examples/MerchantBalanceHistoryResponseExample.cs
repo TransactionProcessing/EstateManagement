@@ -3,7 +3,9 @@
     using System.Collections.Generic;
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class MerchantBalanceHistoryResponseExample : IMultipleExamplesProvider<MerchantBalanceHistoryResponse>
     {
         public IEnumerable<SwaggerExample<MerchantBalanceHistoryResponse>> GetExamples()

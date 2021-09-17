@@ -1,8 +1,10 @@
 ﻿namespace EstateManagement.Common.Examples
 {
+    using System.Diagnostics.CodeAnalysis;
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
 
+    [ExcludeFromCodeCoverage]
     public class AddressResponseExample : IExamplesProvider<AddressResponse>
     {
         public AddressResponse GetExamples()

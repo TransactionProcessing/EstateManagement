@@ -223,6 +223,7 @@ namespace EstateManagement
             services.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
             services.AddSingleton<IRequestHandler<AddMerchantDeviceRequest, String>, MerchantRequestHandler>();
             services.AddSingleton<IRequestHandler<MakeMerchantDepositRequest, Guid>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest, String>, MerchantRequestHandler>();
 
             services.AddSingleton<IRequestHandler<CreateContractRequest, String>, ContractRequestHandler>();
             services.AddSingleton<IRequestHandler<AddProductToContractRequest, String>, ContractRequestHandler>();

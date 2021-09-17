@@ -18,7 +18,8 @@
                                           IRequestHandler<AssignOperatorToMerchantRequest, String>,
                                           IRequestHandler<CreateMerchantUserRequest, Guid>,
                                           IRequestHandler<AddMerchantDeviceRequest, String>,
-                                          IRequestHandler<MakeMerchantDepositRequest, Guid>
+                                          IRequestHandler<MakeMerchantDepositRequest, Guid>,
+                                          IRequestHandler<SetMerchantSettlementScheduleRequest,String>
     {
         #region Fields
 
@@ -150,6 +151,14 @@
                                                                                   cancellationToken);
 
             return depositId;
+        }
+
+        public async Task<String> Handle(SetMerchantSettlementScheduleRequest request,
+                                         CancellationToken cancellationToken)
+        {
+            await this.MerchantDomainService.SetMerchantSettlementSchedule(request.EstateId, request.MerchantId, request.SettlementSchedule, cancellationToken);
+
+            return String.Empty;
         }
     }
 }
