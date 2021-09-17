@@ -1,9 +1,11 @@
 ﻿namespace EstateManagement.Common.Examples
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using DataTransferObjects.Requests;
     using Swashbuckle.AspNetCore.Filters;
 
+    [ExcludeFromCodeCoverage]
     public class AddProductToContractRequestExample : IMultipleExamplesProvider<AddProductToContractRequest>
     {
         public IEnumerable<SwaggerExample<AddProductToContractRequest>> GetExamples()

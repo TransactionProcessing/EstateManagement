@@ -989,7 +989,6 @@ namespace EstateManagement.IntegrationTests.Shared
         [When(@"I get the merchant ""(.*)"" for estate ""(.*)"" an error is returned")]
         public void WhenIGetTheMerchantForEstateAnErrorIsReturned(String merchantName, String estateName)
         {
-        
             EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
             
             Guid merchantId = estateDetails.GetMerchantId(merchantName);
@@ -1005,6 +1004,42 @@ namespace EstateManagement.IntegrationTests.Shared
                                                               await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
                                                           });
             exception.InnerException.ShouldBeOfType<KeyNotFoundException>();
+        }
+
+        [When(@"I set the merchants settlement schedule")]
+        public void WhenISetTheMerchantsSettlementSchedule(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                SettlementSchedule schedule = Enum.Parse<SettlementSchedule>(SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule"));
+
+                SetSettlementScheduleRequest setSettlementScheduleRequest = new SetSettlementScheduleRequest
+                                                                            {
+                                                                                SettlementSchedule = schedule
+                                                                            };
+
+                Should.NotThrow(async () =>
+                                {
+                                    await this.TestingContext.DockerHelper.EstateClient.SetMerchantSettlementSchedule(token,
+                                                                                                                estateDetails.EstateId,
+                                                                                                                merchantId,
+                                                                                                                setSettlementScheduleRequest,
+                                                                                                                CancellationToken.None);
+                                });
+
+            }
         }
 
 

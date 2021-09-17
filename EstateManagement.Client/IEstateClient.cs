@@ -308,6 +308,12 @@
                                                               MakeMerchantDepositRequest makeMerchantDepositRequest,
                                                               CancellationToken cancellationToken);
 
+        Task SetMerchantSettlementSchedule(String accessToken,
+                                           Guid estateId,
+                                           Guid merchantId,
+                                           SetSettlementScheduleRequest setSettlementScheduleRequest,
+                                           CancellationToken cancellationToken);
+
         #endregion
     }
 }

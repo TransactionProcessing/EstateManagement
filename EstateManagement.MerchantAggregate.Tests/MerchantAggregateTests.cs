@@ -4,10 +4,13 @@ using System.Text;
 
 namespace EstateManagement.MerchantAggregate.Tests
 {
+    using System.Collections;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using EstateManagement.Models;
     using Models.Merchant;
+    using Shared.DomainDrivenDesign.EventSourcing;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -359,6 +362,38 @@ namespace EstateManagement.MerchantAggregate.Tests
                                                     {
                                                         aggregate.MakeDeposit(TestData.MerchantDepositSourceAutomatic, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
                                                     });
+        }
+
+        [Theory]
+        [InlineData(SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly)]
+        public void MerchantAggregate_SetSetttlmentSchedule_ScheduleIsSet(SettlementSchedule settlementSchedule)
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.SetSettlementSchedule(settlementSchedule);
+
+            aggregate.SettlementSchedule.ShouldBe(settlementSchedule);
+        }
+
+        [Theory]
+        [InlineData(SettlementSchedule.Immediate, SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly, SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly, SettlementSchedule.Monthly)]
+        public void MerchantAggregate_SetSetttlmentSchedule_SameValue_NoEventRaised(SettlementSchedule originalSettlementSchedule, SettlementSchedule newSettlementSchedule)
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.SetSettlementSchedule(originalSettlementSchedule);
+            aggregate.SetSettlementSchedule(newSettlementSchedule);
+            
+            Type type = aggregate.GetType();
+            var property = type.GetProperty("PendingEvents", BindingFlags.Instance | BindingFlags.NonPublic);
+            var value = property.GetValue(aggregate);
+            value.ShouldNotBeNull();
+            var eventHistory = (List<IDomainEvent>)value;
+            eventHistory.Count.ShouldBe(2);
         }
 
     }

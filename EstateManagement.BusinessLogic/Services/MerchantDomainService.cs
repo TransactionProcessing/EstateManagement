@@ -323,25 +323,31 @@
             return deposit.DepositId;
         }
 
-        /// <summary>
-        /// Generates the unique identifier from string.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns></returns>
-        private Guid GenerateGuidFromString(String input)
+        public async Task SetMerchantSettlementSchedule(Guid estateId,
+                                                        Guid merchantId,
+                                                        SettlementSchedule settlementSchedule,
+                                                        CancellationToken cancellationToken)
         {
-            using (SHA256 sha256Hash = SHA256.Create())
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+
+            // Check merchant has been created
+            if (merchantAggregate.IsCreated == false)
             {
-                //Generate hash from the key
-                Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-                Byte[] j = bytes.Skip(Math.Max(0, bytes.Count() - 16)).ToArray(); //Take last 16
-
-                //Create our Guid.
-                return new Guid(j);
+                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
             }
-        }
 
+            // Estate Id is a valid estate
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            }
+
+            merchantAggregate.SetSettlementSchedule(settlementSchedule);
+
+            await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+        }
+        
         #endregion
     }
 }

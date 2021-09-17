@@ -2,7 +2,9 @@
 {
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class MerchantOperatorResponseExample : IExamplesProvider<MerchantOperatorResponse>
     {
         public MerchantOperatorResponse GetExamples()
