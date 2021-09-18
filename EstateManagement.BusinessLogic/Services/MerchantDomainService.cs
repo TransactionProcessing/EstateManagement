@@ -103,6 +103,7 @@
                                          String contactName,
                                          String contactPhoneNumber,
                                          String contactEmailAddress,
+                                         Models.SettlementSchedule settlementSchedule,
                                          CancellationToken cancellationToken)
         {
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
@@ -124,6 +125,9 @@
 
             // Add the contact
             merchantAggregate.AddContact(contactId, contactName, contactPhoneNumber, contactEmailAddress);
+
+            // Set the settlement schedule
+            merchantAggregate.SetSettlementSchedule(settlementSchedule);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }

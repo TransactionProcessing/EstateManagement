@@ -324,7 +324,8 @@ this.FeatureBackground();
                             "Country",
                             "ContactName",
                             "EmailAddress",
-                            "EstateName"});
+                            "EstateName",
+                            "SettlementSchedule"});
                 table63.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
@@ -333,7 +334,8 @@ this.FeatureBackground();
                             "United Kingdom",
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
+                            "Test Estate 1",
+                            "Weekly"});
 #line 51
  testRunner.When("I create the following merchants", ((string)(null)), table63, "When ");
 #line hidden
@@ -384,7 +386,8 @@ this.FeatureBackground();
                             "Country",
                             "ContactName",
                             "EmailAddress",
-                            "EstateName"});
+                            "EstateName",
+                            "SettlementSchedule"});
                 table64.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
@@ -393,7 +396,8 @@ this.FeatureBackground();
                             "United Kingdom",
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
+                            "Test Estate 1",
+                            "Weekly"});
 #line 57
  testRunner.When("I create the following merchants", ((string)(null)), table64, "When ");
 #line hidden

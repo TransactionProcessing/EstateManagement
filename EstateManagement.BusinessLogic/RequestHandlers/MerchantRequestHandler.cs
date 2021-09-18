@@ -70,6 +70,7 @@
                                                             request.ContactName,
                                                             request.ContactPhoneNumber,
                                                             request.ContactEmailAddress,
+                                                            request.SettlementSchedule,
                                                             cancellationToken);
 
             return string.Empty;

@@ -124,6 +124,14 @@ namespace EstateManagement.IntegrationTests.Shared
                 }
 
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                var settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
+
+                SettlementSchedule schedule = SettlementSchedule.Immediate;
+                if (String.IsNullOrEmpty(settlementSchedule))
+                {
+                    schedule = Enum.Parse<SettlementSchedule>(settlementSchedule);
+                }
+
                 CreateMerchantRequest createMerchantRequest = new CreateMerchantRequest
                                                               {
                                                                   Name = merchantName,
@@ -138,7 +146,8 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                 Town = SpecflowTableHelper.GetStringRowValue(tableRow, "Town"),
                                                                                 Region = SpecflowTableHelper.GetStringRowValue(tableRow, "Region"),
                                                                                 Country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country")
-                                                                            }
+                                                                            },
+                                                                  SettlementSchedule = schedule
                                                               };
                 
                 CreateMerchantResponse response = await this.TestingContext.DockerHelper.EstateClient

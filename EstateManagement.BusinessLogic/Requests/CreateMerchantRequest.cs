@@ -44,7 +44,8 @@ namespace EstateManagement.BusinessLogic.Requests
                                       Guid contactId,
                                       String contactName,
                                       String contactPhoneNumber,
-                                      String contactEmailAddress)
+                                      String contactEmailAddress,
+                                      Models.SettlementSchedule settlementSchedule)
         {
             this.EstateId = estateId;
             this.MerchantId = merchantId;
@@ -62,6 +63,7 @@ namespace EstateManagement.BusinessLogic.Requests
             this.ContactName = contactName;
             this.ContactPhoneNumber = contactPhoneNumber;
             this.ContactEmailAddress = contactEmailAddress;
+            this.SettlementSchedule = settlementSchedule;
         }
 
         #endregion
@@ -196,6 +198,8 @@ namespace EstateManagement.BusinessLogic.Requests
         /// </value>
         public String Town { get; }
 
+        public Models.SettlementSchedule SettlementSchedule { get; }
+
         #endregion
 
         #region Methods
@@ -231,7 +235,8 @@ namespace EstateManagement.BusinessLogic.Requests
                                                    String country,
                                                    String contactName,
                                                    String contactPhoneNumber,
-                                                   String contactEmailAddress)
+                                                   String contactEmailAddress,
+                                                   Models.SettlementSchedule settlementSchedule)
         {
             return new CreateMerchantRequest(estateId,
                                              merchantId,
@@ -248,7 +253,8 @@ namespace EstateManagement.BusinessLogic.Requests
                                              Guid.NewGuid(),
                                              contactName,
                                              contactPhoneNumber,
-                                             contactEmailAddress);
+                                             contactEmailAddress,
+                                             settlementSchedule);
         }
 
         #endregion

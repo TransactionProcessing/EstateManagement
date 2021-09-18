@@ -28,7 +28,6 @@
     using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.MakeMerchantDepositRequest;
     using EstateManagement.Common;
     using System.Security.Claims;
-    using BusinessLogic.Requests;
     using Common.Examples;
     using Microsoft.AspNetCore.Authorization;
     using Models.Contract;
@@ -114,6 +113,24 @@
                 return this.Forbid();
             }
 
+            // Convert the schedule
+            Models.SettlementSchedule settlementScheduleModel = Models.SettlementSchedule.NotSet;
+            switch (createMerchantRequest.SettlementSchedule)
+            {
+                case SettlementSchedule.Immediate:
+                    settlementScheduleModel = Models.SettlementSchedule.Immediate;
+                    break;
+                case SettlementSchedule.Weekly:
+                    settlementScheduleModel = Models.SettlementSchedule.Weekly;
+                    break;
+                case SettlementSchedule.Monthly:
+                    settlementScheduleModel = Models.SettlementSchedule.Monthly;
+                    break;
+                default:
+                    settlementScheduleModel = Models.SettlementSchedule.Immediate;
+                    break;
+            }
+
             Guid merchantId = Guid.NewGuid();
 
             // Create the command
@@ -130,7 +147,8 @@
                                                                          createMerchantRequest.Address.Country,
                                                                          createMerchantRequest.Contact.ContactName,
                                                                          createMerchantRequest.Contact.PhoneNumber,
-                                                                         createMerchantRequest.Contact.EmailAddress);
+                                                                         createMerchantRequest.Contact.EmailAddress,
+                                                                         settlementScheduleModel);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);
@@ -603,6 +621,7 @@
         }
 
         #endregion
+
         /// <summary>
         /// Gets the transaction fees for product.
         /// </summary>
@@ -724,79 +743,6 @@
             List<Contract> contracts = await this.EstateManagementManager.GetMerchantContracts(estateId, merchantId, cancellationToken);
 
             return this.Ok(this.ModelFactory.ConvertFrom(contracts));
-        }
-
-        [HttpPatch]
-        [Route("{merchantId}")]
-        public async Task<IActionResult> SetSettlementSchedule([FromRoute] Guid estateId,
-                                                               [FromRoute] Guid merchantId,
-                                                               [FromBody] SetSettlementScheduleRequest request,
-                                                               CancellationToken cancellationToken)
-        {
-            String estateRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("EstateRoleName")) ? "Estate" : Environment.GetEnvironmentVariable("EstateRoleName");
-            String merchantRoleName = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("MerchantRoleName")) ? "Merchant" : Environment.GetEnvironmentVariable("MerchantRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[]
-                                                         {
-                                                             estateRoleName,
-                                                             merchantRoleName
-                                                         }) == false)
-            {
-                return this.Forbid();
-            }
-
-            Claim estateIdClaim = null;
-            Claim merchantIdClaim = null;
-
-            // Determine the users role
-            if (this.User.IsInRole(estateRoleName))
-            {
-                // Estate user
-                // Get the Estate Id claim from the user
-                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
-            }
-
-            if (this.User.IsInRole(merchantRoleName))
-            {
-                // Get the merchant Id claim from the user
-                estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId");
-                merchantIdClaim = ClaimsHelper.GetUserClaim(this.User, "MerchantId");
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(merchantId, merchantIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            // Convert the schedule
-            Models.SettlementSchedule settlementScheduleModel = Models.SettlementSchedule.NotSet;
-            switch (request.SettlementSchedule)
-            {
-                case SettlementSchedule.Immediate:
-                    settlementScheduleModel = Models.SettlementSchedule.Immediate;
-                    break;
-                case SettlementSchedule.Weekly:
-                    settlementScheduleModel = Models.SettlementSchedule.Weekly;
-                    break;
-                case SettlementSchedule.Monthly:
-                    settlementScheduleModel = Models.SettlementSchedule.Monthly;
-                    break;
-                default:
-                    settlementScheduleModel = Models.SettlementSchedule.Immediate;
-                    break;
-            }
-
-            SetMerchantSettlementScheduleRequest command = SetMerchantSettlementScheduleRequest.Create(estateId, merchantId, settlementScheduleModel);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
         }
 
         #region Others
