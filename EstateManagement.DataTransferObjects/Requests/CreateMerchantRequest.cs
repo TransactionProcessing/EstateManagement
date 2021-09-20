@@ -40,6 +40,9 @@
         [Required]
         [JsonProperty("name")]
         public String Name { get; set; }
+        
+        [JsonProperty("settlment_schedule")]
+        public SettlementSchedule SettlementSchedule { get; set; }
 
         #endregion
     }

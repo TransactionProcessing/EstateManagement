@@ -16,11 +16,4 @@ namespace EstateManagement.DataTransferObjects.Requests
         public SettlementSchedule SettlementSchedule { get; set; }
 
     }
-    public enum SettlementSchedule
-    {
-        NotSet,
-        Immediate,
-        Weekly,
-        Monthly
-    }
 }

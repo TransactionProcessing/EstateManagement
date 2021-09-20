@@ -84,7 +84,8 @@
                                                                                                  TestData.MerchantCountry,
                                                                                                  TestData.MerchantContactName,
                                                                                                  TestData.MerchantContactPhoneNumber,
-                                                                                                 TestData.MerchantContactEmailAddress);
+                                                                                                 TestData.MerchantContactEmailAddress,
+                                                                                                 TestData.SettlementSchedule);
 
         public static EstateAggregate EmptyEstateAggregate = EstateAggregate.Create(TestData.EstateId);
 

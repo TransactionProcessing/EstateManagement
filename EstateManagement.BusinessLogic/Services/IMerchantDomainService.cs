@@ -49,6 +49,7 @@
                             String contactName,
                             String contactPhoneNumber,
                             String contactEmailAddress,
+                            Models.SettlementSchedule settlementSchedule,
                             CancellationToken cancellationToken);
 
         /// <summary>

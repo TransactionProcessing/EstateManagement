@@ -55,6 +55,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                    TestData.MerchantContactName,
                                                                    TestData.MerchantContactPhoneNumber,
                                                                    TestData.MerchantContactEmailAddress,
+                                                                   TestData.SettlementSchedule,
                                                                    CancellationToken.None);
                             });
         }
@@ -92,6 +93,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                    TestData.MerchantContactName,
                                                    TestData.MerchantContactPhoneNumber,
                                                    TestData.MerchantContactEmailAddress,
+                                                   TestData.SettlementSchedule,
                                                    CancellationToken.None);
             });
         }
