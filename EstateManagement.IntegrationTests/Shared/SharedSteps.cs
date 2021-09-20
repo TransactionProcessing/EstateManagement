@@ -127,7 +127,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 var settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
 
                 SettlementSchedule schedule = SettlementSchedule.Immediate;
-                if (String.IsNullOrEmpty(settlementSchedule))
+                if (String.IsNullOrEmpty(settlementSchedule) == false)
                 {
                     schedule = Enum.Parse<SettlementSchedule>(settlementSchedule);
                 }
