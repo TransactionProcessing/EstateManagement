@@ -29,6 +29,7 @@
     using EstateManagement.Common;
     using System.Security.Claims;
     using Common.Examples;
+    using DataTransferObjects;
     using Microsoft.AspNetCore.Authorization;
     using Models.Contract;
     using Swashbuckle.AspNetCore.Annotations;

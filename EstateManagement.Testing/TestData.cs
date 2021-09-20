@@ -247,6 +247,7 @@
                                                                            MerchantId = TestData.MerchantId,
                                                                            MerchantName = TestData.MerchantName,
                                                                            EstateId = TestData.EstateId,
+                                                                           SettlementSchedule = SettlementSchedule.Immediate,
                                                                            Addresses = new List<Address>
                                                                                        {
                                                                                            new Address
@@ -293,7 +294,8 @@
                                                                                    MerchantId = TestData.MerchantId,
                                                                                    MerchantName = TestData.MerchantName,
                                                                                    EstateId = TestData.EstateId,
-                                                                                   Addresses = null,
+                                                                                   SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = null,
                                                                                    Contacts = new List<Contact>
                                                                                               {
                                                                                                   new Contact
@@ -325,7 +327,8 @@
                                                                                MerchantId = TestData.MerchantId,
                                                                                MerchantName = TestData.MerchantName,
                                                                                EstateId = TestData.EstateId,
-                                                                               Addresses = new List<Address>
+                                                                               SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = new List<Address>
                                                                                            {
                                                                                                new Address
                                                                                                {
@@ -362,7 +365,8 @@
                                                                   MerchantId = TestData.MerchantId,
                                                                   MerchantName = TestData.MerchantName,
                                                                   EstateId = TestData.EstateId,
-                                                                  Addresses = new List<Address>
+                                                                  SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = new List<Address>
                                                                               {
                                                                                   new Address
                                                                                   {
@@ -405,7 +409,8 @@
                                                                     MerchantId = TestData.MerchantId,
                                                                     MerchantName = TestData.MerchantName,
                                                                     EstateId = TestData.EstateId,
-                                                                    Addresses = new List<Address>
+                                                                    SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = new List<Address>
                                                                                 {
                                                                                     new Address
                                                                                     {
@@ -948,6 +953,8 @@
         public static DateTime HistoryEndDate = new DateTime(2021,8,30);
 
         public static SettlementSchedule SettlementSchedule = SettlementSchedule.Immediate;
+
+        public static DateTime NextSettlementDate = new DateTime(2021,8,30);
 
         public static SetMerchantSettlementScheduleRequest SetMerchantSettlementScheduleRequest => SetMerchantSettlementScheduleRequest.Create(TestData.EstateId,
                                                                                                                                                TestData.MerchantId, TestData.SettlementSchedule);

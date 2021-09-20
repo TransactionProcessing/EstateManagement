@@ -1,4 +1,4 @@
-﻿namespace EstateManagement.DataTransferObjects.Requests
+﻿namespace EstateManagement.DataTransferObjects
 {
     public enum SettlementSchedule
     {

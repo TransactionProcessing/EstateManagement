@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using DataTransferObjects;
     using DataTransferObjects.Responses;
+    using Microsoft.Extensions.DependencyModel.Resolution;
     using Models.Contract;
     using Models.Estate;
     using Models.Merchant;
@@ -147,6 +149,7 @@
                                                     EstateId = merchant.EstateId,
                                                     MerchantId = merchant.MerchantId,
                                                     MerchantName = merchant.MerchantName,
+                                                    SettlementSchedule = this.ConvertFrom(merchant.SettlementSchedule)
                                                 };
 
             if (merchant.Addresses != null && merchant.Addresses.Any())
@@ -211,6 +214,17 @@
             }
 
             return merchantResponse;
+        }
+
+        private SettlementSchedule ConvertFrom(Models.SettlementSchedule settlementSchedule)
+        {
+            return settlementSchedule switch
+            {
+                Models.SettlementSchedule.Weekly => DataTransferObjects.SettlementSchedule.Weekly,
+                Models.SettlementSchedule.Monthly => DataTransferObjects.SettlementSchedule.Monthly,
+                Models.SettlementSchedule.Immediate => DataTransferObjects.SettlementSchedule.Immediate,
+                Models.SettlementSchedule.NotSet => DataTransferObjects.SettlementSchedule.NotSet,
+            };
         }
 
         /// <summary>

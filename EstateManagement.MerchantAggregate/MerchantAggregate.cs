@@ -100,6 +100,8 @@
         /// </value>
         public DateTime DateCreated { get; private set; }
 
+        public DateTime NextSettlementDueDate { get; private set; }
+
         /// <summary>
         /// Gets the estate identifier.
         /// </summary>
@@ -290,6 +292,8 @@
             merchantModel.EstateId = this.EstateId;
             merchantModel.MerchantId = this.AggregateId;
             merchantModel.MerchantName = this.Name;
+            merchantModel.SettlementSchedule = this.SettlementSchedule;
+            merchantModel.NextSettlementDueDate = this.NextSettlementDueDate;
 
             if (this.Addresses.Any())
             {
@@ -425,9 +429,29 @@
             // Check if there has actually been a change or not, if not ignore the request
             if (this.SettlementSchedule == settlementSchedule)
                 return;
+            DateTime nextSettlementDate = DateTime.MinValue;
+            if (settlementSchedule != SettlementSchedule.Immediate)
+            {
+                // Calculate next settlement date
+                DateTime dateForCalculation = this.NextSettlementDueDate;
+                if (dateForCalculation == DateTime.MinValue)
+                {
+                    // No date set previously so use current date as start point
+                    dateForCalculation = DateTime.Now.Date;
+                }
+
+                if (settlementSchedule == SettlementSchedule.Weekly)
+                {
+                    nextSettlementDate = dateForCalculation.AddDays(7);
+                }
+                else if (settlementSchedule == SettlementSchedule.Monthly)
+                {
+                    nextSettlementDate = dateForCalculation.AddMonths(1);
+                }
+            }
 
             SettlementScheduleChangedEvent settlementScheduleChangedEvent =
-                new SettlementScheduleChangedEvent(this.AggregateId, this.EstateId, (Int32)settlementSchedule);
+                new SettlementScheduleChangedEvent(this.AggregateId, this.EstateId, (Int32)settlementSchedule, nextSettlementDate);
 
             this.ApplyAndAppend(settlementScheduleChangedEvent);
         }
@@ -638,6 +662,7 @@
         private void PlayEvent(SettlementScheduleChangedEvent domainEvent)
         {
             this.SettlementSchedule = (SettlementSchedule)domainEvent.SettlementSchedule;
+            this.NextSettlementDueDate = domainEvent.NextSettlementDate;
         }
 
         /// <summary>

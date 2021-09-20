@@ -157,10 +157,13 @@
         /// <param name="aggregateId">The aggregate identifier.</param>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="settlementSchedule">The settlement schedule</param>
+        /// <param name="nextSettlementDate"></param>
         public SettlementScheduleChangedEvent(Guid aggregateId,
                                               Guid estateId,
-                                              Int32 settlementSchedule) : base(aggregateId, Guid.NewGuid())
+                                              Int32 settlementSchedule,
+                                              DateTime nextSettlementDate) : base(aggregateId, Guid.NewGuid())
         {
+            this.NextSettlementDate = nextSettlementDate;
             this.MerchantId = aggregateId;
             this.EstateId = estateId;
             this.SettlementSchedule = settlementSchedule;
@@ -177,6 +180,8 @@
         /// The estate identifier.
         /// </value>
         public Guid EstateId { get; init; }
+
+        public DateTime NextSettlementDate { get; init; }
 
         /// <summary>
         /// Gets the merchant identifier.

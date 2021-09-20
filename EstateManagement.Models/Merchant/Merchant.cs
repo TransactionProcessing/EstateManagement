@@ -7,10 +7,6 @@
     [ExcludeFromCodeCoverage]
     public class Merchant
     {
-        #region Constructors
-
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -84,6 +80,10 @@
         /// The security users.
         /// </value>
         public List<SecurityUser> SecurityUsers { get; set; }
+
+        public SettlementSchedule SettlementSchedule { get; set; }
+
+        public DateTime NextSettlementDueDate { get; set; }
 
         #endregion
     }
