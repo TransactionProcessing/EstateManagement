@@ -83,6 +83,8 @@
 
         public SettlementSchedule SettlementSchedule { get; set; }
 
+        public DateTime NextSettlementDueDate { get; set; }
+
         #endregion
     }
 }

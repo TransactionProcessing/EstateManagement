@@ -364,20 +364,42 @@ namespace EstateManagement.MerchantAggregate.Tests
                                                     });
         }
 
-        [Theory]
-        [InlineData(SettlementSchedule.Immediate)]
-        [InlineData(SettlementSchedule.Weekly)]
-        [InlineData(SettlementSchedule.Monthly)]
-        public void MerchantAggregate_SetSetttlmentSchedule_ScheduleIsSet(SettlementSchedule settlementSchedule)
+        //[Theory]
+        //[InlineData(SettlementSchedule.Immediate)]
+        //[InlineData(SettlementSchedule.Weekly)]
+        //[InlineData(SettlementSchedule.Monthly)]
+        //public void MerchantAggregate_SetSetttlmentSchedule_ScheduleIsSet(SettlementSchedule settlementSchedule)
+        //{
+        //    MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+        //    aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+        //    aggregate.SetSettlementSchedule(settlementSchedule);
+
+        //    aggregate.SettlementSchedule.ShouldBe(settlementSchedule);
+
+        //    var merchant = aggregate.GetMerchant();
+        //    merchant.SettlementSchedule.ShouldBe(settlementSchedule);
+        //}
+
+        [Fact]
+        public void MerchantAggregate_SetSetttlmentSchedule_ScheduleIsSet()
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.SetSettlementSchedule(settlementSchedule);
+            aggregate.SetSettlementSchedule(SettlementSchedule.Immediate);
+            aggregate.SettlementSchedule.ShouldBe(SettlementSchedule.Immediate);
+            aggregate.NextSettlementDueDate.ShouldBe(DateTime.MinValue);
 
-            aggregate.SettlementSchedule.ShouldBe(settlementSchedule);
+            aggregate.SetSettlementSchedule(SettlementSchedule.Weekly);
+            aggregate.SettlementSchedule.ShouldBe(SettlementSchedule.Weekly);
+            aggregate.NextSettlementDueDate.ShouldBe(DateTime.Now.Date.AddDays(7));
 
-            var merchant = aggregate.GetMerchant();
-            merchant.SettlementSchedule.ShouldBe(settlementSchedule);
+            aggregate.SetSettlementSchedule(SettlementSchedule.Immediate);
+            aggregate.SettlementSchedule.ShouldBe(SettlementSchedule.Immediate);
+            aggregate.NextSettlementDueDate.ShouldBe(DateTime.MinValue);
+
+            aggregate.SetSettlementSchedule(SettlementSchedule.Monthly);
+            aggregate.SettlementSchedule.ShouldBe(SettlementSchedule.Monthly);
+            aggregate.NextSettlementDueDate.ShouldBe(DateTime.Now.Date.AddMonths(1));
         }
 
         [Theory]

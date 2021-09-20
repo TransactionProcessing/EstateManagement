@@ -954,6 +954,8 @@
 
         public static SettlementSchedule SettlementSchedule = SettlementSchedule.Immediate;
 
+        public static DateTime NextSettlementDate = new DateTime(2021,8,30);
+
         public static SetMerchantSettlementScheduleRequest SetMerchantSettlementScheduleRequest => SetMerchantSettlementScheduleRequest.Create(TestData.EstateId,
                                                                                                                                                TestData.MerchantId, TestData.SettlementSchedule);
 
