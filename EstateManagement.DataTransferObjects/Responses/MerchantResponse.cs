@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
+    using Requests;
 
     public class MerchantResponse
     {
@@ -92,6 +93,9 @@
         /// </value>
         [JsonProperty("balance")]
         public Decimal Balance { get; set; }
+
+        [JsonProperty("settlement_schedule")]
+        public SettlementSchedule SettlementSchedule { get; set; }
 
         #endregion
     }

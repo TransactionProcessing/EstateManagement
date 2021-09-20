@@ -191,20 +191,20 @@ Scenario: Get Merchants for Estate - System Login
 @PRTest
 Scenario: Get Merchants for Estate - Estate Login
 	Given I create the following merchants
-	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
-	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
-	| Test Merchant 2 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant2.co.uk | Test Estate 1 |
-	| Test Merchant 3 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant3.co.uk | Test Estate 1 |
-	| Test Merchant 4 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant4.co.uk | Test Estate 2 |
-	| Test Merchant 5 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant5.co.uk | Test Estate 2 |
+	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    | SettlementSchedule |
+	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 | Weekly             |
+	| Test Merchant 2 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant2.co.uk | Test Estate 1 | Monthly            |
+	| Test Merchant 3 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant3.co.uk | Test Estate 1 | Immediate          |
+	| Test Merchant 4 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant4.co.uk | Test Estate 2 | Weekly             |
+	| Test Merchant 5 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant5.co.uk | Test Estate 2 | Monthly            |
 
 	When I assign the following  operator to the merchants
-	| OperatorName    | MerchantName    | MerchantNumber | TerminalNumber | EstateName    |
-	| Test Operator 1 | Test Merchant 1 | 00000001       | 10000001       | Test Estate 1 |
-	| Test Operator 1 | Test Merchant 2 | 00000001       | 10000001       | Test Estate 1 |
-	| Test Operator 1 | Test Merchant 3 | 00000001       | 10000001       | Test Estate 1 |
-	| Test Operator 1 | Test Merchant 4 | 00000001       | 10000001       | Test Estate 2 |
-	| Test Operator 1 | Test Merchant 5 | 00000001       | 10000001       | Test Estate 2 |
+	| OperatorName    | MerchantName    | MerchantNumber | TerminalNumber | EstateName    | 
+	| Test Operator 1 | Test Merchant 1 | 00000001       | 10000001       | Test Estate 1 | 
+	| Test Operator 1 | Test Merchant 2 | 00000001       | 10000001       | Test Estate 1 | 
+	| Test Operator 1 | Test Merchant 3 | 00000001       | 10000001       | Test Estate 1 | 
+	| Test Operator 1 | Test Merchant 4 | 00000001       | 10000001       | Test Estate 2 | 
+	| Test Operator 1 | Test Merchant 5 | 00000001       | 10000001       | Test Estate 2 | 
 
 	When I add the following devices to the merchant
 	| DeviceIdentifier | MerchantName    | EstateName    |

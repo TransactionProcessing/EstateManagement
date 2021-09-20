@@ -247,6 +247,7 @@
                                                                            MerchantId = TestData.MerchantId,
                                                                            MerchantName = TestData.MerchantName,
                                                                            EstateId = TestData.EstateId,
+                                                                           SettlementSchedule = SettlementSchedule.Immediate,
                                                                            Addresses = new List<Address>
                                                                                        {
                                                                                            new Address
@@ -293,7 +294,8 @@
                                                                                    MerchantId = TestData.MerchantId,
                                                                                    MerchantName = TestData.MerchantName,
                                                                                    EstateId = TestData.EstateId,
-                                                                                   Addresses = null,
+                                                                                   SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = null,
                                                                                    Contacts = new List<Contact>
                                                                                               {
                                                                                                   new Contact
@@ -325,7 +327,8 @@
                                                                                MerchantId = TestData.MerchantId,
                                                                                MerchantName = TestData.MerchantName,
                                                                                EstateId = TestData.EstateId,
-                                                                               Addresses = new List<Address>
+                                                                               SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = new List<Address>
                                                                                            {
                                                                                                new Address
                                                                                                {
@@ -362,7 +365,8 @@
                                                                   MerchantId = TestData.MerchantId,
                                                                   MerchantName = TestData.MerchantName,
                                                                   EstateId = TestData.EstateId,
-                                                                  Addresses = new List<Address>
+                                                                  SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = new List<Address>
                                                                               {
                                                                                   new Address
                                                                                   {
@@ -405,7 +409,8 @@
                                                                     MerchantId = TestData.MerchantId,
                                                                     MerchantName = TestData.MerchantName,
                                                                     EstateId = TestData.EstateId,
-                                                                    Addresses = new List<Address>
+                                                                    SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = new List<Address>
                                                                                 {
                                                                                     new Address
                                                                                     {

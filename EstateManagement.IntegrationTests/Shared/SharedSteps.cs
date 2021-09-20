@@ -168,13 +168,20 @@ namespace EstateManagement.IntegrationTests.Shared
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
 
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-
                 Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
                 String token = this.TestingContext.AccessToken;
                 if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
                 {
                     token = estateDetails.AccessToken;
+                }
+
+                var settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
+
+                SettlementSchedule schedule = SettlementSchedule.Immediate;
+                if (String.IsNullOrEmpty(settlementSchedule) == false)
+                {
+                    schedule = Enum.Parse<SettlementSchedule>(settlementSchedule);
                 }
 
                 await Retry.For(async () =>
@@ -184,6 +191,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                           .ConfigureAwait(false);
 
                                     merchant.MerchantName.ShouldBe(merchantName);
+                                    merchant.SettlementSchedule.ShouldBe(schedule);
                                 });
             }
         }

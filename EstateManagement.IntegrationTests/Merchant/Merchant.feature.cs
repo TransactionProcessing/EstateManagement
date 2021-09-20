@@ -1297,7 +1297,8 @@ this.FeatureBackground();
                             "Country",
                             "ContactName",
                             "EmailAddress",
-                            "EstateName"});
+                            "EstateName",
+                            "SettlementSchedule"});
                 table86.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
@@ -1306,7 +1307,8 @@ this.FeatureBackground();
                             "United Kingdom",
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
+                            "Test Estate 1",
+                            "Weekly"});
                 table86.AddRow(new string[] {
                             "Test Merchant 2",
                             "Address Line 1",
@@ -1315,7 +1317,8 @@ this.FeatureBackground();
                             "United Kingdom",
                             "Test Contact 1",
                             "testcontact1@merchant2.co.uk",
-                            "Test Estate 1"});
+                            "Test Estate 1",
+                            "Monthly"});
                 table86.AddRow(new string[] {
                             "Test Merchant 3",
                             "Address Line 1",
@@ -1324,7 +1327,8 @@ this.FeatureBackground();
                             "United Kingdom",
                             "Test Contact 1",
                             "testcontact1@merchant3.co.uk",
-                            "Test Estate 1"});
+                            "Test Estate 1",
+                            "Immediate"});
                 table86.AddRow(new string[] {
                             "Test Merchant 4",
                             "Address Line 1",
@@ -1333,7 +1337,8 @@ this.FeatureBackground();
                             "United Kingdom",
                             "Test Contact 1",
                             "testcontact1@merchant4.co.uk",
-                            "Test Estate 2"});
+                            "Test Estate 2",
+                            "Weekly"});
                 table86.AddRow(new string[] {
                             "Test Merchant 5",
                             "Address Line 1",
@@ -1342,7 +1347,8 @@ this.FeatureBackground();
                             "United Kingdom",
                             "Test Contact 1",
                             "testcontact1@merchant5.co.uk",
-                            "Test Estate 2"});
+                            "Test Estate 2",
+                            "Monthly"});
 #line 193
  testRunner.Given("I create the following merchants", ((string)(null)), table86, "Given ");
 #line hidden

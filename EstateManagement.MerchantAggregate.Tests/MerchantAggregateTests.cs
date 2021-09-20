@@ -375,6 +375,9 @@ namespace EstateManagement.MerchantAggregate.Tests
             aggregate.SetSettlementSchedule(settlementSchedule);
 
             aggregate.SettlementSchedule.ShouldBe(settlementSchedule);
+
+            var merchant = aggregate.GetMerchant();
+            merchant.SettlementSchedule.ShouldBe(settlementSchedule);
         }
 
         [Theory]
@@ -394,6 +397,9 @@ namespace EstateManagement.MerchantAggregate.Tests
             value.ShouldNotBeNull();
             var eventHistory = (List<IDomainEvent>)value;
             eventHistory.Count.ShouldBe(2);
+
+            var merchant = aggregate.GetMerchant();
+            merchant.SettlementSchedule.ShouldBe(originalSettlementSchedule);
         }
 
     }

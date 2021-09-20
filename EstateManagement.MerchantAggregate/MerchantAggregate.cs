@@ -290,6 +290,7 @@
             merchantModel.EstateId = this.EstateId;
             merchantModel.MerchantId = this.AggregateId;
             merchantModel.MerchantName = this.Name;
+            merchantModel.SettlementSchedule = this.SettlementSchedule;
 
             if (this.Addresses.Any())
             {
