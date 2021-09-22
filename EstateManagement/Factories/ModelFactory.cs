@@ -149,7 +149,8 @@
                                                     EstateId = merchant.EstateId,
                                                     MerchantId = merchant.MerchantId,
                                                     MerchantName = merchant.MerchantName,
-                                                    SettlementSchedule = this.ConvertFrom(merchant.SettlementSchedule)
+                                                    SettlementSchedule = this.ConvertFrom(merchant.SettlementSchedule),
+                                                    NextSettlementDueDate = merchant.NextSettlementDueDate
                                                 };
 
             if (merchant.Addresses != null && merchant.Addresses.Any())
