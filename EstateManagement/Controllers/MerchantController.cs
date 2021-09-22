@@ -174,7 +174,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("")]
+        [Route("{merchantId}")]
         //[SwaggerResponse(200, "Created", typeof(CreateMerchantResponse))]
         //[SwaggerResponseExample(201, typeof(CreateMerchantResponseExample))]
         public async Task<IActionResult> SetSettlementSchedule([FromRoute] Guid estateId,
