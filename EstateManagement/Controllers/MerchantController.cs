@@ -28,6 +28,7 @@
     using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.MakeMerchantDepositRequest;
     using EstateManagement.Common;
     using System.Security.Claims;
+    using BusinessLogic.Requests;
     using Common.Examples;
     using DataTransferObjects;
     using Microsoft.AspNetCore.Authorization;
@@ -163,6 +164,63 @@
                                     AddressId = command.AddressId,
                                     ContactId = command.ContactId
                                 });
+        }
+
+        /// <summary>
+        /// Creates the merchant.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="createMerchantRequest">The create merchant request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("")]
+        //[SwaggerResponse(200, "Created", typeof(CreateMerchantResponse))]
+        //[SwaggerResponseExample(201, typeof(CreateMerchantResponseExample))]
+        public async Task<IActionResult> SetSettlementSchedule([FromRoute] Guid estateId,
+                                                               [FromRoute] Guid merchantId,
+                                                        [FromBody] SetSettlementScheduleRequest setSettlementScheduleRequest,
+                                                        CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            // Convert the schedule
+            Models.SettlementSchedule settlementScheduleModel = Models.SettlementSchedule.NotSet;
+            switch (setSettlementScheduleRequest.SettlementSchedule)
+            {
+                case SettlementSchedule.Immediate:
+                    settlementScheduleModel = Models.SettlementSchedule.Immediate;
+                    break;
+                case SettlementSchedule.Weekly:
+                    settlementScheduleModel = Models.SettlementSchedule.Weekly;
+                    break;
+                case SettlementSchedule.Monthly:
+                    settlementScheduleModel = Models.SettlementSchedule.Monthly;
+                    break;
+                default:
+                    settlementScheduleModel = Models.SettlementSchedule.Immediate;
+                    break;
+            }
+
+            SetMerchantSettlementScheduleRequest command = SetMerchantSettlementScheduleRequest.Create(estateId, merchantId, settlementScheduleModel);
+            
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
         }
 
         /// <summary>
