@@ -275,6 +275,29 @@
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
+        public async Task SwapMerchantDevice(Guid estateId, Guid merchantId, Guid deviceId, string originalDeviceIdentifier,
+            string newDeviceIdentifier, CancellationToken cancellationToken)
+        {
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+
+            // Check merchant has been created
+            if (merchantAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+            }
+
+            // Estate Id is a valid estate
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            }
+
+            merchantAggregate.SwapDevice(deviceId, originalDeviceIdentifier, newDeviceIdentifier);
+
+            await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+        }
+
         /// <summary>
         /// Makes the merchant deposit.
         /// </summary>

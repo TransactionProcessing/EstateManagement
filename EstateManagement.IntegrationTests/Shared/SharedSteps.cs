@@ -738,8 +738,67 @@ namespace EstateManagement.IntegrationTests.Shared
                 addMerchantDeviceResponse.DeviceId.ShouldNotBe(Guid.Empty);
 
                 this.TestingContext.Logger.LogInformation($"Device {deviceIdentifier} assigned to Merchant {merchantName}");
+
+                await Retry.For(async () =>
+                                {
+                                    var merchantResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None)
+                                              .ConfigureAwait(false);
+
+                                    merchantResponse.Devices.ContainsValue(addMerchantDeviceRequest.DeviceIdentifier);
+                                });
             }
         }
+
+        [When(@"I swap the merchant device the device is swapped")]
+        public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                String originalDeviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "OriginalDeviceIdentifier");
+                String newDeviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "NewDeviceIdentifier");
+
+                SwapMerchantDeviceRequest swapMerchantDeviceRequest = new SwapMerchantDeviceRequest
+                {
+                    OriginalDeviceIdentifier = originalDeviceIdentifier,
+                    NewDeviceIdentifier = newDeviceIdentifier
+                };
+
+                SwapMerchantDeviceResponse swapMerchantDeviceResponse = await this
+                                                                            .TestingContext.DockerHelper.EstateClient
+                                                                            .SwapDeviceForMerchant(token,
+                                                                                                 estateDetails.EstateId,
+                                                                                                 merchantId,
+                                                                                                 swapMerchantDeviceRequest,
+                                                                                                 CancellationToken.None).ConfigureAwait(false);
+
+                swapMerchantDeviceResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                swapMerchantDeviceResponse.MerchantId.ShouldBe(merchantId);
+                swapMerchantDeviceResponse.DeviceId.ShouldNotBe(Guid.Empty);
+
+                this.TestingContext.Logger.LogInformation($"Device {newDeviceIdentifier} assigned to Merchant {merchantName}");
+
+                await Retry.For(async () =>
+                {
+                    var merchantResponse = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None)
+                              .ConfigureAwait(false);
+
+                    merchantResponse.Devices.ContainsValue(swapMerchantDeviceRequest.NewDeviceIdentifier);
+                });
+            }
+        }
+
 
         [When(@"I get the merchants for '(.*)' then (.*) merchants will be returned")]
         public async Task WhenIGetTheMerchantsForThenMerchantsWillBeReturned(String estateName, Int32 expectedMerchantCount)

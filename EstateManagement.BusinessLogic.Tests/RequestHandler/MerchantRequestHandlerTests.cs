@@ -101,5 +101,20 @@
                             });
 
         }
+
+        [Fact]
+        public void MerchantRequestHandler_SwapMerchantDeviceRequest_IsHandled()
+        {
+            Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
+
+            SwapMerchantDeviceRequest request = TestData.SwapMerchantDeviceRequest;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+
+        }
     }
 }

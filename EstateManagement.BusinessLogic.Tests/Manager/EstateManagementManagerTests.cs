@@ -152,7 +152,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Merchant>
                                                                                                                                      {
                                                                                                                                          TestData
-                                                                                                                                             .MerchantModelWithAddressesContactsDevicesAndOperators
+                                                                                                                                             .MerchantModelWithAddressesContactsDevicesAndOperators()
                                                                                                                                      });
 
             List<Merchant> merchantList = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);

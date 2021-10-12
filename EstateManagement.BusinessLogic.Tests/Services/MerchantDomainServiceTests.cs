@@ -596,5 +596,80 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                         CancellationToken.None);
             });
         }
+
+        [Fact]
+        public async Task MerchantDomainService_SwapMerchantDevice_MerchantDeviceSwapped()
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithDevice);
+            merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
+
+            Should.NotThrow(async () =>
+                            {
+                                await domainService.SwapMerchantDevice(TestData.EstateId,
+                                                                       TestData.MerchantId,
+                                                                       TestData.DeviceId,
+                                                                       TestData.DeviceIdentifier,
+                                                                       TestData.NewDeviceIdentifier,
+                                                                       CancellationToken.None);
+                            });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_SwapMerchantDevice_MerchantNotCreated_ErrorThrown()
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
+            merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
+
+            Should.Throw<InvalidOperationException>(async () =>
+                            {
+                                await domainService.SwapMerchantDevice(TestData.EstateId,
+                                                                       TestData.MerchantId,
+                                                                       TestData.DeviceId,
+                                                                       TestData.DeviceIdentifier,
+                                                                       TestData.NewDeviceIdentifier,
+                                                                       CancellationToken.None);
+                            });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_SwapMerchantDevice_EstateNotCreated_ErrorThrown()
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
+
+            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithDevice);
+            merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
+
+            Should.Throw<InvalidOperationException>(async () =>
+            {
+                await domainService.SwapMerchantDevice(TestData.EstateId,
+                                                       TestData.MerchantId,
+                                                       TestData.DeviceId,
+                                                       TestData.DeviceIdentifier,
+                                                       TestData.NewDeviceIdentifier,
+                                                       CancellationToken.None);
+            });
+        }
     }
 }
