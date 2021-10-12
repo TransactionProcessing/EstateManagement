@@ -218,14 +218,32 @@
 
             this.ApplyAndAppend(deviceAddedToMerchantEvent);
         }
-        
+
+        public void SwapDevice(Guid deviceId,
+            String originalDeviceIdentifier,
+            String newDeviceIdentifier)
+        {
+            Guard.ThrowIfNullOrEmpty(originalDeviceIdentifier, typeof(ArgumentNullException), "Original Device Identifier cannot be null or empty");
+            Guard.ThrowIfNullOrEmpty(newDeviceIdentifier, typeof(ArgumentNullException), "New Device Identifier cannot be null or empty");
+            
+            this.EnsureMerchantHasBeenCreated();
+            this.EnsureDeviceBelongsToMerchant(originalDeviceIdentifier);
+            this.EnsureDeviceDoesNotAlreadyBelongToMerchant(newDeviceIdentifier);
+
+            DeviceSwappedForMerchantEvent deviceSwappedForMerchantEvent = new DeviceSwappedForMerchantEvent(
+                this.AggregateId, this.EstateId,
+                deviceId, originalDeviceIdentifier, newDeviceIdentifier);
+
+            this.ApplyAndAppend(deviceSwappedForMerchantEvent);
+        }
+
         /// <summary>
         /// Adds the security user.
         /// </summary>
         /// <param name="securityUserId">The security user identifier.</param>
         /// <param name="emailAddress">The email address.</param>
         public void AddSecurityUser(Guid securityUserId,
-                                    String emailAddress)
+                                String emailAddress)
         {
             this.EnsureMerchantHasBeenCreated();
 
@@ -517,6 +535,22 @@
             }
         }
 
+        private void EnsureDeviceBelongsToMerchant(String originalDeviceIdentifier)
+        {
+            if (this.Devices.ContainsValue(originalDeviceIdentifier) == false)
+            {
+                throw new InvalidOperationException("Merchant does not have this device allocated");
+            }
+        }
+
+        private void EnsureDeviceDoesNotAlreadyBelongToMerchant(String newDeviceIdentifier)
+        {
+            if (this.Devices.ContainsValue(newDeviceIdentifier) == true)
+            {
+                throw new InvalidOperationException("Merchant already has this device allocated");
+            }
+        }
+
         ///// <summary>
         ///// Ensures the not duplicate device.
         ///// </summary>
@@ -663,6 +697,15 @@
         {
             this.SettlementSchedule = (SettlementSchedule)domainEvent.SettlementSchedule;
             this.NextSettlementDueDate = domainEvent.NextSettlementDate;
+        }
+
+        private void PlayEvent(DeviceSwappedForMerchantEvent domainEvent)
+        {
+            var device = this.Devices.Where(d => d.Value == domainEvent.OriginalDeviceIdentifier).Single();
+            this.Devices.Remove(device.Key);
+
+            this.Devices.Add(domainEvent.DeviceId, domainEvent.NewDeviceIdentifier);
+
         }
 
         /// <summary>

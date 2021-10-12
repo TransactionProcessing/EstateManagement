@@ -408,5 +408,79 @@ namespace EstateManagement.MerchantAggregate.Tests
             merchant.SettlementSchedule.ShouldBe(originalSettlementSchedule);
         }
 
+        [Fact]
+        public void MerchantAggregate_SwapDevice_DeviceIsSwapped()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+
+            aggregate.SwapDevice(TestData.DeviceId,TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
+
+            var merchant = aggregate.GetMerchant();
+            merchant.Devices.Count.ShouldBe(1);
+            merchant.Devices.ContainsValue(TestData.DeviceIdentifier).ShouldBeFalse();
+            merchant.Devices.ContainsValue(TestData.NewDeviceIdentifier).ShouldBeTrue();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void MerchantAggregate_SwapDevice_InvalidOriginalDeviceIdentifier_ErrorThrown(String originalDeviceIdentifier)
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            Should.Throw<ArgumentNullException>(() =>
+            {
+                aggregate.SwapDevice(TestData.DeviceId, originalDeviceIdentifier, TestData.NewDeviceIdentifier);
+            });
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void MerchantAggregate_SwapDevice_InvalidNewDeviceIdentifier_ErrorThrown(String newDeviceIdentifier)
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            Should.Throw<ArgumentNullException>(() =>
+            {
+                aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, newDeviceIdentifier);
+            });
+        }
+
+        [Fact]
+        public void MerchantAggregate_SwapDevice_MerchantNotCreated_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            Should.Throw<InvalidOperationException>(() =>
+            {
+                aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
+            });
+        }
+
+        [Fact]
+        public void MerchantAggregate_SwapDevice_MerchantDoesNotHaveOriginalDevice_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            Should.Throw<InvalidOperationException>(() =>
+            {
+                aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
+            });
+        }
+
+        [Fact]
+        public void MerchantAggregate_SwapDevice_MerchantAlreadyHasNewDevice_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddDevice(TestData.DeviceId, TestData.NewDeviceIdentifier);
+            Should.Throw<InvalidOperationException>(() =>
+            {
+                aggregate.SwapDevice(TestData.DeviceId, TestData.NewDeviceIdentifier, TestData.NewDeviceIdentifier);
+            });
+        }
     }
 }

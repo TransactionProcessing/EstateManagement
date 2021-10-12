@@ -29,6 +29,12 @@
                                                             AddMerchantDeviceRequest request,
                                                             CancellationToken cancellationToken);
 
+        Task<SwapMerchantDeviceResponse> SwapDeviceForMerchant(String accessToken,
+                                                            Guid estateId,
+                                                            Guid merchantId,
+                                                            SwapMerchantDeviceRequest request,
+                                                            CancellationToken cancellationToken);
+
         /// <summary>
         /// Adds the product to contract.
         /// </summary>

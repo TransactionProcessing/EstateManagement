@@ -158,5 +158,21 @@ namespace EstateManagement.MerchantAggregate.Tests
             settlementScheduleChangedEvent.SettlementSchedule.ShouldBe((Int32)TestData.SettlementSchedule);
             settlementScheduleChangedEvent.NextSettlementDate.ShouldBe(TestData.NextSettlementDate);
         }
+
+        [Fact]
+        public void DeviceSwappedForMerchantEvent_CanBeCreated_IsCreated()
+        {
+            DeviceSwappedForMerchantEvent deviceSwappedForMerchantEvent =
+                new DeviceSwappedForMerchantEvent(TestData.MerchantId, TestData.EstateId, TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
+
+            deviceSwappedForMerchantEvent.ShouldNotBeNull();
+            deviceSwappedForMerchantEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            deviceSwappedForMerchantEvent.EventId.ShouldNotBe(Guid.Empty);
+            deviceSwappedForMerchantEvent.EstateId.ShouldBe(TestData.EstateId);
+            deviceSwappedForMerchantEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            deviceSwappedForMerchantEvent.DeviceId.ShouldBe(TestData.DeviceId);
+            deviceSwappedForMerchantEvent.OriginalDeviceIdentifier.ShouldBe(TestData.DeviceIdentifier);
+            deviceSwappedForMerchantEvent.NewDeviceIdentifier.ShouldBe(TestData.NewDeviceIdentifier);
+        }
     }
 }

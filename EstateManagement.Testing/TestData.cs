@@ -209,6 +209,16 @@
             return merchantAggregate;
         }
 
+        public static MerchantAggregate MerchantAggregateWithDevice()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+
+            return merchantAggregate;
+        }
+
         public static MerchantAggregate MerchantAggregateWithAddress()
         {
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
@@ -242,12 +252,12 @@
             return merchantAggregate;
         }
 
-        public static Merchant MerchantModelWithAddressesContactsDevicesAndOperators = new Merchant
+        public static Merchant MerchantModelWithAddressesContactsDevicesAndOperators(SettlementSchedule settlementSchedule = SettlementSchedule.Immediate) => new Merchant
                                                                        {
                                                                            MerchantId = TestData.MerchantId,
                                                                            MerchantName = TestData.MerchantName,
                                                                            EstateId = TestData.EstateId,
-                                                                           SettlementSchedule = SettlementSchedule.Immediate,
+                                                                           SettlementSchedule = settlementSchedule,
                                                                            Addresses = new List<Address>
                                                                                        {
                                                                                            new Address
@@ -510,6 +520,7 @@
 
         public static Guid DeviceId = Guid.Parse("B434EA1A-1684-442F-8BEB-21D84C4F53B3");
         public static String DeviceIdentifier = "EMULATOR123456";
+        public static String NewDeviceIdentifier = "EMULATOR78910";
 
         public static AddMerchantDeviceRequest AddMerchantDeviceRequest = AddMerchantDeviceRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.DeviceId, TestData.DeviceIdentifier);
 
@@ -958,6 +969,9 @@
 
         public static SetMerchantSettlementScheduleRequest SetMerchantSettlementScheduleRequest => SetMerchantSettlementScheduleRequest.Create(TestData.EstateId,
                                                                                                                                                TestData.MerchantId, TestData.SettlementSchedule);
+
+        public static SwapMerchantDeviceRequest SwapMerchantDeviceRequest =>
+            SwapMerchantDeviceRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
 
         public static List<MerchantBalanceView> MerchantBalanceHistoryEntities =>
             new List<MerchantBalanceView>

@@ -96,10 +96,14 @@ namespace EstateManagement.Tests.Factories
             estateResponse.ShouldBeNull();
         }
 
-        [Fact]
-        public void ModelFactory_Merchant_IsConverted()
+        [Theory]
+        [InlineData(SettlementSchedule.NotSet)]
+        [InlineData(SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly)]
+        public void ModelFactory_Merchant_IsConverted(SettlementSchedule settlementSchedule)
         {
-            Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators;
+            Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators(settlementSchedule);
 
             ModelFactory modelFactory = new ModelFactory();
 
@@ -133,7 +137,7 @@ namespace EstateManagement.Tests.Factories
         [Fact]
         public void ModelFactory_Merchant_WithBalance_IsConverted()
         {
-            Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators;
+            Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators();
             MerchantBalance merchantBalanceModel = TestData.MerchantBalanceModel;
 
             ModelFactory modelFactory = new ModelFactory();
@@ -346,7 +350,7 @@ namespace EstateManagement.Tests.Factories
         {
             List<Merchant> merchantModelList = new List<Merchant>
                                                {
-                                                   TestData.MerchantModelWithAddressesContactsDevicesAndOperators
+                                                   TestData.MerchantModelWithAddressesContactsDevicesAndOperators()
                                                };
 
             ModelFactory modelFactory = new ModelFactory();

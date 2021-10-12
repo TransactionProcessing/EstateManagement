@@ -103,6 +103,45 @@
             return response;
         }
 
+        public async Task<SwapMerchantDeviceResponse> SwapDeviceForMerchant(String accessToken,
+                                                                            Guid estateId,
+                                                                            Guid merchantId,
+                                                                            SwapMerchantDeviceRequest swapMerchantDeviceRequest,
+                                                                            CancellationToken cancellationToken)
+        {
+            SwapMerchantDeviceResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(swapMerchantDeviceRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<SwapMerchantDeviceResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error swapping device for merchant Id {merchantId} in estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         /// <summary>
         /// Adds the product to contract.
         /// </summary>

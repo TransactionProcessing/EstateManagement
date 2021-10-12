@@ -105,6 +105,13 @@
                                          String deviceIdentifier,
                                          CancellationToken cancellationToken);
 
+        Task SwapMerchantDevice(Guid estateId,
+            Guid merchantId,
+            Guid deviceId,
+            String originalDeviceIdentifier,
+            String newDeviceIdentifier,
+            CancellationToken cancellationToken);
+
         /// <summary>
         /// Makes the merchant deposit.
         /// </summary>

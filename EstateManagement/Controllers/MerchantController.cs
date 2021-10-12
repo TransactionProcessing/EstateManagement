@@ -24,6 +24,8 @@
     using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.CreateMerchantUserRequest;
     using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
     using AddMerchantDeviceRequestDTO = DataTransferObjects.Requests.AddMerchantDeviceRequest;
+    using SwapMerchantDeviceRequest = BusinessLogic.Requests.SwapMerchantDeviceRequest;
+    using SwapMerchantDeviceRequestDTO = DataTransferObjects.Requests.SwapMerchantDeviceRequest;
     using MakeMerchantDepositRequest = BusinessLogic.Requests.MakeMerchantDepositRequest;
     using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.MakeMerchantDepositRequest;
     using EstateManagement.Common;
@@ -677,6 +679,48 @@
                                     MerchantId = merchantId,
                                     DeviceId = deviceId
                                 });
+        }
+
+        [HttpPatch]
+        [Route("{merchantId}/devices")]
+        [SwaggerResponse(201, "Created", typeof(SwapMerchantDeviceResponse))]
+        [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
+        public async Task<IActionResult> SwapMerchantDevice([FromRoute] Guid estateId,
+            [FromRoute] Guid merchantId,
+            [FromBody] SwapMerchantDeviceRequestDTO swapMerchantDeviceRequest,
+            CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            Guid deviceId = Guid.NewGuid();
+
+            SwapMerchantDeviceRequest command = SwapMerchantDeviceRequest.Create(estateId, merchantId, deviceId,
+                swapMerchantDeviceRequest.OriginalDeviceIdentifier,
+                swapMerchantDeviceRequest.NewDeviceIdentifier);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                new SwapMerchantDeviceResponse
+                {
+                    EstateId = estateId,
+                    MerchantId = merchantId,
+                    DeviceId = deviceId
+                });
         }
 
         #endregion
