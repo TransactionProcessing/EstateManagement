@@ -33,6 +33,8 @@
 
         public static String EstateName = "Test Estate 1";
 
+        public static String EstateReference = "C6634DE3";
+
         public static CreateEstateRequest CreateEstateRequest = CreateEstateRequest.Create(TestData.EstateId, TestData.EstateName);
 
         public static CreateEstateRequestDTO CreateEstateRequestDTO = new CreateEstateRequestDTO
@@ -58,6 +60,8 @@
         public static String MerchantCountry = "United Kingdom";
 
         public static Guid MerchantId = Guid.Parse("ac476195-f993-4712-8ea1-cb41c0b44328");
+
+        public static String MerchantReference = "82DD8D48";
 
         public static Decimal AvailableBalance = 1000.00m;
         

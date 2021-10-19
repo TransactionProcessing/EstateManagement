@@ -24,6 +24,18 @@ namespace EstateManagement.EstateAggregate.Tests
         }
 
         [Fact]
+        public void EstateReferenceAllocatedEvent_CanBeCreated_IsCreated()
+        {
+            EstateReferenceAllocatedEvent estateReferenceAllocatedEvent = new EstateReferenceAllocatedEvent(TestData.EstateId, TestData.EstateReference);
+
+            estateReferenceAllocatedEvent.ShouldNotBeNull();
+            estateReferenceAllocatedEvent.AggregateId.ShouldBe(TestData.EstateId);
+            estateReferenceAllocatedEvent.EventId.ShouldNotBe(Guid.Empty);
+            estateReferenceAllocatedEvent.EstateId.ShouldBe(TestData.EstateId);
+            estateReferenceAllocatedEvent.EstateReference.ShouldBe(TestData.EstateReference);
+        }
+
+        [Fact]
         public void OperatorAddedToEstateEvent_CanBeCreated_IsCreated()
         {
             OperatorAddedToEstateEvent operatorAddedToEstateEvent = new OperatorAddedToEstateEvent(TestData.EstateId,

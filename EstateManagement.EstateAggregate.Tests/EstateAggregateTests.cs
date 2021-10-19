@@ -23,10 +23,12 @@
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
+            aggregate.GenerateReference();
 
             aggregate.AggregateId.ShouldBe(TestData.EstateId);
             aggregate.EstateName.ShouldBe(TestData.EstateName);
             aggregate.IsCreated.ShouldBeTrue();
+            aggregate.EstateReference.ShouldBe(TestData.EstateReference);
         }
 
         [Theory]
@@ -44,17 +46,28 @@
         }
 
         [Fact]
-        public void EstateAggregate_Create_EstateAlreadyCreated_ErrorThrown()
+        public void EstateAggregate_Create_EstateAlreadyCreated_NoErrorThrown()
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
 
-            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
-                                                                                  {
-                                                                                      aggregate.Create(TestData.EstateName);
-                                                                                  });
+            Should.NotThrow(() =>
+                            {
+                                aggregate.Create(TestData.EstateName);
+                            });
+        }
 
-            exception.Message.ShouldContain($"Estate with name {TestData.EstateName} has already been created");
+        [Fact]
+        public void EstateAggregate_GenerateReference_CalledTwice_NoErrorThrown()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+            aggregate.GenerateReference();
+
+            Should.NotThrow(() =>
+                            {
+                                aggregate.GenerateReference();
+                            });
         }
 
         [Fact]
@@ -62,11 +75,12 @@
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
-
+            aggregate.GenerateReference();
             Estate model = aggregate.GetEstate();
 
             model.EstateId.ShouldBe(TestData.EstateId);
             model.Name.ShouldBe(TestData.EstateName);
+            model.Reference.ShouldBe(TestData.EstateReference);
             model.Operators.ShouldBeNull();
         }
 
@@ -75,12 +89,14 @@
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
+            aggregate.GenerateReference();
             aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
 
             Estate model = aggregate.GetEstate();
 
             model.EstateId.ShouldBe(TestData.EstateId);
             model.Name.ShouldBe(TestData.EstateName);
+            model.Reference.ShouldBe(TestData.EstateReference);
             model.Operators.ShouldHaveSingleItem();
             
             Operator @operator =model.Operators.Single();
@@ -95,11 +111,12 @@
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
-
+            aggregate.GenerateReference();
             Estate model = aggregate.GetEstate();
 
             model.EstateId.ShouldBe(TestData.EstateId);
             model.Name.ShouldBe(TestData.EstateName);
+            model.Reference.ShouldBe(TestData.EstateReference);
             model.Operators.ShouldBeNull();
             model.SecurityUsers.ShouldBeNull();
         }
@@ -109,12 +126,14 @@
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
+            aggregate.GenerateReference();
             aggregate.AddSecurityUser(TestData.SecurityUserId,TestData.EstateUserEmailAddress);
 
             Estate model = aggregate.GetEstate();
 
             model.EstateId.ShouldBe(TestData.EstateId);
             model.Name.ShouldBe(TestData.EstateName);
+            model.Reference.ShouldBe(TestData.EstateReference);
             model.SecurityUsers.ShouldHaveSingleItem();
 
             SecurityUser securityUser = model.SecurityUsers.Single();

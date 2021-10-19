@@ -70,6 +70,8 @@
         /// </value>
         public String EstateName { get; private set; }
 
+        public String EstateReference { get; private set; }
+
         /// <summary>
         /// Gets a value indicating whether this instance is created.
         /// </summary>
@@ -138,11 +140,28 @@
         {
             Guard.ThrowIfNullOrEmpty(estateName, typeof(ArgumentNullException), "Estate name must be provided when registering a new estate");
 
-            this.CheckEstateHasNotAlreadyBeenCreated();
+            // Just return if already created
+            if (this.IsCreated)
+                return;
 
             EstateCreatedEvent estateCreatedEvent = new EstateCreatedEvent(this.AggregateId, estateName);
 
             this.ApplyAndAppend(estateCreatedEvent);
+        }
+
+        public void GenerateReference()
+        {
+            // Just return as we already have a reference allocated
+            if (String.IsNullOrEmpty(this.EstateReference) == false)
+                return;
+
+            this.CheckEstateHasBeenCreated();
+
+            String reference = String.Format("{0:X}", this.AggregateId.GetHashCode());
+
+            EstateReferenceAllocatedEvent estateReferenceAllocatedEvent = new EstateReferenceAllocatedEvent(this.AggregateId, reference);
+
+            this.ApplyAndAppend(estateReferenceAllocatedEvent);
         }
 
         /// <summary>
@@ -155,6 +174,7 @@
 
             estateModel.EstateId = this.AggregateId;
             estateModel.Name = this.EstateName;
+            estateModel.Reference = this.EstateReference;
 
             if (this.Operators.Any())
             {
@@ -220,18 +240,6 @@
         }
 
         /// <summary>
-        /// Checks the estate has not already been created.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Estate with name {this.EstateName} has already been created</exception>
-        private void CheckEstateHasNotAlreadyBeenCreated()
-        {
-            if (this.IsCreated)
-            {
-                throw new InvalidOperationException($"Estate with name {this.EstateName} has already been created");
-            }
-        }
-
-        /// <summary>
         /// Checks the operator has not already been created.
         /// </summary>
         /// <param name="operatorId">The operator identifier.</param>
@@ -274,6 +282,11 @@
         {
             this.EstateName = domainEvent.EstateName;
             this.IsCreated = true;
+        }
+
+        private void PlayEvent(EstateReferenceAllocatedEvent domainEvent)
+        {
+            this.EstateReference = domainEvent.EstateReference;
         }
 
         /// <summary>

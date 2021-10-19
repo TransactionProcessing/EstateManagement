@@ -25,6 +25,22 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
+        public void MerchantReferenceAllocatedEvent_CanBeCreated_IsCreated()
+        {
+            MerchantReferenceAllocatedEvent merchantReferenceAllocatedEvent =
+                new MerchantReferenceAllocatedEvent(TestData.MerchantId, TestData.EstateId, TestData.MerchantReference);
+
+            merchantReferenceAllocatedEvent.ShouldNotBeNull();
+            merchantReferenceAllocatedEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            merchantReferenceAllocatedEvent.EventId.ShouldNotBe(Guid.Empty);
+            merchantReferenceAllocatedEvent.EstateId.ShouldBe(TestData.EstateId);
+            merchantReferenceAllocatedEvent.MerchantReference.ShouldBe(TestData.MerchantReference);
+            merchantReferenceAllocatedEvent.MerchantId.ShouldBe(TestData.MerchantId);
+        }
+
+
+
+        [Fact]
         public void AddressAddedEvent_CanBeCreated_IsCreated()
         {
             AddressAddedEvent addressAddedEvent =

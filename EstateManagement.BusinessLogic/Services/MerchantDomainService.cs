@@ -119,6 +119,7 @@
 
             // Create the merchant
             merchantAggregate.Create(estateId, name, DateTime.Now);
+            merchantAggregate.GenerateReference();
 
             // Add the address 
             merchantAggregate.AddAddress(addressId, addressLine1, addressLine2, addressLine3, addressLine4, town, region, postalCode, country);

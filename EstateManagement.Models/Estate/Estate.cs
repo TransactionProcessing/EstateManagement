@@ -28,6 +28,8 @@
         /// </value>
         public String Name { get; set; }
 
+        public String Reference { get; set; }
+
         /// <summary>
         /// Gets or sets the operators.
         /// </summary>

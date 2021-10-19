@@ -44,12 +44,5 @@
         public String EstateName { get; init; }
 
         #endregion
-
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="estateName">Name of the estate.</param>
-        /// <returns></returns>
     }
 }
