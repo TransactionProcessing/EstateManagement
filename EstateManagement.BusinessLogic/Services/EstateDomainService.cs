@@ -62,6 +62,7 @@
             EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
 
             estateAggregate.Create(estateName);
+            estateAggregate.GenerateReference();
 
             await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }

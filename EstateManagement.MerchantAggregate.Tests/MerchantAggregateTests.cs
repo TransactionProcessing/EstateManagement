@@ -32,12 +32,14 @@ namespace EstateManagement.MerchantAggregate.Tests
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.GenerateReference();
 
             aggregate.AggregateId.ShouldBe(TestData.MerchantId);
             aggregate.EstateId.ShouldBe(TestData.EstateId);
             aggregate.Name.ShouldBe(TestData.MerchantName);
             aggregate.DateCreated.ShouldBe(TestData.DateMerchantCreated);
             aggregate.IsCreated.ShouldBeTrue();
+            aggregate.MerchantReference.ShouldBe(TestData.MerchantReference);
         }
         
         [Fact]
@@ -46,9 +48,17 @@ namespace EstateManagement.MerchantAggregate.Tests
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() => { aggregate.Create(TestData.MerchantId, TestData.MerchantName, TestData.DateMerchantCreated); });
+            Should.NotThrow(() => { aggregate.Create(TestData.MerchantId, TestData.MerchantName, TestData.DateMerchantCreated); });
+        }
 
-            exception.Message.ShouldContain($"Merchant {TestData.MerchantName} is already created");
+        [Fact]
+        public void MerchantAggregate_GenerateReference_CalledTwice_NoErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.GenerateReference();
+
+            Should.NotThrow(() => { aggregate.GenerateReference(); });
         }
 
         [Fact]

@@ -134,6 +134,8 @@
         /// </value>
         public String Name { get; private set; }
 
+        public String MerchantReference { get; private set; }
+
         public SettlementSchedule SettlementSchedule { get; private set; }
 
         #endregion
@@ -177,6 +179,21 @@
                                                                            country);
 
             this.ApplyAndAppend(addressAddedEvent);
+        }
+
+        public void GenerateReference()
+        {
+            // Just return as we already have a reference allocated
+            if (String.IsNullOrEmpty(this.MerchantReference) == false)
+                return;
+
+            this.EnsureMerchantHasBeenCreated();
+
+            String reference = String.Format("{0:X}", this.AggregateId.GetHashCode());
+
+            MerchantReferenceAllocatedEvent merchantReferenceAllocatedEvent = new MerchantReferenceAllocatedEvent(this.AggregateId, this.EstateId, reference);
+
+            this.ApplyAndAppend(merchantReferenceAllocatedEvent);
         }
 
         /// <summary>
@@ -287,7 +304,8 @@
                            DateTime dateCreated)
         {
             // Ensure this merchant has not already been created
-            this.EnsureMerchantNotAlreadyCreated();
+            if (this.IsCreated)
+                return;
 
             MerchantCreatedEvent merchantCreatedEvent = new MerchantCreatedEvent(this.AggregateId, estateId, merchantName, dateCreated);
 
@@ -310,6 +328,7 @@
             merchantModel.EstateId = this.EstateId;
             merchantModel.MerchantId = this.AggregateId;
             merchantModel.MerchantName = this.Name;
+            merchantModel.Reference = this.MerchantReference;
             merchantModel.SettlementSchedule = this.SettlementSchedule;
             merchantModel.NextSettlementDueDate = this.NextSettlementDueDate;
 
@@ -510,6 +529,11 @@
             this.PlayEvent((dynamic)domainEvent);
         }
 
+        private void PlayEvent(MerchantReferenceAllocatedEvent domainEvent)
+        {
+            this.MerchantReference = domainEvent.MerchantReference;
+        }
+
         /// <summary>
         /// Ensures the deposit source has been set.
         /// </summary>
@@ -583,18 +607,6 @@
             if (this.Devices.Count + 1 > this.MaximumDevices)
             {
                 throw new InvalidOperationException($"Merchant {this.Name} already has the maximum devices allocated");
-            }
-        }
-
-        /// <summary>
-        /// Ensures the merchant not already created.
-        /// </summary>
-        /// <exception cref="System.InvalidOperationException">Merchant {this.Name} is already created</exception>
-        private void EnsureMerchantNotAlreadyCreated()
-        {
-            if (this.IsCreated)
-            {
-                throw new InvalidOperationException($"Merchant {this.Name} is already created");
             }
         }
 
