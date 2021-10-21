@@ -135,7 +135,7 @@
                     break;
             }
 
-            Guid merchantId = Guid.NewGuid();
+            Guid merchantId = createMerchantRequest.MerchantId.HasValue ? createMerchantRequest.MerchantId.Value : Guid.NewGuid();
 
             // Create the command
             CreateMerchantRequest command = CreateMerchantRequest.Create(estateId,

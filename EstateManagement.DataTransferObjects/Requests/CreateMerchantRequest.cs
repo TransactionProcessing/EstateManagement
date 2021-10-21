@@ -44,6 +44,9 @@
         [JsonProperty("settlment_schedule")]
         public SettlementSchedule SettlementSchedule { get; set; }
 
+        [JsonProperty("merchant_id")]
+        public Guid? MerchantId { get; set; }
+
         #endregion
     }
 }

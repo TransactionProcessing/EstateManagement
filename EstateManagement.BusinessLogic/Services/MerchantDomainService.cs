@@ -118,17 +118,25 @@
             // Reject Duplicate Merchant Names... is this needed ?
 
             // Create the merchant
-            merchantAggregate.Create(estateId, name, DateTime.Now);
-            merchantAggregate.GenerateReference();
+            if (merchantAggregate.IsCreated)
+            {
+                merchantAggregate.Create(estateId, name, DateTime.Now);
+                merchantAggregate.GenerateReference();
+            }
+            else
+            {
+                merchantAggregate.Create(estateId, name, DateTime.Now);
+                merchantAggregate.GenerateReference();
 
-            // Add the address 
-            merchantAggregate.AddAddress(addressId, addressLine1, addressLine2, addressLine3, addressLine4, town, region, postalCode, country);
+                // Add the address 
+                merchantAggregate.AddAddress(addressId, addressLine1, addressLine2, addressLine3, addressLine4, town, region, postalCode, country);
 
-            // Add the contact
-            merchantAggregate.AddContact(contactId, contactName, contactPhoneNumber, contactEmailAddress);
+                // Add the contact
+                merchantAggregate.AddContact(contactId, contactName, contactPhoneNumber, contactEmailAddress);
 
-            // Set the settlement schedule
-            merchantAggregate.SetSettlementSchedule(settlementSchedule);
+                // Set the settlement schedule
+                merchantAggregate.SetSettlementSchedule(settlementSchedule);
+            }
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
