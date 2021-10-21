@@ -49,7 +49,7 @@ namespace EstateManagement.IntegrationTests.Common
             // Start the Database Server here
             DatabaseServerContainer = global::Shared.IntegrationTesting.DockerHelper.StartSqlContainerWithOpenConnection(Setup.SqlServerContainerName,
                                                                                        logger,
-                                                                                       "stuartferguson/subscriptionservicedatabasesqlserver",
+                                                                                       "mcr.microsoft.com/mssql/server:2019-latest",
                                                                                        Setup.DatabaseServerNetwork,
                                                                                        "",
                                                                                        dockerCredentials,
