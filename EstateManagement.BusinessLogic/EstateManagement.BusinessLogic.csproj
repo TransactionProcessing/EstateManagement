@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="SecurityService.Client" Version="1.0.7" />
-    <PackageReference Include="Shared.DomainDrivenDesign" Version="1.0.12" />
+    <PackageReference Include="Shared.DomainDrivenDesign" Version="1.0.14" />
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 
