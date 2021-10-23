@@ -152,7 +152,7 @@
 
             return merchantModel;
         }
-
+        
         /// <summary>
         /// Gets the merchant balance.
         /// </summary>

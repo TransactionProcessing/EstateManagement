@@ -7,14 +7,16 @@ namespace EstateManagement.IntegrationTests.Common
     using System.Linq;
     using System.Xml.Serialization;
     using DataTransferObjects;
+    using DataTransferObjects.Responses;
 
     public class EstateDetails
     {
-        private EstateDetails(Guid estateId, String estateName)
+        private EstateDetails(Guid estateId, String estateName, String estateReference)
         {
             this.EstateId = estateId;
             this.EstateName = estateName;
-            this.Merchants= new Dictionary<String, Guid>();
+            this.EstateReference = estateReference;
+            this.Merchants = new List<MerchantResponse>();
             this.Operators=new Dictionary<String, Guid>();
             this.MerchantUsers = new Dictionary<String, Dictionary<String, String>>();
             this.Contracts = new List<Contract>();
@@ -26,9 +28,10 @@ namespace EstateManagement.IntegrationTests.Common
         public String AccessToken { get; private set; }
 
         public static EstateDetails Create(Guid estateId,
-                                           String estateName)
+                                           String estateName,
+                                           String estateReference)
         {
-            return new EstateDetails(estateId,estateName);
+            return new EstateDetails(estateId,estateName, estateReference);
         }
 
         public void AddOperator(Guid operatorId,
@@ -49,10 +52,9 @@ namespace EstateManagement.IntegrationTests.Common
                                });
         }
 
-        public void AddMerchant(Guid merchantId,
-                                String merchantName)
+        public void AddMerchant(MerchantResponse merchant)
         {
-            this.Merchants.Add(merchantName,merchantId);
+            this.Merchants.Add(merchant);
         }
 
         public Contract GetContract(String contractName)
@@ -64,9 +66,9 @@ namespace EstateManagement.IntegrationTests.Common
             return this.Contracts.Single(c => c.ContractId == contractId);
         }
 
-        public Guid GetMerchantId(String merchantName)
+        public MerchantResponse GetMerchant(String merchantName)
         {
-            return this.Merchants.SingleOrDefault(m => m.Key == merchantName).Value;
+            return this.Merchants.SingleOrDefault(m => m.MerchantName == merchantName);
         }
 
         public Guid GetOperatorId(String operatorName)
@@ -128,10 +130,10 @@ namespace EstateManagement.IntegrationTests.Common
         
         public Guid EstateId { get; private set; }
         public String EstateName { get; private set; }
-
+        public String EstateReference { get; private set; }
         private Dictionary<String, Guid> Operators;
 
-        private Dictionary<String, Guid> Merchants;
+        private List<MerchantResponse> Merchants;
         
         private Dictionary<String, Dictionary<String,String>> MerchantUsers;
         private Dictionary<String, Dictionary<String, String>> MerchantUsersTokens;

@@ -279,7 +279,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Deposits.ShouldHaveSingleItem();
             merchantModel.Deposits.Single().Source.ShouldBe(TestData.MerchantDepositSourceManual);
-            //merchantModel.Deposits.Single().DepositId.ShouldNotBe(TestData.DepositId);
+
             merchantModel.Deposits.Single().DepositDateTime.ShouldBe(TestData.DepositDateTime);
             merchantModel.Deposits.Single().Reference.ShouldBe(TestData.DepositReference);
             merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount);
@@ -363,15 +363,20 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_MakeDeposit_AutomaticDepositSource_ErrorThrown()
+        public void MerchantAggregate_MakeDeposit_AutomaticDepositSource_DepositMade()
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            Should.Throw<NotSupportedException>(() =>
-                                                    {
-                                                        aggregate.MakeDeposit(TestData.MerchantDepositSourceAutomatic, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
-                                                    });
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceAutomatic, TestData.DepositReference, TestData.DepositDateTime, TestData.DepositAmount);
+
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Deposits.ShouldHaveSingleItem();
+            merchantModel.Deposits.Single().Source.ShouldBe(TestData.MerchantDepositSourceAutomatic);
+            merchantModel.Deposits.Single().DepositDateTime.ShouldBe(TestData.DepositDateTime);
+            merchantModel.Deposits.Single().Reference.ShouldBe(TestData.DepositReference);
+            merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount);
         }
 
         [Fact]

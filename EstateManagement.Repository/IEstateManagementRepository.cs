@@ -68,6 +68,10 @@
         Task<List<Merchant>> GetMerchants(Guid estateId,
                                           CancellationToken cancellationToken);
 
+        Task<Merchant> GetMerchantFromReference(Guid estateId, 
+                                                String reference,
+                                                CancellationToken cancellationToken);
+
         /// <summary>
         /// Gets the merchant balance history.
         /// </summary>

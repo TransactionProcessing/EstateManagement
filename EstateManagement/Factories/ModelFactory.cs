@@ -104,6 +104,7 @@
                                             {
                                                 EstateName = estate.Name,
                                                 EstateId = estate.EstateId,
+                                                EstateReference = estate.Reference,
                                                 Operators = new List<EstateOperatorResponse>(),
                                                 SecurityUsers = new List<SecurityUserResponse>()
                                             };
@@ -150,7 +151,7 @@
                                                     MerchantId = merchant.MerchantId,
                                                     MerchantName = merchant.MerchantName,
                                                     SettlementSchedule = this.ConvertFrom(merchant.SettlementSchedule),
-                                                    NextSettlementDueDate = merchant.NextSettlementDueDate
+                                                    MerchantReference = merchant.Reference
                                                 };
 
             if (merchant.Addresses != null && merchant.Addresses.Any())

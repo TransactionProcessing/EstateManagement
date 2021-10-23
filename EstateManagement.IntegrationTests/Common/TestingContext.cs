@@ -49,9 +49,9 @@
             return estateDetails;
         }
 
-        public void AddEstateDetails(Guid estateId, String estateName)
+        public void AddEstateDetails(Guid estateId, String estateName,String estateReference)
         {
-            this.Estates.Add(EstateDetails.Create(estateId,estateName));
+            this.Estates.Add(EstateDetails.Create(estateId,estateName, estateReference));
         }
 
         public void AddClientDetails(String clientId,

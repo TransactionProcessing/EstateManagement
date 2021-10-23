@@ -7,6 +7,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using System.ComponentModel.Design;
     using System.IO;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
@@ -56,23 +57,26 @@ namespace EstateManagement.IntegrationTests.Shared
                 response.ShouldNotBeNull();
                 response.EstateId.ShouldNotBe(Guid.Empty);
                 
-                // Cache the estate id
-                this.TestingContext.AddEstateDetails(response.EstateId, estateName);
-
                 this.TestingContext.Logger.LogInformation($"Estate {estateName} created with Id {response.EstateId}");
-            
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
 
+                // Setup the subscriptions for the estate
+                await Retry.For(async () =>
+                                {
+                                    await this.TestingContext.DockerHelper.PopulateSubscriptionServiceConfiguration(estateName).ConfigureAwait(false);
+                                }, retryFor: TimeSpan.FromMinutes(2), retryInterval: TimeSpan.FromSeconds(30));
+                
                 EstateResponse estate = null;
                 await Retry.For(async () =>
                           {
                               estate = await this.TestingContext.DockerHelper.EstateClient
-                                                 .GetEstate(this.TestingContext.AccessToken, estateDetails.EstateId, CancellationToken.None).ConfigureAwait(false);
+                                                 .GetEstate(this.TestingContext.AccessToken, response.EstateId, CancellationToken.None).ConfigureAwait(false);
                               estate.ShouldNotBeNull();
-                          }).ConfigureAwait(false);
-                
 
-                estate.EstateName.ShouldBe(estateDetails.EstateName);
+                              // Cache the estate id
+                              this.TestingContext.AddEstateDetails(estate.EstateId, estate.EstateName, estate.EstateReference);
+                          }, TimeSpan.FromMinutes(3), TimeSpan.FromSeconds(30)).ConfigureAwait(false);
+                
+                estate.EstateName.ShouldBe(estateName);
             }
         }
 
@@ -113,6 +117,8 @@ namespace EstateManagement.IntegrationTests.Shared
         [When(@"I create the following merchants")]
         public async Task WhenICreateTheFollowingMerchants(Table table)
         {
+            Dictionary<String, Guid> merchantCache = new Dictionary<String, Guid>();
+
             foreach (TableRow tableRow in table.Rows)
             {
                 // lookup the estate id based on the name in the table
@@ -157,8 +163,9 @@ namespace EstateManagement.IntegrationTests.Shared
                 response.EstateId.ShouldBe(estateDetails.EstateId);
                 response.MerchantId.ShouldNotBe(Guid.Empty);
 
-                // Cache the merchant id
-                estateDetails.AddMerchant(response.MerchantId, merchantName);
+                // Cache the merchant
+                merchantCache.Add(merchantName, response.MerchantId);
+
 
                 this.TestingContext.Logger.LogInformation($"Merchant {merchantName} created with Id {response.MerchantId} for Estate {estateDetails.EstateName}");
             }
@@ -168,8 +175,7 @@ namespace EstateManagement.IntegrationTests.Shared
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
 
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
-
+                var merchantId = merchantCache[merchantName];
                 String token = this.TestingContext.AccessToken;
                 if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
                 {
@@ -192,6 +198,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                                     merchant.MerchantName.ShouldBe(merchantName);
                                     merchant.SettlementSchedule.ShouldBe(schedule);
+                                    estateDetails.AddMerchant(merchant);
                                 });
             }
         }
@@ -211,7 +218,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
                 // Lookup the operator id
                 String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
@@ -275,7 +282,7 @@ namespace EstateManagement.IntegrationTests.Shared
                     }
                     // lookup the merchant id based on the name in the table
                     String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                    Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                    Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
                     CreateMerchantUserRequest createMerchantUserRequest = new CreateMerchantUserRequest
                                                                       {
@@ -333,12 +340,11 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
                 
                 MakeMerchantDepositRequest makeMerchantDepositRequest = new MakeMerchantDepositRequest
                 {
                     DepositDateTime = SpecflowTableHelper.GetDateTimeForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now),
-                    Source = MerchantDepositSource.Manual,
                     Reference = SpecflowTableHelper.GetStringRowValue(tableRow,"Reference"),
                     Amount = SpecflowTableHelper.GetDecimalValue(tableRow, "Amount")
                 };
@@ -367,12 +373,12 @@ namespace EstateManagement.IntegrationTests.Shared
                 }
 
                 // get dates
-                var startDateTime = SpecflowTableHelper.GetDateForDateString(startDate, DateTime.Now);
-                var endDateTime = SpecflowTableHelper.GetDateForDateString(endDate, DateTime.Now).AddDays(1);
+                var startDateTime = SpecflowTableHelper.GetDateForDateString(startDate, DateTime.UtcNow);
+                var endDateTime = SpecflowTableHelper.GetDateForDateString(endDate, DateTime.UtcNow).AddDays(1);
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
                 List<MerchantBalanceHistoryResponse> merchantBalanceHistoryResponse = null;
                 await Retry.For(async () =>
                                 {
@@ -429,7 +435,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
                 Decimal availableBalance = SpecflowTableHelper.GetDecimalValue(tableRow, "AvailableBalance");
                 Decimal balance = SpecflowTableHelper.GetDecimalValue(tableRow, "Balance");
@@ -716,7 +722,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
                 String deviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "DeviceIdentifier");
 
@@ -764,7 +770,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
                 String originalDeviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "OriginalDeviceIdentifier");
                 String newDeviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "NewDeviceIdentifier");
@@ -981,7 +987,7 @@ namespace EstateManagement.IntegrationTests.Shared
         {
             EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
 
-            Guid merchantId = estateDetails.GetMerchantId(merchantName);
+            Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
             String token = this.TestingContext.AccessToken;
             if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
@@ -1067,7 +1073,7 @@ namespace EstateManagement.IntegrationTests.Shared
         {
             EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
             
-            Guid merchantId = estateDetails.GetMerchantId(merchantName);
+            Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
             String token = this.TestingContext.AccessToken;
             if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
@@ -1097,7 +1103,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                 // Lookup the merchant id
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
                 SettlementSchedule schedule = Enum.Parse<SettlementSchedule>(SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule"));
 
@@ -1118,6 +1124,39 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When(@"I make the following automatic merchant deposits")]
+        public async Task WhenIMakeTheFollowingAutomaticMerchantDeposits(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                Decimal amount = SpecflowTableHelper.GetDecimalValue(tableRow, "Amount");
+                DateTime depositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.UtcNow);
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+                var merchant = estateDetails.GetMerchant(merchantName);
+
+                var depositReference = $"{estateDetails.EstateReference}-{merchant.MerchantReference}";
+
+                // This will send a request to the Test Host (test bank)
+                var makeDepositRequest = new
+                                         {
+                                             date_time = depositDateTime,
+                                             from_sort_code = "665544",
+                                             from_account_number = "12312312",
+                                             to_sort_code = DockerHelper.TestBankSortCode,
+                                             to_account_number = DockerHelper.TestBankAccountNumber,
+                                             deposit_reference = depositReference,
+                                             amount = amount
+                                         };
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/testbank");
+                requestMessage.Content = new StringContent(JsonConvert.SerializeObject(makeDepositRequest), Encoding.UTF8, "application/json");
+                var responseMessage = await this.TestingContext.DockerHelper.TestHostClient.SendAsync(requestMessage);
+
+                responseMessage.IsSuccessStatusCode.ShouldBeTrue();
+            }
+        }
 
     }
 }

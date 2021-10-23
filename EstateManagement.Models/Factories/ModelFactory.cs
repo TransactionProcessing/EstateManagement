@@ -51,6 +51,7 @@
             EstateModel estateModel = new EstateModel();
             estateModel.EstateId = estate.EstateId;
             estateModel.Name = estate.Name;
+            estateModel.Reference = estate.Reference;
 
             if (estateOperators != null && estateOperators.Any())
             {

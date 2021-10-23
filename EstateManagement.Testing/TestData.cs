@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using BusinessLogic.Events;
     using BusinessLogic.Requests;
+    using CallbackHandler.DataTransferObjects;
     using ContractAggregate;
     using EstateAggregate;
     using EstateReporting.Database.Entities;
@@ -12,6 +14,7 @@
     using Models;
     using Models.Contract;
     using Models.Merchant;
+    using Newtonsoft.Json;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
     using Contract = Models.Contract.Contract;
@@ -983,5 +986,43 @@
                 TestData.MerchantBalanceHistoryInEntity,
                 TestData.MerchantBalanceHistoryOutEntity
             };
+        public static Guid CallbackId = Guid.Parse("ABC603D3-360E-4F58-8BB9-827EE7A1CB03");
+
+        public static String CallbackReference = "Estate1-Merchant1";
+
+        public static String CallbackMessage = "Message1";
+
+        public static Int32 CallbackMessageFormat = 1;
+
+        public static String CallbackTypeString = "CallbackHandler.DataTransferObjects.Deposit";
+
+        public static CallbackHandler.DataTransferObjects.Deposit Deposit =>
+            new CallbackHandler.DataTransferObjects.Deposit
+            {
+                Reference = TestData.CallbackReference,
+                Amount = TestData.DepositAmount,
+                DateTime = TestData.DepositDateTime,
+                DepositId = TestData.DepositId,
+                AccountNumber = TestData.DepositAccountNumber,
+                HostIdentifier = TestData.DepositHostIdentifier,
+                SortCode = TestData.DepositSortCode
+            };
+
+        public static String DepositAccountNumber ="12345678";
+
+        public static Guid DepositHostIdentifier = Guid.Parse("1D1BD9F0-D953-4B2A-9969-98D3C0CDFA2A");
+
+        public static String DepositSortCode = "112233";
+
+        public static CallbackReceivedEnrichedEvent CallbackReceivedEnrichedEvent =>
+            new CallbackReceivedEnrichedEvent(TestData.CallbackId)
+            {
+                Reference = TestData.CallbackReference,
+                CallbackMessage = JsonConvert.SerializeObject(Deposit),
+                EstateId = TestData.EstateId,
+                MessageFormat = TestData.CallbackMessageFormat,
+                TypeString = TestData.CallbackTypeString
+            };
+
     }
 }

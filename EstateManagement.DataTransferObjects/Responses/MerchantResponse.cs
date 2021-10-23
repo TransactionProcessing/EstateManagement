@@ -97,8 +97,8 @@
         [JsonProperty("settlement_schedule")]
         public SettlementSchedule SettlementSchedule { get; set; }
 
-        [JsonProperty("next_settlement_due_date")]
-        public DateTime NextSettlementDueDate { get; set; }
+        [JsonProperty("merchant_reference")]
+        public String MerchantReference { get; set; }
 
         #endregion
     }
