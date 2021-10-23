@@ -273,3 +273,33 @@ Scenario: Set Merchant Settlement Schedule - Estate User
 	| Test Merchant 2 | Test Estate 1 | Weekly             |
 	| Test Merchant 3 | Test Estate 1 | Monthly            |
 
+@PRTest
+Scenario: Make Automatic Merchant Deposits
+
+	Given I create the following merchants
+	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
+	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
+	
+	When I make the following automatic merchant deposits 
+	| Amount  | DateTime  | MerchantName    | EstateName    |
+	| 500.00  | LastMonth | Test Merchant 1 | Test Estate 1 |
+	| 1000.00 | LastWeek  | Test Merchant 1 | Test Estate 1 |
+	| 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
+	| 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
+
+	Then the merchant balances are as follows
+	| Balance | AvailableBalance | MerchantName    | EstateName    |
+	| 2900.00 | 2900.00          | Test Merchant 1 | Test Estate 1 |
+
+	Then the following entries appear in the merchants balance history between 'LastMonth' and 'Today'
+	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
+	| LastMonth | Opening Balance  | D         | 0       | 0   | 0            | 0       | Test Merchant 1 | Test Estate 1 |
+	| LastMonth | Merchant Deposit | C         | 500.00  | 0   | 500.00       | 500.00  | Test Merchant 1 | Test Estate 1 |
+	| LastWeek  | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 1500.00 | Test Merchant 1 | Test Estate 1 |
+	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
+	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |	
+
+	Then the following entries appear in the merchants balance history between 'Yesterday' and 'Today'
+	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
+	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
+	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |

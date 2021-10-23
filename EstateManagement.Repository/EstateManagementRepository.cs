@@ -102,8 +102,18 @@
             return this.ModelFactory.ConvertFrom(contract, contractProducts, contractProductFees);
         }
 
+        public async Task<MerchantModel> GetMerchantFromReference(Guid estateId, 
+                                                             String reference,
+                                                             CancellationToken cancellationToken)
+        {
+            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            Merchant merchant = await (from m in context.Merchants where m.EstateId == estateId && m.Reference == reference select m).SingleOrDefaultAsync(cancellationToken);
+
+            return this.ModelFactory.ConvertFrom(merchant, null, null, null, null, null);
+        }
         public async Task<List<ContractModel>> GetContracts(Guid estateId,
-                                                     CancellationToken cancellationToken)
+                                                                         CancellationToken cancellationToken)
         {
             EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 

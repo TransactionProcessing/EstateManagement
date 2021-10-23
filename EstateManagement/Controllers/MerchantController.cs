@@ -135,7 +135,7 @@
                     break;
             }
 
-            Guid merchantId = Guid.NewGuid();
+            Guid merchantId = createMerchantRequest.MerchantId.HasValue ? createMerchantRequest.MerchantId.Value : Guid.NewGuid();
 
             // Create the command
             CreateMerchantRequest command = CreateMerchantRequest.Create(estateId,
@@ -497,25 +497,10 @@
             {
                 return this.Forbid();
             }
-
-            // Convert the source
-            Models.MerchantDepositSource merchantDepositSourceModel = Models.MerchantDepositSource.NotSet;
-            switch(makeMerchantDepositRequest.Source)
-            {
-                case MerchantDepositSource.Manual:
-                    merchantDepositSourceModel = Models.MerchantDepositSource.Manual;
-                    break;
-                    case MerchantDepositSource.Automatic:
-                        merchantDepositSourceModel = Models.MerchantDepositSource.Automatic;
-                        break;
-                    default:
-                        merchantDepositSourceModel = Models.MerchantDepositSource.Manual;
-                        break;
-            }
-
+            
             MakeMerchantDepositRequest command = MakeMerchantDepositRequest.Create(estateId,
                                                                                    merchantId,
-                                                                                   merchantDepositSourceModel,
+                                                                                   Models.MerchantDepositSource.Manual,
                                                                                    makeMerchantDepositRequest.Reference,
                                                                                    makeMerchantDepositRequest.DepositDateTime,
                                                                                    makeMerchantDepositRequest.Amount);

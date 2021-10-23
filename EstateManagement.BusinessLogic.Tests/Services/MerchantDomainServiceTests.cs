@@ -61,6 +61,62 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         }
 
         [Fact]
+        public async Task MerchantDomainService_CreateMerchant_AlreadyCreated_MerchantIsCreated()
+        {
+            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
+            merchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            MerchantDomainService domainService = new MerchantDomainService(estateAggregateRepository.Object, merchantAggregateRepository.Object, securityServiceClient.Object);
+            await domainService.CreateMerchant(TestData.EstateId,
+                                               TestData.MerchantId,
+                                               TestData.MerchantName,
+                                               TestData.MerchantAddressId,
+                                               TestData.MerchantAddressLine1,
+                                               TestData.MerchantAddressLine2,
+                                               TestData.MerchantAddressLine3,
+                                               TestData.MerchantAddressLine4,
+                                               TestData.MerchantTown,
+                                               TestData.MerchantRegion,
+                                               TestData.MerchantPostalCode,
+                                               TestData.MerchantCountry,
+                                               TestData.MerchantContactId,
+                                               TestData.MerchantContactName,
+                                               TestData.MerchantContactPhoneNumber,
+                                               TestData.MerchantContactEmailAddress,
+                                               TestData.SettlementSchedule,
+                                               CancellationToken.None);
+
+            Should.NotThrow(async () =>
+            {
+                await domainService.CreateMerchant(TestData.EstateId,
+                                                   TestData.MerchantId,
+                                                   TestData.MerchantName,
+                                                   TestData.MerchantAddressId,
+                                                   TestData.MerchantAddressLine1,
+                                                   TestData.MerchantAddressLine2,
+                                                   TestData.MerchantAddressLine3,
+                                                   TestData.MerchantAddressLine4,
+                                                   TestData.MerchantTown,
+                                                   TestData.MerchantRegion,
+                                                   TestData.MerchantPostalCode,
+                                                   TestData.MerchantCountry,
+                                                   TestData.MerchantContactId,
+                                                   TestData.MerchantContactName,
+                                                   TestData.MerchantContactPhoneNumber,
+                                                   TestData.MerchantContactEmailAddress,
+                                                   TestData.SettlementSchedule,
+                                                   CancellationToken.None);
+            });
+        }
+
+        [Fact]
         public void MerchantDomainService_CreateMerchant_EstateNotFound_ErrorThrown()
         {
             Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();

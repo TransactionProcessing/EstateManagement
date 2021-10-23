@@ -31,6 +31,9 @@
         [JsonProperty("estate_name")]
         public String EstateName { get; set; }
 
+        [JsonProperty("estate_reference")]
+        public String EstateReference { get; set; }
+
         /// <summary>
         /// Gets or sets the operators.
         /// </summary>

@@ -12,6 +12,7 @@ namespace EstateManagement
     using System.Threading.Tasks;
     using BusinessLogic.Common;
     using BusinessLogic.EventHandling;
+    using BusinessLogic.Events;
     using BusinessLogic.Manger;
     using BusinessLogic.RequestHandlers;
     using BusinessLogic.Requests;
@@ -53,6 +54,7 @@ namespace EstateManagement
     using Shared.EntityFramework;
     using Shared.EntityFramework.ConnectionStringConfiguration;
     using Shared.EventStore.Aggregate;
+    using Shared.EventStore.EventHandling;
     using Shared.EventStore.EventStore;
     using Shared.EventStore.Extensions;
     using Shared.Extensions;
@@ -190,7 +192,6 @@ namespace EstateManagement
 
             services.AddSingleton<Func<String, EstateReportingContext>>(cont => (connectionString) => { return new EstateReportingContext(connectionString); });
 
-            DomainEventTypesToSilentlyHandle eventTypesToSilentlyHandle = new DomainEventTypesToSilentlyHandle(handlerEventTypesToSilentlyHandle);
             services.AddTransient<IEventStoreContext, EventStoreContext>();
             services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>>();
             services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>>();
@@ -205,6 +206,7 @@ namespace EstateManagement
             ContractCreatedEvent c = new ContractCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "");
             MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
             EstateCreatedEvent e = new EstateCreatedEvent(Guid.NewGuid(), "");
+            CallbackReceivedEnrichedEvent ce = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
 
             TypeProvider.LoadDomainEventsTypeDynamically();
 
@@ -247,6 +249,28 @@ namespace EstateManagement
                                                 };
             HttpClient httpClient = new HttpClient(httpClientHandler);
             services.AddSingleton<HttpClient>(httpClient);
+
+            Dictionary<String, String[]> eventHandlersConfiguration = new Dictionary<String, String[]>();
+
+            if (Startup.Configuration != null)
+            {
+                IConfigurationSection section = Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration");
+
+                if (section != null)
+                {
+                    Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration").Bind(eventHandlersConfiguration);
+                }
+            }
+            services.AddSingleton<Dictionary<String, String[]>>(eventHandlersConfiguration);
+
+            services.AddSingleton<Func<Type, IDomainEventHandler>>(container => (type) =>
+                                                                                {
+                                                                                    IDomainEventHandler handler = container.GetService(type) as IDomainEventHandler;
+                                                                                    return handler;
+                                                                                });
+
+            services.AddSingleton<MerchantDomainEventHandler>();
+            services.AddSingleton<IDomainEventHandlerResolver, DomainEventHandlerResolver>();
         }
         
         /// <summary>

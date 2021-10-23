@@ -161,6 +161,27 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
+        public void AutomaticDepositMadeEvent_CanBeCreated_IsCreated()
+        {
+            AutomaticDepositMadeEvent automaticDepositMadeEvent = new AutomaticDepositMadeEvent(TestData.MerchantId,
+                                                                                                TestData.EstateId,
+                                                                                                TestData.DepositId,
+                                                                                                TestData.DepositReference,
+                                                                                                TestData.DepositDateTime,
+                                                                                                TestData.DepositAmount);
+
+            automaticDepositMadeEvent.ShouldNotBeNull();
+            automaticDepositMadeEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            automaticDepositMadeEvent.EventId.ShouldNotBe(Guid.Empty);
+            automaticDepositMadeEvent.EstateId.ShouldBe(TestData.EstateId);
+            automaticDepositMadeEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            automaticDepositMadeEvent.DepositId.ShouldBe(TestData.DepositId);
+            automaticDepositMadeEvent.Reference.ShouldBe(TestData.DepositReference);
+            automaticDepositMadeEvent.DepositDateTime.ShouldBe(TestData.DepositDateTime);
+            automaticDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount);
+        }
+
+        [Fact]
         public void SettlementScheduleChangedEvent_CanBeCreated_IsCreated()
         {
             SettlementScheduleChangedEvent settlementScheduleChangedEvent =

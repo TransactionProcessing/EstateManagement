@@ -456,8 +456,9 @@
             }
             else if (source == MerchantDepositSource.Automatic)
             {
-                // TODO:
-                throw new NotSupportedException("Automatic deposits are not yet supported");
+                AutomaticDepositMadeEvent automaticDepositMadeEvent =
+                    new AutomaticDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount);
+                this.ApplyAndAppend(automaticDepositMadeEvent);
             }
         }
 
@@ -648,6 +649,16 @@
                                              manualDepositMadeEvent.Reference,
                                              manualDepositMadeEvent.DepositDateTime,
                                              manualDepositMadeEvent.Amount);
+            this.Deposits.Add(deposit);
+        }
+
+        private void PlayEvent(AutomaticDepositMadeEvent automaticDepositMadeEvent)
+        {
+            Deposit deposit = Deposit.Create(automaticDepositMadeEvent.DepositId,
+                                             MerchantDepositSource.Automatic,
+                                             automaticDepositMadeEvent.Reference,
+                                             automaticDepositMadeEvent.DepositDateTime,
+                                             automaticDepositMadeEvent.Amount);
             this.Deposits.Add(deposit);
         }
 

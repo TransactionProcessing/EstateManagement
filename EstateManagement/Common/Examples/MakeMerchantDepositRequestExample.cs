@@ -12,32 +12,18 @@
         {
             SwaggerExample<MakeMerchantDepositRequest> manualDeposit = new SwaggerExample<MakeMerchantDepositRequest>
                                                                        {
-                                                                           Name = "Manual Merchant Deposit",
+                                                                           Name = "Merchant Deposit",
                                                                            Value = new MakeMerchantDepositRequest
                                                                                    {
                                                                                        Amount = ExampleData.DepositAmount,
                                                                                        DepositDateTime = ExampleData.DepositDateTime,
-                                                                                       Reference = ExampleData.DepositReference,
-                                                                                       Source = ExampleData.MerchantDepositSourceManual
+                                                                                       Reference = ExampleData.DepositReference
                                                                                    }
-                                                                       };
-
-            SwaggerExample<MakeMerchantDepositRequest> automaticDeposit = new SwaggerExample<MakeMerchantDepositRequest>
-                                                                          {
-                                                                              Name = "Automatic Merchant Deposit",
-                                                                              Value = new MakeMerchantDepositRequest
-                                                                                      {
-                                                                                          Amount = ExampleData.DepositAmount,
-                                                                                          DepositDateTime = ExampleData.DepositDateTime,
-                                                                                          Reference = ExampleData.DepositReference,
-                                                                                          Source = ExampleData.MerchantDepositSourceAutomatic
-                                                                                      }
-                                                                          };
+                                                                      };
 
             return new List<SwaggerExample<MakeMerchantDepositRequest>>
                    {
-                       manualDeposit,
-                       automaticDeposit
+                       manualDeposit
                    };
         }
     }

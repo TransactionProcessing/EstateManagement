@@ -39,15 +39,6 @@
         [JsonProperty("reference")]
         public String Reference { get; set; }
 
-        /// <summary>
-        /// Gets or sets the source.
-        /// </summary>
-        /// <value>
-        /// The source.
-        /// </value>
-        [JsonProperty("source")]
-        public MerchantDepositSource Source { get; set; }
-
         #endregion
     }
 }
