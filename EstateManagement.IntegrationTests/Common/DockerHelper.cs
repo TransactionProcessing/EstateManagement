@@ -214,9 +214,11 @@ namespace EstateManagement.IntegrationTests.Common
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/testbank/configuration");
             requestMessage.Content = new StringContent(JsonConvert.SerializeObject(hostConfig), Encoding.UTF8, "application/json");
-            var responseMessage = await this.TestHostClient.SendAsync(requestMessage);
-            responseMessage.IsSuccessStatusCode.ShouldBeTrue();
-
+            await Retry.For(async () =>
+                            {
+                                var responseMessage = await this.TestHostClient.SendAsync(requestMessage);
+                                responseMessage.IsSuccessStatusCode.ShouldBeTrue();
+                            });
         }
 
         public static IContainerService SetupCallbackHandlerContainer(String containerName, ILogger logger, String imageName,
