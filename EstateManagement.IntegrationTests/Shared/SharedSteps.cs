@@ -1073,7 +1073,7 @@ namespace EstateManagement.IntegrationTests.Shared
         {
             EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
             
-            Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
+            Guid merchantId = Guid.NewGuid();
 
             String token = this.TestingContext.AccessToken;
             if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
