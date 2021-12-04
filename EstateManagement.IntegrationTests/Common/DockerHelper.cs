@@ -271,6 +271,7 @@
                 $"esdb://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreHttpDockerPort}?tls=false";
 
             String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
+            String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
 
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName,
                                                                                                       this.Logger,
@@ -288,7 +289,8 @@
                                                                                                       ("serviceClient", "Secret1"),
                                                                                                       additionalEnvironmentVariables:new List<String>
                                                                                                           {
-                                                                                                              insecureEventStoreEnvironmentVariable
+                                                                                                              insecureEventStoreEnvironmentVariable,
+                                                                                                              persistentSubscriptionPollingInSeconds
                                                                                                           });
 
             IContainerService securityServiceContainer = DockerHelper.SetupSecurityServiceContainer(this.SecurityServiceContainerName,
@@ -313,7 +315,12 @@
                                                                                                     this.EventStoreConnectionString,
                                                                                                     (Setup.SqlServerContainerName, "sa", "thisisalongpassword123!"),
                                                                                                     ("serviceClient", "Secret1"),
-                                                                                                    true);
+                                                                                                    additionalEnvironmentVariables:new List<String>
+                                                                                                        {
+                                                                                                            persistentSubscriptionPollingInSeconds
+                                                                                                        },
+                                                                                                     forceLatestImage:true);
+
 
             var callbackHandlerContainer = DockerHelper.SetupCallbackHandlerContainer(this.CallbackHandlerContainerName,
                                                                                       this.Logger,
