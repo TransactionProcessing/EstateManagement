@@ -270,6 +270,8 @@
             this.EventStoreConnectionString =
                 $"esdb://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreHttpDockerPort}?tls=false";
 
+            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
+
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName,
                                                                                                       this.Logger,
                                                                                                       "estatemanagement",
@@ -283,7 +285,11 @@
                                                                                                       this.SecurityServiceContainerName,
                                                                                                       this.EventStoreConnectionString,
                                                                                                       (Setup.SqlServerContainerName, "sa", "thisisalongpassword123!"),
-                                                                                                      ("serviceClient", "Secret1"));
+                                                                                                      ("serviceClient", "Secret1"),
+                                                                                                      additionalEnvironmentVariables:new List<String>
+                                                                                                          {
+                                                                                                              insecureEventStoreEnvironmentVariable
+                                                                                                          });
 
             IContainerService securityServiceContainer = DockerHelper.SetupSecurityServiceContainer(this.SecurityServiceContainerName,
                                                                                                     this.Logger,
@@ -319,7 +325,11 @@
                                                                                       traceFolder,
                                                                                       dockerCredentials,
                                                                                       this.EventStoreConnectionString,
-                                                                                      true);
+                                                                                      true,
+                                                                                      additionalEnvironmentVariables: new List<String>
+                                                                                          {
+                                                                                              insecureEventStoreEnvironmentVariable
+                                                                                          });
 
             var testHostContainer = DockerHelper.SetupTestHostContainer(this.TestHostContainerName,
                                                                         this.Logger,

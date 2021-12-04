@@ -2,6 +2,7 @@ namespace EstateManagement
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
@@ -57,6 +58,7 @@ namespace EstateManagement
     using Shared.EventStore.EventHandling;
     using Shared.EventStore.EventStore;
     using Shared.EventStore.Extensions;
+    using Shared.EventStore.SubscriptionWorker;
     using Shared.Extensions;
     using Shared.General;
     using Shared.Logger;
@@ -109,6 +111,8 @@ namespace EstateManagement
 
         private static EventStoreClientSettings EventStoreClientSettings;
 
+        public static IServiceProvider ServiceProvider { get; set; }
+
         private static void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
         {
             if (settings == null)
@@ -130,7 +134,8 @@ namespace EstateManagement
             settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
                                             {
                                                 Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString")),
-                                            };
+                                                Insecure = Startup.Configuration.GetValue<Boolean>("EventStoreSettings:Insecure")
+            };
 
             settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
                                                               Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
@@ -271,6 +276,8 @@ namespace EstateManagement
 
             services.AddSingleton<MerchantDomainEventHandler>();
             services.AddSingleton<IDomainEventHandlerResolver, DomainEventHandlerResolver>();
+
+            Startup.ServiceProvider = services.BuildServiceProvider();
         }
         
         /// <summary>
@@ -366,6 +373,14 @@ namespace EstateManagement
             Assembly assembly = this.GetType().GetTypeInfo().Assembly;
             services.AddMvcCore().AddApplicationPart(assembly).AddControllersAsServices();
         }
+
+        public static void LoadTypes()
+        {
+            CallbackReceivedEnrichedEvent c = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
+
+            TypeProvider.LoadDomainEventsTypeDynamically();
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// <summary>
         /// Configures the specified application.
@@ -420,17 +435,8 @@ namespace EstateManagement
             app.UseSwagger();
 
             app.UseSwaggerUI();
-            
-            if (String.Compare(ConfigurationReader.GetValue("EventStoreSettings", "START_PROJECTIONS"),
-                               Boolean.TrueString,
-                               StringComparison.InvariantCultureIgnoreCase) == 0)
-            {
-                app.PreWarm(true).Wait();
-            }
-            else
-            {
-                app.PreWarm();
-            }
+
+            app.PreWarm();
         }
 
     }
@@ -439,82 +445,84 @@ namespace EstateManagement
     /// <summary>
     /// 
     /// </summary>
-    public static class StartupExtensions
+    public static class Extensions
     {
-        #region Methods
-
-        /// <summary>
-        /// Pres the warm.
-        /// </summary>
-        /// <param name="applicationBuilder">The application builder.</param>
-        /// <param name="startProjections">if set to <c>true</c> [start projections].</param>
-        public static async Task PreWarm(this IApplicationBuilder applicationBuilder,
-                                         Boolean startProjections = false)
-        {
-            try
+        static Action<TraceEventType, String, String> log = (tt, subType, message) => {
+            String logMessage = $"{subType} - {message}";
+            switch (tt)
             {
-                if (startProjections)
+                case TraceEventType.Critical:
+                    Logger.LogCritical(new Exception(logMessage));
+                    break;
+                case TraceEventType.Error:
+                    Logger.LogError(new Exception(logMessage));
+                    break;
+                case TraceEventType.Warning:
+                    Logger.LogWarning(logMessage);
+                    break;
+                case TraceEventType.Information:
+                    Logger.LogInformation(logMessage);
+                    break;
+                case TraceEventType.Verbose:
+                    Logger.LogDebug(logMessage);
+                    break;
+            }
+        };
+
+        static Action<TraceEventType, String> concurrentLog = (tt, message) => log(tt, "CONCURRENT", message);
+
+        public static void PreWarm(this IApplicationBuilder applicationBuilder)
+        {
+            Startup.LoadTypes();
+
+            //SubscriptionWorker worker = new SubscriptionWorker()
+            var internalSubscriptionService = Boolean.Parse(ConfigurationReader.GetValue("InternalSubscriptionService"));
+
+            if (internalSubscriptionService)
+            {
+                String eventStoreConnectionString = ConfigurationReader.GetValue("EventStoreSettings", "ConnectionString");
+                Int32 inflightMessages = Int32.Parse(ConfigurationReader.GetValue("AppSettings", "InflightMessages"));
+                Int32 persistentSubscriptionPollingInSeconds = Int32.Parse(ConfigurationReader.GetValue("AppSettings", "PersistentSubscriptionPollingInSeconds"));
+                String filter = ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionServiceFilter");
+                String ignore = ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionServiceIgnore");
+                String streamName = ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionFilterOnStreamName");
+
+                ISubscriptionRepository subscriptionRepository = SubscriptionRepository.Create(eventStoreConnectionString);
+
+                ((SubscriptionRepository)subscriptionRepository).Trace += (sender, s) => Extensions.log(TraceEventType.Information, "REPOSITORY", s);
+
+                // init our SubscriptionRepository
+                subscriptionRepository.PreWarm(CancellationToken.None).Wait();
+
+                var eventHandlerResolver = Startup.ServiceProvider.GetService<IDomainEventHandlerResolver>();
+
+                SubscriptionWorker concurrentSubscriptions = SubscriptionWorker.CreateConcurrentSubscriptionWorker(eventStoreConnectionString, eventHandlerResolver, subscriptionRepository, inflightMessages, persistentSubscriptionPollingInSeconds);
+
+                concurrentSubscriptions.Trace += (_, args) => concurrentLog(TraceEventType.Information, args.Message);
+                concurrentSubscriptions.Warning += (_, args) => concurrentLog(TraceEventType.Warning, args.Message);
+                concurrentSubscriptions.Error += (_, args) => concurrentLog(TraceEventType.Error, args.Message);
+
+                if (!String.IsNullOrEmpty(ignore))
                 {
-                    await StartupExtensions.StartEventStoreProjections();
+                    concurrentSubscriptions = concurrentSubscriptions.IgnoreSubscriptions(ignore);
                 }
 
-                //ConnectionStringConfigurationContext context = new ConnectionStringConfigurationContext("server=localhost;database=ConnectionStringConfiguration;user id=sa;password=sp1ttal");
-                //await context.Database.EnsureCreatedAsync();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
+                if (!String.IsNullOrEmpty(filter))
+                {
+                    //NOTE: Not overly happy with this design, but
+                    //the idea is if we supply a filter, this overrides ignore
+                    concurrentSubscriptions = concurrentSubscriptions.FilterSubscriptions(filter)
+                                                                     .IgnoreSubscriptions(null);
+
+                }
+
+                if (!String.IsNullOrEmpty(streamName))
+                {
+                    concurrentSubscriptions = concurrentSubscriptions.FilterByStreamName(streamName);
+                }
+
+                concurrentSubscriptions.StartAsync(CancellationToken.None).Wait();
             }
         }
-
-        /// <summary>
-        /// Starts the event store projections.
-        /// </summary>
-        private static async Task StartEventStoreProjections()
-        {
-            // TODO: Refactor
-            // This method is a brutal way of getting projections to be run when the API starts up
-            // This needs refactored into a more pleasant function
-            String connString = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString");
-            String connectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
-            Int32 httpPort = Startup.Configuration.GetValue<Int32>("EventStoreSettings:HttpPort");
-
-            EventStoreConnectionSettings settings = EventStoreConnectionSettings.Create(connString, connectionName, httpPort);
-
-            // Do continuous first
-            String continuousProjectionsFolder = ConfigurationReader.GetValue("EventStoreSettings", "ContinuousProjectionsFolder");
-            String[] files = Directory.GetFiles(continuousProjectionsFolder, "*.js");
-
-            // TODO: Improve this later to get status of projection before trying to create
-            //foreach (String file in files)
-            //{
-            //    String withoutExtension = Path.GetFileNameWithoutExtension(file);
-            //    String projectionBody = File.ReadAllText(file);
-            //    Boolean emitEnabled = continuousProjectionsFolder.ToLower().Contains("emitenabled");
-
-            //    await Retry.For(async () =>
-            //                    {
-            //                        DnsEndPoint d = new DnsEndPoint(settings.IpAddress, settings.HttpPort);
-
-            //                        ProjectionsManager projectionsManager = new ProjectionsManager(new ConsoleLogger(), d, TimeSpan.FromSeconds(5));
-
-            //                        UserCredentials userCredentials = new UserCredentials(settings.UserName, settings.Password);
-
-            //                        String projectionStatus = await projectionsManager.GetStatusAsync(withoutExtension, userCredentials);
-
-            //                        await projectionsManager.CreateContinuousAsync(withoutExtension, projectionBody, userCredentials);
-            //                        Logger.LogInformation("After CreateContinuousAsync");
-            //                        if (emitEnabled)
-            //                        {
-            //                            await projectionsManager.AbortAsync(withoutExtension, userCredentials);
-            //                            await projectionsManager.UpdateQueryAsync(withoutExtension, projectionBody, emitEnabled, userCredentials);
-            //                            await projectionsManager.EnableAsync(withoutExtension, userCredentials);
-            //                        }
-            //                    });
-            //}
-        }
-
-        #endregion
     }
 }
