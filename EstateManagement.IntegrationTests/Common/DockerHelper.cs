@@ -319,7 +319,8 @@
                                                                                                     ("serviceClient", "Secret1"),
                                                                                                     additionalEnvironmentVariables:new List<String>
                                                                                                         {
-                                                                                                            persistentSubscriptionPollingInSeconds
+                                                                                                            persistentSubscriptionPollingInSeconds,
+                                                                                                            internalSubscriptionServiceCacheDuration
                                                                                                         },
                                                                                                      forceLatestImage:true);
 
