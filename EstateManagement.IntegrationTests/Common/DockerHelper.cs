@@ -272,6 +272,7 @@
 
             String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
             String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
+            String internalSubscriptionServiceCacheDuration = "AppSettings:InternalSubscriptionServiceCacheDuration=0";
 
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName,
                                                                                                       this.Logger,
@@ -290,7 +291,8 @@
                                                                                                       additionalEnvironmentVariables:new List<String>
                                                                                                           {
                                                                                                               insecureEventStoreEnvironmentVariable,
-                                                                                                              persistentSubscriptionPollingInSeconds
+                                                                                                              persistentSubscriptionPollingInSeconds,
+                                                                                                              internalSubscriptionServiceCacheDuration
                                                                                                           });
 
             IContainerService securityServiceContainer = DockerHelper.SetupSecurityServiceContainer(this.SecurityServiceContainerName,

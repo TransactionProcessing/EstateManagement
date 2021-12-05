@@ -50,10 +50,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                 retryFor:TimeSpan.FromMinutes(2),
                                 retryInterval:TimeSpan.FromSeconds(30));
             }
-
-            // TODO: this in here until cache timeout for SS Config can be configured or switched off
-            await Task.Delay(TimeSpan.FromMinutes(2));
-
+            
             foreach (TableRow tableRow in table.Rows)
             {
                 String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
