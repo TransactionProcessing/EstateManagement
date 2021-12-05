@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="CallbackHandler.DataTransferObjects" Version="0.0.5" />
     <PackageReference Include="SecurityService.Client" Version="1.0.8" />
-    <PackageReference Include="Shared.DomainDrivenDesign" Version="1.0.14" />
+    <PackageReference Include="Shared.DomainDrivenDesign" Version="1.0.17" />
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 

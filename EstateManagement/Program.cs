@@ -41,28 +41,29 @@ namespace EstateManagement
                                              logging.AddConsole(); 
 
                                          });
-                hostBuilder.ConfigureWebHostDefaults(webBuilder =>
-                                          {
-                                              webBuilder.UseStartup<Startup>();
-                                              webBuilder.UseConfiguration(config);
-                                              webBuilder.UseKestrel();
-                                          }).ConfigureServices(services =>
-                                          {
-                                              CallbackReceivedEnrichedEvent c = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
+            hostBuilder.ConfigureWebHostDefaults(webBuilder =>
+                                                 {
+                                                     webBuilder.UseStartup<Startup>();
+                                                     webBuilder.UseConfiguration(config);
+                                                     webBuilder.UseKestrel();
+                                                 });
+                //}).ConfigureServices(services =>
+                                          //{
+                                          //    CallbackReceivedEnrichedEvent c = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
 
-                                              TypeProvider.LoadDomainEventsTypeDynamically();
+                                          //    TypeProvider.LoadDomainEventsTypeDynamically();
 
-                                              services.AddHostedService<SubscriptionWorker>(provider =>
-                                              {
-                                                  IDomainEventHandlerResolver r =
-                                                      provider.GetRequiredService<IDomainEventHandlerResolver>();
-                                                  EventStorePersistentSubscriptionsClient p = provider.GetRequiredService<EventStorePersistentSubscriptionsClient>();
-                                                  HttpClient h = provider.GetRequiredService<HttpClient>();
-                                                  SubscriptionWorker worker = new SubscriptionWorker(r, p, h);
-                                                  worker.TraceGenerated += Worker_TraceGenerated;
-                                                  return worker;
-                                              });
-                                          });
+                                          //    services.AddHostedService<SubscriptionWorker>(provider =>
+                                          //    {
+                                          //        IDomainEventHandlerResolver r =
+                                          //            provider.GetRequiredService<IDomainEventHandlerResolver>();
+                                          //        EventStorePersistentSubscriptionsClient p = provider.GetRequiredService<EventStorePersistentSubscriptionsClient>();
+                                          //        HttpClient h = provider.GetRequiredService<HttpClient>();
+                                          //        SubscriptionWorker worker = new SubscriptionWorker(r, p, h);
+                                          //        worker.TraceGenerated += Worker_TraceGenerated;
+                                          //        return worker;
+                                          //    });
+                                          //});
             return hostBuilder;
         }
 

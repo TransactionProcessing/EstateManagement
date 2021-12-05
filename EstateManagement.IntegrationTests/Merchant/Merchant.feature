@@ -274,6 +274,7 @@ Scenario: Set Merchant Settlement Schedule - Estate User
 	| Test Merchant 3 | Test Estate 1 | Monthly            |
 
 @PRTest
+@ignore
 Scenario: Make Automatic Merchant Deposits
 
 	Given I create the following merchants
