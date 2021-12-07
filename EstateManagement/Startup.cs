@@ -180,7 +180,7 @@ namespace EstateManagement
 
             services.AddTransient<IEventStoreContext, EventStoreContext>();
             services.AddSingleton<IEstateManagementRepository, EstateManagementRepository>();
-            services.AddSingleton<IDbContextFactory<EstateReportingSqlServerContext>, DbContextFactory<EstateReportingSqlServerContext>>();
+            services.AddSingleton<IDbContextFactory<EstateReportingGenericContext>, DbContextFactory<EstateReportingGenericContext>>();
 
             Dictionary<String, String[]> handlerEventTypesToSilentlyHandle = new Dictionary<String, String[]>();
 
