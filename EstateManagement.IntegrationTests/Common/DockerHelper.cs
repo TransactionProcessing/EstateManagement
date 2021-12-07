@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -75,56 +76,27 @@
         /// </summary>
         protected List<IContainerService> Containers;
 
-        /// <summary>
-        /// The estate management container name
-        /// </summary>
-        protected String EstateManagementContainerName;
-
+        
         /// <summary>
         /// The estate management port
         /// </summary>
         protected Int32 EstateManagementPort;
 
         /// <summary>
-        /// The estate reporting container name
-        /// </summary>
-        protected String EstateReportingContainerName;
-
-        /// <summary>
         /// The estate reporting port
         /// </summary>
         protected Int32 EstateReportingPort;
-
-        /// <summary>
-        /// The event store connection string
-        /// </summary>
-        protected String EventStoreConnectionString;
-
-        /// <summary>
-        /// The event store container name
-        /// </summary>
-        protected String EventStoreContainerName;
-
+        
         /// <summary>
         /// The event store HTTP port
         /// </summary>
         protected Int32 EventStoreHttpPort;
 
         /// <summary>
-        /// The security service container name
-        /// </summary>
-        protected String SecurityServiceContainerName;
-
-        /// <summary>
         /// The security service port
         /// </summary>
         protected Int32 SecurityServicePort;
-
-        /// <summary>
-        /// The test host container name
-        /// </summary>
-        protected String TestHostContainerName;
-
+        
         /// <summary>
         /// The test host service port
         /// </summary>
@@ -134,11 +106,6 @@
         /// The test networks
         /// </summary>
         protected List<INetworkService> TestNetworks;
-
-        /// <summary>
-        /// The logger
-        /// </summary>
-        private readonly NlogLogger Logger;
 
         /// <summary>
         /// The testing context
@@ -194,44 +161,32 @@
         /// <param name="forceLatestImage">if set to <c>true</c> [force latest image].</param>
         /// <param name="additionalEnvironmentVariables">The additional environment variables.</param>
         /// <returns></returns>
-        public static IContainerService SetupCallbackHandlerContainer(String containerName,
-                                                                      ILogger logger,
-                                                                      String imageName,
-                                                                      List<INetworkService> networkServices,
-                                                                      String hostFolder,
-                                                                      (String URL, String UserName, String Password)? dockerCredentials,
-                                                                      String eventStoreAddress,
-                                                                      Boolean forceLatestImage = false,
-                                                                      List<String> additionalEnvironmentVariables = null)
+        public IContainerService SetupCallbackHandlerContainer(String imageName,
+                                                               List<INetworkService> networkServices,
+                                                               Boolean forceLatestImage = false,
+                                                               List<String> additionalEnvironmentVariables = null)
         {
-            logger.LogInformation("About to Start Callback Handler Container");
+            this.Logger.LogInformation("About to Start Callback Handler Container");
 
             List<String> environmentVariables = new List<String>();
-            environmentVariables.Add($"EventStoreSettings:ConnectionString={eventStoreAddress}:{DockerHelper.EventStoreHttpDockerPort}");
+            environmentVariables.Add($"EventStoreSettings:ConnectionString={this.GenerateEventStoreConnectionString()}");
 
             if (additionalEnvironmentVariables != null)
             {
                 environmentVariables.AddRange(additionalEnvironmentVariables);
             }
 
-            ContainerBuilder callbackHandlerContainer = new Builder().UseContainer().WithName(containerName).WithEnvironment(environmentVariables.ToArray())
+            ContainerBuilder callbackHandlerContainer = new Builder().UseContainer().WithName(this.CallbackHandlerContainerName).WithEnvironment(environmentVariables.ToArray())
                                                                      .UseImage(imageName, forceLatestImage).ExposePort(DockerHelper.CallbackHandlerDockerPort)
                                                                      .UseNetwork(networkServices.ToArray());
 
-            if (string.IsNullOrEmpty(hostFolder) == false)
-            {
-                callbackHandlerContainer = callbackHandlerContainer.Mount(hostFolder, "/home/txnproc/trace", MountType.ReadWrite);
-            }
-
-            if (dockerCredentials.HasValue)
-            {
-                callbackHandlerContainer.WithCredential(dockerCredentials.Value.URL, dockerCredentials.Value.UserName, dockerCredentials.Value.Password);
-            }
+            callbackHandlerContainer = MountHostFolder(callbackHandlerContainer);
+            callbackHandlerContainer = SetDockerCredentials(callbackHandlerContainer);
 
             // Now build and return the container                
             IContainerService builtContainer = callbackHandlerContainer.Build().Start().WaitForPort($"{DockerHelper.CallbackHandlerDockerPort}/tcp", 30000);
 
-            logger.LogInformation("Callback Handler Container Started");
+            this.Logger.LogInformation("Callback Handler Container Started");
 
             return builtContainer;
         }
@@ -242,7 +197,7 @@
         /// <param name="scenarioName">Name of the scenario.</param>
         public override async Task StartContainersForScenarioRun(String scenarioName)
         {
-            String traceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
+            this.HostTraceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
 
             Logging.Enabled();
 
@@ -259,35 +214,27 @@
             this.TestHostContainerName = $"testhosts{testGuid:N}";
             this.CallbackHandlerContainerName = $"callbackhandler{testGuid:N}";
 
-            (String, String, String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
+            this.DockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
+            this.SqlServerDetails = (Setup.SqlServerContainerName, Setup.SqlUserName, Setup.SqlPassword);
+            this.ClientDetails = ("serviceClient", "Secret1");
 
             INetworkService testNetwork = DockerHelper.SetupTestNetwork();
             this.TestNetworks.Add(testNetwork);
 
             IContainerService eventStoreContainer =
-                DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, "eventstore/eventstore:21.2.0-buster-slim", testNetwork, traceFolder);
+                this.SetupEventStoreContainer("eventstore/eventstore:21.2.0-buster-slim", testNetwork);
             this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
-            this.EventStoreConnectionString =
-                $"esdb://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreHttpDockerPort}?tls=false";
-
+            
             String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
             String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
             String internalSubscriptionServiceCacheDuration = "AppSettings:InternalSubscriptionServiceCacheDuration=0";
 
-            IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName,
-                                                                                                      this.Logger,
-                                                                                                      "estatemanagement",
+            IContainerService estateManagementContainer = this.SetupEstateManagementContainer("estatemanagement",
                                                                                                       new List<INetworkService>
                                                                                                       {
                                                                                                           testNetwork,
                                                                                                           Setup.DatabaseServerNetwork
                                                                                                       },
-                                                                                                      traceFolder,
-                                                                                                      null,
-                                                                                                      this.SecurityServiceContainerName,
-                                                                                                      this.EventStoreConnectionString,
-                                                                                                      (Setup.SqlServerContainerName, "sa", "thisisalongpassword123!"),
-                                                                                                      ("serviceClient", "Secret1"),
                                                                                                       additionalEnvironmentVariables:new List<String>
                                                                                                           {
                                                                                                               insecureEventStoreEnvironmentVariable,
@@ -295,63 +242,41 @@
                                                                                                               internalSubscriptionServiceCacheDuration
                                                                                                           });
 
-            IContainerService securityServiceContainer = DockerHelper.SetupSecurityServiceContainer(this.SecurityServiceContainerName,
-                                                                                                    this.Logger,
-                                                                                                    "stuartferguson/securityservice",
+            IContainerService securityServiceContainer = this.SetupSecurityServiceContainer("stuartferguson/securityservice",
                                                                                                     testNetwork,
-                                                                                                    traceFolder,
-                                                                                                    dockerCredentials,
                                                                                                     true);
 
-            IContainerService estateReportingContainer = DockerHelper.SetupEstateReportingContainer(this.EstateReportingContainerName,
-                                                                                                    this.Logger,
-                                                                                                    "stuartferguson/estatereporting",
-                                                                                                    new List<INetworkService>
-                                                                                                    {
-                                                                                                        testNetwork,
-                                                                                                        Setup.DatabaseServerNetwork
-                                                                                                    },
-                                                                                                    traceFolder,
-                                                                                                    dockerCredentials,
-                                                                                                    this.SecurityServiceContainerName,
-                                                                                                    this.EventStoreConnectionString,
-                                                                                                    (Setup.SqlServerContainerName, "sa", "thisisalongpassword123!"),
-                                                                                                    ("serviceClient", "Secret1"),
-                                                                                                    additionalEnvironmentVariables:new List<String>
-                                                                                                        {
-                                                                                                            persistentSubscriptionPollingInSeconds,
-                                                                                                            internalSubscriptionServiceCacheDuration
-                                                                                                        },
-                                                                                                     forceLatestImage:true);
+            IContainerService estateReportingContainer = this.SetupEstateReportingContainer("stuartferguson/estatereporting",
+                                                                                            new List<INetworkService>
+                                                                                            {
+                                                                                                testNetwork,
+                                                                                                Setup.DatabaseServerNetwork
+                                                                                            },
+                                                                                            additionalEnvironmentVariables:new List<String>
+                                                                                                {
+                                                                                                    persistentSubscriptionPollingInSeconds,
+                                                                                                    internalSubscriptionServiceCacheDuration
+                                                                                                },
+                                                                                            forceLatestImage:true);
 
 
-            var callbackHandlerContainer = DockerHelper.SetupCallbackHandlerContainer(this.CallbackHandlerContainerName,
-                                                                                      this.Logger,
-                                                                                      "stuartferguson/callbackhandler",
+            var callbackHandlerContainer = this.SetupCallbackHandlerContainer("stuartferguson/callbackhandler",
                                                                                       new List<INetworkService>
                                                                                       {
                                                                                           testNetwork
                                                                                       },
-                                                                                      traceFolder,
-                                                                                      dockerCredentials,
-                                                                                      this.EventStoreConnectionString,
                                                                                       true,
                                                                                       additionalEnvironmentVariables: new List<String>
                                                                                           {
                                                                                               insecureEventStoreEnvironmentVariable
                                                                                           });
 
-            var testHostContainer = DockerHelper.SetupTestHostContainer(this.TestHostContainerName,
-                                                                        this.Logger,
-                                                                        "stuartferguson/testhosts",
+            var testHostContainer = this.SetupTestHostContainer("stuartferguson/testhosts",
                                                                         new List<INetworkService>
                                                                         {
                                                                             testNetwork,
                                                                             Setup.DatabaseServerNetwork
                                                                         },
-                                                                        traceFolder,
-                                                                        dockerCredentials,
-                                                                        (Setup.SqlServerContainerName, "sa", "thisisalongpassword123!"),
                                                                         true);
 
             this.Containers.AddRange(new List<IContainerService>
@@ -537,7 +462,7 @@
                 String connectionString = Setup.GetLocalConnectionString(databaseName);
                 await Retry.For(async () =>
                                 {
-                                    EstateReportingContext context = new EstateReportingContext(connectionString);
+                                    EstateReportingSqlServerContext context = new EstateReportingSqlServerContext(connectionString);
                                     await context.Database.EnsureDeletedAsync(CancellationToken.None);
                                 },
                                 retryFor:TimeSpan.FromMinutes(2),

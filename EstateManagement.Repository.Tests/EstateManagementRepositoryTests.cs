@@ -31,9 +31,9 @@ namespace EstateManagement.Repository.Tests
             Logger.Initialise(NullLogger.Instance);
         }
 
-        private Mock<Shared.EntityFramework.IDbContextFactory<EstateReportingContext>> GetMockDbContextFactory()
+        private Mock<Shared.EntityFramework.IDbContextFactory<EstateReportingGenericContext>> GetMockDbContextFactory()
         {
-            return new Mock<Shared.EntityFramework.IDbContextFactory<EstateReportingContext>>();
+            return new Mock<Shared.EntityFramework.IDbContextFactory<EstateReportingGenericContext>>();
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetEstate_EstateRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.Estates.Add(TestData.EstateEntity);
             context.EstateOperators.Add(TestData.EstateOperatorEntity);
             context.EstateSecurityUsers.Add(TestData.EstateSecurityUserEntity);
@@ -73,7 +73,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetEstate_EstateNotFound_ErrorThrown(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
 
             var dbContextFactory = this.GetMockDbContextFactory();
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
@@ -91,7 +91,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetMerchants_MerchantRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.Merchants.Add(TestData.MerchantEntity);
             context.MerchantContacts.Add(TestData.MerchantContactEntity);
             context.MerchantAddresses.Add(TestData.MerchantAddressEntity);
@@ -124,7 +124,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetMerchants_NoMerchantsFound_NullMerchantsReturned(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
 
             var dbContextFactory = this.GetMockDbContextFactory();
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
@@ -147,7 +147,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetContract_ContractRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.Contracts.Add(TestData.ContractEntity);
             context.ContractProducts.Add(TestData.ContractProductEntity);
             context.ContractProductTransactionFees.Add(TestData.ContractProductTransactionFeeEntity);
@@ -171,7 +171,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetContract_IncludeProducts_ContractRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.Contracts.Add(TestData.ContractEntity);
             context.ContractProducts.Add(TestData.ContractProductEntity);
             context.ContractProductTransactionFees.Add(TestData.ContractProductTransactionFeeEntity);
@@ -195,7 +195,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetContract_IncludeProductsWithFees_ContractRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.Contracts.Add(TestData.ContractEntity);
             context.ContractProducts.Add(TestData.ContractProductEntity);
             context.ContractProductTransactionFees.Add(TestData.ContractProductTransactionFeeEntity);
@@ -219,7 +219,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetContract_ContractNotFound_ErrorThrown(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
 
             var dbContextFactory = this.GetMockDbContextFactory();
             Mock<IModelFactory> modelFactory = new Mock<IModelFactory>();
@@ -243,7 +243,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetTransactionFeesForProduct_TransactionFeesForProductRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.ContractProductTransactionFees.Add(TestData.ContractProductTransactionFeeEntity);
             await context.SaveChangesAsync();
 
@@ -269,7 +269,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetMerchantContracts_MerchantContractsRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             await context.Merchants.AddAsync(TestData.MerchantEntity, CancellationToken.None);
             await context.EstateOperators.AddAsync(TestData.EstateOperatorEntity, CancellationToken.None);
             await context.EstateOperators.AddAsync(TestData.EstateOperatorEntity2, CancellationToken.None);
@@ -302,7 +302,7 @@ namespace EstateManagement.Repository.Tests
         [InlineData(TestDatabaseType.InMemory)]
         public async Task EstateManagementRepository_GetContracts_ContractsRetrieved(TestDatabaseType testDatabaseType)
         {
-            EstateReportingContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
+            EstateReportingGenericContext context = await EstateManagementRepositoryTests.GetContext(Guid.NewGuid().ToString("N"), testDatabaseType);
             context.Contracts.Add(TestData.ContractEntity);
             context.ContractProducts.Add(TestData.ContractProductEntity);
             context.EstateOperators.Add(TestData.EstateOperatorEntity);
@@ -322,25 +322,15 @@ namespace EstateManagement.Repository.Tests
             contractModelList.ShouldNotBeEmpty();
         }
 
-        private static async Task<EstateReportingContext> GetContext(String databaseName,
-                                                                     TestDatabaseType databaseType = TestDatabaseType.InMemory)
+        private static async Task<EstateReportingGenericContext> GetContext(String databaseName,
+                                                                            TestDatabaseType databaseType = TestDatabaseType.InMemory)
         {
-            EstateReportingContext context = null;
+            EstateReportingGenericContext context = null;
             if (databaseType == TestDatabaseType.InMemory)
             {
-                DbContextOptionsBuilder<EstateReportingContext> builder = new DbContextOptionsBuilder<EstateReportingContext>().UseInMemoryDatabase(databaseName)
+                DbContextOptionsBuilder<EstateReportingGenericContext> builder = new DbContextOptionsBuilder<EstateReportingGenericContext>().UseInMemoryDatabase(databaseName)
                     .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                context = new EstateReportingContext(builder.Options);
-            }
-            else if (databaseType == TestDatabaseType.SqliteInMemory)
-            {
-                SqliteConnection inMemorySqlite = new SqliteConnection("Data Source=:memory:");
-                inMemorySqlite.Open();
-
-                DbContextOptionsBuilder<EstateReportingContext> builder = new DbContextOptionsBuilder<EstateReportingContext>().UseSqlite(inMemorySqlite);
-                context = new EstateReportingContext(builder.Options);
-                await context.Database.MigrateAsync();
-
+                context = new EstateReportingSqlServerContext(builder.Options);
             }
             else
             {

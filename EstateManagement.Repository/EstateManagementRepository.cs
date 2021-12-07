@@ -33,7 +33,7 @@
         /// <summary>
         /// The context factory
         /// </summary>
-        private readonly Shared.EntityFramework.IDbContextFactory<EstateReportingContext> ContextFactory;
+        private readonly Shared.EntityFramework.IDbContextFactory<EstateReportingGenericContext> ContextFactory;
 
         /// <summary>
         /// The model factory
@@ -49,7 +49,7 @@
         /// </summary>
         /// <param name="contextFactory">The context factory.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementRepository(Shared.EntityFramework.IDbContextFactory<EstateReportingContext> contextFactory,
+        public EstateManagementRepository(Shared.EntityFramework.IDbContextFactory<EstateReportingGenericContext> contextFactory,
                                           IModelFactory modelFactory)
         {
             this.ContextFactory = contextFactory;
@@ -76,7 +76,7 @@
                                                      Boolean includeProductsWithFees,
                                                      CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             Contract contract = await context.Contracts.SingleOrDefaultAsync(c => c.EstateId == estateId && c.ContractId == contractId, cancellationToken);
 
@@ -106,7 +106,7 @@
                                                              String reference,
                                                              CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             Merchant merchant = await (from m in context.Merchants where m.EstateId == estateId && m.Reference == reference select m).SingleOrDefaultAsync(cancellationToken);
 
@@ -115,7 +115,7 @@
         public async Task<List<ContractModel>> GetContracts(Guid estateId,
                                                                          CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             var query = await (from c in context.Contracts
                            join cp in context.ContractProducts on c.ContractId equals cp.ContractId into cps
@@ -186,7 +186,7 @@
         public async Task<EstateModel> GetEstate(Guid estateId,
                                                  CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken);
 
@@ -212,7 +212,7 @@
                                                                     Guid merchantId,
                                                                     CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             var x = await (from c in context.Contracts
                     join cp in context.ContractProducts on c.ContractId equals cp.ContractId
@@ -279,7 +279,7 @@
         public async Task<List<MerchantModel>> GetMerchants(Guid estateId,
                                                             CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             List<Merchant> merchants = await (from m in context.Merchants where m.EstateId == estateId select m).ToListAsync(cancellationToken);
 
@@ -326,7 +326,7 @@
                                                                                        DateTime endDateTime,
                                                                                        CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             List<MerchantBalanceView> merchantBalanceHistories = await context.MerchantBalanceView.Where(m => m.MerchantId == merchantId &&
                                                                                                               m.EntryDateTime>= startDateTime &&
@@ -354,7 +354,7 @@
                                                                                   Guid productId,
                                                                                   CancellationToken cancellationToken)
         {
-            EstateReportingContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
 
             List<ContractProductTransactionFee> transactionFees = await context
                                                                         .ContractProductTransactionFees
