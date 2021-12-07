@@ -130,7 +130,6 @@ namespace EstateManagement
                                                                                                      errors) => true,
                                                           }
                                                       };
-            settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
             settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
                                             {
                                                 Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString")),
@@ -181,7 +180,7 @@ namespace EstateManagement
 
             services.AddTransient<IEventStoreContext, EventStoreContext>();
             services.AddSingleton<IEstateManagementRepository, EstateManagementRepository>();
-            services.AddSingleton<IDbContextFactory<EstateReportingContext>, DbContextFactory<EstateReportingContext>>();
+            services.AddSingleton<IDbContextFactory<EstateReportingSqlServerContext>, DbContextFactory<EstateReportingSqlServerContext>>();
 
             Dictionary<String, String[]> handlerEventTypesToSilentlyHandle = new Dictionary<String, String[]>();
 
@@ -195,7 +194,19 @@ namespace EstateManagement
                 }
             }
 
-            services.AddSingleton<Func<String, EstateReportingContext>>(cont => (connectionString) => { return new EstateReportingContext(connectionString); });
+            services.AddSingleton<Func<String, EstateReportingGenericContext>>(cont => (connectionString) =>
+                                                                                       {
+                                                                                           String databaseEngine =
+                                                                                               ConfigurationReader.GetValue("AppSettings", "DatabaseEngine");
+
+                                                                                           return databaseEngine switch
+                                                                                           {
+                                                                                               "MySql" => new EstateReportingMySqlContext(connectionString),
+                                                                                               "SqlServer" => new EstateReportingSqlServerContext(connectionString),
+                                                                                               _ => throw new
+                                                                                                   NotSupportedException($"Unsupported Database Engine {databaseEngine}")
+                                                                                           };
+                                                                                       });
 
             services.AddTransient<IEventStoreContext, EventStoreContext>();
             services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>>();
@@ -488,7 +499,7 @@ namespace EstateManagement
                 String streamName = ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionFilterOnStreamName");
                 Int32 cacheDuration = Int32.Parse(ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionServiceCacheDuration"));
 
-                ISubscriptionRepository subscriptionRepository = SubscriptionRepository.Create(eventStoreConnectionString);
+                ISubscriptionRepository subscriptionRepository = SubscriptionRepository.Create(eventStoreConnectionString, cacheDuration);
 
                 ((SubscriptionRepository)subscriptionRepository).Trace += (sender, s) => Extensions.log(TraceEventType.Information, "REPOSITORY", s);
 
