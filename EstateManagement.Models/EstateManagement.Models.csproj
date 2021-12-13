@@ -8,4 +8,8 @@
     <PackageReference Include="EstateReporting.Database" Version="1.0.18.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MerchantStatement\" />
+  </ItemGroup>
+
 </Project>

@@ -14,6 +14,7 @@
     using Models;
     using Models.Contract;
     using Models.Merchant;
+    using Models.MerchantStatement;
     using Newtonsoft.Json;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
@@ -27,6 +28,7 @@
     using Operator = Models.Estate.Operator;
     using SecurityUser = Models.SecurityUser;
     using TransactionFeeModel = Models.Contract.TransactionFee;
+    using Transaction = Models.MerchantStatement.Transaction;
 
     public class TestData
     {
@@ -1014,6 +1016,12 @@
 
         public static String DepositSortCode = "112233";
 
+        public static Guid MerchantStatementId = Guid.Parse("C8CC622C-07D9-48E9-B544-F53BD29DE1E6");
+
+        public static DateTime StatementCreateDate = new DateTime(2021,12,10);
+
+        public static DateTime StatementGeneratedDate = new DateTime(2021, 12, 11);
+
         public static CallbackReceivedEnrichedEvent CallbackReceivedEnrichedEvent =>
             new CallbackReceivedEnrichedEvent(TestData.CallbackId)
             {
@@ -1024,5 +1032,60 @@
                 TypeString = TestData.CallbackTypeString
             };
 
+        public static Transaction Transaction1 => new Transaction
+        {
+            Amount = TestData.TransactionAmount1,
+            DateTime = TestData.TransactionDateTime1,
+            OperatorId = TestData.OperatorId,
+            TransactionId = TestData.TransactionId1
+        };
+
+        public static Transaction Transaction2 => new Transaction
+                                                  {
+                                                      Amount = TestData.TransactionAmount2,
+                                                      DateTime = TestData.TransactionDateTime2,
+                                                      OperatorId = TestData.OperatorId,
+                                                      TransactionId = TestData.TransactionId2
+                                                  };
+
+        private static Decimal TransactionAmount1 = 100.00m;
+        private static Decimal TransactionAmount2 = 85.00m;
+
+        private static DateTime TransactionDateTime1 = new DateTime(2021, 12, 10,11,00,00);
+
+        private static DateTime TransactionDateTime2 = new DateTime(2021, 12, 10, 11, 30, 00);
+
+        private static Guid TransactionId1 = Guid.Parse("82E1ACE2-EA34-4501-832D-1DB97B8B4294");
+        private static Guid TransactionId2 = Guid.Parse("620A2DD3-75D6-4D19-A239-D1D539B85CE3");
+
+        private static Decimal SettledFeeAmount1 = 1.00m;
+        private static Decimal SettledFeeAmount2 = 0.85m;
+
+        private static DateTime SettledFeeDateTime1 = new DateTime(2021, 12, 17, 00, 00, 00);
+
+        private static DateTime SettledFeeDateTime2 = new DateTime(2021, 12, 17, 01, 00, 00);
+
+        private static Guid SettledFeeId1 = Guid.Parse("B4D429AE-756D-4F04-8941-4D41B1A75060");
+        private static Guid SettledFeeId2 = Guid.Parse("85C64CF1-6522-408D-93E3-D156B4D5C45B");
+
+        public static SettledFee SettledFee1 =>
+            new SettledFee
+            {
+                Amount = TestData.SettledFeeAmount1,
+                DateTime = TestData.SettledFeeDateTime1,
+                SettledFeeId = TestData.SettledFeeId1,
+                TransactionId = TestData.TransactionId1
+            };
+
+        public static SettledFee SettledFee2 =>
+            new SettledFee
+            {
+                Amount = TestData.SettledFeeAmount2,
+                DateTime = TestData.SettledFeeDateTime2,
+                SettledFeeId = TestData.SettledFeeId2,
+                TransactionId = TestData.TransactionId2
+            };
     }
+
+
 }
