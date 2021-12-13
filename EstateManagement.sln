@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29326.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement", "EstateManagement\EstateManagement.csproj", "{78735B42-3F78-444C-B57C-CD86FA7B60DC}"
 EndProject
@@ -41,11 +41,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Repository
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Repository.Tests", "EstateManagement.Repository.Tests\EstateManagement.Repository.Tests.csproj", "{582FDDEF-33C9-49C2-8D3A-0A78EB899272}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.ContractAggregate", "EstateManagement.ContractAggregate\EstateManagement.ContractAggregate.csproj", "{25ED8E7C-4828-44BB-BBE1-6C18C2D1FAFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.ContractAggregate", "EstateManagement.ContractAggregate\EstateManagement.ContractAggregate.csproj", "{25ED8E7C-4828-44BB-BBE1-6C18C2D1FAFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.ContractAggregate.Tests", "EstateManagement.ContractAggregate.Tests\EstateManagement.ContractAggregate.Tests.csproj", "{238FA07B-1C33-476C-9892-ABA67B1F2BD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.ContractAggregate.Tests", "EstateManagement.ContractAggregate.Tests\EstateManagement.ContractAggregate.Tests.csproj", "{238FA07B-1C33-476C-9892-ABA67B1F2BD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.Contract.DomainEvents", "EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj", "{79477A0F-3699-419F-97B5-B22C4CFDA897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Contract.DomainEvents", "EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj", "{79477A0F-3699-419F-97B5-B22C4CFDA897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantStatementAggregate", "EstateManagement.MerchantStatementAggregate\EstateManagement.MerchantStatementAggregate.csproj", "{0B6245B9-F028-4BDB-BC9C-42EE66723D18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantStatementAggregate.Tests", "EstateManagement.MerchantStatementAggregate.Tests\EstateManagement.MerchantStatementAggregate.Tests.csproj", "{F5F99A80-CE9D-4824-8695-A41435881D4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantStatement.DomainEvents", "EstateManagement.MerchantStatement.DomainEvents\EstateManagement.MerchantStatement.DomainEvents.csproj", "{51F043C5-0709-447A-83BB-3976CBF61632}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +139,18 @@ Global
 		{79477A0F-3699-419F-97B5-B22C4CFDA897}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79477A0F-3699-419F-97B5-B22C4CFDA897}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79477A0F-3699-419F-97B5-B22C4CFDA897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B6245B9-F028-4BDB-BC9C-42EE66723D18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6245B9-F028-4BDB-BC9C-42EE66723D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B6245B9-F028-4BDB-BC9C-42EE66723D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B6245B9-F028-4BDB-BC9C-42EE66723D18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5F99A80-CE9D-4824-8695-A41435881D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5F99A80-CE9D-4824-8695-A41435881D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5F99A80-CE9D-4824-8695-A41435881D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5F99A80-CE9D-4824-8695-A41435881D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51F043C5-0709-447A-83BB-3976CBF61632}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51F043C5-0709-447A-83BB-3976CBF61632}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F043C5-0709-447A-83BB-3976CBF61632}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51F043C5-0709-447A-83BB-3976CBF61632}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,6 +176,9 @@ Global
 		{25ED8E7C-4828-44BB-BBE1-6C18C2D1FAFB} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
 		{238FA07B-1C33-476C-9892-ABA67B1F2BD3} = {37B5C834-5EC7-4244-B6D8-987AAF52E9EE}
 		{79477A0F-3699-419F-97B5-B22C4CFDA897} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
+		{0B6245B9-F028-4BDB-BC9C-42EE66723D18} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
+		{F5F99A80-CE9D-4824-8695-A41435881D4D} = {37B5C834-5EC7-4244-B6D8-987AAF52E9EE}
+		{51F043C5-0709-447A-83BB-3976CBF61632} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D9C2C14-F455-44B6-AA7D-DDC6D6B27FB8}
