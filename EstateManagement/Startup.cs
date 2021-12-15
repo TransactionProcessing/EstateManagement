@@ -65,6 +65,7 @@ namespace EstateManagement
     using Shared.Repositories;
     using Swashbuckle.AspNetCore.Filters;
     using Swashbuckle.AspNetCore.SwaggerGen;
+    using TransactionProcessor.Transaction.DomainEvents;
     using AuthenticationFailedContext = Microsoft.AspNetCore.Authentication.JwtBearer.AuthenticationFailedContext;
     using ConnectionStringType = Shared.Repositories.ConnectionStringType;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -212,9 +213,11 @@ namespace EstateManagement
             services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>>();
             services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>>();
             services.AddSingleton<IAggregateRepository<ContractAggregate.ContractAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<ContractAggregate.ContractAggregate, DomainEventRecord.DomainEvent>>();
+            services.AddSingleton<IAggregateRepository<MerchantStatementAggregate.MerchantStatementAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<MerchantStatementAggregate.MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             services.AddSingleton<IEstateDomainService, EstateDomainService>();
             services.AddSingleton<IMerchantDomainService, MerchantDomainService>();
             services.AddSingleton<IContractDomainService, ContractDomainService>();
+            services.AddSingleton<IMerchantStatementDomainService, MerchantStatementDomainService>();
             services.AddSingleton<IModelFactory, ModelFactory>();
             services.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
             services.AddSingleton<ISecurityServiceClient, SecurityServiceClient>();
@@ -223,6 +226,8 @@ namespace EstateManagement
             MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
             EstateCreatedEvent e = new EstateCreatedEvent(Guid.NewGuid(), "");
             CallbackReceivedEnrichedEvent ce = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
+            TransactionHasBeenCompletedEvent t =
+                new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
 
             TypeProvider.LoadDomainEventsTypeDynamically();
 
@@ -247,6 +252,8 @@ namespace EstateManagement
             services.AddSingleton<IRequestHandler<CreateContractRequest, String>, ContractRequestHandler>();
             services.AddSingleton<IRequestHandler<AddProductToContractRequest, String>, ContractRequestHandler>();
             services.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest, String>, ContractRequestHandler>();
+
+            services.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
 
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
             {
@@ -286,6 +293,7 @@ namespace EstateManagement
                                                                                 });
 
             services.AddSingleton<MerchantDomainEventHandler>();
+            services.AddSingleton<TransactionDomainEventHandler>();
             services.AddSingleton<IDomainEventHandlerResolver, DomainEventHandlerResolver>();
 
             Startup.ServiceProvider = services.BuildServiceProvider();
@@ -388,7 +396,9 @@ namespace EstateManagement
         public static void LoadTypes()
         {
             CallbackReceivedEnrichedEvent c = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
-
+            TransactionHasBeenCompletedEvent t =
+                new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
+            
             TypeProvider.LoadDomainEventsTypeDynamically();
         }
 
@@ -486,7 +496,6 @@ namespace EstateManagement
         {
             Startup.LoadTypes();
 
-            //SubscriptionWorker worker = new SubscriptionWorker()
             var internalSubscriptionService = Boolean.Parse(ConfigurationReader.GetValue("InternalSubscriptionService"));
 
             if (internalSubscriptionService)

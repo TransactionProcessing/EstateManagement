@@ -12,9 +12,10 @@
 
     public class MerchantStatementAggregate : Aggregate
     {
+        [ExcludeFromCodeCoverage]
         protected override Object GetMetadata()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public override void PlayEvent(IDomainEvent domainEvent)
@@ -52,8 +53,7 @@
                 this.MerchantId,
                 transaction.TransactionId,
                 transaction.DateTime,
-                transaction.Amount,
-                transaction.OperatorId);
+                transaction.Amount);
 
             this.ApplyAndAppend(transactionAddedToStatementEvent);
         }
@@ -225,7 +225,6 @@
                                   {
                                       Amount = domainEvent.TransactionValue,
                                       DateTime = domainEvent.TransactionDateTime,
-                                      OperatorId = domainEvent.OperatorId,
                                       TransactionId = domainEvent.TransactionId
                                   });
         }

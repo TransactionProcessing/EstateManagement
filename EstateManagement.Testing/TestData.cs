@@ -11,11 +11,13 @@
     using EstateReporting.Database.Entities;
     using EstateReporting.Database.ViewEntities;
     using MerchantAggregate;
+    using MerchantStatementAggregate;
     using Models;
     using Models.Contract;
     using Models.Merchant;
     using Models.MerchantStatement;
     using Newtonsoft.Json;
+    using TransactionProcessor.Transaction.DomainEvents;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
     using Contract = Models.Contract.Contract;
@@ -1032,41 +1034,56 @@
                 TypeString = TestData.CallbackTypeString
             };
 
+        public static TransactionHasBeenCompletedEvent TransactionHasBeenCompletedEvent =>
+            new TransactionHasBeenCompletedEvent(TestData.TransactionId1,
+                                                 TestData.EstateId,
+                                                 TestData.MerchantId,
+                                                 TestData.ResponseCode,
+                                                 TestData.ResponseMessage,
+                                                 TestData.IsAuthorisedTrue,
+                                                 TestData.TransactionDateTime1,
+                                                 TestData.TransactionAmount1);
+
         public static Transaction Transaction1 => new Transaction
         {
-            Amount = TestData.TransactionAmount1,
+            Amount = TestData.TransactionAmount1.Value,
             DateTime = TestData.TransactionDateTime1,
-            OperatorId = TestData.OperatorId,
             TransactionId = TestData.TransactionId1
         };
 
         public static Transaction Transaction2 => new Transaction
                                                   {
-                                                      Amount = TestData.TransactionAmount2,
+                                                      Amount = TestData.TransactionAmount2.Value,
                                                       DateTime = TestData.TransactionDateTime2,
-                                                      OperatorId = TestData.OperatorId,
                                                       TransactionId = TestData.TransactionId2
                                                   };
 
-        private static Decimal TransactionAmount1 = 100.00m;
-        private static Decimal TransactionAmount2 = 85.00m;
+        public static Decimal? TransactionAmount1 = 100.00m;
+        public static Decimal? TransactionAmount2 = 85.00m;
 
-        private static DateTime TransactionDateTime1 = new DateTime(2021, 12, 10,11,00,00);
+        public static DateTime TransactionDateTime1 = new DateTime(2021, 12, 10,11,00,00);
 
-        private static DateTime TransactionDateTime2 = new DateTime(2021, 12, 10, 11, 30, 00);
+        public static DateTime TransactionDateTime2 = new DateTime(2021, 12, 10, 11, 30, 00);
 
-        private static Guid TransactionId1 = Guid.Parse("82E1ACE2-EA34-4501-832D-1DB97B8B4294");
-        private static Guid TransactionId2 = Guid.Parse("620A2DD3-75D6-4D19-A239-D1D539B85CE3");
+        public static Guid TransactionId1 = Guid.Parse("82E1ACE2-EA34-4501-832D-1DB97B8B4294");
+        public static Guid TransactionId2 = Guid.Parse("620A2DD3-75D6-4D19-A239-D1D539B85CE3");
 
-        private static Decimal SettledFeeAmount1 = 1.00m;
-        private static Decimal SettledFeeAmount2 = 0.85m;
+        public static Decimal SettledFeeAmount1 = 1.00m;
+        public static Decimal SettledFeeAmount2 = 0.85m;
 
-        private static DateTime SettledFeeDateTime1 = new DateTime(2021, 12, 17, 00, 00, 00);
+        public static DateTime SettledFeeDateTime1 = new DateTime(2021, 12, 17, 00, 00, 00);
 
-        private static DateTime SettledFeeDateTime2 = new DateTime(2021, 12, 17, 01, 00, 00);
+        public static DateTime SettledFeeDateTime2 = new DateTime(2021, 12, 17, 01, 00, 00);
 
-        private static Guid SettledFeeId1 = Guid.Parse("B4D429AE-756D-4F04-8941-4D41B1A75060");
-        private static Guid SettledFeeId2 = Guid.Parse("85C64CF1-6522-408D-93E3-D156B4D5C45B");
+        public static Guid SettledFeeId1 = Guid.Parse("B4D429AE-756D-4F04-8941-4D41B1A75060");
+        public static Guid SettledFeeId2 = Guid.Parse("85C64CF1-6522-408D-93E3-D156B4D5C45B");
+
+        public static String ResponseCode = "0000";
+
+        public static String ResponseMessage="SUCCESS";
+
+        public static Boolean IsAuthorisedTrue = true;
+        public static Boolean IsAuthorisedFalse = false;
 
         public static SettledFee SettledFee1 =>
             new SettledFee
@@ -1085,6 +1102,23 @@
                 SettledFeeId = TestData.SettledFeeId2,
                 TransactionId = TestData.TransactionId2
             };
+
+        public static AddTransactionToMerchantStatementRequest AddTransactionToMerchantStatementRequest =
+            AddTransactionToMerchantStatementRequest.Create(TestData.EstateId,
+                                                            TestData.MerchantId,
+                                                            TestData.TransactionDateTime1,
+                                                            TestData.TransactionAmount1,
+                                                            TestData.IsAuthorisedTrue,
+                                                            TestData.TransactionId);
+
+        public static MerchantStatementAggregate CreatedMerchantStatementAggregate()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
+                                                       TestData.StatementCreateDate);
+
+            return merchantStatementAggregate;
+        }
     }
 
 
