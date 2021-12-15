@@ -23,6 +23,7 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
 
             statementCreatedEvent.ShouldNotBeNull();
             statementCreatedEvent.AggregateId.ShouldBe(TestData.MerchantStatementId);
+            statementCreatedEvent.MerchantStatementId.ShouldBe(TestData.MerchantStatementId);
             statementCreatedEvent.EventId.ShouldNotBe(Guid.Empty);
             statementCreatedEvent.EstateId.ShouldBe(TestData.EstateId);
             statementCreatedEvent.MerchantId.ShouldBe(TestData.MerchantId);
@@ -37,18 +38,17 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
                  TestData.MerchantId,
                  TestData.Transaction1.TransactionId,
                  TestData.Transaction1.DateTime,
-                 TestData.Transaction1.Amount,
-                 TestData.Transaction1.OperatorId);
+                 TestData.Transaction1.Amount);
 
             transactionAddedToStatementEvent.ShouldNotBeNull();
             transactionAddedToStatementEvent.AggregateId.ShouldBe(TestData.MerchantStatementId);
+            transactionAddedToStatementEvent.MerchantStatementId.ShouldBe(TestData.MerchantStatementId);
             transactionAddedToStatementEvent.EventId.ShouldNotBe(Guid.Empty);
             transactionAddedToStatementEvent.EstateId.ShouldBe(TestData.EstateId);
             transactionAddedToStatementEvent.MerchantId.ShouldBe(TestData.MerchantId);
             transactionAddedToStatementEvent.TransactionId.ShouldBe(TestData.Transaction1.TransactionId);
             transactionAddedToStatementEvent.TransactionDateTime.ShouldBe(TestData.Transaction1.DateTime);
             transactionAddedToStatementEvent.TransactionValue.ShouldBe(TestData.Transaction1.Amount);
-            transactionAddedToStatementEvent.OperatorId.ShouldBe(TestData.Transaction1.OperatorId);
         }
 
         [Fact]
@@ -64,6 +64,7 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
 
             settledFeeAddedToStatementEvent.ShouldNotBeNull();
             settledFeeAddedToStatementEvent.AggregateId.ShouldBe(TestData.MerchantStatementId);
+            settledFeeAddedToStatementEvent.MerchantStatementId.ShouldBe(TestData.MerchantStatementId);
             settledFeeAddedToStatementEvent.EventId.ShouldNotBe(Guid.Empty);
             settledFeeAddedToStatementEvent.EstateId.ShouldBe(TestData.EstateId);
             settledFeeAddedToStatementEvent.MerchantId.ShouldBe(TestData.MerchantId);
@@ -83,6 +84,7 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
 
             statementGeneratedEvent.ShouldNotBeNull();
             statementGeneratedEvent.AggregateId.ShouldBe(TestData.MerchantStatementId);
+            statementGeneratedEvent.MerchantStatementId.ShouldBe(TestData.MerchantStatementId);
             statementGeneratedEvent.EventId.ShouldNotBe(Guid.Empty);
             statementGeneratedEvent.EstateId.ShouldBe(TestData.EstateId);
             statementGeneratedEvent.MerchantId.ShouldBe(TestData.MerchantId);

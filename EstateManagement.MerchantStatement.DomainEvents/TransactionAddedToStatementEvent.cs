@@ -23,21 +23,18 @@
         /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="transactionDateTime">The transaction date time.</param>
         /// <param name="transactionValue">The transaction value.</param>
-        /// <param name="operatorId">The operator identifier.</param>
         public TransactionAddedToStatementEvent(Guid aggregateId,
                                                 Guid estateId,
                                                 Guid merchantId,
                                                 Guid transactionId,
                                                 DateTime transactionDateTime,
-                                                Decimal transactionValue,
-                                                Guid operatorId) : base(aggregateId, Guid.NewGuid())
+                                                Decimal transactionValue) : base(aggregateId, Guid.NewGuid())
         {
             this.EstateId = estateId;
             this.MerchantId = merchantId;
             this.TransactionId = transactionId;
             this.TransactionDateTime = transactionDateTime;
             this.TransactionValue = transactionValue;
-            this.OperatorId = operatorId;
             this.MerchantStatementId = aggregateId;
         }
 
@@ -68,14 +65,6 @@
         /// The merchant statement identifier.
         /// </value>
         public Guid MerchantStatementId { get; init; }
-
-        /// <summary>
-        /// Gets or sets the operator identifier.
-        /// </summary>
-        /// <value>
-        /// The operator identifier.
-        /// </value>
-        public Guid OperatorId { get; set; }
 
         /// <summary>
         /// Gets or sets the transaction date time.

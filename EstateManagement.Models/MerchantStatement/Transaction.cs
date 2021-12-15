@@ -9,7 +9,5 @@
         public DateTime DateTime { get; set; }
         
         public Decimal Amount { get; set; }
-
-        public Guid OperatorId { get; set; }
     }
 }

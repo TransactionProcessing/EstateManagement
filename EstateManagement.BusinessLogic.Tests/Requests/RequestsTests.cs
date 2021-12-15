@@ -256,5 +256,22 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             setMerchantSettlementScheduleRequest.MerchantId.ShouldBe(TestData.MerchantId);
             setMerchantSettlementScheduleRequest.SettlementSchedule.ShouldBe(TestData.SettlementSchedule);
         }
+        
+        [Fact]
+        public void AddTransactionToMerchantStatementRequest_CanBeCreated_IsCreated()
+        {
+            AddTransactionToMerchantStatementRequest addTransactionToMerchantStatementRequest =
+                AddTransactionToMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.TransactionDateTime1,
+                                                                TestData.TransactionAmount1, TestData.IsAuthorisedTrue, TestData.TransactionId1);
+
+            addTransactionToMerchantStatementRequest.ShouldNotBeNull();
+            addTransactionToMerchantStatementRequest.IsAuthorised.ShouldBe(TestData.IsAuthorisedTrue);
+            addTransactionToMerchantStatementRequest.TransactionAmount.ShouldBe(TestData.TransactionAmount1);
+            addTransactionToMerchantStatementRequest.TransactionDateTime.ShouldBe(TestData.TransactionDateTime1);
+            addTransactionToMerchantStatementRequest.TransactionId.ShouldBe(TestData.TransactionId1);
+            addTransactionToMerchantStatementRequest.EstateId.ShouldBe(TestData.EstateId);
+            addTransactionToMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
+
+        }
     }
 }

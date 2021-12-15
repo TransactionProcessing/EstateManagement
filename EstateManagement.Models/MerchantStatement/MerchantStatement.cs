@@ -2,38 +2,124 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    [ExcludeFromCodeCoverage]
     public class MerchantStatement
     {
-        public Int32 StatementNumber { get; set; } // TODO: How is this allocated??
+        #region Fields
 
+        /// <summary>
+        /// The statement lines
+        /// </summary>
+        private readonly List<StatementLine> StatementLines;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MerchantStatement"/> class.
+        /// </summary>
+        public MerchantStatement()
+        {
+            this.StatementLines = new List<StatementLine>();
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the estate identifier.
+        /// </summary>
+        /// <value>
+        /// The estate identifier.
+        /// </value>
+        public Guid EstateId { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is created.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is created; otherwise, <c>false</c>.
+        /// </value>
         public Boolean IsCreated { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is generated.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is generated; otherwise, <c>false</c>.
+        /// </value>
         public Boolean IsGenerated { get; set; }
 
-        public Guid EstateId { get; set; }
-        public Guid MerchantStatementId { get; set; }
+        /// <summary>
+        /// Gets or sets the merchant identifier.
+        /// </summary>
+        /// <value>
+        /// The merchant identifier.
+        /// </value>
         public Guid MerchantId { get; set; }
 
-        public DateTime StatementGeneratedDateTime { get; set; }
+        /// <summary>
+        /// Gets or sets the merchant statement identifier.
+        /// </summary>
+        /// <value>
+        /// The merchant statement identifier.
+        /// </value>
+        public Guid MerchantStatementId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the statement created date time.
+        /// </summary>
+        /// <value>
+        /// The statement created date time.
+        /// </value>
         public DateTime StatementCreatedDateTime { get; set; }
 
-        private List<StatementLine> StatementLines;
+        /// <summary>
+        /// Gets or sets the statement generated date time.
+        /// </summary>
+        /// <value>
+        /// The statement generated date time.
+        /// </value>
+        public DateTime StatementGeneratedDateTime { get; set; }
 
+        /// <summary>
+        /// Gets or sets the statement number.
+        /// </summary>
+        /// <value>
+        /// The statement number.
+        /// </value>
+        public Int32 StatementNumber { get; set; } // TODO: How is this allocated??
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Adds the statement line.
+        /// </summary>
+        /// <param name="statementLine">The statement line.</param>
         public void AddStatementLine(StatementLine statementLine)
         {
             this.StatementLines.Add(statementLine);
         }
 
+        /// <summary>
+        /// Gets the statement lines.
+        /// </summary>
+        /// <returns></returns>
         public List<StatementLine> GetStatementLines()
         {
-            return this.StatementLines.OrderBy(s =>s.DateTime).ToList();
+            return this.StatementLines.OrderBy(s => s.DateTime).ToList();
         }
 
-        public MerchantStatement()
-        {
-            this.StatementLines = new List<StatementLine>();
-        }
+        #endregion
     }
 }

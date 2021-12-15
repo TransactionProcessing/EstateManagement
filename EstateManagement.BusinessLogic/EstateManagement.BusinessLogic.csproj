@@ -9,6 +9,7 @@
     <PackageReference Include="SecurityService.Client" Version="1.0.8" />
     <PackageReference Include="Shared.DomainDrivenDesign" Version="1.1.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="1.0.17-build79" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
     <ProjectReference Include="..\EstateManagement.DataTransferObjects\EstateManagement.DataTransferObjects.csproj" />
     <ProjectReference Include="..\EstateManagement.EstateAggregate\EstateManagement.EstateAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.MerchantAggregate\EstateManagement.MerchantAggregate.csproj" />
+    <ProjectReference Include="..\EstateManagement.MerchantStatementAggregate\EstateManagement.MerchantStatementAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
     <ProjectReference Include="..\EstateManagement.Repository\EstateManagement.Repository.csproj" />
   </ItemGroup>
