@@ -6,13 +6,13 @@
     using Requests;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.EventHandling;
-    using TransactionProcessor.Transaction.DomainEvents;
+    using TransactionProcessor.Settlement.DomainEvents;
 
     /// <summary>
     /// 
     /// </summary>
     /// <seealso cref="Shared.EventStore.EventHandling.IDomainEventHandler" />
-    public class TransactionDomainEventHandler : IDomainEventHandler
+    public class SettlementDomainEventHandler : IDomainEventHandler
     {
         #region Fields
 
@@ -26,10 +26,10 @@
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionDomainEventHandler"/> class.
+        /// Initializes a new instance of the <see cref="SettlementDomainEventHandler"/> class.
         /// </summary>
         /// <param name="mediator">The mediator.</param>
-        public TransactionDomainEventHandler(IMediator mediator)
+        public SettlementDomainEventHandler(IMediator mediator)
         {
             this.Mediator = mediator;
         }
@@ -54,17 +54,17 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
+        private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            AddTransactionToMerchantStatementRequest addTransactionToMerchantStatementRequest = AddTransactionToMerchantStatementRequest.Create(domainEvent.EstateId,
+            AddSettledFeeToMerchantStatementRequest addSettledFeeToMerchantStatementRequest = AddSettledFeeToMerchantStatementRequest.Create(domainEvent.EstateId,
                 domainEvent.MerchantId,
-                domainEvent.CompletedDateTime,
-                domainEvent.TransactionAmount,
-                domainEvent.IsAuthorised,
-                domainEvent.TransactionId);
+                domainEvent.EventTimestamp.DateTime,
+                domainEvent.CalculatedValue,
+                domainEvent.TransactionId,
+                domainEvent.FeeId);
 
-            await this.Mediator.Send(addTransactionToMerchantStatementRequest, cancellationToken);
+            await this.Mediator.Send(addSettledFeeToMerchantStatementRequest, cancellationToken);
         }
 
         #endregion

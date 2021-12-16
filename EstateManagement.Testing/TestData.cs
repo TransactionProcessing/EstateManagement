@@ -1111,11 +1111,33 @@
                                                             TestData.IsAuthorisedTrue,
                                                             TestData.TransactionId);
 
+        public static AddSettledFeeToMerchantStatementRequest AddSettledFeeToMerchantStatementRequest = AddSettledFeeToMerchantStatementRequest.Create(TestData.EstateId,
+            TestData.MerchantId,
+            TestData.SettledFeeDateTime1,
+            TestData.SettledFeeAmount1,
+            TestData.TransactionId1,
+            TestData.SettledFeeId1);
+
         public static MerchantStatementAggregate CreatedMerchantStatementAggregate()
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
                                                        TestData.StatementCreateDate);
+
+            return merchantStatementAggregate;
+        }
+
+        public static MerchantStatementAggregate MerchantStatementAggregateWithTransactionLineAdded()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
+                                                       TestData.StatementCreateDate);
+            merchantStatementAggregate.AddTransactionToStatement(new Transaction
+                                                                 {
+                                                                     Amount = TestData.TransactionAmount1.Value,
+                                                                     DateTime = TestData.TransactionDateTime1,
+                                                                     TransactionId = TestData.TransactionId1
+                                                                 });
 
             return merchantStatementAggregate;
         }

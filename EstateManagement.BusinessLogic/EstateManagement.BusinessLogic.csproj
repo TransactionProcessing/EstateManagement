@@ -9,6 +9,7 @@
     <PackageReference Include="SecurityService.Client" Version="1.0.8" />
     <PackageReference Include="Shared.DomainDrivenDesign" Version="1.1.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="1.0.17-build79" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="1.0.17-build79" />
   </ItemGroup>
 
