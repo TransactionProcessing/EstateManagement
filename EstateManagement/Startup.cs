@@ -27,6 +27,7 @@ namespace EstateManagement
     using HealthChecks.UI.Client;
     using MediatR;
     using Merchant.DomainEvents;
+    using MerchantStatement.DomainEvents;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -65,6 +66,7 @@ namespace EstateManagement
     using Shared.Repositories;
     using Swashbuckle.AspNetCore.Filters;
     using Swashbuckle.AspNetCore.SwaggerGen;
+    using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
     using AuthenticationFailedContext = Microsoft.AspNetCore.Authentication.JwtBearer.AuthenticationFailedContext;
     using ConnectionStringType = Shared.Repositories.ConnectionStringType;
@@ -228,7 +230,16 @@ namespace EstateManagement
             CallbackReceivedEnrichedEvent ce = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
             TransactionHasBeenCompletedEvent t =
                 new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
-
+            MerchantFeeSettledEvent f = new MerchantFeeSettledEvent(Guid.NewGuid(),
+                                                                  Guid.NewGuid(),
+                                                                  Guid.NewGuid(),
+                                                                  Guid.NewGuid(),
+                                                                  0,
+                                                                  0,
+                                                                  Guid.NewGuid(),
+                                                                  0,
+                                                                  DateTime.MinValue);
+            StatementCreatedEvent s = new StatementCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.MinValue);
             TypeProvider.LoadDomainEventsTypeDynamically();
 
             // request & notification handlers
@@ -254,6 +265,7 @@ namespace EstateManagement
             services.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest, String>, ContractRequestHandler>();
 
             services.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
 
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
             {
@@ -294,6 +306,7 @@ namespace EstateManagement
 
             services.AddSingleton<MerchantDomainEventHandler>();
             services.AddSingleton<TransactionDomainEventHandler>();
+            services.AddSingleton<SettlementDomainEventHandler>();
             services.AddSingleton<IDomainEventHandlerResolver, DomainEventHandlerResolver>();
 
             Startup.ServiceProvider = services.BuildServiceProvider();
@@ -398,7 +411,16 @@ namespace EstateManagement
             CallbackReceivedEnrichedEvent c = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
             TransactionHasBeenCompletedEvent t =
                 new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
-            
+            MerchantFeeSettledEvent m = new MerchantFeeSettledEvent(Guid.NewGuid(),
+                                                                  Guid.NewGuid(),
+                                                                  Guid.NewGuid(),
+                                                                  Guid.NewGuid(),
+                                                                  0,
+                                                                  0,
+                                                                  Guid.NewGuid(),
+                                                                  0,
+                                                                  DateTime.MinValue);
+
             TypeProvider.LoadDomainEventsTypeDynamically();
         }
 

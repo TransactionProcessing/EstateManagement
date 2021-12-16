@@ -18,7 +18,7 @@ namespace EstateManagement.BusinessLogic.Tests.RequestHandler
     public class MerchantStatementRequestHandlerTests
     {
         [Fact]
-        public void MerchantStatementRequestHandler_CreateMerchantRequest_IsHandled()
+        public void MerchantStatementRequestHandler_AddTransactionToMerchantStatementRequest_IsHandled()
         {
             Mock<IMerchantStatementDomainService> merchantDomainService = new Mock<IMerchantStatementDomainService>(MockBehavior.Strict);
             merchantDomainService.Setup(m => m.AddTransactionToStatement(It.IsAny<Guid>(),
@@ -31,6 +31,28 @@ namespace EstateManagement.BusinessLogic.Tests.RequestHandler
             MerchantStatementRequestHandler handler = new MerchantStatementRequestHandler(merchantDomainService.Object);
 
             AddTransactionToMerchantStatementRequest request = TestData.AddTransactionToMerchantStatementRequest;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+
+        }
+
+        [Fact]
+        public void MerchantStatementRequestHandler_AddSettledFeeToMerchantStatementRequest_IsHandled()
+        {
+            Mock<IMerchantStatementDomainService> merchantDomainService = new Mock<IMerchantStatementDomainService>(MockBehavior.Strict);
+            merchantDomainService.Setup(m => m.AddSettledFeeToStatement(It.IsAny<Guid>(),
+                                                                         It.IsAny<Guid>(),
+                                                                         It.IsAny<DateTime>(),
+                                                                         It.IsAny<Decimal>(),
+                                                                         It.IsAny<Guid>(),
+                                                                         It.IsAny<Guid>(),
+                                                                         It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            MerchantStatementRequestHandler handler = new MerchantStatementRequestHandler(merchantDomainService.Object);
+
+            AddSettledFeeToMerchantStatementRequest request = TestData.AddSettledFeeToMerchantStatementRequest;
 
             Should.NotThrow(async () =>
                             {
