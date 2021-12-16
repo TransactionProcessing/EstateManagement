@@ -1,5 +1,6 @@
 ﻿namespace EstateManagement.BusinessLogic.RequestHandlers
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
@@ -12,7 +13,9 @@
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddTransactionToMerchantStatementRequest&gt;" />
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddSettledFeeToMerchantStatementRequest&gt;" />
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddTransactionToMerchantStatementRequest&gt;" />
-    public class MerchantStatementRequestHandler : IRequestHandler<AddTransactionToMerchantStatementRequest>, IRequestHandler<AddSettledFeeToMerchantStatementRequest>
+    public class MerchantStatementRequestHandler : IRequestHandler<AddTransactionToMerchantStatementRequest>, 
+                                                   IRequestHandler<AddSettledFeeToMerchantStatementRequest>,
+                                                   IRequestHandler<GenerateMerchantStatementRequest, Guid>
     {
         #region Fields
 
@@ -79,5 +82,11 @@
         }
 
         #endregion
+
+        public async Task<Guid> Handle(GenerateMerchantStatementRequest request,
+                                       CancellationToken cancellationToken)
+        {
+            return await this.MerchantStatementDomainService.GenerateStatement(request.EstateId, request.MerchantId, request.StatementDate, cancellationToken);
+        }
     }
 }

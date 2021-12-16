@@ -60,5 +60,22 @@ namespace EstateManagement.BusinessLogic.Tests.RequestHandler
                             });
 
         }
+
+        [Fact]
+        public void MerchantStatementRequestHandler_GenerateMerchantStatementRequest_IsHandled()
+        {
+            Mock<IMerchantStatementDomainService> merchantDomainService = new Mock<IMerchantStatementDomainService>(MockBehavior.Strict);
+            merchantDomainService.Setup(m => m.GenerateStatement(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+                                 .ReturnsAsync(TestData.MerchantStatementId);
+            MerchantStatementRequestHandler handler = new MerchantStatementRequestHandler(merchantDomainService.Object);
+
+            GenerateMerchantStatementRequest request = TestData.GenerateMerchantStatementRequest;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+
+        }
     }
 }

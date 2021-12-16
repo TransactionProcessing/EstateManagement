@@ -289,5 +289,18 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             addSettledFeeToMerchantStatementRequest.EstateId.ShouldBe(TestData.EstateId);
             addSettledFeeToMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
         }
+
+        [Fact]
+        public void GenerateMerchantStatementRequest_CanBeCreated_IsCreated()
+        {
+            GenerateMerchantStatementRequest generateMerchantStatementRequest = GenerateMerchantStatementRequest.Create(TestData.EstateId,
+                 TestData.MerchantId,
+                 TestData.StatementCreateDate);
+
+            generateMerchantStatementRequest.ShouldNotBeNull();
+            generateMerchantStatementRequest.EstateId.ShouldBe(TestData.EstateId);
+            generateMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
+            generateMerchantStatementRequest.StatementDate.ShouldBe(TestData.StatementCreateDate);
+        }
     }
 }
