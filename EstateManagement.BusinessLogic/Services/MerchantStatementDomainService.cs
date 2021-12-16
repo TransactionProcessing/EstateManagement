@@ -93,6 +93,29 @@
         }
 
         /// <summary>
+        /// Generates the statement.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="statementDate">The statement date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<Guid> GenerateStatement(Guid estateId,
+                                                  Guid merchantId,
+                                                  DateTime statementDate,
+                                                  CancellationToken cancellationToken)
+        {
+            MerchantStatementAggregate merchantStatementAggregate =
+                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementDate.ToGuid(), cancellationToken);
+
+            merchantStatementAggregate.GenerateStatement(DateTime.Now);
+
+            await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+
+            return merchantStatementAggregate.AggregateId;
+        }
+
+        /// <summary>
         /// Adds the transaction to statement.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>

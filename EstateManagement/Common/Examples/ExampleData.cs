@@ -14,7 +14,6 @@ namespace EstateManagement.Common.Examples
     internal static class ExampleData
     {
         internal static String BalanceHistoryReference = "Example Reference";
-
         internal static Decimal BalanceHistoryChangeAmount = 100.00m;
         internal static DateTime BalanceHistoryEntryDateTime = new DateTime(2021, 4, 13, 17, 5, 0);
         internal static Guid EventId = Guid.Parse("4A696C27-6517-4EB1-B3BF-20B3AF632159");
@@ -102,5 +101,9 @@ namespace EstateManagement.Common.Examples
         internal static Decimal? ProductValue = 10.00m;
 
         internal static String MerchantName = "Example Merchant";
+
+        internal static DateTime MerchantStatementDateTime = new DateTime(2021, 4, 13, 17, 5, 0);
+
+        internal static Guid MerchantStatementId = Guid.Parse("5B56D47F-11BA-4B81-98C6-EB376FAA4B3E");
     }
 }
