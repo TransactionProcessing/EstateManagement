@@ -87,6 +87,8 @@
 
         public DateTime NextSettlementDueDate { get; set; }
 
+        public DateTime NextStatementDate { get; set; }
+
         #endregion
     }
 }
