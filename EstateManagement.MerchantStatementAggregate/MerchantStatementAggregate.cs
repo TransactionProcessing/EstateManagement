@@ -44,8 +44,9 @@
 
         public void AddTransactionToStatement(Transaction transaction)
         {
+            if (this.Transactions.Any(t => t.TransactionId == transaction.TransactionId))
+                return;
             this.EnsureStatementHasBeenCreated();
-            this.EnsureTransactionHasNotAlreadyBeenAddedToStatement(transaction);
             this.EnsureStatementHasNotAlreadyBeenGenerated();
 
             TransactionAddedToStatementEvent transactionAddedToStatementEvent = new TransactionAddedToStatementEvent(this.AggregateId,
@@ -73,36 +74,12 @@
                 throw new InvalidOperationException("Statement has already been generated");
             }
         }
-
-        private void EnsureTransactionHasNotAlreadyBeenAddedToStatement(Transaction transaction)
-        {
-            if (this.Transactions.Any(t => t.TransactionId == transaction.TransactionId))
-            {
-                throw new InvalidOperationException($"Transaction {transaction.TransactionId} already added to statement {this.AggregateId}");
-            }
-        }
-
-        private void EnsureTransactionHasBeenAddedToStatement(Guid transactionId)
-        {
-            if (this.Transactions.Any(t => t.TransactionId == transactionId) == false)
-            {
-                throw new InvalidOperationException($"Transaction {transactionId} has not been added to statement {this.AggregateId}");
-            }
-        }
-
-        private void EnsureSettledFeeHasNotAlreadyBeenAddedToStatement(SettledFee settledFee)
-        {
-            if (this.SettledFees.Any(t => t.SettledFeeId == settledFee.SettledFeeId))
-            {
-                throw new InvalidOperationException($"Settled Fee {settledFee.SettledFeeId} already added to statement {this.AggregateId}");
-            }
-        }
-
+        
         public void AddSettledFeeToStatement(SettledFee settledFee)
         {
+            if (this.SettledFees.Any(t => t.SettledFeeId == settledFee.SettledFeeId))
+                return;
             this.EnsureStatementHasBeenCreated();
-            this.EnsureTransactionHasBeenAddedToStatement(settledFee.TransactionId);
-            this.EnsureSettledFeeHasNotAlreadyBeenAddedToStatement(settledFee);
             this.EnsureStatementHasNotAlreadyBeenGenerated();
 
             SettledFeeAddedToStatementEvent settledFeeAddedToStatementEvent =

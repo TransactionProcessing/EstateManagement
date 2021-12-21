@@ -1,5 +1,6 @@
 ﻿namespace EstateManagement.BusinessLogic.EventHandling
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
@@ -57,6 +58,7 @@
         private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
+            //throw new Exception();
             AddSettledFeeToMerchantStatementRequest addSettledFeeToMerchantStatementRequest = AddSettledFeeToMerchantStatementRequest.Create(domainEvent.EstateId,
                 domainEvent.MerchantId,
                 domainEvent.EventTimestamp.DateTime,

@@ -151,7 +151,8 @@
                                                     MerchantId = merchant.MerchantId,
                                                     MerchantName = merchant.MerchantName,
                                                     SettlementSchedule = this.ConvertFrom(merchant.SettlementSchedule),
-                                                    MerchantReference = merchant.Reference
+                                                    MerchantReference = merchant.Reference,
+                                                    NextStatementDate = merchant.NextStatementDate
                                                 };
 
             if (merchant.Addresses != null && merchant.Addresses.Any())

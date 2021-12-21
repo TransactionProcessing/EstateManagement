@@ -84,10 +84,14 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
             merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
             merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
 
-            Should.Throw<InvalidOperationException>(() =>
+            Should.NotThrow(() =>
                                                     {
                                                         merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
                                                     });
+
+            var statement = merchantStatementAggregate.GetStatement(true);
+            var statementLines = statement.GetStatementLines();
+            statementLines.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -121,14 +125,13 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
-            merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.SettledFee1);
 
             MerchantStatement merchantStatement = merchantStatementAggregate.GetStatement(true);
             var statementLines = merchantStatement.GetStatementLines();
             statementLines.ShouldNotBeNull();
             statementLines.ShouldNotBeEmpty();
-            statementLines.Count.ShouldBe(2);
+            statementLines.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -136,27 +139,18 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
-            merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.SettledFee1);
 
-            Should.Throw<InvalidOperationException>(() =>
+            Should.NotThrow(() =>
             {
                 merchantStatementAggregate.AddSettledFeeToStatement(TestData.SettledFee1);
             });
+
+            var statement = merchantStatementAggregate.GetStatement(true);
+            var statementLines = statement.GetStatementLines();
+            statementLines.Count.ShouldBe(1);
         }
-
-        [Fact]
-        public void MerchantStatementAggregate_AddSettledFeeToStatement_TransactionNotAlreadyAdded_ErrorThrown()
-        {
-            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
-
-            Should.Throw<InvalidOperationException>(() =>
-            {
-                merchantStatementAggregate.AddSettledFeeToStatement(TestData.SettledFee1);
-            });
-        }
-
+        
         [Fact]
         public void MerchantStatementAggregate_AddSettledFeeToStatement_StatementNotCreated_ErrorThrown()
         {

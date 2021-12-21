@@ -3,14 +3,12 @@
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Requests;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class MerchantResponse
     {
-        #region Constructors
-
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -21,6 +19,24 @@
         /// </value>
         [JsonProperty("addresses")]
         public List<AddressResponse> Addresses { get; set; }
+
+        /// <summary>
+        /// Gets or sets the available balance.
+        /// </summary>
+        /// <value>
+        /// The available balance.
+        /// </value>
+        [JsonProperty("available_balance")]
+        public Decimal AvailableBalance { get; set; }
+
+        /// <summary>
+        /// Gets or sets the balance.
+        /// </summary>
+        /// <value>
+        /// The balance.
+        /// </value>
+        [JsonProperty("balance")]
+        public Decimal Balance { get; set; }
 
         /// <summary>
         /// Gets or sets the contacts.
@@ -68,6 +84,24 @@
         public String MerchantName { get; set; }
 
         /// <summary>
+        /// Gets or sets the merchant reference.
+        /// </summary>
+        /// <value>
+        /// The merchant reference.
+        /// </value>
+        [JsonProperty("merchant_reference")]
+        public String MerchantReference { get; set; }
+
+        /// <summary>
+        /// Gets or sets the next statement date.
+        /// </summary>
+        /// <value>
+        /// The next statement date.
+        /// </value>
+        [JsonProperty("next_statement_date")]
+        public DateTime NextStatementDate { get; set; }
+
+        /// <summary>
         /// Gets or sets the operators.
         /// </summary>
         /// <value>
@@ -77,28 +111,13 @@
         public List<MerchantOperatorResponse> Operators { get; set; }
 
         /// <summary>
-        /// Gets or sets the available balance.
+        /// Gets or sets the settlement schedule.
         /// </summary>
         /// <value>
-        /// The available balance.
+        /// The settlement schedule.
         /// </value>
-        [JsonProperty("available_balance")]
-        public Decimal AvailableBalance { get; set; }
-
-        /// <summary>
-        /// Gets or sets the balance.
-        /// </summary>
-        /// <value>
-        /// The balance.
-        /// </value>
-        [JsonProperty("balance")]
-        public Decimal Balance { get; set; }
-
         [JsonProperty("settlement_schedule")]
         public SettlementSchedule SettlementSchedule { get; set; }
-
-        [JsonProperty("merchant_reference")]
-        public String MerchantReference { get; set; }
 
         #endregion
     }

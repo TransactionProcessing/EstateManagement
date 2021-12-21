@@ -1,11 +1,15 @@
 ﻿namespace EstateManagement.BusinessLogic.EventHandling
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using Common;
     using MediatR;
     using Requests;
+    using Services;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.EventHandling;
+    using Shared.Logger;
     using TransactionProcessor.Transaction.DomainEvents;
 
     /// <summary>
@@ -66,7 +70,7 @@
 
             await this.Mediator.Send(addTransactionToMerchantStatementRequest, cancellationToken);
         }
-
+        
         #endregion
     }
 }

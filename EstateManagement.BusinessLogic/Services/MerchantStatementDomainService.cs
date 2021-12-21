@@ -7,6 +7,7 @@
     using MerchantAggregate;
     using MerchantStatementAggregate;
     using Models.MerchantStatement;
+    using NLog;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
 
@@ -66,17 +67,19 @@
                                                    Guid settledFeeId,
                                                    CancellationToken cancellationToken)
         {
-            // Merchant is rehydrated
-            MerchantAggregate merchant = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
-            if (merchant.IsCreated == false)
-                return;
+            // Work out the next statement date
+            DateTime nextStatementDate = CalculateStatementDate(settledDateTime);
 
-            // Work out the next statement date (how is this done), do we feed statement generated events back into the merchant to update the statement date? Statements will be monthly!!
-            // TODO: Statement date
-            DateTime nextStatementDate = Guid.Parse("b5963507-c561-08d9-0000-000000000000").ToDateTime();
-
+            Guid statementId = GuidCalculator.Combine(merchantId, nextStatementDate.ToGuid());
+            Guid settlementFeeId = GuidCalculator.Combine(transactionId, settledFeeId);
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersion(nextStatementDate.ToGuid(), cancellationToken);
+                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
+            
+            MerchantStatement merchantStatement = merchantStatementAggregate.GetStatement();
+            if (merchantStatement.IsCreated == false)
+            {
+                merchantStatementAggregate.CreateStatement(estateId, merchantId, nextStatementDate);
+            }
 
             // Add settled fee to statement
             SettledFee settledFee = new SettledFee
@@ -84,12 +87,19 @@
                                         DateTime = settledDateTime,
                                         Amount = settledAmount,
                                         TransactionId = transactionId,
-                                        SettledFeeId = settledFeeId
-                                    };
+                                        SettledFeeId = settlementFeeId
+            };
 
             merchantStatementAggregate.AddSettledFeeToStatement(settledFee);
 
             await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+        }
+
+        internal static DateTime CalculateStatementDate(DateTime eventDateTime)
+        {
+            var calculatedDateTime = eventDateTime.Date.AddMonths(1);
+
+            return new DateTime(calculatedDateTime.Year, calculatedDateTime.Month, 1);
         }
 
         /// <summary>
@@ -114,7 +124,7 @@
 
             return merchantStatementAggregate.AggregateId;
         }
-
+        
         /// <summary>
         /// Adds the transaction to statement.
         /// </summary>
@@ -133,24 +143,19 @@
                                                     Guid transactionId,
                                                     CancellationToken cancellationToken)
         {
-            // TODO: Move to domain service
-            // Transaction Completed arrives (if this is a logon transaction or failed then return)
+            // Transaction Completed arrives(if this is a logon transaction or failed then return)
             if (isAuthorised == false)
                 return;
             if (transactionAmount.HasValue == false)
                 return;
 
-            // Merchant is rehydrated
-            MerchantAggregate merchant = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
-            if (merchant.IsCreated == false)
-                return;
+            // Work out the next statement date
+            DateTime nextStatementDate = CalculateStatementDate(transactionDateTime);
 
-            // Work out the next statement date (how is this done), do we feed statement generated events back into the merchant to update the statement date? Statements will be monthly!!
-            // TODO: Statement date
-            DateTime nextStatementDate = DateTime.Now.AddDays(7);
+            Guid statementId = GuidCalculator.Combine(merchantId, nextStatementDate.ToGuid());
 
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersion(nextStatementDate.ToGuid(), cancellationToken);
+                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
             MerchantStatement merchantStatement = merchantStatementAggregate.GetStatement();
 
             if (merchantStatement.IsCreated == false)
@@ -160,15 +165,106 @@
 
             // Add transaction to statement
             Transaction transaction = new Transaction
-                                      {
-                                          DateTime = transactionDateTime,
-                                          Amount = transactionAmount.Value,
-                                          TransactionId = transactionId
-                                      };
+            {
+                DateTime = transactionDateTime,
+                Amount = transactionAmount.Value,
+                TransactionId = transactionId
+            };
 
             merchantStatementAggregate.AddTransactionToStatement(transaction);
 
             await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+        }
+
+        #endregion
+    }
+
+    public static class GuidCalculator
+    {
+        #region Methods
+
+        /// <summary>
+        /// Combines the specified GUIDs into a new GUID.
+        /// </summary>
+        /// <param name="firstGuid">The first unique identifier.</param>
+        /// <param name="secondGuid">The second unique identifier.</param>
+        /// <param name="offset">The offset.</param>
+        /// <returns>Guid.</returns>
+        public static Guid Combine(Guid firstGuid,
+                                   Guid secondGuid,
+                                   Byte offset)
+        {
+            Byte[] firstAsBytes = firstGuid.ToByteArray();
+            Byte[] secondAsBytes = secondGuid.ToByteArray();
+
+            Byte[] newBytes = new Byte[16];
+
+            for (Int32 i = 0; i < 16; i++)
+            {
+                // Add and truncate any overflow
+                newBytes[i] = (Byte)(firstAsBytes[i] + secondAsBytes[i] + offset);
+            }
+
+            return new Guid(newBytes);
+        }
+
+        /// <summary>
+        /// Combines the specified GUIDs into a new GUID.
+        /// </summary>
+        /// <param name="firstGuid">The first unique identifier.</param>
+        /// <param name="secondGuid">The second unique identifier.</param>
+        /// <returns>Guid.</returns>
+        public static Guid Combine(Guid firstGuid,
+                                   Guid secondGuid)
+        {
+            return GuidCalculator.Combine(firstGuid,
+                                          secondGuid,
+                                          0);
+        }
+
+        /// <summary>
+        /// Combines the specified first unique identifier.
+        /// </summary>
+        /// <param name="firstGuid">The first unique identifier.</param>
+        /// <param name="secondGuid">The second unique identifier.</param>
+        /// <param name="thirdGuid">The third unique identifier.</param>
+        /// <param name="offset">The offset.</param>
+        /// <returns>Guid.</returns>
+        public static Guid Combine(Guid firstGuid,
+                                   Guid secondGuid,
+                                   Guid thirdGuid,
+                                   Byte offset)
+        {
+            Byte[] firstAsBytes = firstGuid.ToByteArray();
+            Byte[] secondAsBytes = secondGuid.ToByteArray();
+            Byte[] thirdAsBytes = thirdGuid.ToByteArray();
+
+            Byte[] newBytes = new Byte[16];
+
+            for (Int32 i = 0; i < 16; i++)
+            {
+                // Add and truncate any overflow
+                newBytes[i] = (Byte)(firstAsBytes[i] + secondAsBytes[i] + thirdAsBytes[i] + offset);
+            }
+
+            return new Guid(newBytes);
+        }
+
+        /// <summary>
+        /// Combines the specified first unique identifier.
+        /// </summary>
+        /// <param name="firstGuid">The first unique identifier.</param>
+        /// <param name="secondGuid">The second unique identifier.</param>
+        /// <param name="thirdGuid">The third unique identifier.</param>
+        /// <returns>Guid.</returns>
+        public static Guid Combine(Guid firstGuid,
+                                   Guid secondGuid,
+                                   Guid thirdGuid)
+        {
+            return GuidCalculator.Combine(firstGuid,
+                                          secondGuid,
+                                          thirdGuid,
+                                          0);
         }
 
         #endregion
