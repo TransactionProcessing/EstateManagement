@@ -234,7 +234,6 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
-            merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
             
             Should.Throw<InvalidOperationException>(() =>
                                                     {
