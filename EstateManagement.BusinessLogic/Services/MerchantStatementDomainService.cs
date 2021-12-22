@@ -115,8 +115,9 @@
                                                   DateTime statementDate,
                                                   CancellationToken cancellationToken)
         {
+            Guid statementId = GuidCalculator.Combine(merchantId, statementDate.ToGuid());
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementDate.ToGuid(), cancellationToken);
+                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
 
             merchantStatementAggregate.GenerateStatement(DateTime.Now);
 

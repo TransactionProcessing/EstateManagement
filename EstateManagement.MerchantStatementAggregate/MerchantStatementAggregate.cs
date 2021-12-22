@@ -98,15 +98,10 @@
         {
             this.EnsureStatementHasBeenCreated();
             this.EnsureStatementHasNotAlreadyBeenGenerated();
-
-            if (this.Transactions.Any() == false)
+            
+            if (this.Transactions.Any() == false && this.SettledFees.Any() == false)
             {
-                throw new InvalidOperationException("Statement has no transactions added");
-            }
-
-            if (this.Transactions.Any() == true && this.SettledFees.Any() == false)
-            {
-                throw new InvalidOperationException("Statement has transactions added with no matching settled fee");
+                throw new InvalidOperationException("Statement has no transactions or settled fees");
             }
 
             StatementGeneratedEvent statementGeneratedEvent = new StatementGeneratedEvent(this.AggregateId, this.EstateId, this.MerchantId, generatedDateTime);
