@@ -240,5 +240,49 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
                                                         merchantStatementAggregate.GenerateStatement(TestData.StatementGeneratedDate);
                                                     });
         }
+
+        [Fact]
+        public void MerchantStatementAggregate_EmailStatement_StatementHasBeenEmailed()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
+            merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
+            merchantStatementAggregate.AddSettledFeeToStatement(TestData.SettledFee1);
+            merchantStatementAggregate.GenerateStatement(TestData.StatementGeneratedDate);
+
+            merchantStatementAggregate.EmailStatement(TestData.StatementEmailedDate, TestData.MessageId);
+
+            MerchantStatement statement = merchantStatementAggregate.GetStatement(false);
+            statement.HasBeenEmailed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void MerchantStatementAggregate_EmailStatement_NotCreated_ErrorThrown()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            //merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
+            //merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
+            //merchantStatementAggregate.AddSettledFeeToStatement(TestData.SettledFee1);
+            //merchantStatementAggregate.GenerateStatement(TestData.StatementGeneratedDate);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        merchantStatementAggregate.EmailStatement(TestData.StatementEmailedDate,TestData.MessageId);
+                                                    });
+        }
+
+        [Fact]
+        public void MerchantStatementAggregate_EmailStatement_NotGenerated_ErrorThrown()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
+            merchantStatementAggregate.AddTransactionToStatement(TestData.Transaction1);
+            merchantStatementAggregate.AddSettledFeeToStatement(TestData.SettledFee1);
+
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        merchantStatementAggregate.EmailStatement(TestData.StatementEmailedDate, TestData.MessageId);
+                                                    });
+        }
     }
 }

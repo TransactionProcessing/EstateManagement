@@ -28,6 +28,7 @@
     using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
     using MerchantBalanceHistoryModel = EstateManagement.Models.Merchant.MerchantBalanceHistory;
     using MerchantBalanceHistoryEntity = EstateReporting.Database.Entities.MerchantBalanceHistory;
+    using TransactionFee = Contract.TransactionFee;
 
     /// <summary>
     /// 
@@ -260,7 +261,7 @@
 
             return merchantBalanceHistoryModelList;
         }
-
+        
         #endregion
     }
 }

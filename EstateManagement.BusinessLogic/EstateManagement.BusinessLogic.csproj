@@ -6,9 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="CallbackHandler.DataTransferObjects" Version="0.0.9" />
+    <PackageReference Include="MessagingService.Client" Version="1.0.14-build57" />
     <PackageReference Include="SecurityService.Client" Version="1.0.8" />
+    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="21.2.0" />
     <PackageReference Include="Shared.DomainDrivenDesign" Version="1.1.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="System.IO.Abstractions" Version="16.0.1" />
     <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="1.0.17-build79" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="1.0.17-build79" />
   </ItemGroup>
@@ -25,6 +28,15 @@
 
   <ItemGroup>
     <Folder Include="Events\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templates\Email\statement.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\Email\statementline.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -16,7 +16,7 @@
         /// <summary>
         /// The statement lines
         /// </summary>
-        private readonly List<StatementLine> StatementLines;
+        private readonly List<MerchantStatementLine> StatementLines;
 
         #endregion
 
@@ -27,7 +27,7 @@
         /// </summary>
         public MerchantStatement()
         {
-            this.StatementLines = new List<StatementLine>();
+            this.StatementLines = new List<MerchantStatementLine>();
         }
 
         #endregion
@@ -57,6 +57,14 @@
         ///   <c>true</c> if this instance is generated; otherwise, <c>false</c>.
         /// </value>
         public Boolean IsGenerated { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is emailed.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is emailed; otherwise, <c>false</c>.
+        /// </value>
+        public Boolean HasBeenEmailed { get; set; }
 
         /// <summary>
         /// Gets or sets the merchant identifier.
@@ -106,7 +114,7 @@
         /// Adds the statement line.
         /// </summary>
         /// <param name="statementLine">The statement line.</param>
-        public void AddStatementLine(StatementLine statementLine)
+        public void AddStatementLine(MerchantStatementLine statementLine)
         {
             this.StatementLines.Add(statementLine);
         }
@@ -115,7 +123,7 @@
         /// Gets the statement lines.
         /// </summary>
         /// <returns></returns>
-        public List<StatementLine> GetStatementLines()
+        public List<MerchantStatementLine> GetStatementLines()
         {
             return this.StatementLines.OrderBy(s => s.DateTime).ToList();
         }

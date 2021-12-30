@@ -62,6 +62,19 @@
                                      DateTime statementDate, 
                                      CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Emails the statement.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="merchantStatementId">The merchant statement identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task EmailStatement(Guid estateId,
+                            Guid merchantId,
+                            Guid merchantStatementId,
+                            CancellationToken cancellationToken);
+
         #endregion
     }
 }

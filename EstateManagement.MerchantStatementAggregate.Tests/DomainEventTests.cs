@@ -90,5 +90,24 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
             statementGeneratedEvent.MerchantId.ShouldBe(TestData.MerchantId);
             statementGeneratedEvent.DateGenerated.ShouldBe(TestData.StatementGeneratedDate);
         }
+
+        [Fact]
+        public void StatementEmailedEvent_CanBeCreated_IsCreated()
+        {
+            StatementEmailedEvent statementEmailedEvent = new StatementEmailedEvent(TestData.MerchantStatementId,
+                                                                                      TestData.EstateId,
+                                                                                      TestData.MerchantId,
+                                                                                      TestData.StatementEmailedDate,
+                                                                                      TestData.MessageId);
+
+            statementEmailedEvent.ShouldNotBeNull();
+            statementEmailedEvent.AggregateId.ShouldBe(TestData.MerchantStatementId);
+            statementEmailedEvent.MerchantStatementId.ShouldBe(TestData.MerchantStatementId);
+            statementEmailedEvent.EventId.ShouldNotBe(Guid.Empty);
+            statementEmailedEvent.EstateId.ShouldBe(TestData.EstateId);
+            statementEmailedEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            statementEmailedEvent.DateEmailed.ShouldBe(TestData.StatementEmailedDate);
+            statementEmailedEvent.MessageId.ShouldBe(TestData.MessageId);
+        }
     }
 }

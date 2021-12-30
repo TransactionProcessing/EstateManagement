@@ -74,7 +74,15 @@
                 throw new InvalidOperationException("Statement has already been generated");
             }
         }
-        
+
+        private void EnsureStatementHasBeenGenerated()
+        {
+            if (this.IsGenerated == false)
+            {
+                throw new InvalidOperationException("Statement has not been generated");
+            }
+        }
+
         public void AddSettledFeeToStatement(SettledFee settledFee)
         {
             if (this.SettledFees.Any(t => t.SettledFeeId == settledFee.SettledFeeId))
@@ -109,6 +117,16 @@
             this.ApplyAndAppend(statementGeneratedEvent);
         }
 
+        public void EmailStatement(DateTime emailedDateTime, Guid messageId)
+        {
+            this.EnsureStatementHasBeenCreated();
+            this.EnsureStatementHasBeenGenerated();
+
+            StatementEmailedEvent statementEmailedEvent = new StatementEmailedEvent(this.AggregateId, this.EstateId, this.MerchantId, emailedDateTime, messageId);
+
+            this.ApplyAndAppend(statementEmailedEvent);
+        }
+
         public MerchantStatement GetStatement(Boolean includeStatementLines = false)
         {
             MerchantStatement merchantStatement = new MerchantStatement
@@ -118,6 +136,7 @@
                                                       MerchantStatementId = this.AggregateId,
                                                       IsCreated = this.IsCreated,
                                                       IsGenerated = this.IsGenerated,
+                                                      HasBeenEmailed = this.HasBeenEmailed,
                                                       StatementCreatedDateTime = this.CreatedDateTime,
                                                       StatementGeneratedDateTime = this.GeneratedDateTime
                                                   };
@@ -126,7 +145,7 @@
             {
                 foreach (Transaction transaction in this.Transactions)
                 {
-                    merchantStatement.AddStatementLine(new StatementLine
+                    merchantStatement.AddStatementLine(new MerchantStatementLine
                                                        {
                                                            Amount = transaction.Amount,
                                                            DateTime = transaction.DateTime,
@@ -137,7 +156,7 @@
 
                 foreach (SettledFee settledFee in this.SettledFees)
                 {
-                    merchantStatement.AddStatementLine(new StatementLine
+                    merchantStatement.AddStatementLine(new MerchantStatementLine
                                                        {
                                                            Amount = settledFee.Amount,
                                                            DateTime = settledFee.DateTime,
@@ -216,6 +235,19 @@
         {
             this.IsGenerated = true;
             this.GeneratedDateTime = domainEvent.DateGenerated;
+        }
+
+        private Boolean HasBeenEmailed;
+
+        private DateTime EmailedDateTime;
+
+        private Guid EmailMessageId;
+
+        private void PlayEvent(StatementEmailedEvent domainEvent)
+        {
+            this.HasBeenEmailed = true;
+            this.EmailedDateTime = domainEvent.DateEmailed;
+            this.EmailMessageId = domainEvent.MessageId;
         }
     }
 }

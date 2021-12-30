@@ -5,6 +5,7 @@ namespace EstateManagement
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.IO.Abstractions;
     using System.Linq;
     using System.Net.Http;
     using System.Reflection;
@@ -28,6 +29,7 @@ namespace EstateManagement
     using MediatR;
     using Merchant.DomainEvents;
     using MerchantStatement.DomainEvents;
+    using MessagingService.Client;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -223,6 +225,9 @@ namespace EstateManagement
             services.AddSingleton<IModelFactory, ModelFactory>();
             services.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
             services.AddSingleton<ISecurityServiceClient, SecurityServiceClient>();
+            services.AddSingleton<IMessagingServiceClient, MessagingServiceClient>();
+            services.AddSingleton<IStatementBuilder, StatementBuilder>();
+            services.AddSingleton<IFileSystem, FileSystem>();
 
             ContractCreatedEvent c = new ContractCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "");
             MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
@@ -267,6 +272,7 @@ namespace EstateManagement
             services.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
             services.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
             services.AddSingleton<IRequestHandler<GenerateMerchantStatementRequest, Guid>, MerchantStatementRequestHandler>();
+            services.AddSingleton<IRequestHandler<EmailMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
 
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
             {
@@ -308,6 +314,7 @@ namespace EstateManagement
             services.AddSingleton<MerchantDomainEventHandler>();
             services.AddSingleton<TransactionDomainEventHandler>();
             services.AddSingleton<SettlementDomainEventHandler>();
+            services.AddSingleton<StatementDomainEventHandler>();
             services.AddSingleton<IDomainEventHandlerResolver, DomainEventHandlerResolver>();
 
             Startup.ServiceProvider = services.BuildServiceProvider();

@@ -10,29 +10,50 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using BusinessLogic.Services;
     using MerchantAggregate;
     using MerchantStatementAggregate;
+    using MessagingService.Client;
+    using MessagingService.DataTransferObjects;
+    using Microsoft.Extensions.Configuration;
+    using Models.MerchantStatement;
     using Moq;
+    using Repository;
+    using SecurityService.Client;
+    using SecurityService.DataTransferObjects.Responses;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
+    using Shared.General;
+    using Shared.Logger;
     using Shouldly;
     using Testing;
     using Xunit;
 
     public class MerchantStatementDomainServiceTests
     {
+        private Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+        private Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
+        private Mock<IEstateManagementRepository> estateManagementRepository = new Mock<IEstateManagementRepository>();
+        private Mock<IStatementBuilder> statementBuilder = new Mock<IStatementBuilder>();
+        private Mock<IMessagingServiceClient> messagingServiceClient = new Mock<IMessagingServiceClient>();
+        private Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+        private MerchantStatementDomainService merchantStatementDomainService;
+        public MerchantStatementDomainServiceTests()
+        {
+            merchantStatementDomainService =
+                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object,
+                                                   estateManagementRepository.Object, statementBuilder.Object,
+                                                   messagingServiceClient.Object, securityServiceClient.Object);
+        }
+
         [Fact]
         public async Task MerchantStatementDomainService_AddTransactionToStatement_TransactionAdded()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
-
+            
             MerchantStatementAggregate merchantStatementAggregate = TestData.CreatedMerchantStatementAggregate();
 
-            Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
-            MerchantStatementDomainService merchantStatementDomainService =
-                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object);
-
+            
             Should.NotThrow(async () =>
                             {
                                 await merchantStatementDomainService.AddTransactionToStatement(TestData.EstateId,
@@ -53,16 +74,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_AddTransactionToStatement_TransactionNotAuthorised_TransactionNotAddedToStatement()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
             MerchantStatementAggregate merchantStatementAggregate = TestData.CreatedMerchantStatementAggregate();
 
-            Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
-            MerchantStatementDomainService merchantStatementDomainService =
-                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object);
 
             Should.NotThrow(async () =>
             {
@@ -83,17 +100,13 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_AddTransactionToStatement_LogonTransaction_TransactionNotAddedToStatement()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
             MerchantStatementAggregate merchantStatementAggregate = TestData.CreatedMerchantStatementAggregate();
 
-            Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
-            MerchantStatementDomainService merchantStatementDomainService =
-                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object);
-
+         
             Should.NotThrow(async () =>
             {
                 await merchantStatementDomainService.AddTransactionToStatement(TestData.EstateId,
@@ -113,16 +126,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_AddTransactionToStatement_StatementNotAlreadyCreated_TransactionAdded()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
             MerchantStatementAggregate merchantStatementAggregate = new MerchantStatementAggregate();
 
-            Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
-            MerchantStatementDomainService merchantStatementDomainService =
-                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object);
 
             Should.NotThrow(async () =>
             {
@@ -144,17 +153,13 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_AddSettledFeeToStatement_SettledFeeAdded()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
             MerchantStatementAggregate merchantStatementAggregate = TestData.MerchantStatementAggregateWithTransactionLineAdded();
 
-            Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
-            MerchantStatementDomainService merchantStatementDomainService =
-                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object);
-
+            
             Should.NotThrow(async () =>
             {
                 await merchantStatementDomainService.AddSettledFeeToStatement(TestData.EstateId,
@@ -175,17 +180,13 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_AddSettledFeeToStatement_StatementNotAlreadyCreated_SettledFeeAdded()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
             MerchantStatementAggregate merchantStatementAggregate = new MerchantStatementAggregate();
 
-            Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
-            MerchantStatementDomainService merchantStatementDomainService =
-                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object);
-
+            
             Should.NotThrow(async () =>
             {
                 await merchantStatementDomainService.AddSettledFeeToStatement(TestData.EstateId,
@@ -206,17 +207,10 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_GenerateStatement_StatementGenerated()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository =
-                new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
-            
             MerchantStatementAggregate merchantStatementAggregate = TestData.MerchantStatementAggregateWithTransactionLineAndSettledFeeAdded();
 
-            Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository =
-                new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchantStatementAggregate);
-            MerchantStatementDomainService merchantStatementDomainService =
-                new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object);
-
+            
             Should.NotThrow(async () =>
             {
                 await merchantStatementDomainService.GenerateStatement(TestData.EstateId,
@@ -227,6 +221,42 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             var merchantStatement = merchantStatementAggregate.GetStatement(false);
             merchantStatement.IsGenerated.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task MerchantStatementDomainService_EmailStatement_StatementGenerated()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = TestData.GeneratedMerchantStatementAggregate();
+
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchantStatementAggregate);
+            this.statementBuilder.Setup(s => s.GetStatementHtml(It.IsAny<StatementHeader>(), It.IsAny<CancellationToken>())).ReturnsAsync("<html></html>");
+
+            this.estateManagementRepository.Setup(e => e.GetStatement(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new StatementHeader());
+
+            IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddInMemoryCollection(TestData.DefaultAppSettings).Build();
+            ConfigurationReader.Initialise(configurationRoot);
+
+            Logger.Initialise(NullLogger.Instance);
+
+            this.securityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse());
+
+            this.messagingServiceClient.Setup(m => m.SendEmail(It.IsAny<String>(), It.IsAny<SendEmailRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new SendEmailResponse
+                              {
+                                  MessageId = Guid.NewGuid()
+                              });
+
+            Should.NotThrow(async () =>
+                            {
+                                await merchantStatementDomainService.EmailStatement(TestData.EstateId,
+                                                                                       TestData.MerchantId,
+                                                                                       TestData.MerchantStatementId,
+                                                                                       CancellationToken.None);
+                            });
+            
+            var merchantStatement = merchantStatementAggregate.GetStatement(false);
+            merchantStatement.HasBeenEmailed.ShouldBeTrue();
         }
     }
 }

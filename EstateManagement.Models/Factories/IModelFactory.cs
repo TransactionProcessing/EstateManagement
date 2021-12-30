@@ -15,11 +15,14 @@ using TransactionFeeModel = EstateManagement.Models.Contract.TransactionFee;
 using ContractEntity = EstateReporting.Database.Entities.Contract;
 using ContractProductEntity = EstateReporting.Database.Entities.ContractProduct;
 using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
+using StatementLineEntity = EstateReporting.Database.Entities.StatementLine;
+using StatementLineModel = EstateManagement.Models.MerchantStatement.StatementLine;
 
 namespace EstateManagement.Models.Factories
 {
     using System.Collections.Generic;
     using EstateReporting.Database.ViewEntities;
+    using MerchantStatement;
 
     /// <summary>
     /// 
@@ -80,7 +83,7 @@ namespace EstateManagement.Models.Factories
         /// <param name="merchantBalanceHistories">The merchant balance histories.</param>
         /// <returns></returns>
         List<MerchantBalanceHistoryModel> ConvertFrom(List<MerchantBalanceView> merchantBalanceHistories);
-
+        
         #endregion
     }
 }

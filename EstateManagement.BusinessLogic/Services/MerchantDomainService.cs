@@ -122,7 +122,6 @@
             {
                 merchantAggregate.Create(estateId, name, merchantAggregate.DateCreated);
                 merchantAggregate.GenerateReference();
-                merchantAggregate.SetStatementDate(new DateTime(2021,9,1));
             }
             else
             {
@@ -137,9 +136,6 @@
 
                 // Set the settlement schedule
                 merchantAggregate.SetSettlementSchedule(settlementSchedule);
-
-                // Set the next statement date
-                merchantAggregate.SetStatementDate(DateTime.Now);
             }
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);

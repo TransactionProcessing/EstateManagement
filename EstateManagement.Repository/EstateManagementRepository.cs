@@ -21,6 +21,8 @@
     using MerchantModel = Models.Merchant.Merchant;
     using ContractModel = Models.Contract.Contract;
     using MerchantBalanceHistoryModel = Models.Merchant.MerchantBalanceHistory;
+    using StatementHeader = Models.MerchantStatement.StatementHeader;
+    using StatementLine = Models.MerchantStatement.StatementLine;
 
     /// <summary>
     /// 
@@ -367,6 +369,71 @@
             return transactionFeeModels;
         }
 
+        public async Task<StatementHeader> GetStatement(Guid estateId,
+                                                                               Guid merchantStatementId,
+                                                                               CancellationToken cancellationToken)
+        {
+            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+
+            var statement = await context.StatementHeaders.Where(sl => sl.StatementId == merchantStatementId).SingleOrDefaultAsync(cancellationToken);
+
+            var statementLines = await context.StatementLines.Where(sl => sl.StatementId == merchantStatementId).ToListAsync(cancellationToken);
+
+            var lines = statementLines.GroupBy(g => new
+                                                    {
+                                                        g.ActivityDateTime.Date,
+                                                        g.ActivityDescription,
+                                                        g.ActivityType
+                                                    }).OrderBy(o => o.Key.Date).ThenBy(o => o.Key.ActivityDescription).ToList();
+
+            var merchant = await context.Merchants.Where(m => m.MerchantId == statement.MerchantId).SingleOrDefaultAsync(cancellationToken);
+            var merchantAddress = await context.MerchantAddresses.Where(m => m.MerchantId == statement.MerchantId).FirstOrDefaultAsync(cancellationToken);
+            var merchantContact = await context.MerchantContacts.Where(m => m.MerchantId == statement.MerchantId).FirstOrDefaultAsync(cancellationToken);
+            var estate = await context.Estates.Where(e => e.EstateId == estateId).SingleOrDefaultAsync(cancellationToken);
+
+            StatementHeader header = new StatementHeader();
+            header.EstateName = estate.Name;
+            header.MerchantAddressLine1 = merchantAddress.AddressLine1;
+            header.MerchantContactNumber = merchantContact.PhoneNumber;
+            header.MerchantCountry = merchantAddress.Country;
+            header.MerchantName = merchant.Name;
+            header.MerchantPostcode = merchantAddress.PostalCode;
+            header.MerchantRegion = merchantAddress.Region;
+            header.MerchantTown = merchantAddress.Town;
+            header.MerchantEmail = merchantContact.EmailAddress;
+            header.StatementDate = statement.StatementGeneratedDate.ToString("dd-MM-yyyy");
+            header.StatementId = "1111";
+            header.StatementLines = new List<StatementLine>();
+
+            Decimal statementTotal = 0;
+            Decimal transactionsTotal = 0;
+            Decimal feesTotal = 0;
+
+            Int32 lineNumber = 1;
+            foreach (var statementline in lines)
+            {
+                header.StatementLines.Add(new StatementLine
+                                          {
+                                              StatementLineDescription = statementline.Key.ActivityDescription,
+                                              StatementLineDate = statementline.Key.Date.ToString("dd-MM-yyyy"),
+                                              StatementLineAmount = statementline.Sum(s => (s.OutAmount * -1)+ s.InAmount),
+                                              StatementLineAmountDisplay = $"{statementline.Sum(s => (s.OutAmount * -1) + s.InAmount)} KES",
+                                              StatementLineNumber = lineNumber.ToString()
+                                          });
+                lineNumber++;
+                statementTotal += statementline.Key.ActivityType == 1 ? statementline.Sum(s => s.OutAmount * -1) : statementline.Sum(s => s.InAmount);
+                transactionsTotal += statementline.Key.ActivityType == 1 ? statementline.Sum(s => s.OutAmount * -1) : 0;
+                feesTotal += statementline.Key.ActivityType != 1 ? statementline.Sum(s => s.InAmount) : 0;
+            }
+
+            header.StatementTotal = $"{statementTotal} KES";
+            header.TransactionsValue = $"{transactionsTotal} KES";
+            header.TransactionFeesValue = $"{feesTotal} KES";
+
+            return header;
+
+        }
+        
         #endregion
     }
 }
