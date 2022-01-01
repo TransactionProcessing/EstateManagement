@@ -4,7 +4,9 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.IO.Abstractions;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
@@ -13,15 +15,18 @@
     using MerchantStatementAggregate;
     using MessagingService.Client;
     using MessagingService.DataTransferObjects;
+    using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
     using Models.MerchantStatement;
     using Repository;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects.Responses;
-    using SelectPdf;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.General;
     using Shared.Logger;
+    using Syncfusion.HtmlConverter;
+    using Syncfusion.Pdf;
+    using Syncfusion.Pdf.Graphics;
 
     /// <summary>
     /// 
@@ -51,6 +56,8 @@
 
         private readonly ISecurityServiceClient SecurityServiceClient;
 
+        private readonly IFileSystem FileSystem;
+
         #endregion
 
         #region Constructors
@@ -69,7 +76,8 @@
                                               IEstateManagementRepository estateManagementRepository,
                                               IStatementBuilder statementBuilder,
                                               IMessagingServiceClient messagingServiceClient,
-                                              ISecurityServiceClient securityServiceClient)
+                                              ISecurityServiceClient securityServiceClient,
+                                              IFileSystem fileSystem)
         {
             this.MerchantAggregateRepository = merchantAggregateRepository;
             this.MerchantStatementAggregateRepository = merchantStatementAggregateRepository;
@@ -77,6 +85,7 @@
             this.StatementBuilder = statementBuilder;
             this.MessagingServiceClient = messagingServiceClient;
             this.SecurityServiceClient = securityServiceClient;
+            this.FileSystem = fileSystem;
         }
 
         #endregion
@@ -174,21 +183,45 @@
             
             String html = await this.StatementBuilder.GetStatementHtml(statementHeader, cancellationToken);
 
-            HtmlToPdf converter = new HtmlToPdf();
-            PdfDocument document = converter.ConvertHtmlString(html);
+            //Initialize HTML to PDF converter 
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter(HtmlRenderingEngine.Blink);
+
+            BlinkConverterSettings settings = new BlinkConverterSettings
+                                              {
+                                                  Margin = new PdfMargins
+                                                           {
+                                                               All = 50
+                                                           }
+                                              };
+            
+            //Set WebKit path
+            settings.BlinkPath = ConfigurationReader.GetValue("AppSettings", "BlinkBinariesPath");
+            
+            //Assign WebKit settings to HTML converter
+            htmlConverter.ConverterSettings = settings;
+
+            IDirectoryInfo path = this.FileSystem.Directory.GetParent(Assembly.GetExecutingAssembly().Location);
+            String basePath = $"{path}/Templates/Email/";
+
+            //Convert URL to PDF
+            PdfDocument document = htmlConverter.Convert(html, basePath);
+
+            //Saving the PDF to the MemoryStream
             MemoryStream stream = new MemoryStream();
+
             document.Save(stream);
-            String base64 = Convert.ToBase64String(stream.ToArray());
             document.Close();
 
+            String base64 = Convert.ToBase64String(stream.ToArray());
+
             SendEmailRequest sendEmailRequest = new SendEmailRequest
-                                                {
-                                                    Body = "<html><body>Please find attached this months statement.</body></html>",
-                                                    ConnectionIdentifier = estateId,
-                                                    FromAddress = "golfhandicapping@btinternet.com", // TODO: lookup from config
-                                                    IsHtml = true,
-                                                    Subject = $"Merchant Statement for {statementHeader.StatementDate}",
-                                                    MessageId = merchantStatementId,
+            {
+                Body = "<html><body>Please find attached this months statement.</body></html>",
+                ConnectionIdentifier = estateId,
+                FromAddress = "golfhandicapping@btinternet.com", // TODO: lookup from config
+                IsHtml = true,
+                Subject = $"Merchant Statement for {statementHeader.StatementDate}",
+                MessageId = merchantStatementId,
                 ToAddresses = new List<String>
                               {
                                   statementHeader.MerchantEmail
@@ -202,7 +235,7 @@
                                            Filename = $"merchantstatement{statementHeader.StatementDate}.pdf"
                                        }
                                    }
-                                                };
+            };
 
             this.TokenResponse = await this.GetToken(cancellationToken);
 
@@ -215,7 +248,6 @@
             merchantStatementAggregate.EmailStatement(DateTime.Now, sendEmailResponse.MessageId);
 
             await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
-
         }
 
         /// <summary>

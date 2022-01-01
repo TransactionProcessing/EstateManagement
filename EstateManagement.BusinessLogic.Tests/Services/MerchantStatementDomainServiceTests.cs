@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
 {
+    using System.IO.Abstractions.TestingHelpers;
     using System.Threading;
     using BusinessLogic.Services;
     using MerchantAggregate;
@@ -35,13 +36,16 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         private Mock<IMessagingServiceClient> messagingServiceClient = new Mock<IMessagingServiceClient>();
         private Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
 
+        private MockFileSystem fileSystem = new MockFileSystem();
+
         private MerchantStatementDomainService merchantStatementDomainService;
         public MerchantStatementDomainServiceTests()
         {
             merchantStatementDomainService =
                 new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object,
                                                    estateManagementRepository.Object, statementBuilder.Object,
-                                                   messagingServiceClient.Object, securityServiceClient.Object);
+                                                   messagingServiceClient.Object, securityServiceClient.Object,
+                                                   fileSystem);
         }
 
         [Fact]
