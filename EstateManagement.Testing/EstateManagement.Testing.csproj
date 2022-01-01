@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateReporting.Database" Version="1.0.18.2" />
+    <PackageReference Include="EstateReporting.Database" Version="1.0.19-build89" />
   </ItemGroup>
 
   <ItemGroup>

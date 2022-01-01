@@ -7,6 +7,7 @@
     using Models.Contract;
     using Models.Estate;
     using Models.Merchant;
+    using Models.MerchantStatement;
 
     /// <summary>
     /// 
@@ -68,6 +69,13 @@
         Task<List<Merchant>> GetMerchants(Guid estateId,
                                           CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Gets the merchant from reference.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="reference">The reference.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         Task<Merchant> GetMerchantFromReference(Guid estateId, 
                                                 String reference,
                                                 CancellationToken cancellationToken);
@@ -101,6 +109,10 @@
                                                                 Guid contractId,
                                                                 Guid productId,
                                                                 CancellationToken cancellationToken);
+
+        Task<StatementHeader> GetStatement(Guid estateId,
+                                           Guid merchantStatementId,
+                                           CancellationToken cancellationToken);
 
         #endregion
     }

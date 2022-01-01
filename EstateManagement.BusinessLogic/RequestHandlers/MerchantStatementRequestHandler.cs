@@ -15,7 +15,8 @@
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddTransactionToMerchantStatementRequest&gt;" />
     public class MerchantStatementRequestHandler : IRequestHandler<AddTransactionToMerchantStatementRequest>, 
                                                    IRequestHandler<AddSettledFeeToMerchantStatementRequest>,
-                                                   IRequestHandler<GenerateMerchantStatementRequest, Guid>
+                                                   IRequestHandler<GenerateMerchantStatementRequest, Guid>,
+                                                   IRequestHandler<EmailMerchantStatementRequest>
     {
         #region Fields
 
@@ -87,6 +88,14 @@
                                        CancellationToken cancellationToken)
         {
             return await this.MerchantStatementDomainService.GenerateStatement(request.EstateId, request.MerchantId, request.StatementDate, cancellationToken);
+        }
+
+        public async Task<Unit> Handle(EmailMerchantStatementRequest request,
+                                       CancellationToken cancellationToken)
+        {
+            await this.MerchantStatementDomainService.EmailStatement(request.EstateId, request.MerchantId, request.MerchantStatementId, cancellationToken);
+
+            return new Unit();
         }
     }
 }

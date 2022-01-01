@@ -3,46 +3,20 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    /// <summary>
-    /// 
-    /// </summary>
     [ExcludeFromCodeCoverage]
     public class StatementLine
     {
         #region Properties
 
-        /// <summary>
-        /// Gets or sets the amount.
-        /// </summary>
-        /// <value>
-        /// The amount.
-        /// </value>
-        public Decimal Amount { get; set; }
+        public String StatementLineAmountDisplay { get; set; }
 
-        /// <summary>
-        /// Gets or sets the date time.
-        /// </summary>
-        /// <value>
-        /// The date time.
-        /// </value>
-        public DateTime DateTime { get; set; }
+        public Decimal StatementLineAmount { get; set; }
 
-        /// <summary>
-        /// Gets or sets the description.
-        /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
-        public String Description { get; set; }
+        public String StatementLineDate { get; set; }
 
-        // TODO: maybe make this an enum type
-        /// <summary>
-        /// Gets or sets the type of the line.
-        /// </summary>
-        /// <value>
-        /// The type of the line.
-        /// </value>
-        public Int32 LineType { get; set; }
+        public String StatementLineDescription { get; set; }
+
+        public String StatementLineNumber { get; set; }
 
         #endregion
     }

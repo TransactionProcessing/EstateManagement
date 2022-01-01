@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateReporting.Database" Version="1.0.18.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MerchantStatement\" />
+    <PackageReference Include="EstateReporting.Database" Version="1.0.19-build89" />
   </ItemGroup>
 
 </Project>

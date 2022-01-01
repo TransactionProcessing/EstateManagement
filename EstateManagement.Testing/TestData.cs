@@ -11,12 +11,14 @@
     using EstateReporting.Database.Entities;
     using EstateReporting.Database.ViewEntities;
     using MerchantAggregate;
+    using MerchantStatement.DomainEvents;
     using MerchantStatementAggregate;
     using Models;
     using Models.Contract;
     using Models.Merchant;
     using Models.MerchantStatement;
     using Newtonsoft.Json;
+    using SecurityService.DataTransferObjects.Responses;
     using TransactionProcessor.Transaction.DomainEvents;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
@@ -924,6 +926,19 @@
                 TransactionId = TestData.TransactionId
             };
 
+        public static IReadOnlyDictionary<String, String> DefaultAppSettings =>
+            new Dictionary<String, String>
+            {
+                ["AppSettings:ClientId"] = "clientId",
+                ["AppSettings:ClientSecret"] = "clientSecret",
+                ["AppSettings:BlinkBinariesPath"] = "clientSecret"
+            };
+
+        public static TokenResponse TokenResponse()
+        {
+            return SecurityService.DataTransferObjects.Responses.TokenResponse.Create("AccessToken", string.Empty, 100);
+        }
+
         public static List<Contract> MerchantContracts = new List<Contract>
                                                          {
                                                              new Contract
@@ -1023,6 +1038,7 @@
         public static DateTime StatementCreateDate = new DateTime(2021,12,10);
 
         public static DateTime StatementGeneratedDate = new DateTime(2021, 12, 11);
+        public static DateTime StatementEmailedDate = new DateTime(2021, 12, 12);
 
         public static CallbackReceivedEnrichedEvent CallbackReceivedEnrichedEvent =>
             new CallbackReceivedEnrichedEvent(TestData.CallbackId)
@@ -1033,6 +1049,9 @@
                 MessageFormat = TestData.CallbackMessageFormat,
                 TypeString = TestData.CallbackTypeString
             };
+
+        public static StatementGeneratedEvent StatementGeneratedEvent =>
+            new StatementGeneratedEvent(TestData.MerchantStatementId, TestData.EstateId, TestData.MerchantId, TestData.StatementGeneratedDate);
 
         public static TransactionHasBeenCompletedEvent TransactionHasBeenCompletedEvent =>
             new TransactionHasBeenCompletedEvent(TestData.TransactionId1,
@@ -1121,6 +1140,8 @@
         public static GenerateMerchantStatementRequest GenerateMerchantStatementRequest =
             GenerateMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
 
+        public static Guid MessageId = Guid.Parse("353FB307-FDD5-41AE-A2AF-C927D57EADBB");
+
         public static MerchantStatementAggregate CreatedMerchantStatementAggregate()
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
@@ -1163,6 +1184,29 @@
                                                                     SettledFeeId = TestData.SettledFeeId1,
                                                                     TransactionId = TestData.TransactionId1
                                                                 });
+
+            return merchantStatementAggregate;
+        }
+
+        public static MerchantStatementAggregate GeneratedMerchantStatementAggregate()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
+                                                       TestData.StatementCreateDate);
+            merchantStatementAggregate.AddTransactionToStatement(new Transaction
+                                                                 {
+                                                                     Amount = TestData.TransactionAmount1.Value,
+                                                                     DateTime = TestData.TransactionDateTime1,
+                                                                     TransactionId = TestData.TransactionId1
+                                                                 });
+            merchantStatementAggregate.AddSettledFeeToStatement(new SettledFee
+                                                                {
+                                                                    Amount = TestData.SettledFeeAmount1,
+                                                                    DateTime = TestData.SettledFeeDateTime1,
+                                                                    SettledFeeId = TestData.SettledFeeId1,
+                                                                    TransactionId = TestData.TransactionId1
+                                                                });
+            merchantStatementAggregate.GenerateStatement(TestData.StatementGeneratedDate);
 
             return merchantStatementAggregate;
         }

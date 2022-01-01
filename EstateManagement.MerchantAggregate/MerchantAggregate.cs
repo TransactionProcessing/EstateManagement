@@ -101,9 +101,7 @@
         public DateTime DateCreated { get; private set; }
 
         public DateTime NextSettlementDueDate { get; private set; }
-
-        public DateTime NextStatementDueDate { get; private set; }
-
+        
         /// <summary>
         /// Gets the estate identifier.
         /// </summary>
@@ -333,7 +331,6 @@
             merchantModel.Reference = this.MerchantReference;
             merchantModel.SettlementSchedule = this.SettlementSchedule;
             merchantModel.NextSettlementDueDate = this.NextSettlementDueDate;
-            merchantModel.NextStatementDate = this.NextStatementDueDate;
 
             if (this.Addresses.Any())
             {
@@ -464,17 +461,7 @@
                 this.ApplyAndAppend(automaticDepositMadeEvent);
             }
         }
-
-        /// <summary>
-        /// Sets the statement date.
-        /// </summary>
-        public void SetStatementDate(DateTime nextStatementDate)
-        {
-            NextStatementDateChangedEvent nextStatementDateChangedEvent = new NextStatementDateChangedEvent(this.AggregateId, this.EstateId, nextStatementDate);
-
-            this.ApplyAndAppend(nextStatementDateChangedEvent);
-        }
-
+        
         public void SetSettlementSchedule(SettlementSchedule settlementSchedule)
         {
             // Check if there has actually been a change or not, if not ignore the request
@@ -733,11 +720,6 @@
         {
             this.SettlementSchedule = (SettlementSchedule)domainEvent.SettlementSchedule;
             this.NextSettlementDueDate = domainEvent.NextSettlementDate;
-        }
-
-        private void PlayEvent(NextStatementDateChangedEvent domainEvent)
-        {
-            this.NextStatementDueDate = domainEvent.NextStatementDate;
         }
 
         private void PlayEvent(DeviceSwappedForMerchantEvent domainEvent)
