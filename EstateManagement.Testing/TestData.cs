@@ -930,7 +930,8 @@
             new Dictionary<String, String>
             {
                 ["AppSettings:ClientId"] = "clientId",
-                ["AppSettings:ClientSecret"] = "clientSecret"
+                ["AppSettings:ClientSecret"] = "clientSecret",
+                ["AppSettings:BlinkBinariesPath"] = "clientSecret"
             };
 
         public static TokenResponse TokenResponse()

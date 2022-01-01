@@ -38,6 +38,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
         private MockFileSystem fileSystem = new MockFileSystem();
 
+        private Mock<IPDFGenerator> pdfGenerator = new Mock<IPDFGenerator>();
+
         private MerchantStatementDomainService merchantStatementDomainService;
         public MerchantStatementDomainServiceTests()
         {
@@ -45,7 +47,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                 new MerchantStatementDomainService(merchantAggregateRepository.Object, merchantStatementAggregateRepository.Object,
                                                    estateManagementRepository.Object, statementBuilder.Object,
                                                    messagingServiceClient.Object, securityServiceClient.Object,
-                                                   fileSystem);
+                                                   fileSystem,
+                                                   this.pdfGenerator.Object);
         }
 
         [Fact]

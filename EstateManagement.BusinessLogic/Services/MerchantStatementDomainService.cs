@@ -3,10 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
     using System.IO.Abstractions;
     using System.Linq;
-    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
@@ -24,9 +22,6 @@
     using Shared.EventStore.Aggregate;
     using Shared.General;
     using Shared.Logger;
-    using Syncfusion.HtmlConverter;
-    using Syncfusion.Pdf;
-    using Syncfusion.Pdf.Graphics;
 
     /// <summary>
     /// 
@@ -58,6 +53,8 @@
 
         private readonly IFileSystem FileSystem;
 
+        private readonly IPDFGenerator PdfGenerator;
+
         #endregion
 
         #region Constructors
@@ -71,13 +68,16 @@
         /// <param name="statementBuilder">The statement builder.</param>
         /// <param name="messagingServiceClient">The messaging service client.</param>
         /// <param name="securityServiceClient">The security service client.</param>
+        /// <param name="fileSystem">The file system.</param>
+        /// <param name="pdfGenerator">The PDF generator.</param>
         public MerchantStatementDomainService(IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
                                               IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent> merchantStatementAggregateRepository,
                                               IEstateManagementRepository estateManagementRepository,
                                               IStatementBuilder statementBuilder,
                                               IMessagingServiceClient messagingServiceClient,
                                               ISecurityServiceClient securityServiceClient,
-                                              IFileSystem fileSystem)
+                                              IFileSystem fileSystem,
+                                              IPDFGenerator pdfGenerator)
         {
             this.MerchantAggregateRepository = merchantAggregateRepository;
             this.MerchantStatementAggregateRepository = merchantStatementAggregateRepository;
@@ -86,6 +86,7 @@
             this.MessagingServiceClient = messagingServiceClient;
             this.SecurityServiceClient = securityServiceClient;
             this.FileSystem = fileSystem;
+            this.PdfGenerator = pdfGenerator;
         }
 
         #endregion
@@ -183,36 +184,7 @@
             
             String html = await this.StatementBuilder.GetStatementHtml(statementHeader, cancellationToken);
 
-            //Initialize HTML to PDF converter 
-            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter(HtmlRenderingEngine.Blink);
-
-            BlinkConverterSettings settings = new BlinkConverterSettings
-                                              {
-                                                  Margin = new PdfMargins
-                                                           {
-                                                               All = 50
-                                                           }
-                                              };
-            
-            //Set WebKit path
-            settings.BlinkPath = ConfigurationReader.GetValue("AppSettings", "BlinkBinariesPath");
-            
-            //Assign WebKit settings to HTML converter
-            htmlConverter.ConverterSettings = settings;
-
-            IDirectoryInfo path = this.FileSystem.Directory.GetParent(Assembly.GetExecutingAssembly().Location);
-            String basePath = $"{path}/Templates/Email/";
-
-            //Convert URL to PDF
-            PdfDocument document = htmlConverter.Convert(html, basePath);
-
-            //Saving the PDF to the MemoryStream
-            MemoryStream stream = new MemoryStream();
-
-            document.Save(stream);
-            document.Close();
-
-            String base64 = Convert.ToBase64String(stream.ToArray());
+            String base64 = await this.PdfGenerator.CreatePDF(html, cancellationToken);
 
             SendEmailRequest sendEmailRequest = new SendEmailRequest
             {
