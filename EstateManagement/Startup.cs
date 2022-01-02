@@ -228,6 +228,7 @@ namespace EstateManagement
             services.AddSingleton<IMessagingServiceClient, MessagingServiceClient>();
             services.AddSingleton<IStatementBuilder, StatementBuilder>();
             services.AddSingleton<IFileSystem, FileSystem>();
+            services.AddSingleton<IPDFGenerator, PDFGenerator>();
 
             ContractCreatedEvent c = new ContractCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "");
             MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
