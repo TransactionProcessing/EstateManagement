@@ -8,7 +8,7 @@
     /// 
     /// </summary>
     /// <seealso cref="MediatR.IRequest{System.String}" />
-    public class DisableTransactionFeeForProductRequest : IRequest<String>
+    public class DisableTransactionFeeForProductRequest : IRequest
     {
         #region Constructors
 

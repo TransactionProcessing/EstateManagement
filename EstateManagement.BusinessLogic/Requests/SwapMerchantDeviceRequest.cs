@@ -3,7 +3,7 @@ using MediatR;
 
 namespace EstateManagement.BusinessLogic.Requests
 {
-    public class SwapMerchantDeviceRequest : IRequest<string>
+    public class SwapMerchantDeviceRequest : IRequest
     {
         #region Constructors
 
