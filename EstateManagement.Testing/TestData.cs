@@ -19,6 +19,7 @@
     using Models.MerchantStatement;
     using Newtonsoft.Json;
     using SecurityService.DataTransferObjects.Responses;
+    using Shared.ValueObjects;
     using TransactionProcessor.Transaction.DomainEvents;
     using Address = Models.Merchant.Address;
     using Contact = Models.Merchant.Contact;
@@ -640,8 +641,8 @@
         public static DateTime DepositDateTime = new DateTime(2019, 11, 16);
         public static DateTime DepositDateTime2 = new DateTime(2019, 11, 16);
 
-        public static Decimal DepositAmount = 1000.00m;
-        public static Decimal DepositAmount2 = 1200.00m;
+        public static PositiveMoney DepositAmount = PositiveMoney.Create(Money.Create(1000.00m));
+        public static PositiveMoney DepositAmount2 = PositiveMoney.Create(Money.Create(1200.00m));
 
         public static MerchantDepositSource MerchantDepositSourceManual = MerchantDepositSource.Manual;
 
@@ -652,7 +653,7 @@
                                                                                                                 TestData.MerchantDepositSourceManual,
                                                                                                                 TestData.DepositReference,
                                                                                                                 TestData.DepositDateTime,
-                                                                                                                TestData.DepositAmount);
+                                                                                                                TestData.DepositAmount.Value);
 
         public static MerchantBalance MerchantBalanceModel = new MerchantBalance
                                                              {
@@ -1019,7 +1020,7 @@
             new CallbackHandler.DataTransferObjects.Deposit
             {
                 Reference = TestData.CallbackReference,
-                Amount = TestData.DepositAmount,
+                Amount = TestData.DepositAmount.Value,
                 DateTime = TestData.DepositDateTime,
                 DepositId = TestData.DepositId,
                 AccountNumber = TestData.DepositAccountNumber,

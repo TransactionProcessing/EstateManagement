@@ -518,7 +518,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                        TestData.MerchantDepositSourceManual,
                                                        TestData.DepositReference,
                                                        TestData.DepositDateTime,
-                                                       TestData.DepositAmount,
+                                                       TestData.DepositAmount.Value,
                                                        CancellationToken.None);
             });
         }
@@ -544,7 +544,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                         TestData.MerchantDepositSourceManual,
                                                         TestData.DepositReference,
                                                         TestData.DepositDateTime,
-                                                        TestData.DepositAmount,
+                                                        TestData.DepositAmount.Value,
                                                         CancellationToken.None);
             });
         }
@@ -570,7 +570,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                                                 TestData.MerchantDepositSourceManual,
                                                                                                 TestData.DepositReference,
                                                                                                 TestData.DepositDateTime,
-                                                                                                TestData.DepositAmount,
+                                                                                                TestData.DepositAmount.Value,
                                                                                                 CancellationToken.None);
                                                     });
         }

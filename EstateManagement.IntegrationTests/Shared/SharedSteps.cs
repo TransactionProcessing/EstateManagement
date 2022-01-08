@@ -1161,5 +1161,39 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When(@"I make the following manual merchant deposits the deposit is rejected")]
+        [When(@"I make the following automatic merchant deposits the deposit is rejected")]
+        public async Task WhenIMakeTheFollowingMerchantDepositsTheDepositIsRejected(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
+
+                MakeMerchantDepositRequest makeMerchantDepositRequest = new MakeMerchantDepositRequest
+                                                                        {
+                                                                            DepositDateTime = SpecflowTableHelper.GetDateTimeForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.Now),
+                                                                            Reference = SpecflowTableHelper.GetStringRowValue(tableRow, "Reference"),
+                                                                            Amount = SpecflowTableHelper.GetDecimalValue(tableRow, "Amount")
+                                                                        };
+
+                var exception = Should.Throw<Exception>( async () => {
+
+                await this.TestingContext.DockerHelper.EstateClient.MakeMerchantDeposit(token, estateDetails.EstateId, merchantId, makeMerchantDepositRequest, CancellationToken.None).ConfigureAwait(false);
+
+                });
+                exception.InnerException.GetType().ShouldBe(typeof(InvalidOperationException));
+            }
+        }
+
     }
 }

@@ -153,13 +153,13 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
                                                                                                merchantDepositSource,
                                                                                                TestData.DepositReference,
                                                                                                TestData.DepositDateTime,
-                                                                                               TestData.DepositAmount);
+                                                                                               TestData.DepositAmount.Value);
 
             makeMerchantDepositRequest.ShouldNotBeNull();
             makeMerchantDepositRequest.EstateId.ShouldBe(TestData.EstateId);
             makeMerchantDepositRequest.MerchantId.ShouldBe(TestData.MerchantId);
             makeMerchantDepositRequest.Source.ShouldBe(merchantDepositSource);
-            makeMerchantDepositRequest.Amount.ShouldBe(TestData.DepositAmount);
+            makeMerchantDepositRequest.Amount.ShouldBe(TestData.DepositAmount.Value);
             makeMerchantDepositRequest.DepositDateTime.ShouldBe(TestData.DepositDateTime);
             makeMerchantDepositRequest.Reference.ShouldBe(TestData.DepositReference);
         }

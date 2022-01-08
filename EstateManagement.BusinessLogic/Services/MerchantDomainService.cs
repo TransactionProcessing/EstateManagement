@@ -18,6 +18,7 @@
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
+    using Shared.ValueObjects;
     using Operator = Models.Estate.Operator;
 
     /// <summary>
@@ -328,7 +329,7 @@
                                                     Models.MerchantDepositSource source,
                                                     String reference,
                                                     DateTime depositDateTime,
-                                                    Decimal amount,
+                                                    Decimal depositAmount,
                                                     CancellationToken cancellationToken)
         {
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
@@ -346,6 +347,8 @@
                 throw new InvalidOperationException($"Estate Id {estateId} has not been created");
             }
             
+            PositiveMoney amount = PositiveMoney.Create(Money.Create(depositAmount));
+
             merchantAggregate.MakeDeposit(source,reference,depositDateTime,amount);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
@@ -354,7 +357,7 @@
 
             // Find the deposit
             Deposit deposit = merchant.Deposits.Single(d => d.Reference == reference && d.DepositDateTime == depositDateTime && d.Source == source &&
-                                                                      d.Amount == amount);
+                                                                      d.Amount == amount.Value);
 
             return deposit.DepositId;
         }

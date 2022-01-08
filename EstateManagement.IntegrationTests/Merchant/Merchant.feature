@@ -303,3 +303,30 @@ Scenario: Make Automatic Merchant Deposits
 	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
 	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
 	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |
+
+@PRTest
+Scenario: Non Positive Merchant Deposits Are Rejected
+
+	Given I create the following merchants
+	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
+	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
+	
+	When I make the following manual merchant deposits the deposit is rejected
+	| Amount  | DateTime  | MerchantName    | EstateName    |
+	| 0  | LastMonth | Test Merchant 1 | Test Estate 1 |
+
+	When I make the following manual merchant deposits the deposit is rejected
+	| Amount  | DateTime  | MerchantName    | EstateName    |
+	| -100  | LastMonth | Test Merchant 1 | Test Estate 1 |
+
+	When I make the following automatic merchant deposits the deposit is rejected
+	| Amount  | DateTime  | MerchantName    | EstateName    |
+	| 0  | LastMonth | Test Merchant 1 | Test Estate 1 |
+
+	When I make the following automatic merchant deposits the deposit is rejected
+	| Amount  | DateTime  | MerchantName    | EstateName    |
+	| -100  | LastMonth | Test Merchant 1 | Test Estate 1 |
+
+	Then the merchant balances are as follows
+	| Balance | AvailableBalance | MerchantName    | EstateName    |
+	| 0.00 | 0.00          | Test Merchant 1 | Test Estate 1 |
