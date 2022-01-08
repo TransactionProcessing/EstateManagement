@@ -147,7 +147,7 @@ namespace EstateManagement.MerchantAggregate.Tests
                                                                                           TestData.DepositId,
                                                                                           TestData.DepositReference,
                                                                                           TestData.DepositDateTime,
-                                                                                          TestData.DepositAmount);
+                                                                                          TestData.DepositAmount.Value);
 
             manualDepositMadeEvent.ShouldNotBeNull();
             manualDepositMadeEvent.AggregateId.ShouldBe(TestData.MerchantId);
@@ -157,7 +157,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             manualDepositMadeEvent.DepositId.ShouldBe(TestData.DepositId);
             manualDepositMadeEvent.Reference.ShouldBe(TestData.DepositReference);
             manualDepositMadeEvent.DepositDateTime.ShouldBe(TestData.DepositDateTime);
-            manualDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount);
+            manualDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount.Value);
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace EstateManagement.MerchantAggregate.Tests
                                                                                                 TestData.DepositId,
                                                                                                 TestData.DepositReference,
                                                                                                 TestData.DepositDateTime,
-                                                                                                TestData.DepositAmount);
+                                                                                                TestData.DepositAmount.Value);
 
             automaticDepositMadeEvent.ShouldNotBeNull();
             automaticDepositMadeEvent.AggregateId.ShouldBe(TestData.MerchantId);
@@ -178,7 +178,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             automaticDepositMadeEvent.DepositId.ShouldBe(TestData.DepositId);
             automaticDepositMadeEvent.Reference.ShouldBe(TestData.DepositReference);
             automaticDepositMadeEvent.DepositDateTime.ShouldBe(TestData.DepositDateTime);
-            automaticDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount);
+            automaticDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount.Value);
         }
 
         [Fact]

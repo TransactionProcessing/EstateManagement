@@ -1939,6 +1939,129 @@ this.FeatureBackground();
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Non Positive Merchant Deposits Are Rejected")]
+        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
+        [Xunit.TraitAttribute("Description", "Non Positive Merchant Deposits Are Rejected")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
+        public virtual void NonPositiveMerchantDepositsAreRejected()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non Positive Merchant Deposits Are Rejected", null, tagsOfScenario, argumentsOfScenario);
+#line 308
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+                TechTalk.SpecFlow.Table table103 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "AddressLine1",
+                            "Town",
+                            "Region",
+                            "Country",
+                            "ContactName",
+                            "EmailAddress",
+                            "EstateName"});
+                table103.AddRow(new string[] {
+                            "Test Merchant 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant1.co.uk",
+                            "Test Estate 1"});
+#line 310
+ testRunner.Given("I create the following merchants", ((string)(null)), table103, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table104 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table104.AddRow(new string[] {
+                            "0",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 314
+ testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table104, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table105 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table105.AddRow(new string[] {
+                            "-100",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 318
+ testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table105, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table106 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table106.AddRow(new string[] {
+                            "0",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 322
+ testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table106, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table107 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table107.AddRow(new string[] {
+                            "-100",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 326
+ testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table107, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table108 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Balance",
+                            "AvailableBalance",
+                            "MerchantName",
+                            "EstateName"});
+                table108.AddRow(new string[] {
+                            "0.00",
+                            "0.00",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 330
+ testRunner.Then("the merchant balances are as follows", ((string)(null)), table108, "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.5.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable

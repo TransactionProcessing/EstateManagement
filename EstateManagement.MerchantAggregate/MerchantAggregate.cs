@@ -13,6 +13,7 @@
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.General;
+    using Shared.ValueObjects;
 
     /// <summary>
     /// 
@@ -430,7 +431,6 @@
         /// <summary>
         /// Makes the deposit.
         /// </summary>
-        /// <param name="depositId">The deposit identifier.</param>
         /// <param name="source">The source.</param>
         /// <param name="reference">The reference.</param>
         /// <param name="depositDateTime">The deposit date time.</param>
@@ -438,7 +438,7 @@
         public void MakeDeposit(MerchantDepositSource source,
                                 String reference,
                                 DateTime depositDateTime,
-                                Decimal amount)
+                                PositiveMoney amount)
         {
             String depositData = $"{depositDateTime.ToString("yyyyMMdd hh:mm:ss.fff")}-{reference}-{amount:N2}-{source}";
             Guid depositId = this.GenerateGuidFromString(depositData);
@@ -451,13 +451,13 @@
             if (source == MerchantDepositSource.Manual)
             {
                 ManualDepositMadeEvent manualDepositMadeEvent =
-                    new ManualDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount);
+                    new ManualDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount.Value);
                 this.ApplyAndAppend(manualDepositMadeEvent);
             }
             else if (source == MerchantDepositSource.Automatic)
             {
                 AutomaticDepositMadeEvent automaticDepositMadeEvent =
-                    new AutomaticDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount);
+                    new AutomaticDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount.Value);
                 this.ApplyAndAppend(automaticDepositMadeEvent);
             }
         }

@@ -11,6 +11,7 @@ namespace EstateManagement.MerchantAggregate.Tests
     using EstateManagement.Models;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.ValueObjects;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -282,7 +283,7 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             merchantModel.Deposits.Single().DepositDateTime.ShouldBe(TestData.DepositDateTime);
             merchantModel.Deposits.Single().Reference.ShouldBe(TestData.DepositReference);
-            merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount);
+            merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount.Value);
         }
 
         [Fact]
@@ -304,8 +305,8 @@ namespace EstateManagement.MerchantAggregate.Tests
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021,1,1,0,0,0), 650.00m);
-            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 1, 1, 0, 0, 0), 934.00m);
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021,1,1,0,0,0), PositiveMoney.Create(Money.Create(650.00m)));
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 1, 1, 0, 0, 0), PositiveMoney.Create(Money.Create(934.00m)));
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Deposits.Count.ShouldBe(2);
@@ -317,8 +318,8 @@ namespace EstateManagement.MerchantAggregate.Tests
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 1, 1, 0, 0, 0), 650.00m);
-            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 2, 1, 0, 0, 0), 650.00m);
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 1, 1, 0, 0, 0), PositiveMoney.Create(Money.Create(650.00m)));
+            aggregate.MakeDeposit(TestData.MerchantDepositSourceManual, "Test Data Gen Deposit", new DateTime(2021, 2, 1, 0, 0, 0), PositiveMoney.Create(Money.Create(650.00m)));
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Deposits.Count.ShouldBe(2);
@@ -376,7 +377,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             merchantModel.Deposits.Single().Source.ShouldBe(TestData.MerchantDepositSourceAutomatic);
             merchantModel.Deposits.Single().DepositDateTime.ShouldBe(TestData.DepositDateTime);
             merchantModel.Deposits.Single().Reference.ShouldBe(TestData.DepositReference);
-            merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount);
+            merchantModel.Deposits.Single().Amount.ShouldBe(TestData.DepositAmount.Value);
         }
 
         [Fact]
