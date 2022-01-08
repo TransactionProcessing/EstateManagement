@@ -14,13 +14,13 @@
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AddMerchantDeviceRequest, System.String}" />
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.CreateMerchantRequest, System.String}" />
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AssignOperatorToMerchantRequest, System.String}" />
-    public class MerchantRequestHandler : IRequestHandler<CreateMerchantRequest, String>,
-                                          IRequestHandler<AssignOperatorToMerchantRequest, String>,
+    public class MerchantRequestHandler : IRequestHandler<CreateMerchantRequest>,
+                                          IRequestHandler<AssignOperatorToMerchantRequest>,
                                           IRequestHandler<CreateMerchantUserRequest, Guid>,
-                                          IRequestHandler<AddMerchantDeviceRequest, String>,
+                                          IRequestHandler<AddMerchantDeviceRequest>,
                                           IRequestHandler<MakeMerchantDepositRequest, Guid>,
-                                          IRequestHandler<SetMerchantSettlementScheduleRequest,String>,
-                                          IRequestHandler<SwapMerchantDeviceRequest, String>
+                                          IRequestHandler<SetMerchantSettlementScheduleRequest>,
+                                          IRequestHandler<SwapMerchantDeviceRequest>
     {
         #region Fields
 
@@ -52,7 +52,7 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<String> Handle(CreateMerchantRequest request,
+        public async Task<Unit> Handle(CreateMerchantRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.MerchantDomainService.CreateMerchant(request.EstateId,
@@ -74,7 +74,7 @@
                                                             request.SettlementSchedule,
                                                             cancellationToken);
 
-            return string.Empty;
+            return new Unit();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<String> Handle(AssignOperatorToMerchantRequest request,
+        public async Task<Unit> Handle(AssignOperatorToMerchantRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.MerchantDomainService.AssignOperatorToMerchant(request.EstateId,
@@ -93,7 +93,7 @@
                                                                       request.TerminalNumber,
                                                                       cancellationToken);
 
-            return string.Empty;
+            return new Unit();
         }
 
         /// <summary>
@@ -123,12 +123,12 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<String> Handle(AddMerchantDeviceRequest request,
+        public async Task<Unit> Handle(AddMerchantDeviceRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.MerchantDomainService.AddDeviceToMerchant(request.EstateId, request.MerchantId, request.DeviceId, request.DeviceIdentifier, cancellationToken);
 
-            return string.Empty;
+            return new Unit();
         }
 
         #endregion
@@ -155,19 +155,19 @@
             return depositId;
         }
 
-        public async Task<String> Handle(SetMerchantSettlementScheduleRequest request,
+        public async Task<Unit> Handle(SetMerchantSettlementScheduleRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.MerchantDomainService.SetMerchantSettlementSchedule(request.EstateId, request.MerchantId, request.SettlementSchedule, cancellationToken);
 
-            return String.Empty;
+            return new Unit();
         }
 
-        public async Task<string> Handle(SwapMerchantDeviceRequest request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SwapMerchantDeviceRequest request, CancellationToken cancellationToken)
         {
             await this.MerchantDomainService.SwapMerchantDevice(request.EstateId, request.MerchantId, request.DeviceId, request.OriginalDeviceIdentifier, request.NewDeviceIdentifier,cancellationToken);
 
-            return string.Empty;
+            return new Unit();
         }
     }
 }

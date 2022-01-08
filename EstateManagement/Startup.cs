@@ -254,26 +254,26 @@ namespace EstateManagement
                 return t => context.GetService(t);
             });
 
-            services.AddSingleton<IRequestHandler<CreateEstateRequest, String>, EstateRequestHandler>();
+            services.AddSingleton<IRequestHandler<CreateEstateRequest>, EstateRequestHandler>();
             services.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddOperatorToEstateRequest, String>, EstateRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddOperatorToEstateRequest>, EstateRequestHandler>();
 
-            services.AddSingleton<IRequestHandler<CreateMerchantRequest, String>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest, String>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<CreateMerchantRequest>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest>, MerchantRequestHandler>();
             services.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddMerchantDeviceRequest, String>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddMerchantDeviceRequest>, MerchantRequestHandler>();
             services.AddSingleton<IRequestHandler<MakeMerchantDepositRequest, Guid>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest, String>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest, String>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest>, MerchantRequestHandler>();
+            services.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest>, MerchantRequestHandler>();
 
-            services.AddSingleton<IRequestHandler<CreateContractRequest, String>, ContractRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddProductToContractRequest, String>, ContractRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest, String>, ContractRequestHandler>();
+            services.AddSingleton<IRequestHandler<CreateContractRequest>, ContractRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddProductToContractRequest>, ContractRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest>, ContractRequestHandler>();
 
-            services.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest>, MerchantStatementRequestHandler>();
+            services.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest>, MerchantStatementRequestHandler>();
             services.AddSingleton<IRequestHandler<GenerateMerchantStatementRequest, Guid>, MerchantStatementRequestHandler>();
-            services.AddSingleton<IRequestHandler<EmailMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
+            services.AddSingleton<IRequestHandler<EmailMerchantStatementRequest>, MerchantStatementRequestHandler>();
 
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
             {

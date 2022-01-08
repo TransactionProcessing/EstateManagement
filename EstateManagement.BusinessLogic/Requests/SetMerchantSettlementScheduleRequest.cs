@@ -4,7 +4,7 @@
     using MediatR;
     using Models;
 
-    public class SetMerchantSettlementScheduleRequest : IRequest<String>
+    public class SetMerchantSettlementScheduleRequest : IRequest
     {
         public Guid EstateId { get; }
 

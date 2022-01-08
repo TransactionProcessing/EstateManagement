@@ -6,7 +6,7 @@ namespace EstateManagement.BusinessLogic.Requests
 {
     using MediatR;
 
-    public class AddOperatorToEstateRequest : IRequest<String>
+    public class AddOperatorToEstateRequest : IRequest
     {
         #region Constructors
 
