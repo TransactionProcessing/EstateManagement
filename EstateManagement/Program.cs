@@ -7,6 +7,7 @@ namespace EstateManagement
     using BusinessLogic.EventHandling;
     using BusinessLogic.Events;
     using EventStore.Client;
+    using Lamar.Microsoft.DependencyInjection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +26,7 @@ namespace EstateManagement
             Program.CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        public static IWebHostBuilder CreateHostBuilder(string[] args)
         {
             Console.Title = "Estate Management";
 
@@ -35,36 +36,27 @@ namespace EstateManagement
                                                                   .AddJsonFile("hosting.development.json", optional: true)
                                                                   .AddEnvironmentVariables().Build();
 
-            IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
-            hostBuilder.ConfigureLogging(logging =>
-                                         {
-                                             logging.AddConsole(); 
+            //IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
+            //hostBuilder.ConfigureLogging(logging =>
+            //                             {
+            //                                 logging.AddConsole(); 
 
-                                         });
-            hostBuilder.ConfigureWebHostDefaults(webBuilder =>
-                                                 {
-                                                     webBuilder.UseStartup<Startup>();
-                                                     webBuilder.UseConfiguration(config);
-                                                     webBuilder.UseKestrel();
-                                                 });
-                //}).ConfigureServices(services =>
-                                          //{
-                                          //    CallbackReceivedEnrichedEvent c = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
+            //                             });
+            //hostBuilder.ConfigureWebHostDefaults(webBuilder =>
+            //                                     {
+            //                                         webBuilder.UseLamar().UseStartup<Startup>().UseConfiguration(config).UseKestrel();
+            //                                     });
+            //return hostBuilder;
 
-                                          //    TypeProvider.LoadDomainEventsTypeDynamically();
+            IWebHostBuilder builder = new WebHostBuilder();
+            builder
+                .ConfigureLogging(logging => { logging.AddConsole(); })
+                .UseLamar()
+                .UseConfiguration(config)
+                .UseKestrel()
+                .UseStartup<Startup>();
 
-                                          //    services.AddHostedService<SubscriptionWorker>(provider =>
-                                          //    {
-                                          //        IDomainEventHandlerResolver r =
-                                          //            provider.GetRequiredService<IDomainEventHandlerResolver>();
-                                          //        EventStorePersistentSubscriptionsClient p = provider.GetRequiredService<EventStorePersistentSubscriptionsClient>();
-                                          //        HttpClient h = provider.GetRequiredService<HttpClient>();
-                                          //        SubscriptionWorker worker = new SubscriptionWorker(r, p, h);
-                                          //        worker.TraceGenerated += Worker_TraceGenerated;
-                                          //        return worker;
-                                          //    });
-                                          //});
-            return hostBuilder;
+            return builder;
         }
 
         /// <summary>
