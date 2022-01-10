@@ -7,7 +7,7 @@
     /// 
     /// </summary>
     /// <seealso cref="MediatR.IRequest{System.String}" />
-    public class AddMerchantDeviceRequest : IRequest<String>
+    public class AddMerchantDeviceRequest : IRequest
     {
         #region Constructors
 

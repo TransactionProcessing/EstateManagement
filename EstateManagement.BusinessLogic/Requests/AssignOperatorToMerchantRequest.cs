@@ -6,7 +6,7 @@ namespace EstateManagement.BusinessLogic.Requests
 {
     using MediatR;
 
-    public class AssignOperatorToMerchantRequest : IRequest<String>
+    public class AssignOperatorToMerchantRequest : IRequest
     {
         #region Constructors
 

@@ -3,7 +3,7 @@
     using System;
     using MediatR;
 
-    public class AddTransactionToMerchantStatementRequest : IRequest<Unit>
+    public class AddTransactionToMerchantStatementRequest : IRequest
     {
         #region Constructors
 

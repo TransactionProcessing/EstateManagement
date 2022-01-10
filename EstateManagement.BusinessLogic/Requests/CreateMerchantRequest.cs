@@ -6,7 +6,7 @@ namespace EstateManagement.BusinessLogic.Requests
 {
     using MediatR;
 
-    public class CreateMerchantRequest : IRequest<String>
+    public class CreateMerchantRequest : IRequest
     {
         #region Constructors
 

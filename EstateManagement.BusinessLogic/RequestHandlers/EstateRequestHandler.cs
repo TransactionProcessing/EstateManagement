@@ -13,9 +13,9 @@
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.CreateEstateUserRequest, System.Guid}" />
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.CreateEstateRequest, System.String}" />
     /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AddOperatorToEstateRequest, System.String}" />
-    public class EstateRequestHandler : IRequestHandler<CreateEstateRequest, String>,
-                                        IRequestHandler<AddOperatorToEstateRequest, String>,
-                                        IRequestHandler<CreateEstateUserRequest, Guid>
+    public class EstateRequestHandler : IRequestHandler<CreateEstateRequest>,
+                                        IRequestHandler<AddOperatorToEstateRequest>,
+                                        IRequestHandler<CreateEstateUserRequest,Guid>
     {
         #region Fields
 
@@ -47,12 +47,12 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<String> Handle(CreateEstateRequest request,
+        public async Task<Unit> Handle(CreateEstateRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.EstateDomainService.CreateEstate(request.EstateId, request.Name, cancellationToken);
 
-            return string.Empty;
+            return new Unit();
         }
 
         /// <summary>
@@ -81,7 +81,7 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<String> Handle(AddOperatorToEstateRequest request,
+        public async Task<Unit> Handle(AddOperatorToEstateRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.EstateDomainService.AddOperatorToEstate(request.EstateId,
@@ -91,7 +91,7 @@
                                                                request.RequireCustomTerminalNumber,
                                                                cancellationToken);
 
-            return string.Empty;
+            return new Unit();
         }
 
         #endregion
