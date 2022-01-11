@@ -63,6 +63,7 @@
 
             //Set WebKit path
             settings.WebKitPath = ConfigurationReader.GetValue("AppSettings", "PDFGenerateBinariesPath");
+            settings.TempPath = "/home/txnproc/pdftemp";
 
             //Assign WebKit settings to HTML converter
             htmlConverter.ConverterSettings = settings;
