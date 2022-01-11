@@ -12,6 +12,7 @@ namespace EstateManagement
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Bootstrapper;
     using BusinessLogic.Common;
     using BusinessLogic.EventHandling;
     using BusinessLogic.Events;
@@ -26,6 +27,7 @@ namespace EstateManagement
     using EstateReporting.Database;
     using EventStore.Client;
     using HealthChecks.UI.Client;
+    using Lamar;
     using MediatR;
     using Merchant.DomainEvents;
     using MerchantStatement.DomainEvents;
@@ -47,6 +49,7 @@ namespace EstateManagement
     using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
+    using Microsoft.Win32;
     using Models.Factories;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
@@ -114,11 +117,11 @@ namespace EstateManagement
         /// </value>
         public static IWebHostEnvironment WebHostEnvironment { get; set; }
 
-        private static EventStoreClientSettings EventStoreClientSettings;
+        public static EventStoreClientSettings EventStoreClientSettings;
 
         public static IServiceProvider ServiceProvider { get; set; }
 
-        private static void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
+        public static void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
         {
             if (settings == null)
             {
@@ -146,90 +149,30 @@ namespace EstateManagement
             Startup.EventStoreClientSettings = settings;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        /// <summary>
-        /// Configures the services.
-        /// </summary>
-        /// <param name="services">The services.</param>
-        public void ConfigureServices(IServiceCollection services)
+        public static Container Container;
+
+        public void ConfigureContainer(ServiceRegistry services)
         {
             ConfigurationReader.Initialise(Startup.Configuration);
 
             Startup.ConfigureEventStoreSettings();
 
-            this.ConfigureMiddlewareServices(services);
+            services.IncludeRegistry<MiddlewareRegistry>();
+            services.IncludeRegistry<MediatorRegistry>();
+            services.IncludeRegistry<RepositoryRegistry>();
+            services.IncludeRegistry<DomainServiceRegistry>();
+            services.IncludeRegistry<ClientsRegistry>();
+            services.IncludeRegistry<MiscRegistry>();
+            services.IncludeRegistry<EventHandlerRegistry>();
 
-            services.AddTransient<IMediator, Mediator>();
-            services.AddSingleton<IEstateManagementManager, EstateManagementManager>();
-            
-            Boolean useConnectionStringConfig = Boolean.Parse(ConfigurationReader.GetValue("AppSettings", "UseConnectionStringConfig"));
-            
-            if (useConnectionStringConfig)
-            {
-                String connectionStringConfigurationConnString = ConfigurationReader.GetConnectionString("ConnectionStringConfiguration");
-                services.AddSingleton<IConnectionStringConfigurationRepository, ConnectionStringConfigurationRepository>();
-                services.AddTransient<ConnectionStringConfigurationContext>(c =>
-                                                                            {
-                                                                                return new ConnectionStringConfigurationContext(connectionStringConfigurationConnString);
-                                                                            });
+            Startup.LoadTypes();
 
-                // TODO: Read this from a the database and set
-            }
-            else
-            {
-                services.AddEventStoreClient(Startup.ConfigureEventStoreSettings);
-                services.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
-                services.AddEventStorePersistentSubscriptionsClient(Startup.ConfigureEventStoreSettings);
-                services.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
-            }
+            Startup.Container = new Container(services);
+        }
+       
 
-            services.AddTransient<IEventStoreContext, EventStoreContext>();
-            services.AddSingleton<IEstateManagementRepository, EstateManagementRepository>();
-            services.AddSingleton<IDbContextFactory<EstateReportingGenericContext>, DbContextFactory<EstateReportingGenericContext>>();
-
-            Dictionary<String, String[]> handlerEventTypesToSilentlyHandle = new Dictionary<String, String[]>();
-
-            if (Startup.Configuration != null)
-            {
-                IConfigurationSection section = Startup.Configuration.GetSection("AppSettings:HandlerEventTypesToSilentlyHandle");
-
-                if (section != null)
-                {
-                    Startup.Configuration.GetSection("AppSettings:HandlerEventTypesToSilentlyHandle").Bind(handlerEventTypesToSilentlyHandle);
-                }
-            }
-
-            services.AddSingleton<Func<String, EstateReportingGenericContext>>(cont => (connectionString) =>
-                                                                                       {
-                                                                                           String databaseEngine =
-                                                                                               ConfigurationReader.GetValue("AppSettings", "DatabaseEngine");
-
-                                                                                           return databaseEngine switch
-                                                                                           {
-                                                                                               "MySql" => new EstateReportingMySqlContext(connectionString),
-                                                                                               "SqlServer" => new EstateReportingSqlServerContext(connectionString),
-                                                                                               _ => throw new
-                                                                                                   NotSupportedException($"Unsupported Database Engine {databaseEngine}")
-                                                                                           };
-                                                                                       });
-
-            services.AddTransient<IEventStoreContext, EventStoreContext>();
-            services.AddSingleton<IAggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<EstateAggregate.EstateAggregate, DomainEventRecord.DomainEvent>>();
-            services.AddSingleton<IAggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<MerchantAggregate.MerchantAggregate, DomainEventRecord.DomainEvent>>();
-            services.AddSingleton<IAggregateRepository<ContractAggregate.ContractAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<ContractAggregate.ContractAggregate, DomainEventRecord.DomainEvent>>();
-            services.AddSingleton<IAggregateRepository<MerchantStatementAggregate.MerchantStatementAggregate, DomainEventRecord.DomainEvent>, AggregateRepository<MerchantStatementAggregate.MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
-            services.AddSingleton<IEstateDomainService, EstateDomainService>();
-            services.AddSingleton<IMerchantDomainService, MerchantDomainService>();
-            services.AddSingleton<IContractDomainService, ContractDomainService>();
-            services.AddSingleton<IMerchantStatementDomainService, MerchantStatementDomainService>();
-            services.AddSingleton<IModelFactory, ModelFactory>();
-            services.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
-            services.AddSingleton<ISecurityServiceClient, SecurityServiceClient>();
-            services.AddSingleton<IMessagingServiceClient, MessagingServiceClient>();
-            services.AddSingleton<IStatementBuilder, StatementBuilder>();
-            services.AddSingleton<IFileSystem, FileSystem>();
-            services.AddSingleton<IPDFGenerator, PDFGenerator>();
-
+        public static void LoadTypes()
+        {
             ContractCreatedEvent c = new ContractCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "");
             MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
             EstateCreatedEvent e = new EstateCreatedEvent(Guid.NewGuid(), "");
@@ -237,199 +180,15 @@ namespace EstateManagement
             TransactionHasBeenCompletedEvent t =
                 new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
             MerchantFeeSettledEvent f = new MerchantFeeSettledEvent(Guid.NewGuid(),
-                                                                  Guid.NewGuid(),
-                                                                  Guid.NewGuid(),
-                                                                  Guid.NewGuid(),
-                                                                  0,
-                                                                  0,
-                                                                  Guid.NewGuid(),
-                                                                  0,
-                                                                  DateTime.MinValue);
+                                                                    Guid.NewGuid(),
+                                                                    Guid.NewGuid(),
+                                                                    Guid.NewGuid(),
+                                                                    0,
+                                                                    0,
+                                                                    Guid.NewGuid(),
+                                                                    0,
+                                                                    DateTime.MinValue);
             StatementCreatedEvent s = new StatementCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.MinValue);
-            TypeProvider.LoadDomainEventsTypeDynamically();
-
-            // request & notification handlers
-            services.AddTransient<ServiceFactory>(context =>
-            {
-                return t => context.GetService(t);
-            });
-
-            services.AddSingleton<IRequestHandler<CreateEstateRequest,Unit>, EstateRequestHandler>();
-            services.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddOperatorToEstateRequest, Unit>, EstateRequestHandler>();
-
-            services.AddSingleton<IRequestHandler<CreateMerchantRequest, Unit>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest, Unit>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddMerchantDeviceRequest, Unit>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<MakeMerchantDepositRequest, Guid>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest, Unit>, MerchantRequestHandler>();
-            services.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest, Unit>, MerchantRequestHandler>();
-
-            services.AddSingleton<IRequestHandler<CreateContractRequest, Unit>, ContractRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddProductToContractRequest, Unit>, ContractRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest, Unit>, ContractRequestHandler>();
-
-            services.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
-            services.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
-            services.AddSingleton<IRequestHandler<GenerateMerchantStatementRequest, Guid>, MerchantStatementRequestHandler>();
-            services.AddSingleton<IRequestHandler<EmailMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
-
-            services.AddSingleton<Func<String, String>>(container => (serviceName) =>
-            {
-                return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
-            });
-            
-            HttpClientHandler httpClientHandler = new HttpClientHandler
-                                                {
-                                                    ServerCertificateCustomValidationCallback = (message,
-                                                                                                 certificate2,
-                                                                                                 arg3,
-                                                                                                 arg4) =>
-                                                                                                {
-                                                                                                    return true;
-                                                                                                }
-                                                };
-            HttpClient httpClient = new HttpClient(httpClientHandler);
-            services.AddSingleton<HttpClient>(httpClient);
-
-            Dictionary<String, String[]> eventHandlersConfiguration = new Dictionary<String, String[]>();
-
-            if (Startup.Configuration != null)
-            {
-                IConfigurationSection section = Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration");
-
-                if (section != null)
-                {
-                    Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration").Bind(eventHandlersConfiguration);
-                }
-            }
-            services.AddSingleton<Dictionary<String, String[]>>(eventHandlersConfiguration);
-
-            services.AddSingleton<Func<Type, IDomainEventHandler>>(container => (type) =>
-                                                                                {
-                                                                                    IDomainEventHandler handler = container.GetService(type) as IDomainEventHandler;
-                                                                                    return handler;
-                                                                                });
-
-            services.AddSingleton<MerchantDomainEventHandler>();
-            services.AddSingleton<TransactionDomainEventHandler>();
-            services.AddSingleton<SettlementDomainEventHandler>();
-            services.AddSingleton<StatementDomainEventHandler>();
-            services.AddSingleton<IDomainEventHandlerResolver, DomainEventHandlerResolver>();
-
-            Startup.ServiceProvider = services.BuildServiceProvider();
-        }
-        
-        /// <summary>
-        /// Configures the middleware services.
-        /// </summary>
-        /// <param name="services">The services.</param>
-        private void ConfigureMiddlewareServices(IServiceCollection services)
-        {
-            services.AddHealthChecks()
-                    .AddSqlServer(connectionString:ConfigurationReader.GetConnectionString("HealthCheck"),
-                                  healthQuery:"SELECT 1;",
-                                  name:"Read Model Server",
-                                  failureStatus:HealthStatus.Degraded,
-                                  tags:new string[] {"db", "sql", "sqlserver"})
-                    .AddEventStore(Startup.EventStoreClientSettings,
-                                   userCredentials: Startup.EventStoreClientSettings.DefaultCredentials,
-                                   name: "Eventstore",
-                                     failureStatus: HealthStatus.Unhealthy,
-                                     tags: new string[] { "db", "eventstore" })
-                    .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("SecurityConfiguration", "Authority")}/health"),
-                         name:"Security Service",
-                         httpMethod:HttpMethod.Get,
-                         failureStatus:HealthStatus.Unhealthy,
-                         tags: new string[] { "security", "authorisation" });
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                                   {
-                                       Title = "Estate Management API",
-                                       Version = "1.0",
-                                       Description = "A REST Api to manage all aspects of an estate (merchants, operators and contracts).",
-                                       Contact = new OpenApiContact
-                                                 {
-                                                     Name = "Stuart Ferguson",
-                                                     Email = "golfhandicapping@btinternet.com"
-                                                 }
-                                   });
-                // add a custom operation filter which sets default values
-                c.OperationFilter<SwaggerDefaultValues>();
-                c.ExampleFilters();
-
-                //Locate the XML files being generated by ASP.NET...
-                var directory = new DirectoryInfo(AppContext.BaseDirectory);
-                var xmlFiles = directory.GetFiles("*.xml");
-
-                //... and tell Swagger to use those XML comments.
-                foreach (FileInfo fileInfo in xmlFiles)
-                {
-                    c.IncludeXmlComments(fileInfo.FullName);    
-                }
-
-            });
-
-            services.AddSwaggerExamplesFromAssemblyOf<SwaggerJsonConverter>();
-            
-            services.AddAuthentication(options =>
-                                       {
-                                           options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                                           options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                                           options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                                           
-
-                                       })
-                    .AddJwtBearer(options =>
-                                  {
-                                      options.BackchannelHttpHandler = new HttpClientHandler
-                                                                        {
-                                                                            ServerCertificateCustomValidationCallback =
-                                                                                (message, certificate, chain, sslPolicyErrors) => true
-                                                                        };
-                                      options.Authority = ConfigurationReader.GetValue("SecurityConfiguration", "Authority");
-                                      options.Audience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName");
-                                  
-                                      options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                                                                          {
-                                                                              ValidateAudience = false,
-                                                                              ValidAudience = ConfigurationReader.GetValue("SecurityConfiguration", "ApiName"),
-                                                                              ValidIssuer = ConfigurationReader.GetValue("SecurityConfiguration", "Authority"),
-                                                                          };
-                                      options.IncludeErrorDetails = true;
-                                  });
-
-            services.AddControllers().AddNewtonsoftJson(options =>
-                                                        {
-                                                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                                                            options.SerializerSettings.TypeNameHandling = TypeNameHandling.None;
-                                                            options.SerializerSettings.Formatting = Formatting.Indented;
-                                                            options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-                                                            options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                                                        });
-
-            Assembly assembly = this.GetType().GetTypeInfo().Assembly;
-            services.AddMvcCore().AddApplicationPart(assembly).AddControllersAsServices();
-        }
-
-        public static void LoadTypes()
-        {
-            CallbackReceivedEnrichedEvent c = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
-            TransactionHasBeenCompletedEvent t =
-                new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
-            MerchantFeeSettledEvent m = new MerchantFeeSettledEvent(Guid.NewGuid(),
-                                                                  Guid.NewGuid(),
-                                                                  Guid.NewGuid(),
-                                                                  Guid.NewGuid(),
-                                                                  0,
-                                                                  0,
-                                                                  Guid.NewGuid(),
-                                                                  0,
-                                                                  DateTime.MinValue);
-
             TypeProvider.LoadDomainEventsTypeDynamically();
         }
 
@@ -546,7 +305,7 @@ namespace EstateManagement
                 // init our SubscriptionRepository
                 subscriptionRepository.PreWarm(CancellationToken.None).Wait();
 
-                var eventHandlerResolver = Startup.ServiceProvider.GetService<IDomainEventHandlerResolver>();
+                var eventHandlerResolver = applicationBuilder.ApplicationServices.GetService<IDomainEventHandlerResolver>();
 
                 SubscriptionWorker concurrentSubscriptions = SubscriptionWorker.CreateConcurrentSubscriptionWorker(eventStoreConnectionString, eventHandlerResolver, subscriptionRepository, inflightMessages, persistentSubscriptionPollingInSeconds);
 
