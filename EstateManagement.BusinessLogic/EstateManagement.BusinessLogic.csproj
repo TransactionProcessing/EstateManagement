@@ -10,8 +10,7 @@
     <PackageReference Include="SecurityService.Client" Version="1.0.8" />
     <PackageReference Include="Shared.DomainDrivenDesign" Version="1.1.2" />
     <PackageReference Include="MediatR" Version="9.0.0" />
-    <!--<PackageReference Include="Syncfusion.HtmlToPdfConverter.Blink.Net.Core.Linux" Version="19.4.0.40" />-->
-    <PackageReference Include="Syncfusion.HtmlToPdfConverter.Blink.Net.Core.Windows" Version="19.4.0.40" />
+    <PackageReference Include="Syncfusion.HtmlToPdfConverter.QtWebKit.Net.Core" Version="19.4.0.38" />
     <PackageReference Include="System.IO.Abstractions" Version="16.0.1" />
     <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="1.0.17-build79" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="1.0.17-build79" />
@@ -32,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="QtBinariesLinux\imageformats\libqdds.so">
+	  <!--<None Update="QtBinariesLinux\imageformats\libqdds.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="QtBinariesLinux\imageformats\libqgif.so">
@@ -277,7 +276,7 @@
     </None>
     <None Update="QtBinariesWindows\zlib1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </None>-->
     <None Update="Templates\Email\bootstrap\bootstrap.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

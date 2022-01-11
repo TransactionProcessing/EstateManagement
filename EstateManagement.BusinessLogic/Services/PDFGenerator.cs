@@ -51,10 +51,10 @@
                                             CancellationToken cancellationToken)
         {
             //Initialize HTML to PDF converter 
-            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter(HtmlRenderingEngine.Blink);
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter(HtmlRenderingEngine.WebKit);
 
-            BlinkConverterSettings settings = new BlinkConverterSettings
-                                              {
+            WebKitConverterSettings settings = new WebKitConverterSettings
+            {
                                                   Margin = new PdfMargins
                                                            {
                                                                All = 50
@@ -62,7 +62,7 @@
                                               };
 
             //Set WebKit path
-            settings.BlinkPath = ConfigurationReader.GetValue("AppSettings", "BlinkBinariesPath");
+            settings.WebKitPath = ConfigurationReader.GetValue("AppSettings", "PDFGenerateBinariesPath");
 
             //Assign WebKit settings to HTML converter
             htmlConverter.ConverterSettings = settings;
