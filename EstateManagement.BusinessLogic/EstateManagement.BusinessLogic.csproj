@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <!--<None Update="QtBinariesLinux\imageformats\libqdds.so">
+	  <None Update="QtBinariesLinux\imageformats\libqdds.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="QtBinariesLinux\imageformats\libqgif.so">
@@ -276,7 +276,7 @@
     </None>
     <None Update="QtBinariesWindows\zlib1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>-->
+    </None>
     <None Update="Templates\Email\bootstrap\bootstrap.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
