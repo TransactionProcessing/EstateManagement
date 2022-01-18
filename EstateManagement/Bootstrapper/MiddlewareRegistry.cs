@@ -14,6 +14,7 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using Shared.EventStore.Extensions;
+    using Shared.Extensions;
     using Shared.General;
     using Swashbuckle.AspNetCore.Filters;
 
@@ -40,11 +41,7 @@
                                userCredentials:Startup.EventStoreClientSettings.DefaultCredentials,
                                name:"Eventstore",
                                failureStatus:HealthStatus.Unhealthy,
-                               tags:new[] {"db", "eventstore"}).AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("SecurityConfiguration", "Authority")}/health"),
-                                                                            name:"Security Service",
-                                                                            httpMethod:HttpMethod.Get,
-                                                                            failureStatus:HealthStatus.Unhealthy,
-                                                                            tags:new[] {"security", "authorisation"});
+                               tags:new[] {"db", "eventstore"}).AddSecurityService(ApiEndpointHttpHandler).AddMessagingService();
 
             this.AddSwaggerGen(c =>
                                {
@@ -116,6 +113,20 @@
 
             Assembly assembly = this.GetType().GetTypeInfo().Assembly;
             this.AddMvcCore().AddApplicationPart(assembly).AddControllersAsServices();
+        }
+
+        private HttpClientHandler ApiEndpointHttpHandler(IServiceProvider serviceProvider)
+        {
+            return new HttpClientHandler
+                   {
+                       ServerCertificateCustomValidationCallback = (message,
+                                                                    cert,
+                                                                    chain,
+                                                                    errors) =>
+                                                                   {
+                                                                       return true;
+                                                                   }
+                   };
         }
 
         #endregion
