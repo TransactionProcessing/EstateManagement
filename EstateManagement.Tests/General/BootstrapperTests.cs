@@ -49,6 +49,7 @@
             configuration.Add("EventStoreSettings:Password", "changeit");
             configuration.Add("AppSettings:UseConnectionStringConfig", "false");
             configuration.Add("AppSettings:SecurityService", "http://127.0.0.1");
+            configuration.Add("AppSettings:MessagingServiceApi", "http://127.0.0.1");
             configuration.Add("AppSettings:DatabaseEngine", "SqlServer");
             
             builder.AddInMemoryCollection(configuration);
