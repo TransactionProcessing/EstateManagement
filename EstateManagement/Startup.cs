@@ -206,7 +206,6 @@ namespace EstateManagement
 
             if (env.IsDevelopment())
             {
-                nlogConfigFilename = $"nlog.{env.EnvironmentName}.config";
                 app.UseDeveloperExceptionPage();
             }
 
