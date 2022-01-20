@@ -62,11 +62,6 @@
         public Guid TestId;
 
         /// <summary>
-        /// The callback handler container name
-        /// </summary>
-        protected String CallbackHandlerContainerName;
-
-        /// <summary>
         /// The callback handler port
         /// </summary>
         protected Int32 CallbackHandlerPort;
