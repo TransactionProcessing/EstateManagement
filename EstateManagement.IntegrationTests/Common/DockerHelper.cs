@@ -147,50 +147,7 @@
             await client.CreateAsync(estateName.Replace(" ", ""), "Reporting", settings);
             await client.CreateAsync($"EstateManagementSubscriptionStream_{estateName.Replace(" ", "")}", "Estate Management", settings);
         }
-
-        /// <summary>
-        /// Setups the callback handler container.
-        /// </summary>
-        /// <param name="containerName">Name of the container.</param>
-        /// <param name="logger">The logger.</param>
-        /// <param name="imageName">Name of the image.</param>
-        /// <param name="networkServices">The network services.</param>
-        /// <param name="hostFolder">The host folder.</param>
-        /// <param name="dockerCredentials">The docker credentials.</param>
-        /// <param name="eventStoreAddress">The event store address.</param>
-        /// <param name="forceLatestImage">if set to <c>true</c> [force latest image].</param>
-        /// <param name="additionalEnvironmentVariables">The additional environment variables.</param>
-        /// <returns></returns>
-        public IContainerService SetupCallbackHandlerContainer(String imageName,
-                                                               List<INetworkService> networkServices,
-                                                               Boolean forceLatestImage = false,
-                                                               List<String> additionalEnvironmentVariables = null)
-        {
-            this.Logger.LogInformation("About to Start Callback Handler Container");
-
-            List<String> environmentVariables = new List<String>();
-            environmentVariables.Add($"EventStoreSettings:ConnectionString={this.GenerateEventStoreConnectionString()}");
-
-            if (additionalEnvironmentVariables != null)
-            {
-                environmentVariables.AddRange(additionalEnvironmentVariables);
-            }
-
-            ContainerBuilder callbackHandlerContainer = new Builder().UseContainer().WithName(this.CallbackHandlerContainerName).WithEnvironment(environmentVariables.ToArray())
-                                                                     .UseImage(imageName, forceLatestImage).ExposePort(DockerHelper.CallbackHandlerDockerPort)
-                                                                     .UseNetwork(networkServices.ToArray());
-
-            callbackHandlerContainer = MountHostFolder(callbackHandlerContainer);
-            callbackHandlerContainer = SetDockerCredentials(callbackHandlerContainer);
-
-            // Now build and return the container                
-            IContainerService builtContainer = callbackHandlerContainer.Build().Start().WaitForPort($"{DockerHelper.CallbackHandlerDockerPort}/tcp", 30000);
-
-            this.Logger.LogInformation("Callback Handler Container Started");
-
-            return builtContainer;
-        }
-
+        
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
@@ -316,8 +273,8 @@
             this.TestHostClient = new HttpClient();
             this.TestHostClient.BaseAddress = new Uri($"http://127.0.0.1:{this.TestHostServicePort}");
 
-            // TODO: Load up the projections
-            await this.LoadEventStoreProjections().ConfigureAwait(false);
+            // Load up the projections
+            await this.LoadEventStoreProjections(this.EventStoreHttpPort);
 
             String callbackUrl = $"http://{this.CallbackHandlerContainerName}:{DockerHelper.CallbackHandlerDockerPort}/api/callbacks";
             await this.ConfigureTestBank(DockerHelper.TestBankSortCode, DockerHelper.TestBankAccountNumber, callbackUrl);
@@ -349,37 +306,7 @@
                 }
             }
         }
-
-        /// <summary>
-        /// Configures the event store settings.
-        /// </summary>
-        /// <param name="eventStoreHttpPort">The event store HTTP port.</param>
-        /// <returns></returns>
-        private static EventStoreClientSettings ConfigureEventStoreSettings(Int32 eventStoreHttpPort)
-        {
-            String connectionString = $"http://127.0.0.1:{eventStoreHttpPort}";
-
-            EventStoreClientSettings settings = new EventStoreClientSettings();
-            settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
-                                                      {
-                                                          SslOptions =
-                                                          {
-                                                              RemoteCertificateValidationCallback = (sender,
-                                                                                                     certificate,
-                                                                                                     chain,
-                                                                                                     errors) => true,
-                                                          }
-                                                      };
-            settings.ConnectionName = "Specflow";
-            settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
-                                            {
-                                                Address = new Uri(connectionString),
-                                            };
-
-            settings.DefaultCredentials = new UserCredentials("admin", "changeit");
-            return settings;
-        }
-
+        
         /// <summary>
         /// Configures the test bank.
         /// </summary>
@@ -405,48 +332,7 @@
                                 responseMessage.IsSuccessStatusCode.ShouldBeTrue();
                             });
         }
-
-        /// <summary>
-        /// Loads the event store projections.
-        /// </summary>
-        private async Task LoadEventStoreProjections()
-        {
-            //Start our Continous Projections - we might decide to do this at a different stage, but now lets try here
-            String projectionsFolder = "../../../projections/continuous";
-            IPAddress[] ipAddresses = Dns.GetHostAddresses("127.0.0.1");
-
-            if (!string.IsNullOrWhiteSpace(projectionsFolder))
-            {
-                DirectoryInfo di = new DirectoryInfo(projectionsFolder);
-
-                if (di.Exists)
-                {
-                    FileInfo[] files = di.GetFiles();
-
-                    EventStoreProjectionManagementClient projectionClient =
-                        new EventStoreProjectionManagementClient(DockerHelper.ConfigureEventStoreSettings(this.EventStoreHttpPort));
-
-                    foreach (FileInfo file in files)
-                    {
-                        String projection = File.ReadAllText(file.FullName);
-                        String projectionName = file.Name.Replace(".js", string.Empty);
-
-                        try
-                        {
-                            this.Logger.LogInformation($"Creating projection [{projectionName}] from file [{file.FullName}]");
-                            await projectionClient.CreateContinuousAsync(projectionName, projection, trackEmittedStreams:true).ConfigureAwait(false);
-                        }
-                        catch(Exception e)
-                        {
-                            this.Logger.LogError(new Exception($"Projection [{projectionName}] error", e));
-                        }
-                    }
-                }
-            }
-
-            this.Logger.LogInformation("Loaded projections");
-        }
-
+        
         /// <summary>
         /// Removes the estate read model.
         /// </summary>
