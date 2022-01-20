@@ -140,12 +140,11 @@
         /// <param name="estateName">Name of the estate.</param>
         public async Task PopulateSubscriptionServiceConfiguration(String estateName)
         {
-            EventStorePersistentSubscriptionsClient client =
-                new EventStorePersistentSubscriptionsClient(DockerHelper.ConfigureEventStoreSettings(this.EventStoreHttpPort));
-
-            PersistentSubscriptionSettings settings = new PersistentSubscriptionSettings(resolveLinkTos:true, StreamPosition.Start);
-            await client.CreateAsync(estateName.Replace(" ", ""), "Reporting", settings);
-            await client.CreateAsync($"EstateManagementSubscriptionStream_{estateName.Replace(" ", "")}", "Estate Management", settings);
+            var name = estateName.Replace(" ", "");
+            List<(string streamName, string groupName)> subscriptions = new List<(String, String)>();
+            subscriptions.Add((name, "Reporting"));
+            subscriptions.Add(($"EstateManagementSubscriptionStream_{name}", "Estate Management"));
+            await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions);
         }
         
         /// <summary>
