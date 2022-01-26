@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Bootstrapper
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using BusinessLogic.RequestHandlers;
     using BusinessLogic.Requests;
     using Lamar;
@@ -11,6 +12,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Lamar.ServiceRegistry" />
+    [ExcludeFromCodeCoverage]
     public class MediatorRegistry : ServiceRegistry
     {
         #region Constructors

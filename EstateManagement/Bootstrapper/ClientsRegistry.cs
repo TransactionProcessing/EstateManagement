@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Bootstrapper
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Net.Http;
     using Lamar;
     using MessagingService.Client;
@@ -12,6 +13,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Lamar.ServiceRegistry" />
+    [ExcludeFromCodeCoverage]
     public class ClientsRegistry : ServiceRegistry
     {
         #region Constructors
