@@ -1,5 +1,6 @@
 ﻿namespace EstateManagement.Bootstrapper
 {
+    using System.Diagnostics.CodeAnalysis;
     using BusinessLogic.Services;
     using Lamar;
     using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Lamar.ServiceRegistry" />
+    [ExcludeFromCodeCoverage]
     public class DomainServiceRegistry : ServiceRegistry
     {
         #region Constructors

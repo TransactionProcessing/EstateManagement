@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Bootstrapper
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using BusinessLogic.Common;
     using ContractAggregate;
     using EstateAggregate;
@@ -23,6 +24,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Lamar.ServiceRegistry" />
+    [ExcludeFromCodeCoverage]
     public class RepositoryRegistry : ServiceRegistry
     {
         #region Constructors

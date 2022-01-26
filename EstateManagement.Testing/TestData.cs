@@ -1142,22 +1142,16 @@
             GenerateMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
 
         public static Guid MessageId = Guid.Parse("353FB307-FDD5-41AE-A2AF-C927D57EADBB");
-
-        public static MerchantStatementAggregate CreatedMerchantStatementAggregate()
-        {
-            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
-                                                       TestData.StatementCreateDate);
-
-            return merchantStatementAggregate;
-        }
-
+        
         public static MerchantStatementAggregate MerchantStatementAggregateWithTransactionLineAdded()
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
-                                                       TestData.StatementCreateDate);
-            merchantStatementAggregate.AddTransactionToStatement(new Transaction
+
+            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.StatementCreateDate,
+                                                                 TestData.EstateId,
+                                                                 TestData.MerchantId,
+                                                                 new Transaction
                                                                  {
                                                                      Amount = TestData.TransactionAmount1.Value,
                                                                      DateTime = TestData.TransactionDateTime1,
@@ -1170,21 +1164,25 @@
         public static MerchantStatementAggregate MerchantStatementAggregateWithTransactionLineAndSettledFeeAdded()
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
-                                                       TestData.StatementCreateDate);
-            merchantStatementAggregate.AddTransactionToStatement(new Transaction
-                                                                 {
-                                                                     Amount = TestData.TransactionAmount1.Value,
-                                                                     DateTime = TestData.TransactionDateTime1,
-                                                                     TransactionId = TestData.TransactionId1
-                                                                 });
-            merchantStatementAggregate.AddSettledFeeToStatement(new SettledFee
-                                                                {
-                                                                    Amount = TestData.SettledFeeAmount1,
-                                                                    DateTime = TestData.SettledFeeDateTime1,
-                                                                    SettledFeeId = TestData.SettledFeeId1,
-                                                                    TransactionId = TestData.TransactionId1
-                                                                });
+            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.StatementCreateDate,
+                                                                 TestData.EstateId,
+                                                                 TestData.MerchantId, new Transaction
+                                                                                      {
+                                                                                          Amount = TestData.TransactionAmount1.Value,
+                                                                                          DateTime = TestData.TransactionDateTime1,
+                                                                                          TransactionId = TestData.TransactionId1
+                                                                                      });
+            merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.StatementCreateDate,
+                                                                TestData.EstateId,
+                                                                TestData.MerchantId, new SettledFee
+                                                                                     {
+                                                                                         Amount = TestData.SettledFeeAmount1,
+                                                                                         DateTime = TestData.SettledFeeDateTime1,
+                                                                                         SettledFeeId = TestData.SettledFeeId1,
+                                                                                         TransactionId = TestData.TransactionId1
+                                                                                     });
 
             return merchantStatementAggregate;
         }
@@ -1192,21 +1190,26 @@
         public static MerchantStatementAggregate GeneratedMerchantStatementAggregate()
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-            merchantStatementAggregate.CreateStatement(TestData.EstateId, TestData.MerchantId,
-                                                       TestData.StatementCreateDate);
-            merchantStatementAggregate.AddTransactionToStatement(new Transaction
-                                                                 {
-                                                                     Amount = TestData.TransactionAmount1.Value,
-                                                                     DateTime = TestData.TransactionDateTime1,
-                                                                     TransactionId = TestData.TransactionId1
-                                                                 });
-            merchantStatementAggregate.AddSettledFeeToStatement(new SettledFee
-                                                                {
-                                                                    Amount = TestData.SettledFeeAmount1,
-                                                                    DateTime = TestData.SettledFeeDateTime1,
-                                                                    SettledFeeId = TestData.SettledFeeId1,
-                                                                    TransactionId = TestData.TransactionId1
-                                                                });
+
+            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.StatementCreateDate,
+                                                                 TestData.EstateId,
+                                                                 TestData.MerchantId, new Transaction
+                                                                                      {
+                                                                                          Amount = TestData.TransactionAmount1.Value,
+                                                                                          DateTime = TestData.TransactionDateTime1,
+                                                                                          TransactionId = TestData.TransactionId1
+                                                                                      });
+            merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.StatementCreateDate,
+                                                                TestData.EstateId,
+                                                                TestData.MerchantId, new SettledFee
+                                                                                     {
+                                                                                         Amount = TestData.SettledFeeAmount1,
+                                                                                         DateTime = TestData.SettledFeeDateTime1,
+                                                                                         SettledFeeId = TestData.SettledFeeId1,
+                                                                                         TransactionId = TestData.TransactionId1
+                                                                                     });
             merchantStatementAggregate.GenerateStatement(TestData.StatementGeneratedDate);
 
             return merchantStatementAggregate;

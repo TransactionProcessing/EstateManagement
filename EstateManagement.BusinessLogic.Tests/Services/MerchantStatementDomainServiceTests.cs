@@ -56,9 +56,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         {
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             
-            MerchantStatementAggregate merchantStatementAggregate = TestData.CreatedMerchantStatementAggregate();
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
 
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
             
             Should.NotThrow(async () =>
@@ -83,9 +83,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         {
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
-            MerchantStatementAggregate merchantStatementAggregate = TestData.CreatedMerchantStatementAggregate();
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
 
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
 
             Should.NotThrow(async () =>
@@ -109,9 +109,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         {
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
 
-            MerchantStatementAggregate merchantStatementAggregate = TestData.CreatedMerchantStatementAggregate();
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
 
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
          
             Should.NotThrow(async () =>
@@ -137,7 +137,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             MerchantStatementAggregate merchantStatementAggregate = new MerchantStatementAggregate();
 
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
 
             Should.NotThrow(async () =>
@@ -164,7 +164,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             MerchantStatementAggregate merchantStatementAggregate = TestData.MerchantStatementAggregateWithTransactionLineAdded();
 
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
             
             Should.NotThrow(async () =>
@@ -191,7 +191,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             MerchantStatementAggregate merchantStatementAggregate = new MerchantStatementAggregate();
 
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
             
             Should.NotThrow(async () =>
@@ -214,6 +214,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_GenerateStatement_StatementGenerated()
         {
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+
             MerchantStatementAggregate merchantStatementAggregate = TestData.MerchantStatementAggregateWithTransactionLineAndSettledFeeAdded();
 
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchantStatementAggregate);
@@ -233,6 +235,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task MerchantStatementDomainService_EmailStatement_StatementGenerated()
         {
+            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+
             MerchantStatementAggregate merchantStatementAggregate = TestData.GeneratedMerchantStatementAggregate();
 
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchantStatementAggregate);
