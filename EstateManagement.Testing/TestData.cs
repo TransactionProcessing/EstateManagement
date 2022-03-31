@@ -223,6 +223,18 @@
             return merchantAggregate;
         }
 
+        public static MerchantDepositListAggregate CreatedMerchantDepositListAggregate()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            MerchantDepositListAggregate merchantDepositListAggregate = MerchantDepositListAggregate.Create(TestData.MerchantId);
+            merchantDepositListAggregate.Create(merchantAggregate, TestData.DateMerchantCreated);
+
+            return merchantDepositListAggregate;
+        }
+
         public static MerchantAggregate MerchantAggregateWithDevice()
         {
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);

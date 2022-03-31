@@ -78,6 +78,8 @@
                 AggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
             this.AddSingleton<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>,
                 AggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
+            this.AddSingleton<IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent>,
+                AggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent>>();
         }
 
         #endregion

@@ -39,6 +39,8 @@
         /// </summary>
         private readonly IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> MerchantAggregateRepository;
 
+        private readonly IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent> MerchantDepositListAggregateRepository;
+
         /// <summary>
         /// The security service client
         /// </summary>
@@ -56,10 +58,12 @@
         /// <param name="securityServiceClient">The security service client.</param>
         public MerchantDomainService(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
                                      IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
+                                     IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent> merchantDepositListAggregateRepository,
                                      ISecurityServiceClient securityServiceClient)
         {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.MerchantAggregateRepository = merchantAggregateRepository;
+            this.MerchantDepositListAggregateRepository = merchantDepositListAggregateRepository;
             this.SecurityServiceClient = securityServiceClient;
         }
 
@@ -316,7 +320,7 @@
         /// <param name="source">The source.</param>
         /// <param name="reference">The reference.</param>
         /// <param name="depositDateTime">The deposit date time.</param>
-        /// <param name="amount">The amount.</param>
+        /// <param name="depositAmount">The amount.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">
@@ -346,17 +350,24 @@
             {
                 throw new InvalidOperationException($"Estate Id {estateId} has not been created");
             }
-            
+
+            MerchantDepositListAggregate merchantDepositListAggregate = await this.MerchantDepositListAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+
+            if (merchantDepositListAggregate.IsCreated == false)
+            {
+                merchantDepositListAggregate.Create(merchantAggregate, depositDateTime);
+            }
+
             PositiveMoney amount = PositiveMoney.Create(Money.Create(depositAmount));
 
-            merchantAggregate.MakeDeposit(source,reference,depositDateTime,amount);
+            merchantDepositListAggregate.MakeDeposit(source,reference,depositDateTime,amount);
 
-            await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+            await this.MerchantDepositListAggregateRepository.SaveChanges(merchantDepositListAggregate, cancellationToken);
 
-            Merchant merchant = merchantAggregate.GetMerchant();
+            List<Deposit> deposits = merchantDepositListAggregate.GetDeposits();
 
             // Find the deposit
-            Deposit deposit = merchant.Deposits.Single(d => d.Reference == reference && d.DepositDateTime == depositDateTime && d.Source == source &&
+            Deposit deposit = deposits.Single(d => d.Reference == reference && d.DepositDateTime == depositDateTime && d.Source == source &&
                                                                       d.Amount == amount.Value);
 
             return deposit.DepositId;

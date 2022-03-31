@@ -34,11 +34,6 @@
         private readonly List<Contact> Contacts;
 
         /// <summary>
-        /// The deposits
-        /// </summary>
-        private readonly List<Deposit> Deposits;
-
-        /// <summary>
         /// The devices
         /// </summary>
         private readonly Dictionary<Guid, String> Devices;
@@ -66,7 +61,6 @@
             // Nothing here
             this.Addresses = new List<Address>();
             this.Contacts = new List<Contact>();
-            this.Deposits = new List<Deposit>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();
@@ -83,7 +77,6 @@
             this.AggregateId = aggregateId;
             this.Addresses = new List<Address>();
             this.Contacts = new List<Contact>();
-            this.Deposits = new List<Deposit>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();
@@ -392,20 +385,7 @@
                     merchantModel.Devices.Add(key, value);
                 }
             }
-
-            if (this.Deposits.Any())
-            {
-                merchantModel.Deposits=new List<Models.Merchant.Deposit>();
-                this.Deposits.ForEach(d => merchantModel.Deposits.Add(new Models.Merchant.Deposit
-                                                                      {
-                                                                          Source = d.Source,
-                                                                          DepositDateTime = d.DepositDateTime,
-                                                                          DepositId = d.DepositId,
-                                                                          Amount = d.Amount,
-                                                                          Reference = d.Reference
-                                                                      }));
-            }
-
+            
             return merchantModel;
         }
 
@@ -425,40 +405,6 @@
 
                 //Create our Guid.
                 return new Guid(j);
-            }
-        }
-
-        /// <summary>
-        /// Makes the deposit.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="reference">The reference.</param>
-        /// <param name="depositDateTime">The deposit date time.</param>
-        /// <param name="amount">The amount.</param>
-        public void MakeDeposit(MerchantDepositSource source,
-                                String reference,
-                                DateTime depositDateTime,
-                                PositiveMoney amount)
-        {
-            String depositData = $"{depositDateTime.ToString("yyyyMMdd hh:mm:ss.fff")}-{reference}-{amount:N2}-{source}";
-            Guid depositId = this.GenerateGuidFromString(depositData);
-
-            this.EnsureMerchantHasBeenCreated();
-            this.EnsureNotDuplicateDeposit(depositId);
-            // TODO: Change amount to a value object (PositiveAmount VO)
-            this.EnsureDepositSourceHasBeenSet(source);
-
-            if (source == MerchantDepositSource.Manual)
-            {
-                ManualDepositMadeEvent manualDepositMadeEvent =
-                    new ManualDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount.Value);
-                this.ApplyAndAppend(manualDepositMadeEvent);
-            }
-            else if (source == MerchantDepositSource.Automatic)
-            {
-                AutomaticDepositMadeEvent automaticDepositMadeEvent =
-                    new AutomaticDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount.Value);
-                this.ApplyAndAppend(automaticDepositMadeEvent);
             }
         }
         
@@ -493,20 +439,7 @@
 
             this.ApplyAndAppend(settlementScheduleChangedEvent);
         }
-
-        /// <summary>
-        /// Ensures the not duplicate deposit.
-        /// </summary>
-        /// <param name="depositId">The deposit identifier.</param>
-        /// <exception cref="InvalidOperationException">Deposit Id [{depositId}] already made for merchant [{this.Name}]</exception>
-        private void EnsureNotDuplicateDeposit(Guid depositId)
-        {
-            if (this.Deposits.Any(d => d.DepositId == depositId))
-            {
-                throw new InvalidOperationException($"Deposit Id [{depositId}] already made for merchant [{this.Name}]");
-            }
-        }
-
+        
         /// <summary>
         /// Gets the metadata.
         /// </summary>
@@ -533,19 +466,6 @@
         private void PlayEvent(MerchantReferenceAllocatedEvent domainEvent)
         {
             this.MerchantReference = domainEvent.MerchantReference;
-        }
-
-        /// <summary>
-        /// Ensures the deposit source has been set.
-        /// </summary>
-        /// <param name="merchantDepositSource">The merchant deposit source.</param>
-        /// <exception cref="InvalidOperationException">Merchant deposit source must be set</exception>
-        private void EnsureDepositSourceHasBeenSet(MerchantDepositSource merchantDepositSource)
-        {
-            if (merchantDepositSource == MerchantDepositSource.NotSet)
-            {
-                throw new InvalidOperationException("Merchant deposit source must be set");
-            }
         }
 
         /// <summary>
@@ -637,31 +557,7 @@
             this.DateCreated = merchantCreatedEvent.DateCreated;
             this.MaximumDevices = 1;
         }
-
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="manualDepositMadeEvent">The manual deposit made event.</param>
-        private void PlayEvent(ManualDepositMadeEvent manualDepositMadeEvent)
-        {
-            Deposit deposit = Deposit.Create(manualDepositMadeEvent.DepositId,
-                                             MerchantDepositSource.Manual,
-                                             manualDepositMadeEvent.Reference,
-                                             manualDepositMadeEvent.DepositDateTime,
-                                             manualDepositMadeEvent.Amount);
-            this.Deposits.Add(deposit);
-        }
-
-        private void PlayEvent(AutomaticDepositMadeEvent automaticDepositMadeEvent)
-        {
-            Deposit deposit = Deposit.Create(automaticDepositMadeEvent.DepositId,
-                                             MerchantDepositSource.Automatic,
-                                             automaticDepositMadeEvent.Reference,
-                                             automaticDepositMadeEvent.DepositDateTime,
-                                             automaticDepositMadeEvent.Amount);
-            this.Deposits.Add(deposit);
-        }
-
+        
         /// <summary>
         /// Plays the event.
         /// </summary>
