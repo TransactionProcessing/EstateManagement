@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Shared" Version="1.1.7" />
+    <PackageReference Include="Shared.EventStore" Version="1.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" />
+    <ProjectReference Include="..\EstateManagement.MerchantAggregate\EstateManagement.MerchantAggregate.csproj" />
+    <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
+  </ItemGroup>
+
+</Project>
