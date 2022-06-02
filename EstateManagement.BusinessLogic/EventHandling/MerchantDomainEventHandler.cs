@@ -24,13 +24,13 @@
 
         private readonly IMediator Mediator;
 
-        private readonly IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> MerchantAggregateRepository;
+        private readonly IAggregateRepository<MerchantAggregate, DomainEvent> MerchantAggregateRepository;
 
         #endregion
 
         #region Constructors
 
-        public MerchantDomainEventHandler(IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
+        public MerchantDomainEventHandler(IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
                                           IEstateManagementRepository estateManagementRepository,
                                           IMediator mediator)
         {

@@ -34,14 +34,14 @@
         /// <summary>
         /// The merchant aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> MerchantAggregateRepository;
+        private readonly IAggregateRepository<MerchantAggregate, DomainEvent> MerchantAggregateRepository;
 
         /// <summary>
         /// The merchant statement aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent> MerchantStatementAggregateRepository;
+        private readonly IAggregateRepository<MerchantStatementAggregate, DomainEvent> MerchantStatementAggregateRepository;
 
-        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
 
         private readonly IEstateManagementRepository EstateManagementRepository;
 
@@ -70,8 +70,8 @@
         /// <param name="securityServiceClient">The security service client.</param>
         /// <param name="fileSystem">The file system.</param>
         /// <param name="pdfGenerator">The PDF generator.</param>
-        public MerchantStatementDomainService(IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
-                                              IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent> merchantStatementAggregateRepository,
+        public MerchantStatementDomainService(IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
+                                              IAggregateRepository<MerchantStatementAggregate, DomainEvent> merchantStatementAggregateRepository,
                                               IEstateManagementRepository estateManagementRepository,
                                               IStatementBuilder statementBuilder,
                                               IMessagingServiceClient messagingServiceClient,

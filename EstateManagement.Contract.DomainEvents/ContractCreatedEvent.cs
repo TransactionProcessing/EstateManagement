@@ -5,7 +5,7 @@
     using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.EventSourcing;
     
-    public record ContractCreatedEvent : DomainEventRecord.DomainEvent
+    public record ContractCreatedEvent : DomainEvent
     {
         #region Constructors
 

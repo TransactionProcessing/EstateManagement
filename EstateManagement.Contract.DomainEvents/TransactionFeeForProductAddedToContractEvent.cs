@@ -9,7 +9,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEventRecord.DomainEvent" />
-    public record TransactionFeeForProductAddedToContractEvent : DomainEventRecord.DomainEvent
+    public record TransactionFeeForProductAddedToContractEvent : DomainEvent
     {
 
         /// <summary>

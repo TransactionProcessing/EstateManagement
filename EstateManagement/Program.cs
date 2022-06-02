@@ -26,7 +26,7 @@ namespace EstateManagement
             Program.CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateHostBuilder(string[] args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
             Console.Title = "Estate Management";
 
@@ -36,27 +36,20 @@ namespace EstateManagement
                                                                   .AddJsonFile("hosting.development.json", optional: true)
                                                                   .AddEnvironmentVariables().Build();
 
-            //IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
-            //hostBuilder.ConfigureLogging(logging =>
-            //                             {
-            //                                 logging.AddConsole(); 
+            IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
+            hostBuilder.UseLamar();
+            hostBuilder.ConfigureLogging(logging =>
+                                         {
+                                             logging.AddConsole();
 
-            //                             });
-            //hostBuilder.ConfigureWebHostDefaults(webBuilder =>
-            //                                     {
-            //                                         webBuilder.UseLamar().UseStartup<Startup>().UseConfiguration(config).UseKestrel();
-            //                                     });
-            //return hostBuilder;
-
-            IWebHostBuilder builder = new WebHostBuilder();
-            builder
-                .ConfigureLogging(logging => { logging.AddConsole(); })
-                .UseLamar()
-                .UseConfiguration(config)
-                .UseKestrel()
-                .UseStartup<Startup>();
-
-            return builder;
+                                         });
+            hostBuilder.ConfigureWebHostDefaults(webBuilder =>
+                                                 {
+                                                     webBuilder.UseStartup<Startup>();
+                                                     webBuilder.UseConfiguration(config);
+                                                     webBuilder.UseKestrel();
+                                                 });
+            return hostBuilder;
         }
 
         /// <summary>

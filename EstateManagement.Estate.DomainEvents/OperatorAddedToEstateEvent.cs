@@ -9,7 +9,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    public record OperatorAddedToEstateEvent : DomainEventRecord.DomainEvent
+    public record OperatorAddedToEstateEvent : DomainEvent
     {
         #region Constructors
 

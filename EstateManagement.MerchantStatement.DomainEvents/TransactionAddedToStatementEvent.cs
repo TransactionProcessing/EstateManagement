@@ -10,7 +10,7 @@
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.IDomainEvent" />
     /// <seealso cref="System.IEquatable&lt;Shared.DomainDrivenDesign.EventSourcing.DomainEventRecord.DomainEvent&gt;" />
     /// <seealso cref="System.IEquatable&lt;EstateManagement.MerchantStatement.DomainEvents.TransactionAddedToStatementEvent&gt;" />
-    public record TransactionAddedToStatementEvent : DomainEventRecord.DomainEvent
+    public record TransactionAddedToStatementEvent : DomainEvent
     {
         #region Constructors
 

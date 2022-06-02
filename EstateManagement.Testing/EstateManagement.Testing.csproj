@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net5.0</TargetFramework>
+	  <TargetFramework>net6.0</TargetFramework>
     <DebugType>None</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateReporting.Database" Version="1.0.19-build89" />
+    <PackageReference Include="EstateReporting.Database" Version="1.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
   </ItemGroup>
 
   <ItemGroup>

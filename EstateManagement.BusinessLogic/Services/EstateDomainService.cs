@@ -22,7 +22,7 @@
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
 
         /// <summary>
         /// The security service client
@@ -38,7 +38,7 @@
         /// </summary>
         /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         /// <param name="securityServiceClient">The security service client.</param>
-        public EstateDomainService(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
+        public EstateDomainService(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
                                    ISecurityServiceClient securityServiceClient)
         {
             this.EstateAggregateRepository = estateAggregateRepository;

@@ -7,7 +7,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEventRecord.DomainEvent" />
-    public record EstateCreatedEvent : DomainEventRecord.DomainEvent
+    public record EstateCreatedEvent : DomainEvent
     {
         #region Constructors
 

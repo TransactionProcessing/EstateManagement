@@ -23,7 +23,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task EstateDomainService_CreateEstate_EstateIsCreated()
         {
-            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
             estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
@@ -42,7 +42,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task EstateDomainService_AddOperatorEstate_OperatorIsAdded()
         {
-            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
@@ -64,7 +64,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task EstateDomainService_CreateEstateUser_EstateUserIsCreated()
         {
-            Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             

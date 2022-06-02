@@ -9,7 +9,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
-    public record AddressAddedEvent : DomainEventRecord.DomainEvent
+    public record AddressAddedEvent : DomainEvent
     {
         #region Constructors
 

@@ -3,7 +3,7 @@
     using System;
     using Shared.DomainDrivenDesign.EventSourcing;
 
-    public record TransactionFeeForProductDisabledEvent : DomainEventRecord.DomainEvent
+    public record TransactionFeeForProductDisabledEvent : DomainEvent
     {
         #region Constructors
 

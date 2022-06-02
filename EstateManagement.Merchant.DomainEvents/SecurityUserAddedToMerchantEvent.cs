@@ -5,7 +5,7 @@
     using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.EventSourcing;
     
-    public record SecurityUserAddedToMerchantEvent : DomainEventRecord.DomainEvent
+    public record SecurityUserAddedToMerchantEvent : DomainEvent
     {
         #region Constructors
         

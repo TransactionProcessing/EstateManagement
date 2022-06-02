@@ -3,7 +3,7 @@ using Shared.DomainDrivenDesign.EventSourcing;
 
 namespace EstateManagement.Merchant.DomainEvents
 {
-    public record DeviceSwappedForMerchantEvent : DomainEventRecord.DomainEvent
+    public record DeviceSwappedForMerchantEvent : DomainEvent
     {
         #region Constructors
 
