@@ -47,11 +47,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.ContractAg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Contract.DomainEvents", "EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj", "{79477A0F-3699-419F-97B5-B22C4CFDA897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantStatementAggregate", "EstateManagement.MerchantStatementAggregate\EstateManagement.MerchantStatementAggregate.csproj", "{0B6245B9-F028-4BDB-BC9C-42EE66723D18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantStatementAggregate", "EstateManagement.MerchantStatementAggregate\EstateManagement.MerchantStatementAggregate.csproj", "{0B6245B9-F028-4BDB-BC9C-42EE66723D18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantStatementAggregate.Tests", "EstateManagement.MerchantStatementAggregate.Tests\EstateManagement.MerchantStatementAggregate.Tests.csproj", "{F5F99A80-CE9D-4824-8695-A41435881D4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantStatementAggregate.Tests", "EstateManagement.MerchantStatementAggregate.Tests\EstateManagement.MerchantStatementAggregate.Tests.csproj", "{F5F99A80-CE9D-4824-8695-A41435881D4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantStatement.DomainEvents", "EstateManagement.MerchantStatement.DomainEvents\EstateManagement.MerchantStatement.DomainEvents.csproj", "{51F043C5-0709-447A-83BB-3976CBF61632}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantStatement.DomainEvents", "EstateManagement.MerchantStatement.DomainEvents\EstateManagement.MerchantStatement.DomainEvents.csproj", "{51F043C5-0709-447A-83BB-3976CBF61632}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantDepositListAggregate", "EstateManagement.MerchantDepositAggregate\EstateManagement.MerchantDepositListAggregate.csproj", "{CDDB26B6-57C7-419C-9327-6C9BC990B487}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.MerchantDepositListAggregate.Tests", "EstateManagement.MerchantDepositListAggregate.Tests\EstateManagement.MerchantDepositListAggregate.Tests.csproj", "{30BEE558-2F2E-4DF5-B9C5-70105B1F384D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +155,14 @@ Global
 		{51F043C5-0709-447A-83BB-3976CBF61632}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51F043C5-0709-447A-83BB-3976CBF61632}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51F043C5-0709-447A-83BB-3976CBF61632}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDDB26B6-57C7-419C-9327-6C9BC990B487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDDB26B6-57C7-419C-9327-6C9BC990B487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDDB26B6-57C7-419C-9327-6C9BC990B487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDDB26B6-57C7-419C-9327-6C9BC990B487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30BEE558-2F2E-4DF5-B9C5-70105B1F384D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30BEE558-2F2E-4DF5-B9C5-70105B1F384D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30BEE558-2F2E-4DF5-B9C5-70105B1F384D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30BEE558-2F2E-4DF5-B9C5-70105B1F384D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,6 +191,8 @@ Global
 		{0B6245B9-F028-4BDB-BC9C-42EE66723D18} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
 		{F5F99A80-CE9D-4824-8695-A41435881D4D} = {37B5C834-5EC7-4244-B6D8-987AAF52E9EE}
 		{51F043C5-0709-447A-83BB-3976CBF61632} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
+		{CDDB26B6-57C7-419C-9327-6C9BC990B487} = {C72E5A90-7B74-485B-885A-2E34C044CA81}
+		{30BEE558-2F2E-4DF5-B9C5-70105B1F384D} = {37B5C834-5EC7-4244-B6D8-987AAF52E9EE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D9C2C14-F455-44B6-AA7D-DDC6D6B27FB8}

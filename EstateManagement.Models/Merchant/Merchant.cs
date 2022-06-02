@@ -26,14 +26,6 @@
         public List<Contact> Contacts { get; set; }
 
         /// <summary>
-        /// Gets or sets the deposits.
-        /// </summary>
-        /// <value>
-        /// The deposits.
-        /// </value>
-        public List<Deposit> Deposits { get; set; }
-
-        /// <summary>
         /// Gets or sets the devices.
         /// </summary>
         /// <value>
