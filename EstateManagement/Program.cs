@@ -41,7 +41,6 @@ namespace EstateManagement
             hostBuilder.ConfigureLogging(logging =>
                                          {
                                              logging.AddConsole();
-
                                          });
             hostBuilder.ConfigureWebHostDefaults(webBuilder =>
                                                  {

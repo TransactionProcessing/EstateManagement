@@ -22,20 +22,20 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
     public class MerchantDomainServiceTests
     {
-        private readonly Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> MerchantAggregateRepository;
+        private readonly Mock<IAggregateRepository<MerchantAggregate, DomainEvent>> MerchantAggregateRepository;
 
-        private readonly Mock<IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent>> MerchantDepositListAggregateRepository;
+        private readonly Mock<IAggregateRepository<MerchantDepositListAggregate, DomainEvent>> MerchantDepositListAggregateRepository;
 
-        private readonly Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>> EstateAggregateRepository;
+        private readonly Mock<IAggregateRepository<EstateAggregate, DomainEvent>> EstateAggregateRepository;
 
         private readonly Mock<ISecurityServiceClient> SecurityServiceClient;
 
         private readonly MerchantDomainService DomainService;
         public MerchantDomainServiceTests()
         {
-            this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
-            this.MerchantDepositListAggregateRepository = new Mock<IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent>>();
-            this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
+            this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
+            this.MerchantDepositListAggregateRepository = new Mock<IAggregateRepository<MerchantDepositListAggregate, DomainEvent>>();
+            this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             this.SecurityServiceClient = new Mock<ISecurityServiceClient>();
             this.DomainService = new MerchantDomainService(EstateAggregateRepository.Object, MerchantAggregateRepository.Object,
                                                            MerchantDepositListAggregateRepository.Object,
