@@ -20,7 +20,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
 
     public class TransactionDomainEventHandlerTests
     {
-        [Fact(Skip="Re-enable once Transaction Processor Updated")]
+        [Fact]
         public async Task TransactionDomainEventHandler_Handle_TransactionHasBeenCompletedEvent_EventIsHandled()
         {
             Mock<IMediator> mediator = new Mock<IMediator>(MockBehavior.Strict);
@@ -29,7 +29,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
 
             Should.NotThrow(async () =>
                             {
-                                await handler.Handle((IDomainEvent)TestData.TransactionHasBeenCompletedEvent, CancellationToken.None);
+                                await handler.Handle(TestData.TransactionHasBeenCompletedEvent, CancellationToken.None);
                             });
         }
     }

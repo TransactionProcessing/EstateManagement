@@ -1066,7 +1066,7 @@
         public static StatementGeneratedEvent StatementGeneratedEvent =>
             new StatementGeneratedEvent(TestData.MerchantStatementId, TestData.EstateId, TestData.MerchantId, TestData.StatementGeneratedDate);
 
-        public static Object TransactionHasBeenCompletedEvent =>
+        public static TransactionHasBeenCompletedEvent TransactionHasBeenCompletedEvent =>
             new TransactionHasBeenCompletedEvent(TestData.TransactionId1,
                                                  TestData.EstateId,
                                                  TestData.MerchantId,
