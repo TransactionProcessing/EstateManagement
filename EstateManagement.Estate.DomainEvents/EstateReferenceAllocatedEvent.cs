@@ -3,7 +3,7 @@
     using System;
     using Shared.DomainDrivenDesign.EventSourcing;
 
-    public record EstateReferenceAllocatedEvent : DomainEventRecord.DomainEvent
+    public record EstateReferenceAllocatedEvent : DomainEvent
     {
         public EstateReferenceAllocatedEvent(Guid aggregateId,String estateReference) : base(aggregateId, Guid.NewGuid())
         {

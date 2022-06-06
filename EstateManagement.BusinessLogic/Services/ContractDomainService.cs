@@ -24,12 +24,12 @@
         /// <summary>
         /// The contract aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent> ContractAggregateRepository;
+        private readonly IAggregateRepository<ContractAggregate, DomainEvent> ContractAggregateRepository;
 
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
 
         #endregion
 
@@ -40,8 +40,8 @@
         /// </summary>
         /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         /// <param name="contractAggregateRepository">The contract aggregate repository.</param>
-        public ContractDomainService(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
-                                     IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent> contractAggregateRepository)
+        public ContractDomainService(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
+                                     IAggregateRepository<ContractAggregate, DomainEvent> contractAggregateRepository)
         {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.ContractAggregateRepository = contractAggregateRepository;

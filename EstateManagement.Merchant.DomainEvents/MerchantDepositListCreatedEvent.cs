@@ -3,7 +3,7 @@
     using System;
     using Shared.DomainDrivenDesign.EventSourcing;
 
-    public record MerchantDepositListCreatedEvent : DomainEventRecord.DomainEvent
+    public record MerchantDepositListCreatedEvent : DomainEvent
     {
         #region Constructors
 

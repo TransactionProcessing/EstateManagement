@@ -24,8 +24,8 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
         [Fact]
         public async Task MerchantDomainEventHandler_Handle_CallbackReceivedEnrichedEvent_EventIsHandled()
         {
-            Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository =
-                new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
+            Mock<IAggregateRepository<MerchantAggregate, DomainEvent>> merchantAggregateRepository =
+                new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
             Mock<IEstateManagementRepository> estateManagementRepository = new Mock<IEstateManagementRepository>();
             estateManagementRepository.Setup(e => e.GetMerchantFromReference(It.IsAny<Guid>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
                                       .ReturnsAsync(TestData.MerchantModelWithAddressesContactsDevicesAndOperators());

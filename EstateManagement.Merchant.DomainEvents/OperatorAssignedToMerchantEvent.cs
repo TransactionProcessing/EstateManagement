@@ -10,7 +10,7 @@
     /// </summary>
     /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
 
-    public record OperatorAssignedToMerchantEvent : DomainEventRecord.DomainEvent
+    public record OperatorAssignedToMerchantEvent : DomainEvent
     {
         #region Constructors
 

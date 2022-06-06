@@ -70,16 +70,14 @@
                                                                                        };
                                                                                    });
 
-            this.AddSingleton<IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>,
-                AggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent>>();
-            this.AddSingleton<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>,
-                AggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
-            this.AddSingleton<IAggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>,
-                AggregateRepository<ContractAggregate, DomainEventRecord.DomainEvent>>();
-            this.AddSingleton<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>,
-                AggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
-            this.AddSingleton<IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent>,
-                AggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent>>();
+            this.AddSingleton<IAggregateRepository<EstateAggregate, DomainEvent>,
+                AggregateRepository<EstateAggregate, DomainEvent>>();
+            this.AddSingleton<IAggregateRepository<MerchantAggregate, DomainEvent>,
+                AggregateRepository<MerchantAggregate, DomainEvent>>();
+            this.AddSingleton<IAggregateRepository<ContractAggregate, DomainEvent>,
+                AggregateRepository<ContractAggregate, DomainEvent>>();
+            this.AddSingleton<IAggregateRepository<MerchantStatementAggregate, DomainEvent>,
+                AggregateRepository<MerchantStatementAggregate, DomainEvent>>();
         }
 
         #endregion

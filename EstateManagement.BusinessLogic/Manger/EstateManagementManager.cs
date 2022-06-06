@@ -28,7 +28,7 @@
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
 
         /// <summary>
         /// The estate management repository
@@ -43,7 +43,7 @@
         /// <summary>
         /// The merchant aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> MerchantAggregateRepository;
+        private readonly IAggregateRepository<MerchantAggregate, DomainEvent> MerchantAggregateRepository;
 
         /// <summary>
         /// The model factory
@@ -62,8 +62,8 @@
         /// <param name="estateManagementRepository">The estate management repository.</param>
         /// <param name="eventStoreContext">The event store context.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementManager(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
-                                       IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
+        public EstateManagementManager(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
+                                       IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
                                        IEstateManagementRepository estateManagementRepository,
                                        IEventStoreContext eventStoreContext,
                                        IModelFactory modelFactory)

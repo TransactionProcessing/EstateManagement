@@ -29,8 +29,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
     public class MerchantStatementDomainServiceTests
     {
-        private Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent>>();
-        private Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEventRecord.DomainEvent>>();
+        private Mock<IAggregateRepository<MerchantAggregate, DomainEvent>> merchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
+        private Mock<IAggregateRepository<MerchantStatementAggregate, DomainEvent>> merchantStatementAggregateRepository = new Mock<IAggregateRepository<MerchantStatementAggregate, DomainEvent>>();
         private Mock<IEstateManagementRepository> estateManagementRepository = new Mock<IEstateManagementRepository>();
         private Mock<IStatementBuilder> statementBuilder = new Mock<IStatementBuilder>();
         private Mock<IMessagingServiceClient> messagingServiceClient = new Mock<IMessagingServiceClient>();

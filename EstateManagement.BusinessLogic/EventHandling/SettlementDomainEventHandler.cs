@@ -61,7 +61,7 @@
             //throw new Exception();
             AddSettledFeeToMerchantStatementRequest addSettledFeeToMerchantStatementRequest = AddSettledFeeToMerchantStatementRequest.Create(domainEvent.EstateId,
                 domainEvent.MerchantId,
-                domainEvent.EventTimestamp.DateTime,
+                domainEvent.FeeCalculatedDateTime,
                 domainEvent.CalculatedValue,
                 domainEvent.TransactionId,
                 domainEvent.FeeId);

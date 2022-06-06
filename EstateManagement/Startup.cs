@@ -138,11 +138,12 @@ namespace EstateManagement
                                                                                                      errors) => true,
                                                           }
                                                       };
-            settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
-                                            {
-                                                Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString")),
-                                                Insecure = Startup.Configuration.GetValue<Boolean>("EventStoreSettings:Insecure")
-            };
+
+            settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
+            settings.ConnectivitySettings = EventStoreClientConnectivitySettings.Default;
+            settings.ConnectivitySettings.Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString"));
+            settings.ConnectivitySettings.Insecure = Startup.Configuration.GetValue<Boolean>("EventStoreSettings:Insecure");
+
 
             settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
                                                               Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
@@ -177,17 +178,17 @@ namespace EstateManagement
             MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
             EstateCreatedEvent e = new EstateCreatedEvent(Guid.NewGuid(), "");
             CallbackReceivedEnrichedEvent ce = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
-            TransactionHasBeenCompletedEvent t =
-                new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
-            MerchantFeeSettledEvent f = new MerchantFeeSettledEvent(Guid.NewGuid(),
-                                                                    Guid.NewGuid(),
-                                                                    Guid.NewGuid(),
-                                                                    Guid.NewGuid(),
-                                                                    0,
-                                                                    0,
-                                                                    Guid.NewGuid(),
-                                                                    0,
-                                                                    DateTime.MinValue);
+            //TransactionHasBeenCompletedEvent t =
+            //    new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
+            //MerchantFeeSettledEvent f = new MerchantFeeSettledEvent(Guid.NewGuid(),
+            //                                                        Guid.NewGuid(),
+            //                                                        Guid.NewGuid(),
+            //                                                        Guid.NewGuid(),
+            //                                                        0,
+            //                                                        0,
+            //                                                        Guid.NewGuid(),
+            //                                                        0,
+            //                                                        DateTime.MinValue);
             StatementCreatedEvent s = new StatementCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.MinValue);
             TypeProvider.LoadDomainEventsTypeDynamically();
         }

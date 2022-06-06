@@ -32,14 +32,14 @@
         /// <summary>
         /// The estate aggregate repository
         /// </summary>
-        private readonly IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> EstateAggregateRepository;
+        private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
 
         /// <summary>
         /// The merchant aggregate repository
-        /// </summary>
-        private readonly IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> MerchantAggregateRepository;
+        /// </summary
+        private readonly IAggregateRepository<MerchantAggregate, DomainEvent> MerchantAggregateRepository;
 
-        private readonly IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent> MerchantDepositListAggregateRepository;
+        private readonly IAggregateRepository<MerchantDepositListAggregate, DomainEvent> MerchantDepositListAggregateRepository;
 
         /// <summary>
         /// The security service client
@@ -56,9 +56,9 @@
         /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
         /// <param name="merchantAggregateRepository">The merchant aggregate repository.</param>
         /// <param name="securityServiceClient">The security service client.</param>
-        public MerchantDomainService(IAggregateRepository<EstateAggregate, DomainEventRecord.DomainEvent> estateAggregateRepository,
-                                     IAggregateRepository<MerchantAggregate, DomainEventRecord.DomainEvent> merchantAggregateRepository,
-                                     IAggregateRepository<MerchantDepositListAggregate, DomainEventRecord.DomainEvent> merchantDepositListAggregateRepository,
+        public MerchantDomainService(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
+                                     IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
+                                     IAggregateRepository<MerchantDepositListAggregate, DomainEvent> merchantDepositListAggregateRepository,
                                      ISecurityServiceClient securityServiceClient)
         {
             this.EstateAggregateRepository = estateAggregateRepository;

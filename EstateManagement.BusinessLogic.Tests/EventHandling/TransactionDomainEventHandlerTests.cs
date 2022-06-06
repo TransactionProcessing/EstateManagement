@@ -12,6 +12,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
     using MediatR;
     using Moq;
     using Requests;
+    using Shared.DomainDrivenDesign.EventSourcing;
     using Shouldly;
     using Testing;
     using TransactionProcessor.Transaction.DomainEvents;

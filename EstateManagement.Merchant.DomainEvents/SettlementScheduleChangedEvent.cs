@@ -3,7 +3,7 @@
     using System;
     using Shared.DomainDrivenDesign.EventSourcing;
 
-    public record SettlementScheduleChangedEvent : DomainEventRecord.DomainEvent
+    public record SettlementScheduleChangedEvent : DomainEvent
     {
         #region Constructors
 

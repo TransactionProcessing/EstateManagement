@@ -3,7 +3,7 @@
     using System;
     using Shared.DomainDrivenDesign.EventSourcing;
 
-    public record MerchantReferenceAllocatedEvent : DomainEventRecord.DomainEvent
+    public record MerchantReferenceAllocatedEvent : DomainEvent
     {
         public MerchantReferenceAllocatedEvent(Guid aggregateId,
                                                Guid estateId, String merchantReference) : base(aggregateId, Guid.NewGuid())
