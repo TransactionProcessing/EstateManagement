@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="EstateReporting.Database" Version="1.1.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
   </ItemGroup>
 
 </Project>
