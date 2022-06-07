@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateReporting.Database" Version="1.1.2" />
+    <PackageReference Include="EstateReporting.Database" Version="1.1.3-build8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
   </ItemGroup>
 
