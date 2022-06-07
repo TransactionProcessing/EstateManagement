@@ -110,7 +110,7 @@ namespace EstateManagement.Common
                 var eventHandlerResolver = Startup.ServiceProvider.GetService<IDomainEventHandlerResolver>();
 
                 SubscriptionWorker concurrentSubscriptions =
-                    SubscriptionWorker.CreateConcurrentSubscriptionWorker(eventStoreConnectionString,
+                    SubscriptionWorker.CreateConcurrentSubscriptionWorker(Startup.EventStoreClientSettings,
                                                                           eventHandlerResolver,
                                                                           subscriptionRepository,
                                                                           inflightMessages,
