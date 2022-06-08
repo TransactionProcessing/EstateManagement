@@ -141,7 +141,7 @@
             subscriptions.Add(($"EstateManagementSubscriptionStream_{name}", "Estate Management",0));
             await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions);
         }
-        
+
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
@@ -173,7 +173,7 @@
             this.TestNetworks.Add(testNetwork);
 
             IContainerService eventStoreContainer =
-                this.SetupEventStoreContainer("eventstore/eventstore:21.2.0-buster-slim", testNetwork);
+                this.SetupEventStoreContainer("eventstore/eventstore:21.10.0-buster-slim", testNetwork);
             this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
             
             String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
