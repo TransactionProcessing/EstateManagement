@@ -137,7 +137,7 @@
         {
             var name = estateName.Replace(" ", "");
             List<(string streamName, string groupName, Int32 maxRetryCount)> subscriptions = new ();
-            subscriptions.Add((name, "Reporting",0));
+            subscriptions.Add((name, "Reporting",5));
             subscriptions.Add(($"EstateManagementSubscriptionStream_{name}", "Estate Management",0));
             await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions);
         }

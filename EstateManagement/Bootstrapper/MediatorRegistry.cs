@@ -29,7 +29,7 @@
 
             this.AddSingleton<IRequestHandler<CreateEstateRequest>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddOperatorToEstateRequest, Unit>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<AddOperatorToEstateRequest>, EstateRequestHandler>();
 
             this.AddSingleton<IRequestHandler<CreateMerchantRequest>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest>, MerchantRequestHandler>();
