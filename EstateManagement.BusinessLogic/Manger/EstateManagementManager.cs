@@ -122,27 +122,17 @@
         /// <returns></returns>
         /// <exception cref="NotFoundException">No estate found with Id [{estateId}]</exception>
         public async Task<Estate> GetEstate(Guid estateId,
-                                            CancellationToken cancellationToken)
-        {
-            Shared.Logger.Logger.LogInformation("About to get estate aggregate");
+                                            CancellationToken cancellationToken) {
 
             // Get the estate from the aggregate repository
             EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-            if (estateAggregate.IsCreated == false)
-            {
+            if (estateAggregate.IsCreated == false) {
                 throw new NotFoundException($"No estate found with Id [{estateId}]");
             }
 
-            Shared.Logger.Logger.LogInformation("About to get estate from Read Model");
-            try {
-                Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
+            Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
 
-                return estateModel;
-            }
-            catch(Exception ex) {
-                Shared.Logger.Logger.LogError(ex);
-                throw;
-            }
+            return estateModel;
         }
 
         /// <summary>
