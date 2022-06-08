@@ -134,9 +134,15 @@
             }
 
             Shared.Logger.Logger.LogInformation("About to get estate from Read Model");
-            Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
+            try {
+                Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
 
-            return estateModel;
+                return estateModel;
+            }
+            catch(Exception ex) {
+                Shared.Logger.Logger.LogError(ex);
+                throw;
+            }
         }
 
         /// <summary>
