@@ -77,7 +77,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
                               // Cache the estate id
                               this.TestingContext.AddEstateDetails(estate.EstateId, estate.EstateName, estate.EstateReference);
-                          }, TimeSpan.FromMinutes(3), TimeSpan.FromSeconds(30)).ConfigureAwait(false);
+                          }, TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(60)).ConfigureAwait(false);
                 
                 estate.EstateName.ShouldBe(estateName);
             }

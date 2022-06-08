@@ -11,6 +11,7 @@
     using Models.Factories;
     using Models.Merchant;
     using Newtonsoft.Json.Linq;
+    using NLog;
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
@@ -121,12 +122,11 @@
         /// <returns></returns>
         /// <exception cref="NotFoundException">No estate found with Id [{estateId}]</exception>
         public async Task<Estate> GetEstate(Guid estateId,
-                                            CancellationToken cancellationToken)
-        {
+                                            CancellationToken cancellationToken) {
+
             // Get the estate from the aggregate repository
             EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-            if (estateAggregate.IsCreated == false)
-            {
+            if (estateAggregate.IsCreated == false) {
                 throw new NotFoundException($"No estate found with Id [{estateId}]");
             }
 

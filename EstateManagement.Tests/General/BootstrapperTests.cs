@@ -19,7 +19,7 @@
     [Collection("TestCollection")]
     public class BootstrapperTests
     {
-        [Fact(Skip = "Needs re-enabled")]
+        [Fact]
         public void VerifyBootstrapperIsValid()
         {
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
