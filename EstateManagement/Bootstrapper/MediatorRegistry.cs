@@ -27,26 +27,26 @@
             // request & notification handlers
             this.AddTransient<ServiceFactory>(context => { return t => context.GetService(t); });
 
-            this.AddSingleton<IRequestHandler<CreateEstateRequest,Unit>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<CreateEstateRequest>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<AddOperatorToEstateRequest, Unit>, EstateRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<CreateMerchantRequest, Unit>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest, Unit>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<CreateMerchantRequest>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddMerchantDeviceRequest, Unit>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<AddMerchantDeviceRequest>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MakeMerchantDepositRequest, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest, Unit>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest, Unit>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest>, MerchantRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<CreateContractRequest, Unit>, ContractRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddProductToContractRequest, Unit>, ContractRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest, Unit>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<CreateContractRequest>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<AddProductToContractRequest>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest>, ContractRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest>, MerchantStatementRequestHandler>();
             this.AddSingleton<IRequestHandler<GenerateMerchantStatementRequest, Guid>, MerchantStatementRequestHandler>();
-            this.AddSingleton<IRequestHandler<EmailMerchantStatementRequest, Unit>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<EmailMerchantStatementRequest>, MerchantStatementRequestHandler>();
         }
 
         #endregion
