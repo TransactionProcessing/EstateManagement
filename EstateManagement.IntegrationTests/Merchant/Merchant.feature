@@ -304,7 +304,6 @@ Scenario: Make Automatic Merchant Deposits
 	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
 	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |
 
-@PRTest
 Scenario: Non Positive Merchant Deposits Are Rejected
 
 	Given I create the following merchants

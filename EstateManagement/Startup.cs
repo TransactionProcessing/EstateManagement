@@ -130,10 +130,10 @@ namespace EstateManagement
                 settings = new EventStoreClientSettings();
             }
 
-            if (Startup.EventStoreClientSettings != null) {
-                settings = Startup.EventStoreClientSettings;
-                return;
-            }
+            //if (Startup.EventStoreClientSettings != null) {
+            //    settings = Startup.EventStoreClientSettings;
+            //    return;
+            //}
             
             settings.ConnectivitySettings = EventStoreClientConnectivitySettings.Default;
             settings.ConnectivitySettings.Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString"));

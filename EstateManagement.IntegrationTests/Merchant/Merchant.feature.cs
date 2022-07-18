@@ -1770,14 +1770,12 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Non Positive Merchant Deposits Are Rejected")]
         [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
         [Xunit.TraitAttribute("Description", "Non Positive Merchant Deposits Are Rejected")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public void NonPositiveMerchantDepositsAreRejected()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non Positive Merchant Deposits Are Rejected", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 308
+#line 307
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -1808,7 +1806,7 @@ this.FeatureBackground();
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
-#line 310
+#line 309
  testRunner.Given("I create the following merchants", ((string)(null)), table103, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table104 = new TechTalk.SpecFlow.Table(new string[] {
@@ -1821,7 +1819,7 @@ this.FeatureBackground();
                             "LastMonth",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 314
+#line 313
  testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table104, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table105 = new TechTalk.SpecFlow.Table(new string[] {
@@ -1834,7 +1832,7 @@ this.FeatureBackground();
                             "LastMonth",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 318
+#line 317
  testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table105, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table106 = new TechTalk.SpecFlow.Table(new string[] {
@@ -1847,7 +1845,7 @@ this.FeatureBackground();
                             "LastMonth",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 322
+#line 321
  testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table106, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table107 = new TechTalk.SpecFlow.Table(new string[] {
@@ -1860,7 +1858,7 @@ this.FeatureBackground();
                             "LastMonth",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 326
+#line 325
  testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table107, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table108 = new TechTalk.SpecFlow.Table(new string[] {
@@ -1873,7 +1871,7 @@ this.FeatureBackground();
                             "0.00",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 330
+#line 329
  testRunner.Then("the merchant balances are as follows", ((string)(null)), table108, "Then ");
 #line hidden
             }
