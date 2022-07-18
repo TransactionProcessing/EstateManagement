@@ -2,6 +2,8 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Net.Http;
+    using System.Net.Security;
     using BusinessLogic.Common;
     using ContractAggregate;
     using EstateAggregate;
@@ -9,6 +11,7 @@
     using Lamar;
     using MerchantAggregate;
     using MerchantStatementAggregate;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
@@ -44,11 +47,36 @@
 
                 // TODO: Read this from a the database and set
             }
-            else
-            {
-                this.AddEventStoreClient(Startup.ConfigureEventStoreSettings);
+            else {
+                Boolean insecureES = Startup.Configuration.GetValue<Boolean>("EventStoreSettings:Insecure");
+
+                Func<SocketsHttpHandler> CreateHttpMessageHandler = () => new SocketsHttpHandler
+                                                                          {
+
+                                                                              SslOptions = new SslClientAuthenticationOptions
+                                                                                           {
+                                                                                               RemoteCertificateValidationCallback = (sender,
+                                                                                                   certificate,
+                                                                                                   chain,
+                                                                                                   errors) => {
+
+                                                                                                   return true;
+                                                                                               }
+                                                                                           }
+                                                                          };
+
+                if (insecureES) {
+                    this.AddInSecureEventStoreClient(Startup.EventStoreClientSettings.ConnectivitySettings.Address, CreateHttpMessageHandler);
+                }
+                else {
+                    this.AddEventStoreClient(Startup.EventStoreClientSettings.ConnectivitySettings.Address, CreateHttpMessageHandler);
+                }
                 this.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
                 this.AddEventStorePersistentSubscriptionsClient(Startup.ConfigureEventStoreSettings);
+
+                
+
+                
                 this.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
             }
 
@@ -84,4 +112,6 @@
 
         #endregion
     }
+
+
 }
