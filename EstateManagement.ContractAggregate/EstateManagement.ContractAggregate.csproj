@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.Net.Client" Version="2.47.0" />
     <PackageReference Include="Shared.DomainDrivenDesign" Version="1.3.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
 	<PackageReference Include="Shared.EventStore" Version="1.3.7" />
