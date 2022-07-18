@@ -133,22 +133,50 @@
         /// Populates the subscription service configuration.
         /// </summary>
         /// <param name="estateName">Name of the estate.</param>
-        public async Task PopulateSubscriptionServiceConfiguration(String estateName)
+        public async Task PopulateSubscriptionServiceConfiguration(String estateName, Boolean isSecureEventStore)
         {
             var name = estateName.Replace(" ", "");
             List<(string streamName, string groupName, Int32 maxRetryCount)> subscriptions = new ();
             subscriptions.Add((name, "Reporting",5));
             subscriptions.Add(($"EstateManagementSubscriptionStream_{name}", "Estate Management",0));
-            await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions);
+            await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions, isSecureEventStore);
         }
+
+        protected override String GenerateEventStoreConnectionString()
+        {
+            // TODO: this could move to shared
+            String eventStoreAddress = $"esdb://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreHttpDockerPort}";
+            if (this.IsSecureEventStore) {
+                eventStoreAddress = $"{eventStoreAddress}?tls=true&tlsVerifyCert=false";
+            }
+            else {
+                eventStoreAddress = $"{eventStoreAddress}?tls=false&tlsVerifyCert=false";
+            }
+
+            return eventStoreAddress;
+        }
+
+        public Boolean IsSecureEventStore { get; private set; }
 
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
         /// <param name="scenarioName">Name of the scenario.</param>
-        public override async Task StartContainersForScenarioRun(String scenarioName)
-        {
-            this.HostTraceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
+        public override async Task StartContainersForScenarioRun(String scenarioName) {
+            
+            String IsSecureEventStoreEnvVar = Environment.GetEnvironmentVariable("IsSecureEventStore");
+
+            if (IsSecureEventStoreEnvVar == null) {
+                // No env var set so default to insecure
+                this.IsSecureEventStore = false;
+            }
+            else {
+                // We have the env var so we set the secure flag based on the value in the env var
+                Boolean.TryParse(IsSecureEventStoreEnvVar, out Boolean isSecure);
+                this.IsSecureEventStore = isSecure;
+            }
+
+            this.HostTraceFolder = FdOs.IsWindows() ? $"C:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
 
             Logging.Enabled();
 
@@ -173,10 +201,14 @@
             this.TestNetworks.Add(testNetwork);
 
             IContainerService eventStoreContainer =
-                this.SetupEventStoreContainer("eventstore/eventstore:21.10.0-buster-slim", testNetwork);
+                this.SetupEventStoreContainer("eventstore/eventstore:21.10.0-buster-slim", testNetwork,isSecure: this.IsSecureEventStore);
             this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
-            
-            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
+
+            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=True";
+            if (this.IsSecureEventStore) {
+                insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=False";
+            }
+
             String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
             String internalSubscriptionServiceCacheDuration = "AppSettings:InternalSubscriptionServiceCacheDuration=0";
 
@@ -268,12 +300,12 @@
             this.TestHostClient.BaseAddress = new Uri($"http://127.0.0.1:{this.TestHostServicePort}");
 
             // Load up the projections
-            await this.LoadEventStoreProjections(this.EventStoreHttpPort);
+            await this.LoadEventStoreProjections(this.EventStoreHttpPort, this.IsSecureEventStore);
 
             String callbackUrl = $"http://{this.CallbackHandlerContainerName}:{DockerHelper.CallbackHandlerDockerPort}/api/callbacks";
             await this.ConfigureTestBank(DockerHelper.TestBankSortCode, DockerHelper.TestBankAccountNumber, callbackUrl);
         }
-
+        
         /// <summary>
         /// Stops the containers for scenario run.
         /// </summary>

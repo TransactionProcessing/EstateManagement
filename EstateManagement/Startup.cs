@@ -7,7 +7,9 @@ namespace EstateManagement
     using System.IO;
     using System.IO.Abstractions;
     using System.Linq;
+    using System.Net;
     using System.Net.Http;
+    using System.Net.Security;
     using System.Reflection;
     using System.Text;
     using System.Threading;
@@ -121,25 +123,8 @@ namespace EstateManagement
 
         public static IServiceProvider ServiceProvider { get; set; }
 
-        public static void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
+        public static void ConfigureEventStoreSettings(EventStoreClientSettings settings)
         {
-            if (settings == null)
-            {
-                settings = new EventStoreClientSettings();
-            }
-
-            settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
-                                                      {
-                                                          SslOptions =
-                                                          {
-                                                              RemoteCertificateValidationCallback = (sender,
-                                                                                                     certificate,
-                                                                                                     chain,
-                                                                                                     errors) => true,
-                                                          }
-                                                      };
-
-            settings.ConnectionName = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionName");
             settings.ConnectivitySettings = EventStoreClientConnectivitySettings.Default;
             settings.ConnectivitySettings.Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString"));
             settings.ConnectivitySettings.Insecure = Startup.Configuration.GetValue<Boolean>("EventStoreSettings:Insecure");
@@ -156,11 +141,9 @@ namespace EstateManagement
         {
             ConfigurationReader.Initialise(Startup.Configuration);
 
-            Startup.ConfigureEventStoreSettings();
-
-            services.IncludeRegistry<MiddlewareRegistry>();
             services.IncludeRegistry<MediatorRegistry>();
             services.IncludeRegistry<RepositoryRegistry>();
+            services.IncludeRegistry<MiddlewareRegistry>();
             services.IncludeRegistry<DomainServiceRegistry>();
             services.IncludeRegistry<ClientsRegistry>();
             services.IncludeRegistry<MiscRegistry>();
@@ -258,6 +241,19 @@ namespace EstateManagement
     /// </summary>
     public static class Extensions
     {
+        public static IServiceCollection AddInSecureEventStoreClient(
+            this IServiceCollection services,
+            Uri address,
+            Func<HttpMessageHandler>? createHttpMessageHandler = null)
+        {
+            return services.AddEventStoreClient((Action<EventStoreClientSettings>)(options =>
+                                                                                   {
+                                                                                       options.ConnectivitySettings.Address = address;
+                                                                                       options.ConnectivitySettings.Insecure = true;
+                                                                                       options.CreateHttpMessageHandler = createHttpMessageHandler;
+                                                                                   }));
+        }
+
         static Action<TraceEventType, String, String> log = (tt, subType, message) => {
             String logMessage = $"{subType} - {message}";
             switch (tt)

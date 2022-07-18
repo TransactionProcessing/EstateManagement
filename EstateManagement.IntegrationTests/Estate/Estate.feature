@@ -23,6 +23,7 @@ Background:
 	| ClientId      | 
 	| serviceClient | 
 
+
 Scenario: Create Estate
 	
 	When I create the following estates
@@ -46,7 +47,6 @@ Scenario: Create Security User
 	| EmailAddress                  | Password | GivenName  | FamilyName | EstateName    |
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |
 
-@PRTest
 Scenario: Get Estate - System Login
 	Given I have created the following estates
 	| EstateName    |
@@ -71,7 +71,6 @@ Scenario: Get Estate - System Login
 	| estateuser1@testestate1.co.uk |
 	| estateuser2@testestate1.co.uk |
 
-@PRTest
 Scenario: Get Estate - Estate user
 	Given I have created the following estates
 	| EstateName    |
