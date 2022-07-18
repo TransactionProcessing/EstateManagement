@@ -65,14 +65,16 @@
                                                                                            }
                                                                           };
 
+                this.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
+                this.AddEventStorePersistentSubscriptionsClient(Startup.ConfigureEventStoreSettings);
+
                 if (insecureES) {
                     this.AddInSecureEventStoreClient(Startup.EventStoreClientSettings.ConnectivitySettings.Address, CreateHttpMessageHandler);
                 }
                 else {
                     this.AddEventStoreClient(Startup.EventStoreClientSettings.ConnectivitySettings.Address, CreateHttpMessageHandler);
                 }
-                this.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
-                this.AddEventStorePersistentSubscriptionsClient(Startup.ConfigureEventStoreSettings);
+                
 
                 
 

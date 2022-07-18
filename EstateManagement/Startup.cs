@@ -123,18 +123,8 @@ namespace EstateManagement
 
         public static IServiceProvider ServiceProvider { get; set; }
 
-        public static void ConfigureEventStoreSettings(EventStoreClientSettings settings = null)
+        public static void ConfigureEventStoreSettings(EventStoreClientSettings settings)
         {
-            if (settings == null)
-            {
-                settings = new EventStoreClientSettings();
-            }
-
-            //if (Startup.EventStoreClientSettings != null) {
-            //    settings = Startup.EventStoreClientSettings;
-            //    return;
-            //}
-            
             settings.ConnectivitySettings = EventStoreClientConnectivitySettings.Default;
             settings.ConnectivitySettings.Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString"));
             settings.ConnectivitySettings.Insecure = Startup.Configuration.GetValue<Boolean>("EventStoreSettings:Insecure");
@@ -151,11 +141,9 @@ namespace EstateManagement
         {
             ConfigurationReader.Initialise(Startup.Configuration);
 
-            Startup.ConfigureEventStoreSettings();
-
-            services.IncludeRegistry<MiddlewareRegistry>();
             services.IncludeRegistry<MediatorRegistry>();
             services.IncludeRegistry<RepositoryRegistry>();
+            services.IncludeRegistry<MiddlewareRegistry>();
             services.IncludeRegistry<DomainServiceRegistry>();
             services.IncludeRegistry<ClientsRegistry>();
             services.IncludeRegistry<MiscRegistry>();
