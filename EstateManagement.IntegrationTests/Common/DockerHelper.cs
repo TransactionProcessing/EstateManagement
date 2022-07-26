@@ -237,6 +237,7 @@
                                                                                             },
                                                                                             additionalEnvironmentVariables:new List<String>
                                                                                                 {
+                                                                                                    insecureEventStoreEnvironmentVariable,
                                                                                                     persistentSubscriptionPollingInSeconds,
                                                                                                     internalSubscriptionServiceCacheDuration
                                                                                                 },
