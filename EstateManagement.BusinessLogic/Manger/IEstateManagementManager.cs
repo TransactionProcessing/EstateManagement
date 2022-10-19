@@ -68,28 +68,6 @@
                                    CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the merchant balance.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<MerchantBalance> GetMerchantBalance(Guid estateId, Guid merchantId,
-                                   CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the merchant balance history.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(Guid estateId, Guid merchantId,
-                                                                     DateTime startDateTime,
-                                                                     DateTime endDateTime,
-                                                                     CancellationToken cancellationToken);
-
-        /// <summary>
         /// Gets the merchants.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>

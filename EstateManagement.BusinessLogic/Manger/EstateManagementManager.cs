@@ -35,12 +35,7 @@
         /// The estate management repository
         /// </summary>
         private readonly IEstateManagementRepository EstateManagementRepository;
-
-        /// <summary>
-        /// The event store context
-        /// </summary>
-        private readonly IEventStoreContext EventStoreContext;
-
+        
         /// <summary>
         /// The merchant aggregate repository
         /// </summary>
@@ -66,13 +61,11 @@
         public EstateManagementManager(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
                                        IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
                                        IEstateManagementRepository estateManagementRepository,
-                                       IEventStoreContext eventStoreContext,
                                        IModelFactory modelFactory)
         {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.MerchantAggregateRepository = merchantAggregateRepository;
             this.EstateManagementRepository = estateManagementRepository;
-            this.EventStoreContext = eventStoreContext;
             this.ModelFactory = modelFactory;
         }
 
@@ -153,59 +146,6 @@
             return merchantModel;
         }
         
-        /// <summary>
-        /// Gets the merchant balance.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task<MerchantBalance> GetMerchantBalance(Guid estateId,
-                                                              Guid merchantId,
-                                                              CancellationToken cancellationToken)
-        {
-            String projectionState =
-                await this.EventStoreContext.GetPartitionStateFromProjection("MerchantBalanceCalculator", $"MerchantArchive-{merchantId:N}", cancellationToken);
-
-            // Protect from projection not running
-            if (projectionState == "{}")
-            {
-                // merchant details not returned from projection
-                throw new NotFoundException($"Error finding Merchant Archive stream for Merchant Id [{merchantId}] on Estate [{estateId}] - partition Id [MerchantArchive-{merchantId:N}]");
-            }
-
-            JObject merchantRecord = JObject.Parse(projectionState);
-
-            return new MerchantBalance
-                   {
-                       AvailableBalance = decimal.Parse(merchantRecord["availableBalance"].ToString()),
-                       Balance = decimal.Parse(merchantRecord["balance"].ToString()),
-                       EstateId = estateId,
-                       MerchantId = merchantId
-                   };
-        }
-
-        /// <summary>
-        /// Gets the merchant balance history.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="startDateTime"></param>
-        /// <param name="endDateTime"></param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(Guid estateId,
-                                                                                  Guid merchantId,
-                                                                                  DateTime startDateTime,
-                                                                                  DateTime endDateTime,
-                                                                                  CancellationToken cancellationToken)
-        {
-            List<MerchantBalanceHistory> merchantBalanceHistoryModels = await this.EstateManagementRepository.GetMerchantBalanceHistory(estateId, merchantId, 
-                startDateTime, endDateTime, cancellationToken);
-
-            return merchantBalanceHistoryModels;
-        }
-
         /// <summary>
         /// Gets the merchant contracts.
         /// </summary>

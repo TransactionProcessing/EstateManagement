@@ -22,8 +22,6 @@ namespace EstateManagement.Repository.Tests
     using Contract = EstateReporting.Database.Entities.Contract;
     using Merchant = Models.Merchant.Merchant;
     using ContractProductTransactionFeeModel = Models.Contract.TransactionFee;
-    using MerchantBalanceHistory = Models.Merchant.MerchantBalanceHistory;
-
     public class EstateManagementRepositoryTests
     {
         public EstateManagementRepositoryTests()

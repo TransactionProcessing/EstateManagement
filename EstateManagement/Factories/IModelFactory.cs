@@ -39,25 +39,9 @@
         /// Converts from.
         /// </summary>
         /// <param name="merchant">The merchant.</param>
-        /// <param name="merchantBalance">The merchant balance.</param>
         /// <returns></returns>
-        MerchantResponse ConvertFrom(Merchant merchant,
-                                     MerchantBalance merchantBalance = null);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantBalance">The merchant balance.</param>
-        /// <returns></returns>
-        MerchantBalanceResponse ConvertFrom(MerchantBalance merchantBalance);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantBalanceHistories">The merchant balance histories.</param>
-        /// <returns></returns>
-        List<MerchantBalanceHistoryResponse> ConvertFrom(List<MerchantBalanceHistory> merchantBalanceHistories);
-
+        MerchantResponse ConvertFrom(Merchant merchant);
+        
         /// <summary>
         /// Converts from.
         /// </summary>

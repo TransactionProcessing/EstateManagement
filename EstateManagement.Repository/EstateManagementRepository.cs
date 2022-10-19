@@ -20,7 +20,6 @@
     using EstateModel = Models.Estate.Estate;
     using MerchantModel = Models.Merchant.Merchant;
     using ContractModel = Models.Contract.Contract;
-    using MerchantBalanceHistoryModel = Models.Merchant.MerchantBalanceHistory;
     using StatementHeader = Models.MerchantStatement.StatementHeader;
     using StatementLine = Models.MerchantStatement.StatementLine;
 
@@ -312,35 +311,7 @@
 
             return models;
         }
-
-        /// <summary>
-        /// Gets the merchant balance history.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="startDateTime"></param>
-        /// <param name="endDateTime"></param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task<List<MerchantBalanceHistoryModel>> GetMerchantBalanceHistory(Guid estateId,
-                                                                                       Guid merchantId,
-                                                                                       DateTime startDateTime,
-                                                                                       DateTime endDateTime,
-                                                                                       CancellationToken cancellationToken)
-        {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
-
-            List<MerchantBalanceView> merchantBalanceHistories = await context.MerchantBalanceView.Where(m => m.MerchantId == merchantId &&
-                                                                                                              m.EntryDateTime>= startDateTime &&
-                                                                                                              m.EntryDateTime <= endDateTime)
-                                                                              .OrderByDescending(o => o.EntryDateTime)
-                                                                              .ToListAsync(cancellationToken);
-
-            List<MerchantBalanceHistoryModel> merchantBalanceHistoryModels = this.ModelFactory.ConvertFrom(merchantBalanceHistories);
-
-            return merchantBalanceHistoryModels;
-        }
-
+        
         /// <summary>
         /// Gets the transaction fees for product.
         /// </summary>
