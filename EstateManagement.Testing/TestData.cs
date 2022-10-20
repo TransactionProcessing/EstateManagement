@@ -29,7 +29,6 @@
     using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
     using Estate = Models.Estate;
     using Merchant = Models.Merchant.Merchant;
-    using MerchantBalanceHistory = Models.Merchant.MerchantBalanceHistory;
     using Operator = Models.Estate.Operator;
     using SecurityUser = Models.SecurityUser;
     using TransactionFeeModel = Models.Contract.TransactionFee;
@@ -666,15 +665,7 @@
                                                                                                                 TestData.DepositReference,
                                                                                                                 TestData.DepositDateTime,
                                                                                                                 TestData.DepositAmount.Value);
-
-        public static MerchantBalance MerchantBalanceModel = new MerchantBalance
-                                                             {
-                                                                 AvailableBalance = TestData.AvailableBalance,
-                                                                 MerchantId = TestData.MerchantId,
-                                                                 Balance = TestData.Balance,
-                                                                 EstateId = TestData.EstateId
-                                                             };
-
+        
         public static Guid ContractId = Guid.Parse("3C50EDAB-0718-4666-8BEB-1BD5BF08E1D7");
 
         public static Guid ContractId2 = Guid.Parse("086C2FC0-DB29-4A75-8983-3A3A78628A2A");
@@ -874,71 +865,7 @@
                                                                             CalculationType = CalculationType.Fixed
                                                                         }
                                                                     };
-
-        public static MerchantBalanceHistory MerchantBalanceHistoryOut =>
-            new MerchantBalanceHistory
-            {
-                MerchantId = TestData.MerchantId,
-                EntryDateTime = TestData.EntryDateTime,
-                Balance = TestData.Balance,
-                ChangeAmount = TestData.ChangeAmount1,
-                EntryType = TestData.EntryType1,
-                EstateId = TestData.EstateId,
-                EventId = TestData.BalanceEventId1,
-                In = null,
-                Out = TestData.ChangeAmount1,
-                Reference = TestData.BalanceReference1,
-                TransactionId = TestData.TransactionId
-            };
-
-        public static MerchantBalanceView MerchantBalanceHistoryOutEntity =>
-            new MerchantBalanceView
-            {
-                MerchantId = TestData.MerchantId,
-                EntryDateTime = TestData.EntryDateTime,
-                Balance = TestData.Balance,
-                ChangeAmount = TestData.ChangeAmount1,
-                EntryType = TestData.EntryType1,
-                EstateId = TestData.EstateId,
-                EventId = TestData.BalanceEventId1,
-                In = null,
-                Out = TestData.ChangeAmount1,
-                Reference = TestData.BalanceReference1,
-                TransactionId = TestData.TransactionId
-            };
-
-        public static MerchantBalanceHistory MerchantBalanceHistoryIn =>
-            new MerchantBalanceHistory
-            {
-                MerchantId = TestData.MerchantId,
-                EntryDateTime = TestData.EntryDateTime,
-                Balance = TestData.Balance,
-                ChangeAmount = TestData.ChangeAmount2,
-                EntryType = TestData.EntryType2,
-                EstateId = TestData.EstateId,
-                EventId = TestData.BalanceEventId2,
-                In = null,
-                Out = TestData.ChangeAmount2,
-                Reference = TestData.BalanceReference2,
-                TransactionId = TestData.TransactionId
-            };
-
-        public static MerchantBalanceView MerchantBalanceHistoryInEntity =>
-            new MerchantBalanceView
-            {
-                MerchantId = TestData.MerchantId,
-                EntryDateTime = TestData.EntryDateTime,
-                Balance = TestData.Balance,
-                ChangeAmount = TestData.ChangeAmount2,
-                EntryType = TestData.EntryType2,
-                EstateId = TestData.EstateId,
-                EventId = TestData.BalanceEventId2,
-                In = null,
-                Out = TestData.ChangeAmount2,
-                Reference = TestData.BalanceReference2,
-                TransactionId = TestData.TransactionId
-            };
-
+        
         public static IReadOnlyDictionary<String, String> DefaultAppSettings =>
             new Dictionary<String, String>
             {
@@ -1012,12 +939,6 @@
         public static SwapMerchantDeviceRequest SwapMerchantDeviceRequest =>
             SwapMerchantDeviceRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
 
-        public static List<MerchantBalanceView> MerchantBalanceHistoryEntities =>
-            new List<MerchantBalanceView>
-            {
-                TestData.MerchantBalanceHistoryInEntity,
-                TestData.MerchantBalanceHistoryOutEntity
-            };
         public static Guid CallbackId = Guid.Parse("ABC603D3-360E-4F58-8BB9-827EE7A1CB03");
 
         public static String CallbackReference = "Estate1-Merchant1";

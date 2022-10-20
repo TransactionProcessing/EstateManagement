@@ -161,23 +161,6 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	| Deposit3  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
 	| Deposit4  | 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
 
-	Then the merchant balances are as follows
-	| Balance | AvailableBalance | MerchantName    | EstateName    |
-	| 2900.00 | 2900.00          | Test Merchant 1 | Test Estate 1 |
-
-	Then the following entries appear in the merchants balance history between 'LastMonth' and 'Today'
-	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
-	| LastMonth | Opening Balance  | D         | 0       | 0   | 0            | 0       | Test Merchant 1 | Test Estate 1 |
-	| LastMonth | Merchant Deposit | C         | 500.00  | 0   | 500.00       | 500.00  | Test Merchant 1 | Test Estate 1 |
-	| LastWeek  | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 1500.00 | Test Merchant 1 | Test Estate 1 |
-	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
-	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |	
-
-	Then the following entries appear in the merchants balance history between 'Yesterday' and 'Today'
-	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
-	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
-	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |
-
 @PRTest
 Scenario: Get Merchants for Estate - System Login
 	Given I create the following merchants
@@ -287,23 +270,6 @@ Scenario: Make Automatic Merchant Deposits
 	| 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
 	| 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
 
-	Then the merchant balances are as follows
-	| Balance | AvailableBalance | MerchantName    | EstateName    |
-	| 2900.00 | 2900.00          | Test Merchant 1 | Test Estate 1 |
-
-	Then the following entries appear in the merchants balance history between 'LastMonth' and 'Today'
-	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
-	| LastMonth | Opening Balance  | D         | 0       | 0   | 0            | 0       | Test Merchant 1 | Test Estate 1 |
-	| LastMonth | Merchant Deposit | C         | 500.00  | 0   | 500.00       | 500.00  | Test Merchant 1 | Test Estate 1 |
-	| LastWeek  | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 1500.00 | Test Merchant 1 | Test Estate 1 |
-	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
-	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |	
-
-	Then the following entries appear in the merchants balance history between 'Yesterday' and 'Today'
-	| DateTime  | Reference        | EntryType | In      | Out | ChangeAmount | Balance | MerchantName    | EstateName    |
-	| Yesterday | Merchant Deposit | C         | 1000.00 | 0   | 1000.00      | 2500.00 | Test Merchant 1 | Test Estate 1 |
-	| Today     | Merchant Deposit | C         | 400.00  | 0   | 400.00       | 2900.00 | Test Merchant 1 | Test Estate 1 |
-
 Scenario: Non Positive Merchant Deposits Are Rejected
 
 	Given I create the following merchants
@@ -325,7 +291,3 @@ Scenario: Non Positive Merchant Deposits Are Rejected
 	When I make the following automatic merchant deposits the deposit is rejected
 	| Amount  | DateTime  | MerchantName    | EstateName    |
 	| -100  | LastMonth | Test Merchant 1 | Test Estate 1 |
-
-	Then the merchant balances are as follows
-	| Balance | AvailableBalance | MerchantName    | EstateName    |
-	| 0.00 | 0.00          | Test Merchant 1 | Test Estate 1 |
