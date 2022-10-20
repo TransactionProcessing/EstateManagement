@@ -323,35 +323,7 @@ namespace EstateManagement.Tests.Factories
             merchantResponseList.ShouldNotBeEmpty();
             merchantResponseList.Count.ShouldBe(merchantModelList.Count);
         }
-
-        [Fact]
-        public void ModelFactory_MerchantBalance_IsConverted()
-        {
-            MerchantBalance merchantBalanceModel = TestData.MerchantBalanceModel;
-
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantBalanceResponse merchantBalanceResponse = modelFactory.ConvertFrom(merchantBalanceModel);
-
-            merchantBalanceResponse.ShouldNotBeNull();
-            merchantBalanceResponse.MerchantId.ShouldBe(merchantBalanceModel.MerchantId);
-            merchantBalanceResponse.EstateId.ShouldBe(merchantBalanceModel.EstateId);
-            merchantBalanceResponse.AvailableBalance.ShouldBe(merchantBalanceModel.AvailableBalance);
-            merchantBalanceResponse.Balance.ShouldBe(merchantBalanceModel.Balance);
-        }
-
-        [Fact]
-        public void ModelFactory_MerchantBalance_NullInput_IsConverted()
-        {
-            MerchantBalance merchantBalanceModel = null;
-
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantBalanceResponse merchantBalanceResponse = modelFactory.ConvertFrom(merchantBalanceModel);
-
-            merchantBalanceResponse.ShouldBeNull();
-        }
-
+        
         [Fact]
         public void ModelFactory_Contract_ContractOnly_IsConverted()
         {
@@ -480,32 +452,5 @@ namespace EstateManagement.Tests.Factories
             contractResponses.Single().Description.ShouldBe(contractModel.Single().Description);
             contractResponses.Single().Products.ShouldBeNull();
         }
-
-        [Fact]
-        public void MerchantBalanceHistoryList_IsConverted()
-        {
-            List<MerchantBalanceHistory> merchantBalanceHistoryModel = new List<MerchantBalanceHistory>
-                                                         {
-                                                             TestData.MerchantBalanceHistoryIn
-                                                         };
-
-            ModelFactory modelFactory = new ModelFactory();
-
-            List<MerchantBalanceHistoryResponse> merchantBalanceHistoryResponses = modelFactory.ConvertFrom(merchantBalanceHistoryModel);
-
-            merchantBalanceHistoryResponses.ShouldNotBeNull();
-            merchantBalanceHistoryResponses.ShouldHaveSingleItem();
-            merchantBalanceHistoryResponses.Single().MerchantId.ShouldBe(merchantBalanceHistoryModel.Single().MerchantId);
-            merchantBalanceHistoryResponses.Single().Balance.ShouldBe(merchantBalanceHistoryModel.Single().Balance);
-            merchantBalanceHistoryResponses.Single().ChangeAmount.ShouldBe(merchantBalanceHistoryModel.Single().ChangeAmount);
-            merchantBalanceHistoryResponses.Single().EntryDateTime.ShouldBe(merchantBalanceHistoryModel.Single().EntryDateTime);
-            merchantBalanceHistoryResponses.Single().EntryType.ShouldBe(merchantBalanceHistoryModel.Single().EntryType);
-            merchantBalanceHistoryResponses.Single().EstateId.ShouldBe(merchantBalanceHistoryModel.Single().EstateId);
-            merchantBalanceHistoryResponses.Single().EventId.ShouldBe(merchantBalanceHistoryModel.Single().EventId);
-            merchantBalanceHistoryResponses.Single().In.ShouldBe(merchantBalanceHistoryModel.Single().In);
-            merchantBalanceHistoryResponses.Single().Out.ShouldBe(merchantBalanceHistoryModel.Single().Out);
-            merchantBalanceHistoryResponses.Single().Reference.ShouldBe(merchantBalanceHistoryModel.Single().Reference);
-            merchantBalanceHistoryResponses.Single().TransactionId.ShouldBe(merchantBalanceHistoryModel.Single().TransactionId);
-            }
     }
 }

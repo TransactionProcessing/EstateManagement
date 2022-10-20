@@ -33,7 +33,6 @@ namespace EstateManagement.BusinessLogic.Tests
     using Testing;
     using Xunit;
     using Merchant = Models.Merchant.Merchant;
-    using MerchantBalanceHistory = Models.Merchant.MerchantBalanceHistory;
 
     public class ModelFactoryTests
     {

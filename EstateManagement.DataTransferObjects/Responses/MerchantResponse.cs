@@ -19,25 +19,7 @@
         /// </value>
         [JsonProperty("addresses")]
         public List<AddressResponse> Addresses { get; set; }
-
-        /// <summary>
-        /// Gets or sets the available balance.
-        /// </summary>
-        /// <value>
-        /// The available balance.
-        /// </value>
-        [JsonProperty("available_balance")]
-        public Decimal AvailableBalance { get; set; }
-
-        /// <summary>
-        /// Gets or sets the balance.
-        /// </summary>
-        /// <value>
-        /// The balance.
-        /// </value>
-        [JsonProperty("balance")]
-        public Decimal Balance { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the contacts.
         /// </summary>

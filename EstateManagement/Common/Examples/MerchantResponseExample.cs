@@ -40,8 +40,6 @@
                                            AddressId = ExampleData.AddressId
                                        }
                                    },
-                       AvailableBalance = ExampleData.AvailableBalance,
-                       Balance = ExampleData.Balance,
                        Contacts = new List<ContactResponse>
                                   {
                                       new ContactResponse

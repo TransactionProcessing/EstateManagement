@@ -137,8 +137,7 @@
         /// </summary>
         /// <param name="merchant">The merchant.</param>
         /// <returns></returns>
-        public MerchantResponse ConvertFrom(Merchant merchant,
-                                            MerchantBalance merchantBalance = null)
+        public MerchantResponse ConvertFrom(Merchant merchant)
         {
             if (merchant == null)
             {
@@ -209,13 +208,6 @@
                                                                                }));
             }
 
-            // Only include the balance if the dto fed in is not null
-            if (merchantBalance != null)
-            {
-                merchantResponse.AvailableBalance = merchantBalance.AvailableBalance;
-                merchantResponse.Balance = merchantBalance.Balance;
-            }
-
             return merchantResponse;
         }
 
@@ -228,54 +220,6 @@
                 Models.SettlementSchedule.Immediate => DataTransferObjects.SettlementSchedule.Immediate,
                 Models.SettlementSchedule.NotSet => DataTransferObjects.SettlementSchedule.NotSet,
             };
-        }
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantBalance"></param>
-        /// <returns></returns>
-        public MerchantBalanceResponse ConvertFrom(MerchantBalance merchantBalance)
-        {
-            if (merchantBalance == null)
-            {
-                return null;
-            }
-
-            return new MerchantBalanceResponse
-                   {
-                       MerchantId = merchantBalance.MerchantId,
-                       EstateId = merchantBalance.EstateId,
-                       AvailableBalance = merchantBalance.AvailableBalance,
-                       Balance = merchantBalance.Balance
-                   };
-        }
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantBalanceHistories">The merchant balance histories.</param>
-        /// <returns></returns>
-        public List<MerchantBalanceHistoryResponse> ConvertFrom(List<MerchantBalanceHistory> merchantBalanceHistories)
-        {
-            List<MerchantBalanceHistoryResponse> result = new List<MerchantBalanceHistoryResponse>();
-
-            merchantBalanceHistories.ForEach(m => result.Add(new MerchantBalanceHistoryResponse
-                                                             {
-                                                                 MerchantId = m.MerchantId,
-                                                                 Balance = m.Balance,
-                                                                 ChangeAmount = m.ChangeAmount,
-                                                                 EntryDateTime = m.EntryDateTime,
-                                                                 EntryType = m.EntryType,
-                                                                 EstateId = m.EstateId,
-                                                                 EventId = m.EventId,
-                                                                 In = m.In,
-                                                                 Out = m.Out,
-                                                                 Reference = m.Reference,
-                                                                 TransactionId = m.TransactionId
-                                                             }));
-
-            return result;
         }
         
         /// <summary>

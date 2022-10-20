@@ -41,14 +41,13 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
             this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
-            this.EventStoreContext = new Mock<IEventStoreContext>();
-
+            
             this.ModelFactory = new Mock<IModelFactory>();
             
             this.EstateManagementManager =
                 new EstateManagementManager(this.EstateAggregateRepository.Object,
                                             this.MerchantAggregateRepository.Object,
-                                            this.EstateManagementRepository.Object, this.EventStoreContext.Object, this.ModelFactory.Object);
+                                            this.EstateManagementRepository.Object, this.ModelFactory.Object);
         }
 
         [Fact]
@@ -117,35 +116,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.Addresses.ShouldBeNull();
             merchantModel.Contacts.ShouldHaveSingleItem();
         }
-
-        [Fact]
-        public async Task EstateManagementManager_GetMerchantBalance_MerchantBalanceIsReturned()
-        {
-            String projectionState = "{\r\n      \"merchantId\": \"b3054488-ccfc-4bfe-9b0c-ad7ac10b16e8\",\r\n      \"merchantName\": \"Test Merchant 2\",\r\n      \"availableBalance\": 1000.00,\r\n      \"balance\": 1000.00,\r\n      \"lastDepositDateTime\": null,\r\n      \"lastSaleDateTime\": null,\r\n      \"pendingBalanceUpdates\": []\r\n    }";
-
-            this.EventStoreContext.Setup(e => e.GetPartitionStateFromProjection(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(projectionState);
-
-            var merchantBalanceModel = await this.EstateManagementManager.GetMerchantBalance(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
-
-            merchantBalanceModel.EstateId.ShouldBe(TestData.EstateId);
-            merchantBalanceModel.MerchantId.ShouldBe(TestData.MerchantId);
-            merchantBalanceModel.AvailableBalance.ShouldBe(TestData.AvailableBalance);
-            merchantBalanceModel.Balance.ShouldBe(TestData.Balance);
-        }
-
-        [Fact]
-        public async Task EstateManagementManager_GetMerchantBalance_ProjectionReturnsNoState_ErrorThrown()
-        {
-            String projectionState = "{}";
-
-            this.EventStoreContext.Setup(e => e.GetPartitionStateFromProjection(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(projectionState);
-
-            Should.Throw<NotFoundException>(async () =>
-                                            {
-                                                await this.EstateManagementManager.GetMerchantBalance(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
-                                            });
-        }
-
+        
         [Fact]
         public async Task EstateManagementManager_GetMerchants_MerchantListIsReturned()
         {
@@ -213,22 +184,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantContracts.ShouldNotBeNull();
             merchantContracts.ShouldHaveSingleItem();
             merchantContracts.Single().ContractId.ShouldBe(TestData.ContractId);
-        }
-
-        [Fact]
-        public async Task EstateManagementManager_GetMerchantBalanceHistory_MerchantBalanceHistory()
-        {
-            this.EstateManagementRepository.Setup(e => e.GetMerchantBalanceHistory(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateTime>(),
-                                                                                   It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<MerchantBalanceHistory>
-                {
-                    TestData.MerchantBalanceHistoryIn,
-                    TestData.MerchantBalanceHistoryOut
-                });
-
-            List<MerchantBalanceHistory> merchantBalanceHistory = await this.EstateManagementManager.GetMerchantBalanceHistory(TestData.EstateId, TestData.MerchantId, TestData.HistoryStartDate, TestData.HistoryEndDate, CancellationToken.None);
-
-            merchantBalanceHistory.ShouldNotBeNull();
-            merchantBalanceHistory.Count.ShouldBe(2);
         }
     }
 }
