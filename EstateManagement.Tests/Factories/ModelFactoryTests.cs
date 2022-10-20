@@ -133,45 +133,7 @@ namespace EstateManagement.Tests.Factories
             contactResponse.ContactName.ShouldBe(merchantModel.Contacts.Single().ContactName);
             contactResponse.ContactPhoneNumber.ShouldBe(merchantModel.Contacts.Single().ContactPhoneNumber);
         }
-
-        [Fact]
-        public void ModelFactory_Merchant_WithBalance_IsConverted()
-        {
-            Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators();
-            MerchantBalance merchantBalanceModel = TestData.MerchantBalanceModel;
-
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantResponse merchantResponse = modelFactory.ConvertFrom(merchantModel, merchantBalanceModel);
-
-            merchantResponse.ShouldNotBeNull();
-            merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
-            merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
-            merchantResponse.EstateId.ShouldBe(merchantModel.EstateId);
-            merchantResponse.Addresses.ShouldHaveSingleItem();
-
-            AddressResponse addressResponse = merchantResponse.Addresses.Single();
-            addressResponse.AddressId.ShouldBe(merchantModel.Addresses.Single().AddressId);
-            addressResponse.AddressLine1.ShouldBe(merchantModel.Addresses.Single().AddressLine1);
-            addressResponse.AddressLine2.ShouldBe(merchantModel.Addresses.Single().AddressLine2);
-            addressResponse.AddressLine3.ShouldBe(merchantModel.Addresses.Single().AddressLine3);
-            addressResponse.AddressLine4.ShouldBe(merchantModel.Addresses.Single().AddressLine4);
-            addressResponse.Town.ShouldBe(merchantModel.Addresses.Single().Town);
-            addressResponse.Region.ShouldBe(merchantModel.Addresses.Single().Region);
-            addressResponse.Country.ShouldBe(merchantModel.Addresses.Single().Country);
-            addressResponse.PostalCode.ShouldBe(merchantModel.Addresses.Single().PostalCode);
-
-            merchantResponse.Contacts.ShouldHaveSingleItem();
-            ContactResponse contactResponse = merchantResponse.Contacts.Single();
-            contactResponse.ContactId.ShouldBe(merchantModel.Contacts.Single().ContactId);
-            contactResponse.ContactEmailAddress.ShouldBe(merchantModel.Contacts.Single().ContactEmailAddress);
-            contactResponse.ContactName.ShouldBe(merchantModel.Contacts.Single().ContactName);
-            contactResponse.ContactPhoneNumber.ShouldBe(merchantModel.Contacts.Single().ContactPhoneNumber);
-
-            merchantResponse.AvailableBalance.ShouldBe(merchantBalanceModel.AvailableBalance);
-            merchantResponse.Balance.ShouldBe(merchantBalanceModel.Balance);
-        }
-
+        
         [Fact]
         public void ModelFactory_Merchant_NullInput_IsConverted()
         {

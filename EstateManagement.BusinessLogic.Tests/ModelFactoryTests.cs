@@ -761,37 +761,6 @@ namespace EstateManagement.BusinessLogic.Tests
             contractProduct.TransactionFees.ShouldBeEmpty();
         }
 
-        [Fact]
-        public void MerchantBalanceViewEntities_ConvertFrom_MerchantBalanceViewConverted()
-        {
-            List<MerchantBalanceView> merchantBalanceHistoryEntities = TestData.MerchantBalanceHistoryEntities;
-
-            ModelFactory modelFactory = new ModelFactory();
-            var merchantBalanceHistoryModels = modelFactory.ConvertFrom(merchantBalanceHistoryEntities);
-
-            merchantBalanceHistoryModels.ShouldNotBeNull();
-            merchantBalanceHistoryModels.ShouldNotBeEmpty();
-            merchantBalanceHistoryModels.Count.ShouldBe(merchantBalanceHistoryEntities.Count);
-
-            merchantBalanceHistoryEntities.ForEach(e =>
-                                                   {
-                                                       MerchantBalanceHistory? model = merchantBalanceHistoryModels.SingleOrDefault(m => m.EventId == e.EventId);
-
-                                                       model.ShouldNotBeNull();
-                                                       model.MerchantId.ShouldBe(e.MerchantId);
-                                                       model.EntryType.ShouldBe(e.EntryType);
-                                                       model.EstateId.ShouldBe(e.EstateId);
-                                                       model.In.ShouldBe(e.In);
-                                                       model.Out.ShouldBe(e.Out);
-                                                       model.Reference.ShouldBe(e.Reference);
-                                                       model.TransactionId.ShouldBe(e.TransactionId);
-                                                       model.Balance.ShouldBe(e.Balance);
-                                                       model.ChangeAmount.ShouldBe(e.ChangeAmount);
-                                                       model.EntryDateTime.ShouldBe(e.EntryDateTime);
-                                                   });
-
-
-
-        }
+        
     }
 }

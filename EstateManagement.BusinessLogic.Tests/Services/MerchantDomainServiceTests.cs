@@ -69,6 +69,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                    TestData.MerchantContactPhoneNumber,
                                                                    TestData.MerchantContactEmailAddress,
                                                                    TestData.SettlementSchedule,
+                                                                   TestData.DateMerchantCreated,
                                                                    CancellationToken.None);
                             });
         }
@@ -97,6 +98,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                TestData.MerchantContactPhoneNumber,
                                                TestData.MerchantContactEmailAddress,
                                                TestData.SettlementSchedule,
+                                               TestData.DateMerchantCreated,
                                                CancellationToken.None);
 
             Should.NotThrow(async () =>
@@ -118,6 +120,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                    TestData.MerchantContactPhoneNumber,
                                                    TestData.MerchantContactEmailAddress,
                                                    TestData.SettlementSchedule,
+                                                   TestData.DateMerchantCreated,
                                                    CancellationToken.None);
             });
         }
@@ -149,6 +152,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                         TestData.MerchantContactPhoneNumber,
                                                         TestData.MerchantContactEmailAddress,
                                                         TestData.SettlementSchedule,
+                                                        TestData.DateMerchantCreated,
                                                         CancellationToken.None);
             });
         }

@@ -47,6 +47,9 @@
         [JsonProperty("merchant_id")]
         public Guid? MerchantId { get; set; }
 
+        [JsonProperty("created_date_time")]
+        public DateTime? CreatedDateTime { get; set; }
+
         #endregion
     }
 }

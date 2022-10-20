@@ -33,7 +33,8 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
                                                                                        TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry,
                                                                                        TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
                                                                                        TestData.MerchantContactEmailAddress,
-                                                                                       TestData.SettlementSchedule);
+                                                                                       TestData.SettlementSchedule,
+                                                                                       TestData.DateMerchantCreated);
 
             createMerchantRequest.ShouldNotBeNull();
             createMerchantRequest.EstateId.ShouldBe(TestData.EstateId);
@@ -51,6 +52,7 @@ namespace EstateManagement.BusinessLogic.Tests.Commands
             createMerchantRequest.ContactPhoneNumber.ShouldBe(TestData.MerchantContactPhoneNumber);
             createMerchantRequest.ContactEmailAddress.ShouldBe(TestData.MerchantContactEmailAddress);
             createMerchantRequest.SettlementSchedule.ShouldBe(TestData.SettlementSchedule);
+            createMerchantRequest.CreateDateTime.ShouldBe(TestData.DateMerchantCreated);
         }
 
         [Fact]

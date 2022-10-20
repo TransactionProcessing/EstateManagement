@@ -99,7 +99,8 @@
                                                                                                  TestData.MerchantContactName,
                                                                                                  TestData.MerchantContactPhoneNumber,
                                                                                                  TestData.MerchantContactEmailAddress,
-                                                                                                 TestData.SettlementSchedule);
+                                                                                                 TestData.SettlementSchedule,
+                                                                                                 TestData.DateMerchantCreated);
 
         public static EstateAggregate EmptyEstateAggregate = EstateAggregate.Create(TestData.EstateId);
 
