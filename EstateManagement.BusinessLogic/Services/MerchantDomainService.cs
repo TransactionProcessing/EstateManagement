@@ -109,6 +109,7 @@
                                          String contactPhoneNumber,
                                          String contactEmailAddress,
                                          Models.SettlementSchedule settlementSchedule,
+                                         DateTime createdDateTime,
                                          CancellationToken cancellationToken)
         {
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
@@ -130,7 +131,7 @@
             }
             else
             {
-                merchantAggregate.Create(estateId, name, DateTime.Now);
+                merchantAggregate.Create(estateId, name, createdDateTime);
                 merchantAggregate.GenerateReference();
 
                 // Add the address 

@@ -251,7 +251,8 @@
                                                                          createMerchantRequest.Contact.ContactName,
                                                                          createMerchantRequest.Contact.PhoneNumber,
                                                                          createMerchantRequest.Contact.EmailAddress,
-                                                                         settlementScheduleModel);
+                                                                         settlementScheduleModel,
+                                                                         createMerchantRequest.CreatedDateTime);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);

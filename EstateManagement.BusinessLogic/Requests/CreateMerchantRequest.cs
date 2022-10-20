@@ -1,34 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateManagement.BusinessLogic.Requests
+﻿namespace EstateManagement.BusinessLogic.Requests
 {
+    using System;
     using MediatR;
+    using Models;
 
     public class CreateMerchantRequest : IRequest
     {
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateMerchantRequest" /> class.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="addressId">The address identifier.</param>
-        /// <param name="addressLine1">The address line1.</param>
-        /// <param name="addressLine2">The address line2.</param>
-        /// <param name="addressLine3">The address line3.</param>
-        /// <param name="addressLine4">The address line4.</param>
-        /// <param name="town">The town.</param>
-        /// <param name="region">The region.</param>
-        /// <param name="postalCode">The postal code.</param>
-        /// <param name="country">The country.</param>
-        /// <param name="contactId">The contact identifier.</param>
-        /// <param name="contactName">Name of the contact.</param>
-        /// <param name="contactPhoneNumber">The contact phone number.</param>
-        /// <param name="contactEmailAddress">The contact email address.</param>
         private CreateMerchantRequest(Guid estateId,
                                       Guid merchantId,
                                       String name,
@@ -45,8 +24,8 @@ namespace EstateManagement.BusinessLogic.Requests
                                       String contactName,
                                       String contactPhoneNumber,
                                       String contactEmailAddress,
-                                      Models.SettlementSchedule settlementSchedule)
-        {
+                                      SettlementSchedule settlementSchedule,
+                                      DateTime createDateTime) {
             this.EstateId = estateId;
             this.MerchantId = merchantId;
             this.Name = name;
@@ -64,6 +43,7 @@ namespace EstateManagement.BusinessLogic.Requests
             this.ContactPhoneNumber = contactPhoneNumber;
             this.ContactEmailAddress = contactEmailAddress;
             this.SettlementSchedule = settlementSchedule;
+            this.CreateDateTime = createDateTime;
         }
 
         #endregion
@@ -150,6 +130,8 @@ namespace EstateManagement.BusinessLogic.Requests
         /// </value>
         public String Country { get; }
 
+        public DateTime CreateDateTime { get; }
+
         /// <summary>
         /// Gets the estate identifier.
         /// </summary>
@@ -190,6 +172,8 @@ namespace EstateManagement.BusinessLogic.Requests
         /// </value>
         public String Region { get; }
 
+        public SettlementSchedule SettlementSchedule { get; }
+
         /// <summary>
         /// Gets the town.
         /// </summary>
@@ -198,30 +182,10 @@ namespace EstateManagement.BusinessLogic.Requests
         /// </value>
         public String Town { get; }
 
-        public Models.SettlementSchedule SettlementSchedule { get; }
-
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// Creates the specified estate identifier.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="addressLine1">The address line1.</param>
-        /// <param name="addressLine2">The address line2.</param>
-        /// <param name="addressLine3">The address line3.</param>
-        /// <param name="addressLine4">The address line4.</param>
-        /// <param name="town">The town.</param>
-        /// <param name="region">The region.</param>
-        /// <param name="postalCode">The postal code.</param>
-        /// <param name="country">The country.</param>
-        /// <param name="contactName">Name of the contact.</param>
-        /// <param name="contactPhoneNumber">The contact phone number.</param>
-        /// <param name="contactEmailAddress">The contact email address.</param>
-        /// <returns></returns>
         public static CreateMerchantRequest Create(Guid estateId,
                                                    Guid merchantId,
                                                    String name,
@@ -236,8 +200,8 @@ namespace EstateManagement.BusinessLogic.Requests
                                                    String contactName,
                                                    String contactPhoneNumber,
                                                    String contactEmailAddress,
-                                                   Models.SettlementSchedule settlementSchedule)
-        {
+                                                   SettlementSchedule settlementSchedule,
+                                                   DateTime? createDateTime) {
             return new CreateMerchantRequest(estateId,
                                              merchantId,
                                              name,
@@ -254,7 +218,8 @@ namespace EstateManagement.BusinessLogic.Requests
                                              contactName,
                                              contactPhoneNumber,
                                              contactEmailAddress,
-                                             settlementSchedule);
+                                             settlementSchedule,
+                                             createDateTime.GetValueOrDefault(DateTime.Now));
         }
 
         #endregion

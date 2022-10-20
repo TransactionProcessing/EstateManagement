@@ -759,5 +759,7 @@ namespace EstateManagement.BusinessLogic.Tests
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
             contractProduct.TransactionFees.ShouldBeEmpty();
         }
+
+        
     }
 }
