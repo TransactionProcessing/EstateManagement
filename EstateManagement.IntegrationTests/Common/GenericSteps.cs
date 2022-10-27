@@ -10,6 +10,7 @@ namespace EstateManagement.IntegrationTests.Common
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using global::Shared.General;
+    using global::Shared.IntegrationTesting;
     using global::Shared.Logger;
     using Microsoft.Extensions.Logging;
     using NLog;
@@ -37,10 +38,19 @@ namespace EstateManagement.IntegrationTests.Common
             // Initialise a logger
             String scenarioName = this.ScenarioContext.ScenarioInfo.Title.Replace(" ", "");
             NlogLogger logger = new NlogLogger();
-            logger.Initialise(LogManager.GetLogger(scenarioName),scenarioName);
+            logger.Initialise(LogManager.GetLogger(scenarioName), scenarioName);
             LogManager.AddHiddenAssembly(typeof(NlogLogger).Assembly);
 
-            this.TestingContext.DockerHelper = new DockerHelper(logger, this.TestingContext);
+            this.TestingContext.DockerHelper = new DockerHelper();
+            this.TestingContext.DockerHelper.Logger = logger;
+            this.TestingContext.DockerHelper.SqlServerContainer = Setup.DatabaseServerContainer;
+            this.TestingContext.DockerHelper.SqlServerNetwork = Setup.DatabaseServerNetwork;
+            this.TestingContext.DockerHelper.DockerCredentials = Setup.DockerCredentials;
+            this.TestingContext.DockerHelper.SqlCredentials = Setup.SqlCredentials;
+            this.TestingContext.DockerHelper.SqlServerContainerName = "sharedsqlserver";
+
+            this.TestingContext.DockerHelper.SetImageDetails(ContainerType.EstateManagement, ("estatemanagement", false));
+
             this.TestingContext.Logger = logger;
             this.TestingContext.Logger.LogInformation("About to Start Containers for Scenario Run");
             await this.TestingContext.DockerHelper.StartContainersForScenarioRun(scenarioName).ConfigureAwait(false);
@@ -50,25 +60,6 @@ namespace EstateManagement.IntegrationTests.Common
         [AfterScenario()]
         public async Task StopSystem()
         {
-            if (this.ScenarioContext.TestError != null)
-            {
-                //// The test has failed, grab the logs from all the containers
-                //List<IContainerService> containers = new List<IContainerService>();
-                //containers.Add(this.TestingContext.DockerHelper.SecurityServiceContainer);
-                //containers.Add(this.TestingContext.DockerHelper.EstateManagementApiContainer);
-
-                //foreach (IContainerService containerService in containers)
-                //{
-                //    ConsoleStream<String> logStream = containerService.Logs();
-                //    IList<String> logData = logStream.ReadToEnd();
-
-                //    foreach (String s in logData)
-                //    {
-                //        this.TestingContext.Logger.LogWarning(s);
-                //    }
-                //}
-            }
-
             this.TestingContext.Logger.LogInformation("About to Stop Containers for Scenario Run");
             await this.TestingContext.DockerHelper.StopContainersForScenarioRun().ConfigureAwait(false);
             this.TestingContext.Logger.LogInformation("Containers for Scenario Run Stopped");
