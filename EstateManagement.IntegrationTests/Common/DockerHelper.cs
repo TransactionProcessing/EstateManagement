@@ -82,10 +82,13 @@
 
             this.Trace($"Estate Management Port is [{this.EstateManagementPort}]");
             this.Trace($"Security Service Port is [{this.SecurityServicePort}]");
-
+            
             // Setup the base address resolvers
-            String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementPort}";
-            String SecurityServiceBaseAddressResolver(String api) => $"https://127.0.0.1:{this.SecurityServicePort}";
+            String estateAddress = $"http://127.0.0.1:{this.EstateManagementPort}";
+            String securityAddress = $"http://127.0.0.1:{this.SecurityServicePort}";
+
+            String EstateManagementBaseAddressResolver(String api) => estateAddress;
+            String SecurityServiceBaseAddressResolver(String api) => securityAddress;
 
             HttpClientHandler clientHandler = new HttpClientHandler
             {
