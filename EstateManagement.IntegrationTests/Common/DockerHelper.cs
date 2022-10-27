@@ -18,6 +18,7 @@
     using Ductus.FluentDocker.Services.Extensions;
     using EstateReporting.Database;
     using EventStore.Client;
+    using global::Shared.IntegrationTesting;
     using global::Shared.Logger;
     using Newtonsoft.Json;
     using SecurityService.Client;
@@ -55,52 +56,7 @@
         /// The test host client
         /// </summary>
         public HttpClient TestHostClient;
-
-        /// <summary>
-        /// The test identifier
-        /// </summary>
-        public Guid TestId;
-
-        /// <summary>
-        /// The callback handler port
-        /// </summary>
-        protected Int32 CallbackHandlerPort;
-
-        /// <summary>
-        /// The containers
-        /// </summary>
-        protected List<IContainerService> Containers;
-
         
-        /// <summary>
-        /// The estate management port
-        /// </summary>
-        protected Int32 EstateManagementPort;
-
-        /// <summary>
-        /// The estate reporting port
-        /// </summary>
-        protected Int32 EstateReportingPort;
-        
-        /// <summary>
-        /// The event store HTTP port
-        /// </summary>
-        protected Int32 EventStoreHttpPort;
-
-        /// <summary>
-        /// The security service port
-        /// </summary>
-        protected Int32 SecurityServicePort;
-        
-        /// <summary>
-        /// The test host service port
-        /// </summary>
-        protected Int32 TestHostServicePort;
-
-        /// <summary>
-        /// The test networks
-        /// </summary>
-        protected List<INetworkService> TestNetworks;
 
         /// <summary>
         /// The testing context
@@ -110,200 +66,41 @@
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DockerHelper"/> class.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="testingContext">The testing context.</param>
-        public DockerHelper(NlogLogger logger,
-                            TestingContext testingContext)
+        
+        public DockerHelper()
         {
-            this.Logger = logger;
-            this.TestingContext = testingContext;
-            this.Containers = new List<IContainerService>();
-            this.TestNetworks = new List<INetworkService>();
+            this.TestingContext = new TestingContext();
         }
 
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Populates the subscription service configuration.
-        /// </summary>
-        /// <param name="estateName">Name of the estate.</param>
-        public async Task PopulateSubscriptionServiceConfiguration(String estateName, Boolean isSecureEventStore)
-        {
-            var name = estateName.Replace(" ", "");
-            List<(string streamName, string groupName, Int32 maxRetryCount)> subscriptions = new ();
-            subscriptions.Add((name, "Reporting",5));
-            subscriptions.Add(($"EstateManagementSubscriptionStream_{name}", "Estate Management",0));
-            await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions, isSecureEventStore);
-        }
-
-        protected override String GenerateEventStoreConnectionString()
-        {
-            // TODO: this could move to shared
-            String eventStoreAddress = $"esdb://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreHttpDockerPort}";
-            if (this.IsSecureEventStore) {
-                eventStoreAddress = $"{eventStoreAddress}?tls=true&tlsVerifyCert=false";
-            }
-            else {
-                eventStoreAddress = $"{eventStoreAddress}?tls=false&tlsVerifyCert=false";
-            }
-
-            return eventStoreAddress;
-        }
-
-        public Boolean IsSecureEventStore { get; private set; }
-
-        /// <summary>
-        /// Starts the containers for scenario run.
-        /// </summary>
-        /// <param name="scenarioName">Name of the scenario.</param>
+        
         public override async Task StartContainersForScenarioRun(String scenarioName) {
-            
-            String IsSecureEventStoreEnvVar = Environment.GetEnvironmentVariable("IsSecureEventStore");
 
-            if (IsSecureEventStoreEnvVar == null) {
-                // No env var set so default to insecure
-                this.IsSecureEventStore = false;
-            }
-            else {
-                // We have the env var so we set the secure flag based on the value in the env var
-                Boolean.TryParse(IsSecureEventStoreEnvVar, out Boolean isSecure);
-                this.IsSecureEventStore = isSecure;
-            }
-
-            this.HostTraceFolder = FdOs.IsWindows() ? $"C:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
-
-            Logging.Enabled();
-
-            Guid testGuid = Guid.NewGuid();
-            this.TestId = testGuid;
-
-            this.Logger.LogInformation($"Test Id is {testGuid}");
-
-            // Setup the container names
-            this.SecurityServiceContainerName = $"securityservice{testGuid:N}";
-            this.EstateManagementContainerName = $"estate{testGuid:N}";
-            this.EventStoreContainerName = $"eventstore{testGuid:N}";
-            this.EstateReportingContainerName = $"estatereporting{testGuid:N}";
-            this.TestHostContainerName = $"testhosts{testGuid:N}";
-            this.CallbackHandlerContainerName = $"callbackhandler{testGuid:N}";
-
-            this.DockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
-            this.SqlServerDetails = (Setup.SqlServerContainerName, Setup.SqlUserName, Setup.SqlPassword);
-            this.ClientDetails = ("serviceClient", "Secret1");
-
-            INetworkService testNetwork = DockerHelper.SetupTestNetwork();
-            this.TestNetworks.Add(testNetwork);
-
-            IContainerService eventStoreContainer =
-                this.SetupEventStoreContainer("eventstore/eventstore:21.10.0-buster-slim", testNetwork,isSecure: this.IsSecureEventStore);
-            this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
-
-            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=True";
-            if (this.IsSecureEventStore) {
-                insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=False";
-            }
-
-            String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
-            String internalSubscriptionServiceCacheDuration = "AppSettings:InternalSubscriptionServiceCacheDuration=0";
-
-            IContainerService estateManagementContainer = this.SetupEstateManagementContainer("estatemanagement",
-                                                                                                      new List<INetworkService>
-                                                                                                      {
-                                                                                                          testNetwork,
-                                                                                                          Setup.DatabaseServerNetwork
-                                                                                                      },
-                                                                                                      additionalEnvironmentVariables:new List<String>
-                                                                                                          {
-                                                                                                              insecureEventStoreEnvironmentVariable,
-                                                                                                              persistentSubscriptionPollingInSeconds,
-                                                                                                              internalSubscriptionServiceCacheDuration
-                                                                                                          });
-
-            IContainerService securityServiceContainer = this.SetupSecurityServiceContainer("stuartferguson/securityservice",
-                                                                                                    testNetwork,
-                                                                                                    true);
-
-            IContainerService estateReportingContainer = this.SetupEstateReportingContainer("stuartferguson/estatereporting",
-                                                                                            new List<INetworkService>
-                                                                                            {
-                                                                                                testNetwork,
-                                                                                                Setup.DatabaseServerNetwork
-                                                                                            },
-                                                                                            additionalEnvironmentVariables:new List<String>
-                                                                                                {
-                                                                                                    insecureEventStoreEnvironmentVariable,
-                                                                                                    persistentSubscriptionPollingInSeconds,
-                                                                                                    internalSubscriptionServiceCacheDuration
-                                                                                                },
-                                                                                            forceLatestImage:true);
-
-
-            var callbackHandlerContainer = this.SetupCallbackHandlerContainer("stuartferguson/callbackhandler",
-                                                                                      new List<INetworkService>
-                                                                                      {
-                                                                                          testNetwork
-                                                                                      },
-                                                                                      true,
-                                                                                      additionalEnvironmentVariables: new List<String>
-                                                                                          {
-                                                                                              insecureEventStoreEnvironmentVariable
-                                                                                          });
-
-            var testHostContainer = this.SetupTestHostContainer("stuartferguson/testhosts",
-                                                                        new List<INetworkService>
-                                                                        {
-                                                                            testNetwork,
-                                                                            Setup.DatabaseServerNetwork
-                                                                        },
-                                                                        true);
-
-            this.Containers.AddRange(new List<IContainerService>
-                                     {
-                                         eventStoreContainer,
-                                         estateManagementContainer,
-                                         securityServiceContainer,
-                                         estateReportingContainer,
-                                         callbackHandlerContainer,
-                                         testHostContainer
-                                     });
-
-            // Cache the ports
-            this.EstateManagementPort = estateManagementContainer.ToHostExposedEndpoint($"{DockerHelper.EstateManagementDockerPort}/tcp").Port;
-            this.SecurityServicePort = securityServiceContainer.ToHostExposedEndpoint($"{DockerHelper.SecurityServiceDockerPort}/tcp").Port;
-            this.EstateReportingPort = estateReportingContainer.ToHostExposedEndpoint($"{DockerHelper.EstateReportingDockerPort}/tcp").Port;
-            this.TestHostServicePort = testHostContainer.ToHostExposedEndpoint($"{DockerHelper.TestHostPort}/tcp").Port;
-            this.CallbackHandlerPort = callbackHandlerContainer.ToHostExposedEndpoint($"{DockerHelper.CallbackHandlerDockerPort}/tcp").Port;
+            await base.StartContainersForScenarioRun(scenarioName);
 
             // Setup the base address resolvers
             String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementPort}";
             String SecurityServiceBaseAddressResolver(String api) => $"https://127.0.0.1:{this.SecurityServicePort}";
 
             HttpClientHandler clientHandler = new HttpClientHandler
-                                              {
-                                                  ServerCertificateCustomValidationCallback = (message,
-                                                                                               certificate2,
-                                                                                               arg3,
-                                                                                               arg4) =>
-                                                                                              {
-                                                                                                  return true;
-                                                                                              }
-                                              };
+            {
+                ServerCertificateCustomValidationCallback = (message,
+                                                             certificate2,
+                                                             arg3,
+                                                             arg4) =>
+                                                            {
+                                                                return true;
+                                                            }
+            };
             HttpClient httpClient = new HttpClient(clientHandler);
             this.EstateClient = new EstateClient(EstateManagementBaseAddressResolver, httpClient);
             this.SecurityServiceClient = new SecurityServiceClient(SecurityServiceBaseAddressResolver, httpClient);
             this.TestHostClient = new HttpClient();
             this.TestHostClient.BaseAddress = new Uri($"http://127.0.0.1:{this.TestHostServicePort}");
 
-            // Load up the projections
-            await this.LoadEventStoreProjections(this.EventStoreHttpPort, this.IsSecureEventStore);
-
-            String callbackUrl = $"http://{this.CallbackHandlerContainerName}:{DockerHelper.CallbackHandlerDockerPort}/api/callbacks";
+            String callbackUrl = $"http://{this.CallbackHandlerContainerName}:{DockerPorts.CallbackHandlerDockerPort}/api/callbacks";
             await this.ConfigureTestBank(DockerHelper.TestBankSortCode, DockerHelper.TestBankAccountNumber, callbackUrl);
         }
         
@@ -314,24 +111,7 @@
         {
             await this.RemoveEstateReadModel().ConfigureAwait(false);
 
-            if (this.Containers.Any())
-            {
-                foreach (IContainerService containerService in this.Containers)
-                {
-                    containerService.StopOnDispose = true;
-                    containerService.RemoveOnDispose = true;
-                    containerService.Dispose();
-                }
-            }
-
-            if (this.TestNetworks.Any())
-            {
-                foreach (INetworkService networkService in this.TestNetworks)
-                {
-                    networkService.Stop();
-                    networkService.Remove(true);
-                }
-            }
+            await base.StopContainersForScenarioRun();
         }
         
         /// <summary>
@@ -382,15 +162,6 @@
                                 retryInterval:TimeSpan.FromSeconds(30));
             }
         }
-
-        #endregion
-
-        #region Others
-
-        /// <summary>
-        /// The callback handler docker port
-        /// </summary>
-        public const Int32 CallbackHandlerDockerPort = 5010;
 
         #endregion
     }

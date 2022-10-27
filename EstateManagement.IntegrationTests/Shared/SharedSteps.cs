@@ -45,8 +45,9 @@ namespace EstateManagement.IntegrationTests.Shared
             foreach (TableRow tableRow in table.Rows)
             {
                 String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+                
                 // Setup the subscriptions for the estate
-                await Retry.For(async () => { await this.TestingContext.DockerHelper.PopulateSubscriptionServiceConfiguration(estateName, this.TestingContext.DockerHelper.IsSecureEventStore).ConfigureAwait(false); },
+                await Retry.For(async () => { this.TestingContext.DockerHelper.CreateEstateSubscriptions(estateName).ConfigureAwait(false); },
                                 retryFor:TimeSpan.FromMinutes(2),
                                 retryInterval:TimeSpan.FromSeconds(30));
             }
