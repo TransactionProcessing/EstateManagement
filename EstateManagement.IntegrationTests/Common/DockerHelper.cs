@@ -85,7 +85,7 @@
             
             // Setup the base address resolvers
             String estateAddress = $"http://127.0.0.1:{this.EstateManagementPort}";
-            String securityAddress = $"http://127.0.0.1:{this.SecurityServicePort}";
+            String securityAddress = $"https://127.0.0.1:{this.SecurityServicePort}";
 
             String EstateManagementBaseAddressResolver(String api) => estateAddress;
             String SecurityServiceBaseAddressResolver(String api) => securityAddress;
