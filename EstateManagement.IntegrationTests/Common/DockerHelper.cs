@@ -106,8 +106,10 @@
             this.TestHostClient = new HttpClient();
             this.TestHostClient.BaseAddress = new Uri($"http://127.0.0.1:{this.TestHostServicePort}");
 
+            this.Trace("About to configure Test Bank");
             String callbackUrl = $"http://{this.CallbackHandlerContainerName}:{DockerPorts.CallbackHandlerDockerPort}/api/callbacks";
             await this.ConfigureTestBank(DockerHelper.TestBankSortCode, DockerHelper.TestBankAccountNumber, callbackUrl);
+            this.Trace("Test Bank Configured");
         }
         
         /// <summary>
@@ -130,6 +132,8 @@
                                              String accountNumber,
                                              String callbackUrl)
         {
+            this.Trace(this.TestHostClient.BaseAddress.ToString());
+
             var hostConfig = new
                              {
                                  sort_code = sortCode,
