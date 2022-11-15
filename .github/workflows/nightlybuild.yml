@@ -28,12 +28,14 @@ jobs:
     - name: Run Unit Tests
       run: |
         echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateManagement.MerchantAggregate.Tests\EstateManagement.MerchantAggregate.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov3.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov4.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateManagement.Repository.Tests\EstateManagement.Repository.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov5.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateManagement.ContractAggregate.Tests\EstateManagement.ContractAggregate.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov6.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
+        dotnet test "EstateManagement.BusinessLogic.Tests\EstateManagement.BusinessLogic.Tests.csproj"
+        dotnet test "EstateManagement.ContractAggregate.Tests\EstateManagement.ContractAggregate.Tests.csproj"
+        dotnet test "EstateManagement.EstateAggregate.Tests\EstateManagement.EstateAggregate.Tests.csproj"
+        dotnet test "EstateManagement.MerchantAggregate.Tests\EstateManagement.MerchantAggregate.Tests.csproj"
+        dotnet test "EstateManagement.MerchantDepositListAggregate.Tests\EstateManagement.MerchantDepositListAggregate.Tests.csproj"
+        dotnet test "EstateManagement.MerchantStatementAggregate.Tests\EstateManagement.MerchantStatementAggregate.Tests.csproj"
+        dotnet test "EstateManagement.Tests\EstateManagement.Tests.csproj"
+        #dotnet test "EstateManagement.Repository.Tests\EstateManagement.Repository.Tests.csproj"
 
     - name: Setup Node.js for use with actions
       uses: actions/setup-node@v1.4.4
