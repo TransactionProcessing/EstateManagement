@@ -1136,7 +1136,6 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                 recipientMobile,
                                                                                 CancellationToken.None);
                         break;
-
                 }
 
                 estateDetails.AddTransactionResponse(merchantId, transactionNumber, transactionResponse);
@@ -1251,11 +1250,11 @@ namespace EstateManagement.IntegrationTests.Shared
 
                                     List<DataTransferObjects.Responses.SettlementResponse> settlementList =
                                         await this.TestingContext.DockerHelper.EstateClient.GetSettlements(this.TestingContext.AccessToken,
-                                            estateDetails.EstateId,
-                                            null,
-                                            stateDate.ToString("yyyyMMdd"),
-                                            endDate.ToString("yyyyMMdd"),
-                                            CancellationToken.None);
+                                                                                                           estateDetails.EstateId,
+                                                                                                           null,
+                                                                                                           stateDate.ToString("yyyyMMdd"),
+                                                                                                           endDate.ToString("yyyyMMdd"),
+                                                                                                           CancellationToken.None);
 
                                     settlementList.ShouldNotBeNull();
                                     settlementList.ShouldNotBeEmpty();
@@ -1265,7 +1264,6 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                             s.ValueOfFeesSettled == valueOfFeesSettled && s.IsCompleted == isCompleted);
 
                                     settlement.ShouldNotBeNull();
-
                                 },
                                 TimeSpan.FromMinutes(2));
             }
@@ -1349,7 +1347,6 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                             s.ValueOfFeesSettled == valueOfFeesSettled && s.IsCompleted == isCompleted);
 
                                     settlement.ShouldNotBeNull();
-
                                 },
                                 TimeSpan.FromMinutes(2));
             }

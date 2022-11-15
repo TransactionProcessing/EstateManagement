@@ -35,7 +35,6 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
             this.Mediator = new Mock<IMediator>();
             this.EstateReportingRepository = new Mock<IEstateReportingRepository>();
             this.DomainEventHandler = new TransactionDomainEventHandler(this.Mediator.Object, this.EstateReportingRepository.Object);
-
         }
         [Fact]
         public async Task TransactionDomainEventHandler_Handle_TransactionHasBeenCompletedEvent_EventIsHandled()

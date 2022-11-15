@@ -119,7 +119,6 @@ public static class Extensions
             //the idea is if we supply a filter, this overrides ignore
             concurrentSubscriptions = concurrentSubscriptions.FilterSubscriptions(concurrent.Filter);
             //.IgnoreSubscriptions(null);
-
         }
 
         if (!String.IsNullOrEmpty(concurrent.StreamName))
@@ -157,7 +156,6 @@ public static class Extensions
             //the idea is if we supply a filter, this overrides ignore
             orderedSubscriptions = orderedSubscriptions.FilterSubscriptions(ordered.Filter)
                                                        .IgnoreSubscriptions(null);
-
         }
 
         if (!String.IsNullOrEmpty(ordered.StreamName))
@@ -167,18 +165,4 @@ public static class Extensions
 
         return orderedSubscriptions;
     }
-}
-
-public class SubscriptionConfigRoot
-{
-    public SubscriptionConfig Ordered { get; set; }
-    public SubscriptionConfig Concurrent { get; set; }
-}
-
-public class SubscriptionConfig
-{
-    public Boolean IsEnabled { get; set; }
-    public String Filter { get; set; }
-    public String Ignore { get; set; }
-    public String StreamName { get; set; }
 }

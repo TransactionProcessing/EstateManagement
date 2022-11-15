@@ -122,7 +122,6 @@ public static class Extensions
 
     public static ModelBuilder SetupTransactionTables(this ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<Transaction>().HasKey(t => new {
                                                                t.EstateId,
                                                                t.MerchantId,
@@ -153,7 +152,6 @@ public static class Extensions
 
     public static ModelBuilder SetupContractTables(this ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<Contract>().HasKey(c => new {
                                                             c.EstateId,
                                                             c.OperatorId,
@@ -180,7 +178,6 @@ public static class Extensions
 
     public static ModelBuilder SetupSettlementTables(this ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<Settlement>().HasKey(s => new {
                                                               s.EstateId,
                                                               s.SettlementId
@@ -197,7 +194,6 @@ public static class Extensions
 
     public static ModelBuilder SetupStatementTables(this ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<StatementHeader>().HasKey(t => new {
                                                                    t.StatementId
                                                                });
@@ -213,7 +209,6 @@ public static class Extensions
 
     public static ModelBuilder SetupViewEntities(this ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<TransactionsView>().HasNoKey().ToView("uvwTransactions");
         modelBuilder.Entity<FileImportLogView>().HasNoKey().ToView("uvwFileImportLog");
         modelBuilder.Entity<FileView>().HasNoKey().ToView("uvwFile");
