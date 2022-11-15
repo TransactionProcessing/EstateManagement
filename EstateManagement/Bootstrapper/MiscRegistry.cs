@@ -22,6 +22,7 @@
         /// </summary>
         public MiscRegistry()
         {
+            this.AddSingleton<IReportingManager, ReportingManager>();
             this.AddSingleton<IEstateManagementManager, EstateManagementManager>();
             this.AddSingleton<IModelFactory, ModelFactory>();
             this.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();

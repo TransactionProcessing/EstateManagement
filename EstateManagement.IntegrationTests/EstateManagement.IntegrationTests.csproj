@@ -10,8 +10,8 @@
     <PackageReference Include="CallbackHandler.DataTransferObjects" Version="1.0.3" />
     <PackageReference Include="EventStoreProjections" Version="1.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
-    <PackageReference Include="ClientProxyBase" Version="1.4.0" />
-    <PackageReference Include="Ductus.FluentDocker" Version="2.10.48" />
+    <PackageReference Include="ClientProxyBase" Version="1.5.0-beta6" />
+    <PackageReference Include="Ductus.FluentDocker" Version="2.10.57" />
     <PackageReference Include="EstateReporting.Database" Version="1.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
@@ -19,12 +19,13 @@
     <PackageReference Include="NLog" Version="5.0.0" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="SecurityService.Client" Version="1.1.1" />
-    <PackageReference Include="Shared" Version="1.4.0" />
-    <PackageReference Include="Shared.IntegrationTesting" Version="1.4.0" />
+    <PackageReference Include="Shared" Version="1.5.0-beta6" />
+    <PackageReference Include="Shared.IntegrationTesting" Version="1.5.0-beta6" />
     <PackageReference Include="Shouldly" Version="4.0.3" />
     <PackageReference Include="SpecFlow" Version="3.9.74" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
     <PackageReference Include="SpecFlow.xUnit" Version="3.9.74" />
+    <PackageReference Include="TransactionProcessor.Client" Version="1.1.13-build28" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
@@ -42,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Contract\Contract.feature.cs">
+    <Compile Update="Features\Contract.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
   </ItemGroup>
@@ -66,11 +67,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SpecFlowFeatureFiles Update="Contract\Contract.feature">
+    <SpecFlowFeatureFiles Update="Features\Contract.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Contract.feature.cs</LastGenOutput>
     </SpecFlowFeatureFiles>
-    <SpecFlowFeatureFiles Update="Merchant\Merchant.feature">
+    <SpecFlowFeatureFiles Update="Features\Merchant.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Merchant.feature.cs</LastGenOutput>
       <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>

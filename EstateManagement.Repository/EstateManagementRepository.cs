@@ -5,17 +5,13 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using EstateReporting.Database;
-    using EstateReporting.Database.Entities;
-    using EstateReporting.Database.ViewEntities;
+    using Database.Contexts;
+    using EstateManagement.Database.Entities;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-    using Microsoft.Extensions.WebEncoders.Testing;
     using Models.Contract;
     using Models.Factories;
-    using Shared.EntityFramework;
     using Shared.Exceptions;
-    using Contract = EstateReporting.Database.Entities.Contract;
+    using Contract = EstateManagement.Database.Entities.Contract;
     using TransactionFeeModel = Models.Contract.TransactionFee;
     using EstateModel = Models.Estate.Estate;
     using MerchantModel = Models.Merchant.Merchant;
@@ -34,7 +30,7 @@
         /// <summary>
         /// The context factory
         /// </summary>
-        private readonly Shared.EntityFramework.IDbContextFactory<EstateReportingGenericContext> ContextFactory;
+        private readonly Shared.EntityFramework.IDbContextFactory<EstateManagementGenericContext> ContextFactory;
 
         /// <summary>
         /// The model factory
@@ -50,7 +46,7 @@
         /// </summary>
         /// <param name="contextFactory">The context factory.</param>
         /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementRepository(Shared.EntityFramework.IDbContextFactory<EstateReportingGenericContext> contextFactory,
+        public EstateManagementRepository(Shared.EntityFramework.IDbContextFactory<EstateManagementGenericContext> contextFactory,
                                           IModelFactory modelFactory)
         {
             this.ContextFactory = contextFactory;
@@ -77,7 +73,7 @@
                                                      Boolean includeProductsWithFees,
                                                      CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, ConnectionStringIdentifier, cancellationToken);
 
             Contract contract = await context.Contracts.SingleOrDefaultAsync(c => c.EstateId == estateId && c.ContractId == contractId, cancellationToken);
 
@@ -103,11 +99,13 @@
             return this.ModelFactory.ConvertFrom(contract, contractProducts, contractProductFees);
         }
 
+        private const String ConnectionStringIdentifier = "EstateReportingReadModel";
+
         public async Task<MerchantModel> GetMerchantFromReference(Guid estateId, 
-                                                             String reference,
-                                                             CancellationToken cancellationToken)
+                                                                  String reference,
+                                                                  CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Merchant merchant = await (from m in context.Merchants where m.EstateId == estateId && m.Reference == reference select m).SingleOrDefaultAsync(cancellationToken);
 
@@ -116,7 +114,7 @@
         public async Task<List<ContractModel>> GetContracts(Guid estateId,
                                                                          CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             var query = await (from c in context.Contracts
                            join cp in context.ContractProducts on c.ContractId equals cp.ContractId into cps
@@ -187,7 +185,7 @@
         public async Task<EstateModel> GetEstate(Guid estateId,
                                                  CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken);
 
@@ -213,7 +211,7 @@
                                                                     Guid merchantId,
                                                                     CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             var x = await (from c in context.Contracts
                     join cp in context.ContractProducts on c.ContractId equals cp.ContractId
@@ -280,7 +278,7 @@
         public async Task<List<MerchantModel>> GetMerchants(Guid estateId,
                                                             CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             List<Merchant> merchants = await (from m in context.Merchants where m.EstateId == estateId select m).ToListAsync(cancellationToken);
 
@@ -327,7 +325,7 @@
                                                                                   Guid productId,
                                                                                   CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             List<ContractProductTransactionFee> transactionFees = await context
                                                                         .ContractProductTransactionFees
@@ -344,7 +342,7 @@
                                                                                Guid merchantStatementId,
                                                                                CancellationToken cancellationToken)
         {
-            EstateReportingGenericContext context = await this.ContextFactory.GetContext(estateId, cancellationToken);
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             var statement = await context.StatementHeaders.Where(sl => sl.StatementId == merchantStatementId).SingleOrDefaultAsync(cancellationToken);
 
@@ -357,10 +355,10 @@
                                                         g.ActivityType
                                                     }).OrderBy(o => o.Key.Date).ThenBy(o => o.Key.ActivityDescription).ToList();
 
-            var merchant = await context.Merchants.Where(m => m.MerchantId == statement.MerchantId).SingleOrDefaultAsync(cancellationToken);
-            var merchantAddress = await context.MerchantAddresses.Where(m => m.MerchantId == statement.MerchantId).FirstOrDefaultAsync(cancellationToken);
-            var merchantContact = await context.MerchantContacts.Where(m => m.MerchantId == statement.MerchantId).FirstOrDefaultAsync(cancellationToken);
-            var estate = await context.Estates.Where(e => e.EstateId == estateId).SingleOrDefaultAsync(cancellationToken);
+            Merchant merchant = await context.Merchants.Where(m => m.MerchantId == statement.MerchantId).SingleOrDefaultAsync(cancellationToken);
+            MerchantAddress merchantAddress = await context.MerchantAddresses.Where(m => m.MerchantId == statement.MerchantId).FirstOrDefaultAsync(cancellationToken);
+            MerchantContact merchantContact = await context.MerchantContacts.Where(m => m.MerchantId == statement.MerchantId).FirstOrDefaultAsync(cancellationToken);
+            Estate estate = await context.Estates.Where(e => e.EstateId == estateId).SingleOrDefaultAsync(cancellationToken);
 
             StatementHeader header = new StatementHeader();
             header.EstateName = estate.Name;

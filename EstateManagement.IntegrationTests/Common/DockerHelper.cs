@@ -23,6 +23,7 @@
     using Newtonsoft.Json;
     using SecurityService.Client;
     using Shouldly;
+    using TransactionProcessor.Client;
 
     /// <summary>
     /// 
@@ -63,10 +64,12 @@
         /// </summary>
         private readonly TestingContext TestingContext;
 
+        public ITransactionProcessorClient TransactionProcessorClient;
+
         #endregion
 
         #region Constructors
-        
+
         public DockerHelper()
         {
             this.TestingContext = new TestingContext();
@@ -75,7 +78,56 @@
         #endregion
 
         #region Methods
-        
+
+        public override async Task CreateEstateSubscriptions(String estateName)
+        {
+            List<(String streamName, String groupName, Int32 maxRetries)> subscriptions = new List<(String streamName, String groupName, Int32 maxRetries)>
+                                                                                          {
+                                                                                              (estateName.Replace(" ", ""), "Estate Management", 2),
+                                                                                              ($"TransactionProcessorSubscriptionStream_{estateName.Replace(" ", "")}", "Transaction Processor", 0),
+                                                                                              ($"FileProcessorSubscriptionStream_{estateName.Replace(" ", "")}", "File Processor", 0)
+                                                                                          };
+            foreach ((String streamName, String groupName, Int32 maxRetries) subscription in subscriptions)
+            {
+                await this.CreatePersistentSubscription(subscription);
+            }
+        }
+
+        private void SetHostTraceFolder(String scenarioName)
+        {
+            String ciEnvVar = Environment.GetEnvironmentVariable("CI");
+            DockerEnginePlatform engineType = DockerHelper.GetDockerEnginePlatform();
+
+            // We are running on linux (CI or local ok)
+            // We are running windows local (can use "C:\\home\\txnproc\\trace\\{scenarioName}")
+            // We are running windows CI (can use "C:\\Users\\runneradmin\\trace\\{scenarioName}")
+
+            Boolean isCI = (String.IsNullOrEmpty(ciEnvVar) == false && String.Compare(ciEnvVar, Boolean.TrueString, StringComparison.InvariantCultureIgnoreCase) == 0);
+
+            this.HostTraceFolder = (engineType, isCI) switch
+            {
+                (DockerEnginePlatform.Windows, false) => $"C:\\home\\txnproc\\trace\\{scenarioName}",
+                (DockerEnginePlatform.Windows, true) => $"C:\\Users\\runneradmin\\txnproc\\trace\\{scenarioName}",
+                _ => $"/home/txnproc/trace/{scenarioName}"
+            };
+
+            if (engineType == DockerEnginePlatform.Windows && isCI)
+            {
+                if (Directory.Exists(this.HostTraceFolder) == false)
+                {
+                    this.Trace($"[{this.HostTraceFolder}] does not exist");
+                    Directory.CreateDirectory(this.HostTraceFolder);
+                    this.Trace($"[{this.HostTraceFolder}] created");
+                }
+                else
+                {
+                    this.Trace($"[{this.HostTraceFolder}] already exists");
+                }
+            }
+
+            this.Trace($"HostTraceFolder is [{this.HostTraceFolder}]");
+        }
+
         public override async Task StartContainersForScenarioRun(String scenarioName) {
 
             await base.StartContainersForScenarioRun(scenarioName);
@@ -89,6 +141,7 @@
 
             String EstateManagementBaseAddressResolver(String api) => estateAddress;
             String SecurityServiceBaseAddressResolver(String api) => securityAddress;
+            String TransactionProcessorBaseAddressResolver(String api) => $"http://127.0.0.1:{this.TransactionProcessorPort}";
 
             HttpClientHandler clientHandler = new HttpClientHandler
             {
@@ -103,6 +156,7 @@
             HttpClient httpClient = new HttpClient(clientHandler);
             this.EstateClient = new EstateClient(EstateManagementBaseAddressResolver, httpClient);
             this.SecurityServiceClient = new SecurityServiceClient(SecurityServiceBaseAddressResolver, httpClient);
+            this.TransactionProcessorClient = new TransactionProcessorClient(TransactionProcessorBaseAddressResolver, httpClient);
             this.TestHostClient = new HttpClient();
             this.TestHostClient.BaseAddress = new Uri($"http://127.0.0.1:{this.TestHostServicePort}");
 

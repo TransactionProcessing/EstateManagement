@@ -2,30 +2,29 @@
 using System.Collections.Generic;
 using System.Text;
 using EstateModel = EstateManagement.Models.Estate.Estate;
-using EstateEntity = EstateReporting.Database.Entities.Estate;
-using EstateOperatorEntity = EstateReporting.Database.Entities.EstateOperator;
-using EstateSecurityUserEntity = EstateReporting.Database.Entities.EstateSecurityUser;
+using EstateEntity = EstateManagement.Database.Entities.Estate;
+using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;
+using EstateSecurityUserEntity = EstateManagement.Database.Entities.EstateSecurityUser;
 
 using ContractModel = EstateManagement.Models.Contract.Contract;
-using ContractEntity = EstateReporting.Database.Entities.Contract;
-using ContractProductEntity = EstateReporting.Database.Entities.ContractProduct;
-using ContractProductTransactionFeeEntity = EstateReporting.Database.Entities.ContractProductTransactionFee;
+using ContractEntity = EstateManagement.Database.Entities.Contract;
+using ContractProductEntity = EstateManagement.Database.Entities.ContractProduct;
+using ContractProductTransactionFeeEntity = EstateManagement.Database.Entities.ContractProductTransactionFee;
 using ContractProductTransactionFeeModel = EstateManagement.Models.Contract.TransactionFee;
 
-using MerchantEntity = EstateReporting.Database.Entities.Merchant;
-using MerchantAddressEntity = EstateReporting.Database.Entities.MerchantAddress;
-using MerchantContactEntity = EstateReporting.Database.Entities.MerchantContact;
-using MerchantOperatorEntity = EstateReporting.Database.Entities.MerchantOperator;
-using MerchantDeviceEntity = EstateReporting.Database.Entities.MerchantDevice;
-using MerchantSecurityUserEntity = EstateReporting.Database.Entities.MerchantSecurityUser;
+using MerchantEntity = EstateManagement.Database.Entities.Merchant;
+using MerchantAddressEntity = EstateManagement.Database.Entities.MerchantAddress;
+using MerchantContactEntity = EstateManagement.Database.Entities.MerchantContact;
+using MerchantOperatorEntity = EstateManagement.Database.Entities.MerchantOperator;
+using MerchantDeviceEntity = EstateManagement.Database.Entities.MerchantDevice;
+using MerchantSecurityUserEntity = EstateManagement.Database.Entities.MerchantSecurityUser;
 
 namespace EstateManagement.BusinessLogic.Tests
 {
     using System.Linq;
     using System.Runtime.InteropServices;
     using EstateAggregate;
-    using EstateReporting.Database.Entities;
-    using EstateReporting.Database.ViewEntities;
+    using EstateManagement.Database.Entities;
     using Models;
     using Models.Contract;
     using Models.Factories;

@@ -1012,6 +1012,77 @@
             return requestUri;
         }
 
+        public async Task<SettlementResponse> GetSettlement(String accessToken,
+                                                            Guid estateId,
+                                                            Guid? merchantId,
+                                                            Guid settlementId,
+                                                            CancellationToken cancellationToken)
+        {
+            SettlementResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/settlements/{settlementId}?merchantId={merchantId}");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<SettlementResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting settlement id {settlementId} for estate [{estateId}]");
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        public async Task<List<SettlementResponse>> GetSettlements(String accessToken,
+                                                                   Guid estateId,
+                                                                   Guid? merchantId,
+                                                                   String startDate,
+                                                                   String endDate,
+                                                                   CancellationToken cancellationToken)
+        {
+            List<SettlementResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/settlements/?merchantId={merchantId}&start_date={startDate}&end_date={endDate}");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<SettlementResponse>>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting settlements for estate [{estateId}]");
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         #endregion
     }
 }

@@ -3,11 +3,13 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using EstateManagement.Repository;
     using MediatR;
     using Requests;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.EventHandling;
     using TransactionProcessor.Settlement.DomainEvents;
+    using TransactionProcessor.Transaction.DomainEvents;
 
     /// <summary>
     /// 
@@ -22,6 +24,8 @@
         /// </summary>
         private readonly IMediator Mediator;
 
+        private readonly IEstateReportingRepository EstateReportingRepository;
+
         #endregion
 
         #region Constructors
@@ -30,9 +34,10 @@
         /// Initializes a new instance of the <see cref="SettlementDomainEventHandler"/> class.
         /// </summary>
         /// <param name="mediator">The mediator.</param>
-        public SettlementDomainEventHandler(IMediator mediator)
-        {
+        public SettlementDomainEventHandler(IMediator mediator,
+                                            IEstateReportingRepository estateReportingRepository) {
             this.Mediator = mediator;
+            this.EstateReportingRepository = estateReportingRepository;
         }
 
         #endregion
@@ -67,6 +72,44 @@
                 domainEvent.FeeId);
 
             await this.Mediator.Send(addSettledFeeToMerchantStatementRequest, cancellationToken);
+
+            await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
+        }
+
+        private async Task HandleSpecificDomainEvent(SettlementCreatedForDateEvent domainEvent,
+                                                     CancellationToken cancellationToken)
+        {
+            await this.EstateReportingRepository.CreateSettlement(domainEvent, cancellationToken);
+        }
+
+        private async Task HandleSpecificDomainEvent(MerchantFeeAddedToTransactionEvent domainEvent,
+                                                     CancellationToken cancellationToken)
+        {
+            // Generate the settlement id from the date
+            Guid settlementId = SettlementDomainEventHandler.GetSettlementId(domainEvent.SettlementDueDate);
+
+            await this.EstateReportingRepository.AddSettledMerchantFeeToSettlement(settlementId, domainEvent, cancellationToken);
+        }
+
+        private async Task HandleSpecificDomainEvent(MerchantFeeAddedPendingSettlementEvent domainEvent,
+                                                     CancellationToken cancellationToken)
+        {
+            await this.EstateReportingRepository.AddPendingMerchantFeeToSettlement(domainEvent, cancellationToken);
+        }
+
+        private async Task HandleSpecificDomainEvent(SettlementCompletedEvent domainEvent,
+                                                     CancellationToken cancellationToken)
+        {
+            await this.EstateReportingRepository.MarkSettlementAsCompleted(domainEvent, cancellationToken);
+        }
+
+        public static Guid GetSettlementId(DateTime dt)
+        {
+            Byte[] bytes = BitConverter.GetBytes(dt.Ticks);
+
+            Array.Resize(ref bytes, 16);
+
+            return new Guid(bytes);
         }
 
         #endregion

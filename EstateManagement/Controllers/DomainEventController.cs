@@ -38,7 +38,8 @@
         /// <param name="domainEventHandlerResolver">The domain event handler resolver.</param>
         public DomainEventController(IDomainEventHandlerResolver domainEventHandlerResolver)
         {
-            this.DomainEventHandlerResolver = domainEventHandlerResolver;
+            //this.DomainEventHandlerResolver = domainEventHandlerResolver;
+            this.DomainEventHandlerResolver = Startup.Container.GetInstance<IDomainEventHandlerResolver>("Concurrent");
         }
 
         #endregion
@@ -56,6 +57,8 @@
                                                         CancellationToken cancellationToken)
         {
             var domainEvent = await this.GetDomainEvent(request);
+
+
 
             cancellationToken.Register(() => this.Callback(cancellationToken, domainEvent.EventId));
 

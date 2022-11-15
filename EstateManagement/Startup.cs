@@ -1,84 +1,30 @@
 namespace EstateManagement
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using System.IO.Abstractions;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Security;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Bootstrapper;
-    using BusinessLogic.Common;
-    using BusinessLogic.EventHandling;
     using BusinessLogic.Events;
-    using BusinessLogic.Manger;
-    using BusinessLogic.RequestHandlers;
-    using BusinessLogic.Requests;
-    using BusinessLogic.Services;
-    using Common;
     using Contract.DomainEvents;
-    using Controllers;
     using Estate.DomainEvents;
-    using EstateReporting.Database;
     using EventStore.Client;
-    using HealthChecks.UI.Client;
     using Lamar;
-    using MediatR;
     using Merchant.DomainEvents;
     using MerchantStatement.DomainEvents;
-    using MessagingService.Client;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.ApiExplorer;
-    using Microsoft.AspNetCore.Mvc.Controllers;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.Tokens;
-    using Microsoft.OpenApi.Models;
-    using Microsoft.Win32;
-    using Models.Factories;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
     using NLog.Extensions.Logging;
-    using Repository;
-    using SecurityService.Client;
-    using Shared.DomainDrivenDesign.CommandHandling;
-    using Shared.DomainDrivenDesign.EventSourcing;
-    using Shared.EntityFramework;
-    using Shared.EntityFramework.ConnectionStringConfiguration;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventHandling;
-    using Shared.EventStore.EventStore;
-    using Shared.EventStore.Extensions;
-    using Shared.EventStore.SubscriptionWorker;
     using Shared.Extensions;
     using Shared.General;
     using Shared.Logger;
-    using Shared.Repositories;
-    using Swashbuckle.AspNetCore.Filters;
-    using Swashbuckle.AspNetCore.SwaggerGen;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
-    using AuthenticationFailedContext = Microsoft.AspNetCore.Authentication.JwtBearer.AuthenticationFailedContext;
-    using ConnectionStringType = Shared.Repositories.ConnectionStringType;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
-    using TokenValidatedContext = Microsoft.AspNetCore.Authentication.JwtBearer.TokenValidatedContext;
 
     /// <summary>
     /// 
@@ -233,103 +179,5 @@ namespace EstateManagement
             app.PreWarm();
         }
 
-    }
-    
-    [ExcludeFromCodeCoverage]
-    /// <summary>
-    /// 
-    /// </summary>
-    public static class Extensions
-    {
-        public static IServiceCollection AddInSecureEventStoreClient(
-            this IServiceCollection services,
-            Uri address,
-            Func<HttpMessageHandler>? createHttpMessageHandler = null)
-        {
-            return services.AddEventStoreClient((Action<EventStoreClientSettings>)(options =>
-                                                                                   {
-                                                                                       options.ConnectivitySettings.Address = address;
-                                                                                       options.ConnectivitySettings.Insecure = true;
-                                                                                       options.CreateHttpMessageHandler = createHttpMessageHandler;
-                                                                                   }));
-        }
-
-        static Action<TraceEventType, String, String> log = (tt, subType, message) => {
-            String logMessage = $"{subType} - {message}";
-            switch (tt)
-            {
-                case TraceEventType.Critical:
-                    Logger.LogCritical(new Exception(logMessage));
-                    break;
-                case TraceEventType.Error:
-                    Logger.LogError(new Exception(logMessage));
-                    break;
-                case TraceEventType.Warning:
-                    Logger.LogWarning(logMessage);
-                    break;
-                case TraceEventType.Information:
-                    Logger.LogInformation(logMessage);
-                    break;
-                case TraceEventType.Verbose:
-                    Logger.LogDebug(logMessage);
-                    break;
-            }
-        };
-
-        static Action<TraceEventType, String> concurrentLog = (tt, message) => log(tt, "CONCURRENT", message);
-
-        public static void PreWarm(this IApplicationBuilder applicationBuilder)
-        {
-            Startup.LoadTypes();
-
-            var internalSubscriptionService = Boolean.Parse(ConfigurationReader.GetValue("InternalSubscriptionService"));
-
-            if (internalSubscriptionService)
-            {
-                String eventStoreConnectionString = ConfigurationReader.GetValue("EventStoreSettings", "ConnectionString");
-                Int32 inflightMessages = Int32.Parse(ConfigurationReader.GetValue("AppSettings", "InflightMessages"));
-                Int32 persistentSubscriptionPollingInSeconds = Int32.Parse(ConfigurationReader.GetValue("AppSettings", "PersistentSubscriptionPollingInSeconds"));
-                String filter = ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionServiceFilter");
-                String ignore = ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionServiceIgnore");
-                String streamName = ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionFilterOnStreamName");
-                Int32 cacheDuration = Int32.Parse(ConfigurationReader.GetValue("AppSettings", "InternalSubscriptionServiceCacheDuration"));
-
-                ISubscriptionRepository subscriptionRepository = SubscriptionRepository.Create(eventStoreConnectionString, cacheDuration);
-
-                ((SubscriptionRepository)subscriptionRepository).Trace += (sender, s) => Extensions.log(TraceEventType.Information, "REPOSITORY", s);
-
-                // init our SubscriptionRepository
-                subscriptionRepository.PreWarm(CancellationToken.None).Wait();
-
-                var eventHandlerResolver = applicationBuilder.ApplicationServices.GetService<IDomainEventHandlerResolver>();
-
-                SubscriptionWorker concurrentSubscriptions = SubscriptionWorker.CreateConcurrentSubscriptionWorker(Startup.EventStoreClientSettings, eventHandlerResolver, subscriptionRepository, inflightMessages, persistentSubscriptionPollingInSeconds);
-
-                concurrentSubscriptions.Trace += (_, args) => concurrentLog(TraceEventType.Information, args.Message);
-                concurrentSubscriptions.Warning += (_, args) => concurrentLog(TraceEventType.Warning, args.Message);
-                concurrentSubscriptions.Error += (_, args) => concurrentLog(TraceEventType.Error, args.Message);
-
-                if (!String.IsNullOrEmpty(ignore))
-                {
-                    concurrentSubscriptions = concurrentSubscriptions.IgnoreSubscriptions(ignore);
-                }
-
-                if (!String.IsNullOrEmpty(filter))
-                {
-                    //NOTE: Not overly happy with this design, but
-                    //the idea is if we supply a filter, this overrides ignore
-                    concurrentSubscriptions = concurrentSubscriptions.FilterSubscriptions(filter)
-                                                                     .IgnoreSubscriptions(null);
-
-                }
-
-                if (!String.IsNullOrEmpty(streamName))
-                {
-                    concurrentSubscriptions = concurrentSubscriptions.FilterByStreamName(streamName);
-                }
-
-                concurrentSubscriptions.StartAsync(CancellationToken.None).Wait();
-            }
-        }
     }
 }

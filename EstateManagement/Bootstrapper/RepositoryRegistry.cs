@@ -6,8 +6,8 @@
     using System.Net.Security;
     using BusinessLogic.Common;
     using ContractAggregate;
+    using Database.Contexts;
     using EstateAggregate;
-    using EstateReporting.Database;
     using Lamar;
     using MerchantAggregate;
     using MerchantStatementAggregate;
@@ -84,17 +84,19 @@
 
             this.AddTransient<IEventStoreContext, EventStoreContext>();
             this.AddSingleton<IEstateManagementRepository, EstateManagementRepository>();
-            this.AddSingleton<IDbContextFactory<EstateReportingGenericContext>, DbContextFactory<EstateReportingGenericContext>>();
+            this.AddSingleton<IEstateReportingRepository, EstateReportingRepository>();
+            this.AddSingleton<IEstateReportingRepositoryForReports, EstateReportingRepositoryForReports>();
+            this.AddSingleton<IDbContextFactory<EstateManagementGenericContext>, DbContextFactory<EstateManagementGenericContext>>();
 
-            this.AddSingleton<Func<String, EstateReportingGenericContext>>(cont => connectionString =>
+            this.AddSingleton<Func<String, EstateManagementGenericContext>>(cont => connectionString =>
                                                                                    {
                                                                                        String databaseEngine =
                                                                                            ConfigurationReader.GetValue("AppSettings", "DatabaseEngine");
 
                                                                                        return databaseEngine switch
                                                                                        {
-                                                                                           "MySql" => new EstateReportingMySqlContext(connectionString),
-                                                                                           "SqlServer" => new EstateReportingSqlServerContext(connectionString),
+                                                                                           "MySql" => new EstateManagementMySqlContext(connectionString),
+                                                                                           "SqlServer" => new EstateManagementSqlServerContext(connectionString),
                                                                                            _ => throw new
                                                                                                NotSupportedException($"Unsupported Database Engine {databaseEngine}")
                                                                                        };

@@ -8,6 +8,7 @@ namespace EstateManagement.IntegrationTests.Common
     using System.Xml.Serialization;
     using DataTransferObjects;
     using DataTransferObjects.Responses;
+    using TransactionProcessor.DataTransferObjects;
 
     public class EstateDetails
     {
@@ -20,6 +21,26 @@ namespace EstateManagement.IntegrationTests.Common
             this.Operators=new Dictionary<String, Guid>();
             this.MerchantUsers = new Dictionary<String, Dictionary<String, String>>();
             this.Contracts = new List<Contract>();
+            this.TransactionResponses = new Dictionary<(Guid merchantId, String transactionNumber), SerialisedMessage>();
+        }
+
+        private Dictionary<(Guid merchantId, String transactionNumber), SerialisedMessage> TransactionResponses { get; }
+
+        public Guid GetMerchantId(String merchantName)
+        {
+            if (merchantName == "InvalidMerchant")
+            {
+                return Guid.Parse("D59320FA-4C3E-4900-A999-483F6A10C69A");
+            }
+
+            return this.Merchants.Single(m => m.MerchantName == merchantName).MerchantId;
+        }
+
+        public void AddTransactionResponse(Guid merchantId,
+                                           String transactionNumber,
+                                           SerialisedMessage transactionResponse)
+        {
+            this.TransactionResponses.Add((merchantId, transactionNumber), transactionResponse);
         }
 
         public String EstateUser { get; private set; }
@@ -32,6 +53,15 @@ namespace EstateManagement.IntegrationTests.Common
                                            String estateReference)
         {
             return new EstateDetails(estateId,estateName, estateReference);
+        }
+
+        public SerialisedMessage GetTransactionResponse(Guid merchantId,
+                                                        String transactionNumber)
+        {
+            KeyValuePair<(Guid merchantId, String transactionNumber), SerialisedMessage> transactionResponse =
+                this.TransactionResponses.SingleOrDefault(t => t.Key.merchantId == merchantId && t.Key.transactionNumber == transactionNumber);
+
+            return transactionResponse.Value;
         }
 
         public void AddOperator(Guid operatorId,
