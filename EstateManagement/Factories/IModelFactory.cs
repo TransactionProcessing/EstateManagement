@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using DataTransferObjects.Responses;
+    using Models;
     using Models.Contract;
     using Models.Estate;
     using Models.Merchant;
@@ -55,6 +56,14 @@
         /// <param name="transactionFees">The transaction fees.</param>
         /// <returns></returns>
         List<ContractProductTransactionFee> ConvertFrom(List<TransactionFee> transactionFees);
+
+        SettlementFeeResponse ConvertFrom(SettlementFeeModel model);
+
+        List<SettlementFeeResponse> ConvertFrom(List<SettlementFeeModel> model);
+
+        SettlementResponse ConvertFrom(SettlementModel model);
+
+        List<SettlementResponse> ConvertFrom(List<SettlementModel> model);
 
         #endregion
     }

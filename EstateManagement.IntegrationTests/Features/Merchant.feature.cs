@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace EstateManagement.IntegrationTests.Merchant
+namespace EstateManagement.IntegrationTests.Features
 {
     using TechTalk.SpecFlow;
     using System;
@@ -44,7 +44,7 @@ namespace EstateManagement.IntegrationTests.Merchant
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Merchant", "Merchant", null, ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Merchant", null, ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -418,7 +418,7 @@ this.FeatureBackground();
                             "10000001",
                             "Test Estate 1"});
 #line 66
- testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table66, "When ");
+ testRunner.When("I assign the following operator to the merchants", ((string)(null)), table66, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -483,7 +483,7 @@ this.FeatureBackground();
                             "10000001",
                             "Test Estate 1"});
 #line 77
- testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table68, "When ");
+ testRunner.When("I assign the following operator to the merchants", ((string)(null)), table68, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1083,7 +1083,7 @@ this.FeatureBackground();
                             "10000001",
                             "Test Estate 2"});
 #line 174
- testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table86, "When ");
+ testRunner.When("I assign the following operator to the merchants", ((string)(null)), table86, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table87 = new TechTalk.SpecFlow.Table(new string[] {
                             "DeviceIdentifier",
@@ -1290,7 +1290,7 @@ this.FeatureBackground();
                             "10000001",
                             "Test Estate 2"});
 #line 212
- testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table90, "When ");
+ testRunner.When("I assign the following operator to the merchants", ((string)(null)), table90, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table91 = new TechTalk.SpecFlow.Table(new string[] {
                             "DeviceIdentifier",

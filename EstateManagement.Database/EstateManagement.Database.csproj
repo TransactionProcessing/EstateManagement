@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+		<PackageReference Include="Shared" Version="1.5.0-beta6" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="SeedingScripts\CalendarSeeding.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="SeedingScripts\ResponseCodeSeeding.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\MySql\Priority1\uvwFile.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\MySql\Priority1\uvwFileImportLog.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\MySql\Priority1\uvwMerchants.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\MySql\Priority1\uvwOperators.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\MySql\Priority1\uvwResponseCodes.View">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\MySql\Priority1\uvwSettlements.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\MySql\Priority1\uvwTransactions.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\SqlServer\Priority1\uvwFile.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\SqlServer\Priority1\uvwFileImportLog.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\SqlServer\Priority1\uvwMerchants.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\SqlServer\Priority1\uvwOperators.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\SqlServer\Priority1\uvwResponseCodes.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\SqlServer\Priority1\uvwSettlements.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Views\SqlServer\Priority1\uvwTransactions.View.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Migrations\MySql\" />
+	  <Folder Include="Migrations\SqlServer\" />
+	</ItemGroup>
+</Project>

@@ -38,7 +38,6 @@ Background:
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |
 	| estateuser1@testestate2.co.uk | 123456   | TestEstate | User1      | Test Estate 2 |
 
-@PRTest
 Scenario: Create Contract
 	Given I create a contract with the following values
 	| EstateName    | OperatorName    | ContractDescription |

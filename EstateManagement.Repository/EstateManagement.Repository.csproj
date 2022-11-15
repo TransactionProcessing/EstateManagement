@@ -5,13 +5,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateReporting.Database" Version="1.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
+    <PackageReference Include="Shared" Version="1.5.0-beta6" />
+    <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="1.1.13-build28" />
+    <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="1.1.13-build28" />
+    <PackageReference Include="TransactionProcessor.Reconciliation.DomainEvents" Version="1.1.13-build28" />
+    <PackageReference Include="TransactionProcessor.Voucher.DomainEvents" Version="1.1.13-build28" />
+    <PackageReference Include="FileProcessor.File.DomainEvents" Version="1.1.9" />
+    <PackageReference Include="FileProcessor.FileImportLog.DomainEvents" Version="1.1.9" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj" />
+    <ProjectReference Include="..\EstateManagement.Database\EstateManagement.Database.csproj" />
+    <ProjectReference Include="..\EstateManagement.Estate.DomainEvents\EstateManagement.Estate.DomainEvents.csproj" />
+    <ProjectReference Include="..\EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" />
+    <ProjectReference Include="..\EstateManagement.MerchantStatement.DomainEvents\EstateManagement.MerchantStatement.DomainEvents.csproj" />
     <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
   </ItemGroup>
 

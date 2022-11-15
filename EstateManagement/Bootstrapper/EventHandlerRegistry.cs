@@ -24,18 +24,26 @@
         public EventHandlerRegistry()
         {
             Dictionary<String, String[]> eventHandlersConfiguration = new Dictionary<String, String[]>();
+            Dictionary<String, String[]> eventHandlersConfigurationOrdered = new Dictionary<String, String[]>();
 
-            if (Startup.Configuration != null)
+            IConfigurationSection section = Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration");
+
+            if (section != null)
             {
-                IConfigurationSection section = Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration");
-
-                if (section != null)
-                {
-                    Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration").Bind(eventHandlersConfiguration);
-                }
+                Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration").Bind(eventHandlersConfiguration);
             }
 
-            this.AddSingleton(eventHandlersConfiguration);
+            //this.AddSingleton(eventHandlersConfiguration);
+            this.Use(eventHandlersConfiguration).Named("Concurrent");
+
+            section = Startup.Configuration.GetSection("AppSettings:EventHandlerConfigurationOrdered");
+
+            if (section != null)
+            {
+                Startup.Configuration.GetSection("AppSettings:EventHandlerConfigurationOrdered").Bind(eventHandlersConfigurationOrdered);
+            }
+
+            this.Use(eventHandlersConfigurationOrdered).Named("Ordered");
 
             this.AddSingleton<Func<Type, IDomainEventHandler>>(container => type =>
                                                                             {
@@ -43,11 +51,19 @@
                                                                                 return handler;
                                                                             });
 
+            this.AddSingleton<StatementDomainEventHandler>();
+            this.AddSingleton<EstateDomainEventHandler>();
             this.AddSingleton<MerchantDomainEventHandler>();
             this.AddSingleton<TransactionDomainEventHandler>();
+            this.AddSingleton<ContractDomainEventHandler>();
             this.AddSingleton<SettlementDomainEventHandler>();
-            this.AddSingleton<StatementDomainEventHandler>();
-            this.AddSingleton<IDomainEventHandlerResolver, DomainEventHandlerResolver>();
+            this.AddSingleton<FileProcessorDomainEventHandler>();
+            this.AddSingleton<MerchantStatementDomainEventHandler>();
+
+            this.For<IDomainEventHandlerResolver>().Use<DomainEventHandlerResolver>().Named("Concurrent")
+                .Ctor<Dictionary<String, String[]>>().Is(eventHandlersConfiguration).Singleton();
+            this.For<IDomainEventHandlerResolver>().Use<DomainEventHandlerResolver>().Named("Ordered")
+                .Ctor<Dictionary<String, String[]>>().Is(eventHandlersConfigurationOrdered).Singleton();
         }
 
         #endregion

@@ -15,7 +15,8 @@
             this.Clients = new List<ClientDetails>();
             this.IdentityResources = new List<String>();
         }
-        
+
+        public DateTime DateToUseForToday;
         public NlogLogger Logger { get; set; }
 
         public List<String> IdentityResources;
