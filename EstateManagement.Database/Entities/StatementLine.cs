@@ -15,7 +15,7 @@ public class StatementLine
 
     public Int32 ActivityType { get; set; }
 
-    public String ActivityDescription { get; set; }
+    public String? ActivityDescription { get; set; }
 
     public Decimal InAmount { get; set; }
     public Decimal OutAmount { get; set; }

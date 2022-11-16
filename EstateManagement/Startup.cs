@@ -24,6 +24,7 @@ namespace EstateManagement
     using Shared.Logger;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
+    using TransactionProcessor.Voucher.DomainEvents;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
 
     /// <summary>
@@ -119,6 +120,15 @@ namespace EstateManagement
                                                                     0,
                                                                     DateTime.MinValue);
             StatementCreatedEvent s = new StatementCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.MinValue);
+            VoucherGeneratedEvent g = new VoucherGeneratedEvent(Guid.NewGuid(),
+                                                                Guid.NewGuid(),
+                                                                Guid.NewGuid(),
+                                                                DateTime.Now,
+                                                                String.Empty,
+                                                                0,
+                                                                String.Empty,
+                                                                DateTime.Now,
+                                                                String.Empty);
             TypeProvider.LoadDomainEventsTypeDynamically();
         }
 

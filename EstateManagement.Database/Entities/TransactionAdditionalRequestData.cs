@@ -18,7 +18,7 @@
         /// <value>
         /// The amount.
         /// </value>
-        public String Amount { get; set; }
+        public String? Amount { get; set; }
 
         /// <summary>
         /// Gets or sets the customer account number.
@@ -26,7 +26,7 @@
         /// <value>
         /// The customer account number.
         /// </value>
-        public String CustomerAccountNumber { get; set; }
+        public String? CustomerAccountNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the estate identifier.

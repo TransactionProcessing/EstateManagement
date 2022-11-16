@@ -540,7 +540,6 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<string>("DeviceIdentifier")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<Guid>("EstateId")
@@ -556,11 +555,9 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ResponseCode")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ResponseMessage")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("TransactionCount")
@@ -655,7 +652,6 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("int");
 
                     b.Property<string>("ActivityDescription")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<Guid>("EstateId")
@@ -751,11 +747,9 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Amount")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CustomerAccountNumber")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("EstateId", "MerchantId", "TransactionId");
@@ -840,11 +834,9 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("longtext");
 
                     b.Property<string>("RecipientEmail")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("RecipientMobile")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("RedeemedDateTime")
