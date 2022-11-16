@@ -15,7 +15,7 @@
         /// <value>
         /// The device identifier.
         /// </value>
-        public String DeviceIdentifier { get; set; }
+        public String? DeviceIdentifier { get; set; }
 
         /// <summary>
         /// Gets or sets the estate identifier.
@@ -55,7 +55,7 @@
         /// <value>
         /// The response code.
         /// </value>
-        public String ResponseCode { get; set; }
+        public String? ResponseCode { get; set; }
 
         /// <summary>
         /// Gets or sets the response message.
@@ -63,7 +63,7 @@
         /// <value>
         /// The response message.
         /// </value>
-        public String ResponseMessage { get; set; }
+        public String? ResponseMessage { get; set; }
 
         /// <summary>
         /// Gets or sets the transaction count.

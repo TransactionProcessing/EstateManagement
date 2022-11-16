@@ -66,7 +66,7 @@
         /// <value>
         /// The recipient email.
         /// </value>
-        public String RecipientEmail { get; set; }
+        public String? RecipientEmail { get; set; }
 
         /// <summary>
         /// Gets or sets the recipient mobile.
@@ -74,7 +74,7 @@
         /// <value>
         /// The recipient mobile.
         /// </value>
-        public String RecipientMobile { get; set; }
+        public String? RecipientMobile { get; set; }
 
         /// <summary>
         /// Gets or sets the value.
