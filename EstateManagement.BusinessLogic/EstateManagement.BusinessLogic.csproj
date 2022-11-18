@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net6.0</TargetFramework>
+	  <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CallbackHandler.DataTransferObjects" Version="1.0.3" />
     <PackageReference Include="MessagingService.Client" Version="1.1.4" />
     <PackageReference Include="SecurityService.Client" Version="1.1.1" />
-    <PackageReference Include="Shared.DomainDrivenDesign" Version="1.5.0-beta6" />
+    <PackageReference Include="Shared.DomainDrivenDesign" Version="1.5.1" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Syncfusion.HtmlToPdfConverter.QtWebKit.Net.Core" Version="20.1.0.58" />
     <PackageReference Include="System.IO.Abstractions" Version="17.0.15" />
     <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="1.1.13-build28" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="1.1.13-build28" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
+    <PackageReference Include="TransactionProcessor.Voucher.DomainEvents" Version="1.1.13-build28" />
   </ItemGroup>
 
   <ItemGroup>
