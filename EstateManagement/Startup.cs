@@ -8,6 +8,7 @@ namespace EstateManagement
     using Contract.DomainEvents;
     using Estate.DomainEvents;
     using EventStore.Client;
+    using FileProcessor.FileImportLog.DomainEvents;
     using Lamar;
     using Merchant.DomainEvents;
     using MerchantStatement.DomainEvents;
@@ -129,6 +130,8 @@ namespace EstateManagement
                                                                 String.Empty,
                                                                 DateTime.Now,
                                                                 String.Empty);
+            ImportLogCreatedEvent i = new ImportLogCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
+
             TypeProvider.LoadDomainEventsTypeDynamically();
         }
 
