@@ -9,6 +9,7 @@ namespace EstateManagement
     using Estate.DomainEvents;
     using EventStore.Client;
     using FileProcessor.FileImportLog.DomainEvents;
+    using HealthChecks.UI.Client;
     using Lamar;
     using Merchant.DomainEvents;
     using MerchantStatement.DomainEvents;
@@ -184,6 +185,11 @@ namespace EstateManagement
                                                                           Predicate = _ => true,
                                                                           ResponseWriter = Shared.HealthChecks.HealthCheckMiddleware.WriteResponse
                                                                       });
+                                 endpoints.MapHealthChecks("healthui", new HealthCheckOptions()
+                                                                       {
+                                                                           Predicate = _ => true,
+                                                                           ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                                                                       });
                              });
             app.UseSwagger();
 
