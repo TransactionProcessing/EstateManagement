@@ -60,7 +60,7 @@
             this.AddSingleton<FileProcessorDomainEventHandler>();
             this.AddSingleton<MerchantStatementDomainEventHandler>();
 
-            this.For<IDomainEventHandlerResolver>().Use<DomainEventHandlerResolver>().Named("Concurrent")
+            this.For<IDomainEventHandlerResolver>().Use<DomainEventHandlerResolver>().Named("Main")
                 .Ctor<Dictionary<String, String[]>>().Is(eventHandlersConfiguration).Singleton();
             this.For<IDomainEventHandlerResolver>().Use<DomainEventHandlerResolver>().Named("Ordered")
                 .Ctor<Dictionary<String, String[]>>().Is(eventHandlersConfigurationOrdered).Singleton();
