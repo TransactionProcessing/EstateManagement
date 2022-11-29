@@ -14,16 +14,14 @@ using Xunit;
 
 public class SettlementDomainEventHandlerTests
 {
-    private Mock<IMediator> Mediator;
     private Mock<IEstateReportingRepository> EstateReportingRepository;
 
     private SettlementDomainEventHandler DomainEventHandler;
 
     public SettlementDomainEventHandlerTests() {
         Logger.Initialise(NullLogger.Instance);
-        this.Mediator = new Mock<IMediator>();
         this.EstateReportingRepository = new Mock<IEstateReportingRepository>();
-        this.DomainEventHandler = new SettlementDomainEventHandler(this.Mediator.Object, this.EstateReportingRepository.Object);
+        this.DomainEventHandler = new SettlementDomainEventHandler(this.EstateReportingRepository.Object);
     }
         
     [Fact]

@@ -3,19 +3,11 @@ namespace EstateManagement
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using System.Net.Http;
-    using BusinessLogic.EventHandling;
-    using BusinessLogic.Events;
-    using EventStore.Client;
     using Lamar.Microsoft.DependencyInjection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventHandling;
-    using Shared.EventStore.Subscriptions;
     using Shared.Logger;
 
     [ExcludeFromCodeCoverage]

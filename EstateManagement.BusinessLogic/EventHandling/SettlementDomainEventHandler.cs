@@ -18,12 +18,7 @@
     public class SettlementDomainEventHandler : IDomainEventHandler
     {
         #region Fields
-
-        /// <summary>
-        /// The mediator
-        /// </summary>
-        private readonly IMediator Mediator;
-
+        
         private readonly IEstateReportingRepository EstateReportingRepository;
 
         #endregion
@@ -34,9 +29,7 @@
         /// Initializes a new instance of the <see cref="SettlementDomainEventHandler"/> class.
         /// </summary>
         /// <param name="mediator">The mediator.</param>
-        public SettlementDomainEventHandler(IMediator mediator,
-                                            IEstateReportingRepository estateReportingRepository) {
-            this.Mediator = mediator;
+        public SettlementDomainEventHandler(IEstateReportingRepository estateReportingRepository) {
             this.EstateReportingRepository = estateReportingRepository;
         }
 
@@ -63,16 +56,6 @@
         private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            //throw new Exception();
-            AddSettledFeeToMerchantStatementRequest addSettledFeeToMerchantStatementRequest = AddSettledFeeToMerchantStatementRequest.Create(domainEvent.EstateId,
-                domainEvent.MerchantId,
-                domainEvent.FeeCalculatedDateTime,
-                domainEvent.CalculatedValue,
-                domainEvent.TransactionId,
-                domainEvent.FeeId);
-
-            await this.Mediator.Send(addSettledFeeToMerchantStatementRequest, cancellationToken);
-
             await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
         }
 

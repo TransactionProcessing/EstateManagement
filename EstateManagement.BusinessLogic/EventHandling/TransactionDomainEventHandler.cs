@@ -68,15 +68,6 @@
         private async Task HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            AddTransactionToMerchantStatementRequest addTransactionToMerchantStatementRequest = AddTransactionToMerchantStatementRequest.Create(domainEvent.EstateId,
-                domainEvent.MerchantId,
-                domainEvent.CompletedDateTime,
-                domainEvent.TransactionAmount,
-                domainEvent.IsAuthorised,
-                domainEvent.TransactionId);
-
-            await this.Mediator.Send(addTransactionToMerchantStatementRequest, cancellationToken);
-
             await this.EstateReportingRepository.CompleteTransaction(domainEvent, cancellationToken);
         }
 
