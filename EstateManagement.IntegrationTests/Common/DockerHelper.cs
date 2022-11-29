@@ -84,7 +84,8 @@
             List<(String streamName, String groupName, Int32 maxRetries)> subscriptions = new List<(String streamName, String groupName, Int32 maxRetries)>
                                                                                           {
                                                                                               (estateName.Replace(" ", ""), "Estate Management", 2),
-                                                                                              ($"TransactionProcessorSubscriptionStream_{estateName.Replace(" ", "")}", "Transaction Processor", 0),
+                                                                                              ($"EstateManagementSubscriptionStream_{estateName.Replace(" ", "")}", "Estate Management - Ordered", 0),
+                                                                                              ($"TransactionProcessorSubscriptionStream_{estateName.Replace(" ", "")}", "Transaction Processor", 2),
                                                                                               ($"FileProcessorSubscriptionStream_{estateName.Replace(" ", "")}", "File Processor", 0)
                                                                                           };
             foreach ((String streamName, String groupName, Int32 maxRetries) subscription in subscriptions)

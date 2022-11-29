@@ -2,31 +2,33 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using MediatR;
     using MerchantStatement.DomainEvents;
-    using Repository;
+    using Requests;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.EventHandling;
+    using TransactionProcessor.Transaction.DomainEvents;
 
     public class MerchantStatementDomainEventHandler : IDomainEventHandler
     {
         #region Fields
 
         /// <summary>
-        /// The estate reporting repository
+        /// The mediator
         /// </summary>
-        private readonly IEstateReportingRepository EstateReportingRepository;
+        private readonly IMediator Mediator;
 
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionDomainEventHandler" /> class.
+        /// Initializes a new instance of the <see cref="StatementDomainEventHandler"/> class.
         /// </summary>
-        /// <param name="estateReportingRepository">The estate reporting repository.</param>
-        public MerchantStatementDomainEventHandler(IEstateReportingRepository estateReportingRepository)
+        /// <param name="mediator">The mediator.</param>
+        public MerchantStatementDomainEventHandler(IMediator mediator)
         {
-            this.EstateReportingRepository = estateReportingRepository;
+            this.Mediator = mediator;
         }
 
         #endregion
@@ -44,29 +46,33 @@
             await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(StatementCreatedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.CreateStatement(domainEvent, cancellationToken);
-        }
-
-        private async Task HandleSpecificDomainEvent(TransactionAddedToStatementEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddTransactionToStatement(domainEvent, cancellationToken);
-        }
-
-        private async Task HandleSpecificDomainEvent(SettledFeeAddedToStatementEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddSettledFeeToStatement(domainEvent, cancellationToken);
-        }
-
+        /// <summary>
+        /// Handles the specific domain event.
+        /// </summary>
+        /// <param name="domainEvent">The domain event.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         private async Task HandleSpecificDomainEvent(StatementGeneratedEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.MarkStatementAsGenerated(domainEvent, cancellationToken);
+            EmailMerchantStatementRequest emailMerchantStatementRequest = EmailMerchantStatementRequest.Create(domainEvent.EstateId,
+                                                                                                               domainEvent.MerchantId,
+                                                                                                               domainEvent.MerchantStatementId);
+            
+            await this.Mediator.Send(emailMerchantStatementRequest, cancellationToken);
         }
+
+        private async Task HandlesSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
+                                                      CancellationToken cancellationToken) {
+            AddTransactionToMerchantStatementRequest addTransactionToMerchantStatementRequest = AddTransactionToMerchantStatementRequest.Create(domainEvent.EstateId,
+                domainEvent.MerchantId,
+                domainEvent.CompletedDateTime,
+                domainEvent.TransactionAmount,
+                domainEvent.IsAuthorised,
+                domainEvent.TransactionId);
+
+            await this.Mediator.Send(addTransactionToMerchantStatementRequest, cancellationToken);
+        }
+
         #endregion
     }
 }
