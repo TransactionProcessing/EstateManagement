@@ -164,7 +164,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             MerchantStatementAggregate merchantStatementAggregate = TestData.MerchantStatementAggregateWithTransactionLineAdded();
 
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(merchantStatementAggregate);
             
             Should.NotThrow(async () =>
@@ -183,34 +183,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             statementLines.ShouldNotBeEmpty();
             statementLines.Count.ShouldBe(2);
         }
-
-        [Fact]
-        public async Task MerchantStatementDomainService_AddSettledFeeToStatement_StatementNotAlreadyCreated_SettledFeeAdded()
-        {
-            merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
-
-            MerchantStatementAggregate merchantStatementAggregate = new MerchantStatementAggregate();
-
-            merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                                                .ReturnsAsync(merchantStatementAggregate);
-            
-            Should.NotThrow(async () =>
-            {
-                await merchantStatementDomainService.AddSettledFeeToStatement(TestData.EstateId,
-                                                                              TestData.MerchantId,
-                                                                              TestData.SettledFeeDateTime1,
-                                                                              TestData.SettledFeeAmount1,
-                                                                              TestData.TransactionId1,
-                                                                              TestData.SettledFeeId1,
-                                                                              CancellationToken.None);
-            });
-
-            var merchantStatement = merchantStatementAggregate.GetStatement(true);
-            var statementLines = merchantStatement.GetStatementLines();
-            statementLines.ShouldNotBeEmpty();
-            statementLines.Count.ShouldBe(1);
-        }
-
+        
         [Fact]
         public async Task MerchantStatementDomainService_GenerateStatement_StatementGenerated()
         {

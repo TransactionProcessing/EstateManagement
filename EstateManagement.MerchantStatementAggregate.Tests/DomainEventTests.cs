@@ -34,7 +34,8 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         public void TransactionAddedToStatementEvent_CanBeCreated_IsCreated()
         {
             TransactionAddedToStatementEvent transactionAddedToStatementEvent = new TransactionAddedToStatementEvent(TestData.MerchantStatementId,
-                 TestData.EstateId,
+                TestData.EventId1,
+                TestData.EstateId,
                  TestData.MerchantId,
                  TestData.Transaction1.TransactionId,
                  TestData.Transaction1.DateTime,
@@ -55,6 +56,7 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         public void SettledFeeAddedToStatementEvent_CanBeCreated_IsCreated()
         {
             SettledFeeAddedToStatementEvent settledFeeAddedToStatementEvent = new SettledFeeAddedToStatementEvent(TestData.MerchantStatementId,
+                TestData.EventId1,
                 TestData.EstateId,
                 TestData.MerchantId,
                 TestData.SettledFee1.SettledFeeId,

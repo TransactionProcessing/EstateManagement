@@ -979,6 +979,7 @@
         public static String DepositSortCode = "112233";
 
         public static Guid MerchantStatementId = Guid.Parse("C8CC622C-07D9-48E9-B544-F53BD29DE1E6");
+        public static Guid EventId1 = Guid.Parse("C8CC622C-07D9-48E9-B544-F53BD29DE1E6");
 
         public static DateTime StatementCreateDate = new DateTime(2021,12,10);
 
@@ -1092,6 +1093,7 @@
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
 
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId,
@@ -1109,6 +1111,7 @@
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId, new Transaction
@@ -1118,6 +1121,7 @@
                                                                                           TransactionId = TestData.TransactionId1
                                                                                       });
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
                                                                 TestData.StatementCreateDate,
                                                                 TestData.EstateId,
                                                                 TestData.MerchantId, new SettledFee
@@ -1136,6 +1140,7 @@
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
 
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId, new Transaction
@@ -1145,6 +1150,7 @@
                                                                                           TransactionId = TestData.TransactionId1
                                                                                       });
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
                                                                 TestData.StatementCreateDate,
                                                                 TestData.EstateId,
                                                                 TestData.MerchantId, new SettledFee
