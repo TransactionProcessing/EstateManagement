@@ -25,12 +25,13 @@
         /// <param name="settledDateTime">The settled date time.</param>
         /// <param name="settledValue">The settled value.</param>
         public SettledFeeAddedToStatementEvent(Guid aggregateId,
+                                               Guid eventId,
                                                Guid estateId,
                                                Guid merchantId,
                                                Guid settledFeeId,
                                                Guid transactionId,
                                                DateTime settledDateTime,
-                                               Decimal settledValue) : base(aggregateId, Guid.NewGuid())
+                                               Decimal settledValue) : base(aggregateId, eventId)
         {
             this.EstateId = estateId;
             this.MerchantId = merchantId;

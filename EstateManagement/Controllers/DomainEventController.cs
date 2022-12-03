@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventHandling;
@@ -58,15 +59,13 @@
         {
             var domainEvent = await this.GetDomainEvent(request);
 
-
+            List<IDomainEventHandler> eventHandlers = this.GetDomainEventHandlers(domainEvent);
 
             cancellationToken.Register(() => this.Callback(cancellationToken, domainEvent.EventId));
 
             try
             {
                 Logger.LogInformation($"Processing event - ID [{domainEvent.EventId}], Type[{domainEvent.GetType().Name}]");
-
-                List<IDomainEventHandler> eventHandlers = this.DomainEventHandlerResolver.GetDomainEventHandlers(domainEvent);
 
                 if (eventHandlers == null || eventHandlers.Any() == false)
                 {
@@ -111,6 +110,26 @@
             }
         }
 
+        private List<IDomainEventHandler> GetDomainEventHandlers(IDomainEvent domainEvent)
+        {
+
+            if (this.Request.Headers.ContainsKey("EventHandler"))
+            {
+                var eventHandler = this.Request.Headers["EventHandler"];
+                var eventHandlerType = this.Request.Headers["EventHandlerType"];
+                var resolver = Startup.Container.GetInstance<IDomainEventHandlerResolver>(eventHandlerType);
+                // We are being told by the caller to use a specific handler
+                var allhandlers = resolver.GetDomainEventHandlers(domainEvent);
+                var handlers = allhandlers.Where(h => h.GetType().Name.Contains(eventHandler));
+
+                return handlers.ToList();
+
+            }
+
+            List<IDomainEventHandler> eventHandlers = this.DomainEventHandlerResolver.GetDomainEventHandlers(domainEvent);
+            return eventHandlers;
+        }
+
         /// <summary>
         /// Gets the domain event.
         /// </summary>
@@ -139,11 +158,23 @@
             {
                 var json = JsonConvert.SerializeObject(domainEvent, jsonSerialiserSettings);
                 DomainEventFactory domainEventFactory = new();
-
-                return domainEventFactory.CreateDomainEvent(json, type);
+                String validatedJson = this.ValidateEvent(json);
+                return domainEventFactory.CreateDomainEvent(validatedJson, type);
             }
 
             return null;
+        }
+
+        private String ValidateEvent(String domainEventJson)
+        {
+            JObject domainEvent = JObject.Parse(domainEventJson);
+
+            if (domainEvent.ContainsKey("eventId") == false || domainEvent["eventId"].ToObject<Guid>() == Guid.Empty)
+            {
+                throw new ArgumentException("Domain Event must contain an Event Id");
+            }
+
+            return domainEventJson;
         }
 
         #endregion

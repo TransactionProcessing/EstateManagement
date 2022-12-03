@@ -114,6 +114,7 @@
         /// <param name="merchantId">The merchant identifier.</param>
         /// <param name="settledFee">The settled fee.</param>
         public void AddSettledFeeToStatement(Guid statementId,
+                                             Guid eventId,
                                              DateTime createdDate,
                                              Guid estateId,
                                              Guid merchantId,
@@ -121,9 +122,10 @@
         {
             // Create statement id required
             this.CreateStatement(statementId, createdDate, estateId, merchantId);
-
+            
             SettledFeeAddedToStatementEvent settledFeeAddedToStatementEvent =
                 new SettledFeeAddedToStatementEvent(this.AggregateId,
+                                                    eventId,
                                                     this.EstateId,
                                                     this.MerchantId,
                                                     settledFee.SettledFeeId,
@@ -167,15 +169,14 @@
         /// <param name="merchantId">The merchant identifier.</param>
         /// <param name="transaction">The transaction.</param>
         public void AddTransactionToStatement(Guid statementId,
+                                              Guid eventId,
                                               DateTime createdDate,
                                               Guid estateId,
                                               Guid merchantId,
                                               Transaction transaction)
         {
-            // Create statement id required
-            this.CreateStatement(statementId, createdDate, estateId, merchantId);
-
             TransactionAddedToStatementEvent transactionAddedToStatementEvent = new TransactionAddedToStatementEvent(this.AggregateId,
+                eventId,
                 this.EstateId,
                 this.MerchantId,
                 transaction.TransactionId,

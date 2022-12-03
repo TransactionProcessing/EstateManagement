@@ -117,7 +117,7 @@
             Guid statementId = GuidCalculator.Combine(merchantId, nextStatementDate.ToGuid());
             Guid settlementFeeId = GuidCalculator.Combine(transactionId, settledFeeId);
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersionFromLastEvent(statementId, cancellationToken);
+                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
             
             // Add settled fee to statement
             SettledFee settledFee = new SettledFee
@@ -128,7 +128,14 @@
                                         SettledFeeId = settlementFeeId
             };
 
-            merchantStatementAggregate.AddSettledFeeToStatement(statementId, nextStatementDate, estateId, merchantId, settledFee);
+            Guid eventId = IdGenerationService.GenerateEventId(new {
+                                                                       transactionId,
+                                                                       settlementFeeId,
+                                                                       settledFee,
+                                                                       settledDateTime,
+                                                                   });
+            
+            merchantStatementAggregate.AddSettledFeeToStatement(statementId, eventId, nextStatementDate, estateId, merchantId, settledFee);
 
             await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
         }
@@ -293,7 +300,14 @@
                 TransactionId = transactionId
             };
 
-            merchantStatementAggregate.AddTransactionToStatement(statementId, nextStatementDate, estateId, merchantId, transaction);
+            Guid eventId = IdGenerationService.GenerateEventId(new
+                                                               {
+                                                                   transactionId,
+                                                                   transactionAmount.Value,
+                                                                   transactionDateTime,
+                                                               });
+            
+            merchantStatementAggregate.AddTransactionToStatement(statementId,eventId, nextStatementDate, estateId, merchantId, transaction);
 
             await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
         }

@@ -24,11 +24,12 @@
         /// <param name="transactionDateTime">The transaction date time.</param>
         /// <param name="transactionValue">The transaction value.</param>
         public TransactionAddedToStatementEvent(Guid aggregateId,
+                                                Guid eventId,
                                                 Guid estateId,
                                                 Guid merchantId,
                                                 Guid transactionId,
                                                 DateTime transactionDateTime,
-                                                Decimal transactionValue) : base(aggregateId, Guid.NewGuid())
+                                                Decimal transactionValue) : base(aggregateId, eventId)
         {
             this.EstateId = estateId;
             this.MerchantId = merchantId;

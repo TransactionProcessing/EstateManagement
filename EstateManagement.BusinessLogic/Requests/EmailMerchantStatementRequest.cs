@@ -33,6 +33,8 @@ namespace EstateManagement.BusinessLogic.Requests
         
         public Guid MerchantStatementId { get; }
 
+        public Guid EventId { get; }
+
         /// <summary>
         /// The estate identifier
         /// </summary>

@@ -23,6 +23,7 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId, TestData.Transaction1);
@@ -33,12 +34,36 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
             statementLines.ShouldNotBeEmpty();
             statementLines.Count.ShouldBe(1);
         }
-        
+
+        [Fact]
+        public void MerchantStatementAggregate_AddTransactionToStatement_DuplicateTransaction_SilentlyHandled()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
+                                                                 TestData.StatementCreateDate,
+                                                                 TestData.EstateId,
+                                                                 TestData.MerchantId, TestData.Transaction1);
+
+            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
+                                                                 TestData.StatementCreateDate,
+                                                                 TestData.EstateId,
+                                                                 TestData.MerchantId, TestData.Transaction1);
+
+            MerchantStatement merchantStatement = merchantStatementAggregate.GetStatement(true);
+            var statementLines = merchantStatement.GetStatementLines();
+            statementLines.ShouldNotBeNull();
+            statementLines.ShouldNotBeEmpty();
+            statementLines.Count.ShouldBe(1);
+        }
+
         [Fact]
         public void MerchantStatementAggregate_AddSettledFeeToStatement_FeeAddedToStatement()
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
                                                                 TestData.StatementCreateDate,
                                                                 TestData.EstateId,
                                                                 TestData.MerchantId, TestData.SettledFee1);
@@ -49,16 +74,41 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
             statementLines.ShouldNotBeEmpty();
             statementLines.Count.ShouldBe(1);
         }
-        
+
+        [Fact]
+        public void MerchantStatementAggregate_AddSettledFeeToStatement_DuplicateFee_Silentlyhandled()
+        {
+            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+            merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
+                                                                TestData.StatementCreateDate,
+                                                                TestData.EstateId,
+                                                                TestData.MerchantId, TestData.SettledFee1);
+
+            merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
+                                                                TestData.StatementCreateDate,
+                                                                TestData.EstateId,
+                                                                TestData.MerchantId, TestData.SettledFee1);
+
+            MerchantStatement merchantStatement = merchantStatementAggregate.GetStatement(true);
+            var statementLines = merchantStatement.GetStatementLines();
+            statementLines.ShouldNotBeNull();
+            statementLines.ShouldNotBeEmpty();
+            statementLines.Count.ShouldBe(1);
+        }
+
         [Fact]
         public void MerchantStatementAggregate_GenerateStatement_StatementIsGenerated()
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId, TestData.Transaction1);
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
                                                                 TestData.StatementCreateDate,
                                                                 TestData.EstateId,
                                                                 TestData.MerchantId, TestData.SettledFee1);
@@ -84,10 +134,12 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId, TestData.Transaction1);
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
                                                                 TestData.StatementCreateDate,
                                                                 TestData.EstateId,
                                                                 TestData.MerchantId, TestData.SettledFee1);
@@ -115,10 +167,12 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId, TestData.Transaction1);
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
                                                                 TestData.StatementCreateDate,
                                                                 TestData.EstateId,
                                                                 TestData.MerchantId,
@@ -151,10 +205,12 @@ namespace EstateManagement.MerchantStatementAggregate.Tests
         {
             MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
             merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                 TestData.EventId1,
                                                                  TestData.StatementCreateDate,
                                                                  TestData.EstateId,
                                                                  TestData.MerchantId, TestData.Transaction1);
             merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                TestData.EventId1,
                                                                 TestData.StatementCreateDate,
                                                                 TestData.EstateId,
                                                                 TestData.MerchantId, TestData.SettledFee1);
