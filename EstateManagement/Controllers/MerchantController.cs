@@ -32,8 +32,10 @@
     using CreateMerchantUserRequest = BusinessLogic.Requests.CreateMerchantUserRequest;
     using GenerateMerchantStatementRequest = BusinessLogic.Requests.GenerateMerchantStatementRequest;
     using MakeMerchantDepositRequest = BusinessLogic.Requests.MakeMerchantDepositRequest;
+    using MakeMerchantWithdrawalRequest = BusinessLogic.Requests.MakeMerchantWithdrawalRequest;
     using SwapMerchantDeviceRequestDTO = DataTransferObjects.Requests.SwapMerchantDeviceRequest;
     using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.MakeMerchantDepositRequest;
+    using MakeMerchantWithdrawalRequestDTO = DataTransferObjects.Requests.MakeMerchantWithdrawalRequest;
     using MerchantDepositSource = Models.MerchantDepositSource;
     using SwapMerchantDeviceRequest = BusinessLogic.Requests.SwapMerchantDeviceRequest;
     using GenerateMerchantStatementRequestDTO = DataTransferObjects.Requests.GenerateMerchantStatementRequest;
@@ -648,6 +650,48 @@
                                     EstateId = estateId,
                                     MerchantId = merchantId,
                                     DepositId = depositId
+                                });
+        }
+
+
+        [HttpPost]
+        [Route("{merchantId}/withdrawals")]
+        //[SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
+        //[SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
+        public async Task<IActionResult> MakeWithdrawal([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromBody] MakeMerchantWithdrawalRequestDTO makeMerchantWithdrawalRequest,
+                                                     CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            MakeMerchantWithdrawalRequest command = MakeMerchantWithdrawalRequest.Create(estateId,
+                                                                                   merchantId,
+                                                                                   makeMerchantWithdrawalRequest.WithdrawalDateTime,
+                                                                                   makeMerchantWithdrawalRequest.Amount);
+
+            // Route the command
+            Guid withdrawalId = await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new MakeMerchantWithdrawalResponse()
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    WithdrawalId = withdrawalId
                                 });
         }
 

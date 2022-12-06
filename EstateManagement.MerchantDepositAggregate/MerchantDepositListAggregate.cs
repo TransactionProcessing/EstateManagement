@@ -6,9 +6,9 @@
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
+    using EstateManagement.MerchantDepositListAggregate;
     using Merchant.DomainEvents;
     using Models;
-    using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.General;
@@ -22,107 +22,49 @@
     {
         #region Fields
 
-        /// <summary>
-        /// The addresses
-        /// </summary>
-        private readonly List<Address> Addresses;
-
-        /// <summary>
-        /// The contacts
-        /// </summary>
-        private readonly List<Contact> Contacts;
-
-        /// <summary>
-        /// The deposits
-        /// </summary>
         private readonly List<Deposit> Deposits;
 
-        /// <summary>
-        /// The devices
-        /// </summary>
-        private readonly Dictionary<Guid, String> Devices;
-
-        /// <summary>
-        /// The operators
-        /// </summary>
-        private readonly List<Operator> Operators;
-
-        /// <summary>
-        /// The security users
-        /// </summary>
-        private readonly List<SecurityUser> SecurityUsers;
+        private readonly List<Withdrawal> Withdrawals;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MerchantDepositListAggregate" /> class.
-        /// </summary>
         [ExcludeFromCodeCoverage]
-        public MerchantDepositListAggregate()
-        {
+        public MerchantDepositListAggregate() {
             // Nothing here
             this.Deposits = new List<Deposit>();
+            this.Withdrawals = new List<Withdrawal>();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MerchantDepositListAggregate" /> class.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        private MerchantDepositListAggregate(Guid aggregateId)
-        {
+        private MerchantDepositListAggregate(Guid aggregateId) {
             Guard.ThrowIfInvalidGuid(aggregateId, "Aggregate Id cannot be an Empty Guid");
 
             this.AggregateId = aggregateId;
             this.Deposits = new List<Deposit>();
+            this.Withdrawals = new List<Withdrawal>();
         }
 
         #endregion
 
         #region Properties
 
-        /// <summary>
-        /// Gets the date created.
-        /// </summary>
-        /// <value>
-        /// The date created.
-        /// </value>
         public DateTime DateCreated { get; private set; }
 
-        /// <summary>
-        /// Gets the estate identifier.
-        /// </summary>
-        /// <value>
-        /// The estate identifier.
-        /// </value>
         public Guid EstateId { get; private set; }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is created.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is created; otherwise, <c>false</c>.
-        /// </value>
         public Boolean IsCreated { get; private set; }
 
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <returns></returns>
-        public static MerchantDepositListAggregate Create(Guid aggregateId)
-        {
+        public static MerchantDepositListAggregate Create(Guid aggregateId) {
             return new MerchantDepositListAggregate(aggregateId);
         }
 
         public void Create(MerchantAggregate merchantAggregate,
-                           DateTime dateCreated)
-        {
+                           DateTime dateCreated) {
             this.EnsureMerchantHasBeenCreated(merchantAggregate);
             // Ensure this aggregate has not already been created
             if (this.IsCreated)
@@ -134,40 +76,41 @@
             this.ApplyAndAppend(merchantDepositListCreatedEvent);
         }
 
-        /// <summary>
-        /// Gets the merchant.
-        /// </summary>
-        /// <returns></returns>
-        public List<Models.Merchant.Deposit> GetDeposits()
-        {
+        public List<Models.Merchant.Deposit> GetDeposits() {
             List<Models.Merchant.Deposit> deposits = new List<Models.Merchant.Deposit>();
-            if (this.Deposits.Any())
-            {
-                this.Deposits.ForEach(d => deposits.Add(new Models.Merchant.Deposit
-                                                        {
-                                                            Source = d.Source,
-                                                            DepositDateTime = d.DepositDateTime,
-                                                            DepositId = d.DepositId,
-                                                            Amount = d.Amount,
-                                                            Reference = d.Reference
-                                                        }));
+            if (this.Deposits.Any()) {
+                this.Deposits.ForEach(d => deposits.Add(new Models.Merchant.Deposit {
+                                                                                        Source = d.Source,
+                                                                                        DepositDateTime = d.DepositDateTime,
+                                                                                        DepositId = d.DepositId,
+                                                                                        Amount = d.Amount,
+                                                                                        Reference = d.Reference
+                                                                                    }));
             }
 
             return deposits;
         }
 
-        /// <summary>
-        /// Makes the deposit.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="reference">The reference.</param>
-        /// <param name="depositDateTime">The deposit date time.</param>
-        /// <param name="amount">The amount.</param>
+        public List<Models.Merchant.Withdrawal> GetWithdrawals()
+        {
+            List<Models.Merchant.Withdrawal> withdrawals = new List<Models.Merchant.Withdrawal>();
+            if (this.Withdrawals.Any())
+            {
+                this.Withdrawals.ForEach(d => withdrawals.Add(new Models.Merchant.Withdrawal()
+                                                              {
+                                                                  WithdrawalDateTime = d.WithdrawalDateTime,
+                                                                  WithdrawalId= d.WithdrawalId,
+                                                                  Amount = d.Amount
+                                                              }));
+            }
+
+            return withdrawals;
+        }
+
         public void MakeDeposit(MerchantDepositSource source,
                                 String reference,
                                 DateTime depositDateTime,
-                                PositiveMoney amount)
-        {
+                                PositiveMoney amount) {
             String depositData = $"{depositDateTime.ToString("yyyyMMdd hh:mm:ss.fff")}-{reference}-{amount:N2}-{source}";
             Guid depositId = this.GenerateGuidFromString(depositData);
 
@@ -176,98 +119,74 @@
             // TODO: Change amount to a value object (PositiveAmount VO)
             this.EnsureDepositSourceHasBeenSet(source);
 
-            if (source == MerchantDepositSource.Manual)
-            {
+            if (source == MerchantDepositSource.Manual) {
                 ManualDepositMadeEvent manualDepositMadeEvent =
                     new ManualDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount.Value);
                 this.ApplyAndAppend(manualDepositMadeEvent);
             }
-            else if (source == MerchantDepositSource.Automatic)
-            {
+            else if (source == MerchantDepositSource.Automatic) {
                 AutomaticDepositMadeEvent automaticDepositMadeEvent =
                     new AutomaticDepositMadeEvent(this.AggregateId, this.EstateId, depositId, reference, depositDateTime, amount.Value);
                 this.ApplyAndAppend(automaticDepositMadeEvent);
             }
         }
 
-        private void EnsureMerchantDepositListHasBeenCreated()
-        {
-            if (this.IsCreated == false)
-            {
-                throw new InvalidOperationException("Merchant Deposit List has not been created");
-            }
+        public void MakeWithdrawal(DateTime withdrawalDateTime,
+                                   PositiveMoney amount) {
+            String depositData = $"{withdrawalDateTime.ToString("yyyyMMdd hh:mm:ss.fff")}-{amount:N2}";
+            Guid withdrawalId = this.GenerateGuidFromString(depositData);
+
+            this.EnsureMerchantDepositListHasBeenCreated();
+            this.EnsureNotDuplicateWithdrawal(withdrawalId);
+
+            WithdrawalMadeEvent withdrawalMadeEvent = new(this.AggregateId, this.EstateId, withdrawalId, withdrawalDateTime, amount.Value);
+            this.ApplyAndAppend(withdrawalMadeEvent);
         }
 
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        public override void PlayEvent(IDomainEvent domainEvent)
-        {
+        public override void PlayEvent(IDomainEvent domainEvent) {
             this.PlayEvent((dynamic)domainEvent);
         }
 
-        /// <summary>
-        /// Gets the metadata.
-        /// </summary>
-        /// <returns></returns>
         [ExcludeFromCodeCoverage]
-        protected override Object GetMetadata()
-        {
-            return new
-                   {
-                       this.EstateId,
-                       MerchantId = this.AggregateId
-                   };
+        protected override Object GetMetadata() {
+            return new {
+                           this.EstateId,
+                           MerchantId = this.AggregateId
+                       };
         }
 
-        /// <summary>
-        /// Ensures the deposit source has been set.
-        /// </summary>
-        /// <param name="merchantDepositSource">The merchant deposit source.</param>
-        /// <exception cref="InvalidOperationException">Merchant deposit source must be set</exception>
-        private void EnsureDepositSourceHasBeenSet(MerchantDepositSource merchantDepositSource)
-        {
-            if (merchantDepositSource == MerchantDepositSource.NotSet)
-            {
+        private void EnsureDepositSourceHasBeenSet(MerchantDepositSource merchantDepositSource) {
+            if (merchantDepositSource == MerchantDepositSource.NotSet) {
                 throw new InvalidOperationException("Merchant deposit source must be set");
             }
         }
 
-        /// <summary>
-        /// Ensures the merchant has been created.
-        /// </summary>
-        /// <exception cref="System.InvalidOperationException">Merchant {this.Name} has not been created</exception>
-        private void EnsureMerchantHasBeenCreated(MerchantAggregate merchantAggregate)
-        {
-            if (merchantAggregate.IsCreated == false)
-            {
+        private void EnsureMerchantDepositListHasBeenCreated() {
+            if (this.IsCreated == false) {
+                throw new InvalidOperationException("Merchant Deposit List has not been created");
+            }
+        }
+
+        private void EnsureMerchantHasBeenCreated(MerchantAggregate merchantAggregate) {
+            if (merchantAggregate.IsCreated == false) {
                 throw new InvalidOperationException("Merchant has not been created");
             }
         }
 
-        /// <summary>
-        /// Ensures the not duplicate deposit.
-        /// </summary>
-        /// <param name="depositId">The deposit identifier.</param>
-        /// <exception cref="InvalidOperationException">Deposit Id [{depositId}] already made for merchant [{this.Name}]</exception>
-        private void EnsureNotDuplicateDeposit(Guid depositId)
-        {
-            if (this.Deposits.Any(d => d.DepositId == depositId))
-            {
+        private void EnsureNotDuplicateDeposit(Guid depositId) {
+            if (this.Deposits.Any(d => d.DepositId == depositId)) {
                 throw new InvalidOperationException($"Deposit Id [{depositId}] already made for merchant [{this.AggregateId}]");
             }
         }
 
-        /// <summary>
-        /// Generates the unique identifier from string.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns></returns>
-        private Guid GenerateGuidFromString(String input)
-        {
-            using(SHA256 sha256Hash = SHA256.Create())
-            {
+        private void EnsureNotDuplicateWithdrawal(Guid withdrawalId) {
+            if (this.Withdrawals.Any(d => d.WithdrawalId == withdrawalId)) {
+                throw new InvalidOperationException($"Withdrawal Id [{withdrawalId}] already made for merchant [{this.AggregateId}]");
+            }
+        }
+
+        private Guid GenerateGuidFromString(String input) {
+            using(SHA256 sha256Hash = SHA256.Create()) {
                 //Generate hash from the key
                 Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
@@ -278,20 +197,14 @@
             }
         }
 
-        private void PlayEvent(MerchantDepositListCreatedEvent merchantDepositListCreatedEvent)
-        {
+        private void PlayEvent(MerchantDepositListCreatedEvent merchantDepositListCreatedEvent) {
             this.IsCreated = true;
             this.EstateId = merchantDepositListCreatedEvent.EstateId;
             this.DateCreated = merchantDepositListCreatedEvent.DateCreated;
             this.AggregateId = merchantDepositListCreatedEvent.AggregateId;
         }
 
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="manualDepositMadeEvent">The manual deposit made event.</param>
-        private void PlayEvent(ManualDepositMadeEvent manualDepositMadeEvent)
-        {
+        private void PlayEvent(ManualDepositMadeEvent manualDepositMadeEvent) {
             Deposit deposit = Deposit.Create(manualDepositMadeEvent.DepositId,
                                              MerchantDepositSource.Manual,
                                              manualDepositMadeEvent.Reference,
@@ -300,14 +213,18 @@
             this.Deposits.Add(deposit);
         }
 
-        private void PlayEvent(AutomaticDepositMadeEvent automaticDepositMadeEvent)
-        {
+        private void PlayEvent(AutomaticDepositMadeEvent automaticDepositMadeEvent) {
             Deposit deposit = Deposit.Create(automaticDepositMadeEvent.DepositId,
                                              MerchantDepositSource.Automatic,
                                              automaticDepositMadeEvent.Reference,
                                              automaticDepositMadeEvent.DepositDateTime,
                                              automaticDepositMadeEvent.Amount);
             this.Deposits.Add(deposit);
+        }
+
+        private void PlayEvent(WithdrawalMadeEvent withdrawalMadeEvent) {
+            Withdrawal withdrawal = Withdrawal.Create(withdrawalMadeEvent.WithdrawalId, withdrawalMadeEvent.WithdrawalDateTime, withdrawalMadeEvent.Amount);
+            this.Withdrawals.Add(withdrawal);
         }
 
         #endregion

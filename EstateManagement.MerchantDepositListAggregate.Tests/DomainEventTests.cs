@@ -42,7 +42,7 @@ namespace EstateManagement.MerchantDepositListAggregate.Tests
             manualDepositMadeEvent.DepositDateTime.ShouldBe(TestData.DepositDateTime);
             manualDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount.Value);
         }
-
+        
         [Fact]
         public void AutomaticDepositMadeEvent_CanBeCreated_IsCreated()
         {
@@ -62,6 +62,25 @@ namespace EstateManagement.MerchantDepositListAggregate.Tests
             automaticDepositMadeEvent.Reference.ShouldBe(TestData.DepositReference);
             automaticDepositMadeEvent.DepositDateTime.ShouldBe(TestData.DepositDateTime);
             automaticDepositMadeEvent.Amount.ShouldBe(TestData.DepositAmount.Value);
+        }
+
+        [Fact]
+        public void WithdrawalMadeEvent_CanBeCreated_IsCreated()
+        {
+            WithdrawalMadeEvent withdrawalMadeEvent = new WithdrawalMadeEvent(TestData.MerchantId,
+                                                                              TestData.EstateId,
+                                                                              TestData.WithdrawalId,
+                                                                              TestData.WithdrawalDateTime,
+                                                                              TestData.WithdrawalAmount.Value);
+
+            withdrawalMadeEvent.ShouldNotBeNull();
+            withdrawalMadeEvent.AggregateId.ShouldBe(TestData.MerchantId);
+            withdrawalMadeEvent.EventId.ShouldNotBe(Guid.Empty);
+            withdrawalMadeEvent.EstateId.ShouldBe(TestData.EstateId);
+            withdrawalMadeEvent.MerchantId.ShouldBe(TestData.MerchantId);
+            withdrawalMadeEvent.WithdrawalId.ShouldBe(TestData.WithdrawalId);
+            withdrawalMadeEvent.WithdrawalDateTime.ShouldBe(TestData.WithdrawalDateTime);
+            withdrawalMadeEvent.Amount.ShouldBe(TestData.WithdrawalAmount.Value);
         }
     }
 }

@@ -4,24 +4,11 @@
     using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.EventSourcing;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEvent" />
+    
     public record ManualDepositMadeEvent : DomainEvent
     {
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ManualDepositMadeEvent" /> class.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="depositId">The deposit identifier.</param>
-        /// <param name="reference">The reference.</param>
-        /// <param name="depositDateTime">The deposit date time.</param>
-        /// <param name="amount">The amount.</param>
         public ManualDepositMadeEvent(Guid aggregateId,
                                        Guid estateId,
                                        Guid depositId,
@@ -41,53 +28,16 @@
 
         #region Properties
 
-        /// <summary>
-        /// Gets the amount.
-        /// </summary>
-        /// <value>
-        /// The amount.
-        /// </value>
         public Decimal Amount { get; init; }
 
-        /// <summary>
-        /// Gets the deposit date time.
-        /// </summary>
-        /// <value>
-        /// The deposit date time.
-        /// </value>
         public DateTime DepositDateTime { get; init; }
 
-        /// <summary>
-        /// Gets the deposit identifier.
-        /// </summary>
-        /// <value>
-        /// The deposit identifier.
-        /// </value>
         public Guid DepositId { get; init; }
 
-        /// <summary>
-        /// Gets the estate identifier.
-        /// </summary>
-        /// <value>
-        /// The estate identifier.
-        /// </value>
         public Guid EstateId { get; init; }
 
-        /// <summary>
-        /// Gets the merchant identifier.
-        /// </summary>
-        /// <value>
-        /// The merchant identifier.
-        /// </value>
         public Guid MerchantId { get; init; }
 
-        /// <summary>
-        /// Gets the reference.
-        /// </summary>
-        /// <value>
-        /// The reference.
-        /// </value>
-        /// init; }
         public String Reference { get; init; }
 
         #endregion

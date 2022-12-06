@@ -88,6 +88,21 @@
         }
 
         [Fact]
+        public void MerchantRequestHandler_MakeMerchantWithdrawalRequest_IsHandled()
+        {
+            Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
+
+            MakeMerchantWithdrawalRequest request = TestData.MakeMerchantWithdrawalRequest;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+
+        }
+
+        [Fact]
         public void MerchantRequestHandler_SetMerchantSettlementScheduleRequest_IsHandled()
         {
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();

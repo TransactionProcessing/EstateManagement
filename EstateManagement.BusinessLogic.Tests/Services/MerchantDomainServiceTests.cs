@@ -9,6 +9,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using BusinessLogic.Services;
     using EstateAggregate;
     using MerchantAggregate;
+    using Microsoft.Extensions.Configuration;
     using Models;
     using Moq;
     using SecurityService.Client;
@@ -16,8 +17,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
+    using Shared.General;
+    using Shared.Logger;
     using Shouldly;
     using Testing;
+    using TransactionProcessor.Client;
     using Xunit;
 
     public class MerchantDomainServiceTests
@@ -30,16 +34,26 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
         private readonly Mock<ISecurityServiceClient> SecurityServiceClient;
 
+        private readonly Mock<ITransactionProcessorClient> TransactionProcessorClient;
+
         private readonly MerchantDomainService DomainService;
+        
         public MerchantDomainServiceTests()
         {
+            IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddInMemoryCollection(TestData.DefaultAppSettings).Build();
+            ConfigurationReader.Initialise(configurationRoot);
+
+            Logger.Initialise(new NullLogger());
+
             this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
             this.MerchantDepositListAggregateRepository = new Mock<IAggregateRepository<MerchantDepositListAggregate, DomainEvent>>();
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             this.SecurityServiceClient = new Mock<ISecurityServiceClient>();
+            this.TransactionProcessorClient = new Mock<ITransactionProcessorClient>();
             this.DomainService = new MerchantDomainService(EstateAggregateRepository.Object, MerchantAggregateRepository.Object,
                                                            MerchantDepositListAggregateRepository.Object,
-                                                           SecurityServiceClient.Object);
+                                                           SecurityServiceClient.Object,
+                                                           this.TransactionProcessorClient.Object);
         }
 
         [Fact]
@@ -605,6 +619,141 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                             TestData.DeviceIdentifier,
                                                             TestData.NewDeviceIdentifier,
                                                             CancellationToken.None);
+            });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_MakeMerchantWithdrawal_WithdrawalIsMade()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.MerchantDepositListAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.CreatedMerchantDepositListAggregate);
+            this.MerchantDepositListAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
+
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.MerchantBalance);
+
+            Should.NotThrow(async () =>
+                            {
+                                await this.DomainService.MakeMerchantWithdrawal(TestData.EstateId,
+                                                                             TestData.MerchantId,
+                                                                             TestData.WithdrawalDateTime,
+                                                                             TestData.WithdrawalAmount.Value,
+                                                                             CancellationToken.None);
+                            });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_MakeMerchantWithdrawal_EstateNotCreated_ErrorThrown()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.MerchantDepositListAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.CreatedMerchantDepositListAggregate);
+            this.MerchantDepositListAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
+
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.MerchantBalance);
+
+            Should.Throw<InvalidOperationException>(async () =>
+                                                    {
+                                                        await this.DomainService.MakeMerchantWithdrawal(TestData.EstateId,
+                                                                                                        TestData.MerchantId,
+                                                                                                        TestData.WithdrawalDateTime,
+                                                                                                        TestData.WithdrawalAmount.Value,
+                                                                                                        CancellationToken.None);
+                                                    });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_MakeMerchantWithdrawal_MerchantNotCreated_ErrorThrown()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.MerchantDepositListAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.CreatedMerchantDepositListAggregate);
+            this.MerchantDepositListAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
+
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.MerchantBalance);
+
+            Should.Throw<InvalidOperationException>(async () =>
+            {
+                await this.DomainService.MakeMerchantWithdrawal(TestData.EstateId,
+                                                                TestData.MerchantId,
+                                                                TestData.WithdrawalDateTime,
+                                                                TestData.WithdrawalAmount.Value,
+                                                                CancellationToken.None);
+            });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_MakeMerchantWithdrawal_MerchantDepositListNotCreated_ErrorThrown()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.MerchantDepositListAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new MerchantDepositListAggregate());
+            this.MerchantDepositListAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
+
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.MerchantBalance);
+
+            Should.Throw<InvalidOperationException>(async () =>
+                                                    {
+                                                        await this.DomainService.MakeMerchantWithdrawal(TestData.EstateId,
+                                                                                                        TestData.MerchantId,
+                                                                                                        TestData.WithdrawalDateTime,
+                                                                                                        TestData.WithdrawalAmount.Value,
+                                                                                                        CancellationToken.None);
+                                                    });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_MakeMerchantWithdrawal_NotEnoughFundsToWithdraw_ErrorThrown()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.MerchantDepositListAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.CreatedMerchantDepositListAggregate);
+            this.MerchantDepositListAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
+
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.MerchantBalanceNoAvailableBalance);
+
+            Should.Throw<InvalidOperationException>(async () =>
+            {
+                await this.DomainService.MakeMerchantWithdrawal(TestData.EstateId,
+                                                                TestData.MerchantId,
+                                                                TestData.WithdrawalDateTime,
+                                                                TestData.WithdrawalAmount.Value,
+                                                                CancellationToken.None);
             });
         }
     }

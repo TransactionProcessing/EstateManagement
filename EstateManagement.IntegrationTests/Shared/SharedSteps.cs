@@ -393,6 +393,50 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When(@"I make the following merchant withdrawals")]
+        public async Task WhenIMakeTheFollowingMerchantWithdrawals(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
+
+                MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest = new MakeMerchantWithdrawalRequest {
+                                                                                                                    WithdrawalDateTime =
+                                                                                                                        SpecflowTableHelper
+                                                                                                                            .GetDateTimeForDateString(SpecflowTableHelper
+                                                                                                                                    .GetStringRowValue(tableRow,
+                                                                                                                                        "DateTime"),
+                                                                                                                                DateTime.Now),
+                                                                                                                    Amount =
+                                                                                                                        SpecflowTableHelper.GetDecimalValue(tableRow,
+                                                                                                                            "Amount")
+                                                                                                                };
+
+                MakeMerchantWithdrawalResponse makeMerchantWithdrawalResponse = await this.TestingContext.DockerHelper.EstateClient
+                                                                                    .MakeMerchantWithdrawal(token,
+                                                                                                            estateDetails.EstateId,
+                                                                                                            merchantId,
+                                                                                                            makeMerchantWithdrawalRequest,
+                                                                                                            CancellationToken.None).ConfigureAwait(false);
+
+                makeMerchantWithdrawalResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                makeMerchantWithdrawalResponse.MerchantId.ShouldBe(merchantId);
+                makeMerchantWithdrawalResponse.WithdrawalId.ShouldNotBe(Guid.Empty);
+
+                this.TestingContext.Logger.LogInformation($"Withdrawal made for Merchant {merchantName}");
+            }
+        }
+
         [Given(@"I create the following api scopes")]
         public async Task GivenICreateTheFollowingApiScopes(Table table) {
             foreach (TableRow tableRow in table.Rows) {

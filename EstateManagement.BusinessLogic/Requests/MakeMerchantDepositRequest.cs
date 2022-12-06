@@ -1,8 +1,10 @@
 ﻿namespace EstateManagement.BusinessLogic.Requests
 {
     using System;
+    using EstateManagement.DataTransferObjects.Requests;
     using MediatR;
     using Models;
+    using MerchantDepositSource = Models.MerchantDepositSource;
 
     /// <summary>
     /// 

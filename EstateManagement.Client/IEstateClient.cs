@@ -284,6 +284,12 @@
                                                               MakeMerchantDepositRequest makeMerchantDepositRequest,
                                                               CancellationToken cancellationToken);
 
+        Task<MakeMerchantWithdrawalResponse> MakeMerchantWithdrawal(String accessToken,
+                                                              Guid estateId,
+                                                              Guid merchantId,
+                                                              MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
+                                                              CancellationToken cancellationToken);
+
         Task SetMerchantSettlementSchedule(String accessToken,
                                            Guid estateId,
                                            Guid merchantId,

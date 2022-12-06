@@ -12,6 +12,7 @@
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Syncfusion.HtmlToPdfConverter.QtWebKit.Net.Core" Version="20.1.0.58" />
     <PackageReference Include="System.IO.Abstractions" Version="17.0.15" />
+    <PackageReference Include="TransactionProcessor.Client" Version="2022.12.0" />
     <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="1.1.13-build28" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="1.1.13-build28" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
