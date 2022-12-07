@@ -13,7 +13,6 @@ public class DummyMerchantStatementDomainService : IMerchantStatementDomainServi
                                                 Boolean isAuthorised,
                                                 Guid transactionId,
                                                 CancellationToken cancellationToken) {
-            
     }
 
     public async Task AddSettledFeeToStatement(Guid estateId,
@@ -23,7 +22,6 @@ public class DummyMerchantStatementDomainService : IMerchantStatementDomainServi
                                                Guid transactionId,
                                                Guid settledFeeId,
                                                CancellationToken cancellationToken) {
-            
     }
 
     public async Task<Guid> GenerateStatement(Guid estateId,
@@ -37,6 +35,5 @@ public class DummyMerchantStatementDomainService : IMerchantStatementDomainServi
                                      Guid merchantId,
                                      Guid merchantStatementId,
                                      CancellationToken cancellationToken) {
-            
     }
 }

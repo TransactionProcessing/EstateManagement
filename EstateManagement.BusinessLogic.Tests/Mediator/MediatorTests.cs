@@ -46,7 +46,6 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
 
         [Fact]
         public async Task Mediator_Send_RequestHandled() {
-
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(he => he.EnvironmentName).Returns("Development");
             hostingEnvironment.Setup(he => he.ContentRootPath).Returns("/home");

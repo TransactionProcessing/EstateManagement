@@ -10,7 +10,6 @@ public class DummyEstateDomainService : IEstateDomainService
     public async Task CreateEstate(Guid estateId,
                                    String estateName,
                                    CancellationToken cancellationToken) {
-            
     }
 
     public async Task AddOperatorToEstate(Guid estateId,
@@ -19,7 +18,6 @@ public class DummyEstateDomainService : IEstateDomainService
                                           Boolean requireCustomMerchantNumber,
                                           Boolean requireCustomTerminalNumber,
                                           CancellationToken cancellationToken) {
-            
     }
 
     public async Task<Guid> CreateEstateUser(Guid estateId,

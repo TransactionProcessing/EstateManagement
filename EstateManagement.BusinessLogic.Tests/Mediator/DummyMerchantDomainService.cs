@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BusinessLogic.Services;
 using Models;
 
-public class DummyDomainService : IMerchantDomainService
+public class DummyMerchantDomainService : IMerchantDomainService
 {
     public async Task CreateMerchant(Guid estateId,
                                      Guid merchantId,
@@ -27,7 +27,6 @@ public class DummyDomainService : IMerchantDomainService
                                      SettlementSchedule settlementSchedule,
                                      DateTime createDateTime,
                                      CancellationToken cancellationToken) {
-            
     }
 
     public async Task AssignOperatorToMerchant(Guid estateId,
@@ -36,7 +35,6 @@ public class DummyDomainService : IMerchantDomainService
                                                String merchantNumber,
                                                String terminalNumber,
                                                CancellationToken cancellationToken) {
-            
     }
 
     public async Task<Guid> CreateMerchantUser(Guid estateId,
@@ -48,7 +46,6 @@ public class DummyDomainService : IMerchantDomainService
                                                String familyName,
                                                CancellationToken cancellationToken) {
         return Guid.NewGuid();
-
     }
 
     public async Task AddDeviceToMerchant(Guid estateId,
@@ -56,7 +53,6 @@ public class DummyDomainService : IMerchantDomainService
                                           Guid deviceId,
                                           String deviceIdentifier,
                                           CancellationToken cancellationToken) {
-            
     }
 
     public async Task SwapMerchantDevice(Guid estateId,
@@ -65,7 +61,6 @@ public class DummyDomainService : IMerchantDomainService
                                          String originalDeviceIdentifier,
                                          String newDeviceIdentifier,
                                          CancellationToken cancellationToken) {
-            
     }
 
     public async Task<Guid> MakeMerchantDeposit(Guid estateId,
@@ -90,6 +85,5 @@ public class DummyDomainService : IMerchantDomainService
                                                     Guid merchantId,
                                                     SettlementSchedule settlementSchedule,
                                                     CancellationToken cancellationToken) {
-            
     }
 }

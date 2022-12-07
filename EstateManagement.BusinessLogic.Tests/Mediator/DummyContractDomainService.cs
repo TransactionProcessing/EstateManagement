@@ -14,7 +14,6 @@ public class DummyContractDomainService : IContractDomainService
                                            String displayText,
                                            Decimal? value,
                                            CancellationToken cancellationToken) {
-            
     }
 
     public async Task AddTransactionFeeForProductToContract(Guid transactionFeeId,
@@ -25,14 +24,12 @@ public class DummyContractDomainService : IContractDomainService
                                                             FeeType feeType,
                                                             Decimal value,
                                                             CancellationToken cancellationToken) {
-            
     }
 
     public async Task DisableTransactionFeeForProduct(Guid transactionFeeId,
                                                       Guid contractId,
                                                       Guid productId,
                                                       CancellationToken cancellationToken) {
-            
     }
 
     public async Task CreateContract(Guid contractId,
@@ -40,6 +37,5 @@ public class DummyContractDomainService : IContractDomainService
                                      Guid operatorId,
                                      String description,
                                      CancellationToken cancellationToken) {
-            
     }
 }
