@@ -19,7 +19,7 @@
     [Collection("TestCollection")]
     public class BootstrapperTests
     {
-        [Fact(Skip="Needs investigated")]
+        [Fact]
         public void VerifyBootstrapperIsValid()
         {
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
@@ -51,6 +51,7 @@
             configuration.Add("AppSettings:UseConnectionStringConfig", "false");
             configuration.Add("AppSettings:SecurityService", "http://127.0.0.1");
             configuration.Add("AppSettings:MessagingServiceApi", "http://127.0.0.1");
+            configuration.Add("AppSettings:TransactionProcessorApi", "http://127.0.0.1");
             configuration.Add("AppSettings:DatabaseEngine", "SqlServer");
             
             builder.AddInMemoryCollection(configuration);
@@ -67,6 +68,7 @@
             services.AddSingleton<DiagnosticListener>(diagnosticSource);
             services.AddSingleton<IWebHostEnvironment>(hostingEnvironment);
             services.AddSingleton<IHostEnvironment>(hostingEnvironment);
+            services.AddSingleton<IConfiguration>(Startup.Configuration);
         }
     }
 }

@@ -925,10 +925,13 @@
                                                              }
                                                          };
 
-        public static DisableTransactionFeeForProductRequest DisableTransactionFeeForProductRequest = DisableTransactionFeeForProductRequest.Create(TestData.ContractId,
+        public static DisableTransactionFeeForProductRequest DisableTransactionFeeForProductRequest => DisableTransactionFeeForProductRequest.Create(TestData.ContractId,
                                                                                                                                                     TestData.EstateId,
                                                                                                                                                     TestData.ProductId,
                                                                                                                                                     TestData.TransactionFeeId);
+
+        public static EmailMerchantStatementRequest EmailMerchantStatementRequest =>
+            EmailMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.MerchantStatementId);
 
         public static DateTime EntryDateTime = new DateTime(2021,2,18);
 

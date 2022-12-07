@@ -36,11 +36,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainEventController"/> class.
         /// </summary>
-        /// <param name="domainEventHandlerResolver">The domain event handler resolver.</param>
-        public DomainEventController(IDomainEventHandlerResolver domainEventHandlerResolver)
+        public DomainEventController()
         {
-            //this.DomainEventHandlerResolver = domainEventHandlerResolver;
-            this.DomainEventHandlerResolver = Startup.Container.GetInstance<IDomainEventHandlerResolver>("Concurrent");
+            this.DomainEventHandlerResolver = Startup.Container.GetInstance<IDomainEventHandlerResolver>("Main");
         }
 
         #endregion

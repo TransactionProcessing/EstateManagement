@@ -8,6 +8,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using SecurityService.Client;
     using Shared.General;
+    using TransactionProcessor.Client;
 
     /// <summary>
     /// 
@@ -25,6 +26,7 @@
         {
             this.AddSingleton<ISecurityServiceClient, SecurityServiceClient>();
             this.AddSingleton<IMessagingServiceClient, MessagingServiceClient>();
+            this.AddSingleton<ITransactionProcessorClient, TransactionProcessorClient>();
 
             this.AddSingleton<Func<String, String>>(container => serviceName => { return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString; });
 
