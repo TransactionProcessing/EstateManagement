@@ -365,6 +365,8 @@ namespace EstateManagement.IntegrationTests.Shared
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
                 Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
+                MerchantBalanceResponse balanceBeforeDeposit = await this.TestingContext.DockerHelper.TransactionProcessorClient.GetMerchantBalance(token, estateDetails.EstateId, merchantId, CancellationToken.None);
+
                 MakeMerchantDepositRequest makeMerchantDepositRequest = new MakeMerchantDepositRequest {
                                                                                                            DepositDateTime =
                                                                                                                SpecflowTableHelper
@@ -388,6 +390,15 @@ namespace EstateManagement.IntegrationTests.Shared
                 makeMerchantDepositResponse.EstateId.ShouldBe(estateDetails.EstateId);
                 makeMerchantDepositResponse.MerchantId.ShouldBe(merchantId);
                 makeMerchantDepositResponse.DepositId.ShouldNotBe(Guid.Empty);
+
+                await Retry.For(async () => {
+                                    MerchantBalanceResponse balanceAfterDeposit =
+                                        await this.TestingContext.DockerHelper.TransactionProcessorClient.GetMerchantBalance(token,
+                                            estateDetails.EstateId,
+                                            merchantId,
+                                            CancellationToken.None);
+                                    balanceAfterDeposit.AvailableBalance.ShouldBe(balanceBeforeDeposit.AvailableBalance + makeMerchantDepositRequest.Amount);
+                                });
 
                 this.TestingContext.Logger.LogInformation($"Deposit Reference {makeMerchantDepositRequest.Reference} made for Merchant {merchantName}");
             }
