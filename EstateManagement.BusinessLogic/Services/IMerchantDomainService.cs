@@ -32,16 +32,6 @@
                             DateTime createDateTime,
                             CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Assigns the operator to merchant.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="operatorId">The operator identifier.</param>
-        /// <param name="merchantNumber">The merchant number.</param>
-        /// <param name="terminalNumber">The terminal number.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AssignOperatorToMerchant(Guid estateId,
                                       Guid merchantId,
                                       Guid operatorId,
@@ -49,18 +39,6 @@
                                       String terminalNumber,
                                       CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Creates the merchant user.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="emailAddress">The email address.</param>
-        /// <param name="password">The password.</param>
-        /// <param name="givenName">Name of the given.</param>
-        /// <param name="middleName">Name of the middle.</param>
-        /// <param name="familyName">Name of the family.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task<Guid> CreateMerchantUser(Guid estateId,
                                       Guid merchantId,
                                       String emailAddress,
@@ -70,15 +48,6 @@
                                       String familyName,
                                       CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the device to merchant.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="deviceId">The device identifier.</param>
-        /// <param name="deviceIdentifier">The device identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddDeviceToMerchant(Guid estateId,
                                          Guid merchantId,
                                          Guid deviceId,
@@ -91,18 +60,7 @@
             String originalDeviceIdentifier,
             String newDeviceIdentifier,
             CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Makes the merchant deposit.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="source">The source.</param>
-        /// <param name="reference">The reference.</param>
-        /// <param name="depositDateTime">The deposit date time.</param>
-        /// <param name="amount">The amount.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        
         Task<Guid> MakeMerchantDeposit(Guid estateId,
                                  Guid merchantId,
                                  Models.MerchantDepositSource source,
@@ -110,6 +68,12 @@
                                  DateTime depositDateTime,
                                  Decimal amount,
                                  CancellationToken cancellationToken);
+
+        Task<Guid> MakeMerchantWithdrawal(Guid estateId,
+                                       Guid merchantId,
+                                       DateTime withdrawalDateTime,
+                                       Decimal amount,
+                                       CancellationToken cancellationToken);
 
         Task SetMerchantSettlementSchedule(Guid estateId,
                                            Guid merchantId,

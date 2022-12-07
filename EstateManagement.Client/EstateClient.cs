@@ -960,6 +960,44 @@
             return response;
         }
 
+        public async Task<MakeMerchantWithdrawalResponse> MakeMerchantWithdrawal(String accessToken,
+                                                                           Guid estateId,
+                                                                           Guid merchantId,
+                                                                           MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
+                                                                           CancellationToken cancellationToken) {
+            MakeMerchantWithdrawalResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/withdrawals");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(makeMerchantWithdrawalRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<MakeMerchantWithdrawalResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error making merchant withdrawal for merchant {merchantId} for estate {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         public async Task SetMerchantSettlementSchedule(String accessToken,
                                                         Guid estateId,
                                                         Guid merchantId,

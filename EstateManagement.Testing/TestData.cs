@@ -25,6 +25,7 @@
     using Repository;
     using SecurityService.DataTransferObjects.Responses;
     using Shared.ValueObjects;
+    using TransactionProcessor.DataTransferObjects;
     using TransactionProcessor.Reconciliation.DomainEvents;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
@@ -657,14 +658,21 @@
 
         public static Guid DepositId = Guid.Parse("A15460B1-9665-4C3E-861D-3B65D0EBEF19");
 
+        public static Guid WithdrawalId = Guid.Parse("D5E3614F-78A4-46E6-9F86-3F9AAEC62ABA");
+
         public static String DepositReference = "Test Deposit 1";
         public static String DepositReference2 = "Test Deposit 2";
 
         public static DateTime DepositDateTime = new DateTime(2019, 11, 16);
         public static DateTime DepositDateTime2 = new DateTime(2019, 11, 16);
 
+        public static DateTime WithdrawalDateTime = new DateTime(2019, 11, 16);
+        public static DateTime WithdrawalDateTime2 = new DateTime(2019, 11, 16);
+
         public static PositiveMoney DepositAmount = PositiveMoney.Create(Money.Create(1000.00m));
         public static PositiveMoney DepositAmount2 = PositiveMoney.Create(Money.Create(1200.00m));
+        public static PositiveMoney WithdrawalAmount = PositiveMoney.Create(Money.Create(1000.00m));
+        public static PositiveMoney WithdrawalAmount2 = PositiveMoney.Create(Money.Create(1200.00m));
 
         public static MerchantDepositSource MerchantDepositSourceManual = MerchantDepositSource.Manual;
 
@@ -676,7 +684,12 @@
                                                                                                                 TestData.DepositReference,
                                                                                                                 TestData.DepositDateTime,
                                                                                                                 TestData.DepositAmount.Value);
-        
+
+        public static MakeMerchantWithdrawalRequest MakeMerchantWithdrawalRequest = MakeMerchantWithdrawalRequest.Create(TestData.EstateId,
+                                                                                                                TestData.MerchantId,
+                                                                                                                TestData.WithdrawalDateTime,
+                                                                                                                TestData.WithdrawalAmount.Value);
+
         public static Guid ContractId = Guid.Parse("3C50EDAB-0718-4666-8BEB-1BD5BF08E1D7");
 
         public static Guid ContractId2 = Guid.Parse("086C2FC0-DB29-4A75-8983-3A3A78628A2A");
@@ -912,10 +925,13 @@
                                                              }
                                                          };
 
-        public static DisableTransactionFeeForProductRequest DisableTransactionFeeForProductRequest = DisableTransactionFeeForProductRequest.Create(TestData.ContractId,
+        public static DisableTransactionFeeForProductRequest DisableTransactionFeeForProductRequest => DisableTransactionFeeForProductRequest.Create(TestData.ContractId,
                                                                                                                                                     TestData.EstateId,
                                                                                                                                                     TestData.ProductId,
                                                                                                                                                     TestData.TransactionFeeId);
+
+        public static EmailMerchantStatementRequest EmailMerchantStatementRequest =>
+            EmailMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.MerchantStatementId);
 
         public static DateTime EntryDateTime = new DateTime(2021,2,18);
 
@@ -1656,6 +1672,23 @@
         public static readonly DateTime VoucherRedeemedDate = new DateTime(2021, 12, 16);
 
         public static Int32 TransactionSource = 1;
+
+        public static MerchantBalanceResponse MerchantBalance =>
+            new MerchantBalanceResponse() {
+                                              MerchantId = TestData.MerchantId,
+                                              AvailableBalance = TestData.AvailableBalance,
+                                              Balance = TestData.Balance,
+                                              EstateId = TestData.EstateId,
+                                          };
+
+        public static MerchantBalanceResponse MerchantBalanceNoAvailableBalance =>
+            new MerchantBalanceResponse()
+            {
+                MerchantId = TestData.MerchantId,
+                AvailableBalance = 0,
+                Balance = TestData.Balance,
+                EstateId = TestData.EstateId,
+            };
 
         public static Dictionary<String, String> AdditionalRequestData =>
             new Dictionary<String, String> {

@@ -33,8 +33,7 @@
                 Startup.Configuration.GetSection("AppSettings:EventHandlerConfiguration").Bind(eventHandlersConfiguration);
             }
 
-            //this.AddSingleton(eventHandlersConfiguration);
-            this.Use(eventHandlersConfiguration).Named("Concurrent");
+            this.Use(eventHandlersConfiguration).Named("Main");
 
             section = Startup.Configuration.GetSection("AppSettings:EventHandlerConfigurationOrdered");
 

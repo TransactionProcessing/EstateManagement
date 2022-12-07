@@ -161,6 +161,22 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	| Deposit4  | 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
 
 @PRTest
+Scenario: Make Merchant Withdrawal - Estate User
+	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
+
+	Given I create the following merchants
+	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
+	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 |
+	
+	When I make the following manual merchant deposits 
+	| Reference | Amount  | DateTime  | MerchantName    | EstateName    |
+	| Deposit1  | 500.00  | LastMonth | Test Merchant 1 | Test Estate 1 |
+
+	When I make the following merchant withdrawals
+	| Amount | DateTime  | MerchantName    | EstateName    |
+	| 400.00 | LastMonth | Test Merchant 1 | Test Estate 1 |
+
+@PRTest
 Scenario: Get Merchants for Estate - System Login
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |

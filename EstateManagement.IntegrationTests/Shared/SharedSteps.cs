@@ -365,6 +365,8 @@ namespace EstateManagement.IntegrationTests.Shared
                 String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
                 Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
+                MerchantBalanceResponse balanceBeforeDeposit = await this.TestingContext.DockerHelper.TransactionProcessorClient.GetMerchantBalance(token, estateDetails.EstateId, merchantId, CancellationToken.None);
+
                 MakeMerchantDepositRequest makeMerchantDepositRequest = new MakeMerchantDepositRequest {
                                                                                                            DepositDateTime =
                                                                                                                SpecflowTableHelper
@@ -389,7 +391,60 @@ namespace EstateManagement.IntegrationTests.Shared
                 makeMerchantDepositResponse.MerchantId.ShouldBe(merchantId);
                 makeMerchantDepositResponse.DepositId.ShouldNotBe(Guid.Empty);
 
+                await Retry.For(async () => {
+                                    MerchantBalanceResponse balanceAfterDeposit =
+                                        await this.TestingContext.DockerHelper.TransactionProcessorClient.GetMerchantBalance(token,
+                                            estateDetails.EstateId,
+                                            merchantId,
+                                            CancellationToken.None);
+                                    balanceAfterDeposit.AvailableBalance.ShouldBe(balanceBeforeDeposit.AvailableBalance + makeMerchantDepositRequest.Amount);
+                                });
+
                 this.TestingContext.Logger.LogInformation($"Deposit Reference {makeMerchantDepositRequest.Reference} made for Merchant {merchantName}");
+            }
+        }
+
+        [When(@"I make the following merchant withdrawals")]
+        public async Task WhenIMakeTheFollowingMerchantWithdrawals(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
+
+                MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest = new MakeMerchantWithdrawalRequest {
+                                                                                                                    WithdrawalDateTime =
+                                                                                                                        SpecflowTableHelper
+                                                                                                                            .GetDateTimeForDateString(SpecflowTableHelper
+                                                                                                                                    .GetStringRowValue(tableRow,
+                                                                                                                                        "DateTime"),
+                                                                                                                                DateTime.Now),
+                                                                                                                    Amount =
+                                                                                                                        SpecflowTableHelper.GetDecimalValue(tableRow,
+                                                                                                                            "Amount")
+                                                                                                                };
+
+                MakeMerchantWithdrawalResponse makeMerchantWithdrawalResponse = await this.TestingContext.DockerHelper.EstateClient
+                                                                                    .MakeMerchantWithdrawal(token,
+                                                                                                            estateDetails.EstateId,
+                                                                                                            merchantId,
+                                                                                                            makeMerchantWithdrawalRequest,
+                                                                                                            CancellationToken.None).ConfigureAwait(false);
+
+                makeMerchantWithdrawalResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                makeMerchantWithdrawalResponse.MerchantId.ShouldBe(merchantId);
+                makeMerchantWithdrawalResponse.WithdrawalId.ShouldNotBe(Guid.Empty);
+
+                this.TestingContext.Logger.LogInformation($"Withdrawal made for Merchant {merchantName}");
             }
         }
 
