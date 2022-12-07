@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateManagement.DataTransferObjects.Responses
+﻿namespace EstateManagement.DataTransferObjects.Responses
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
 
     [ExcludeFromCodeCoverage]
-    public class MakeMerchantDepositResponse
+    public class MakeMerchantWithdrawalResponse
     {
         #region Properties
 
@@ -31,13 +28,13 @@ namespace EstateManagement.DataTransferObjects.Responses
         public Guid MerchantId { get; set; }
 
         /// <summary>
-        /// Gets or sets the device identifier.
+        /// Gets or sets the withdrawal identifier.
         /// </summary>
         /// <value>
-        /// The device identifier.
+        /// The withdrawal identifier.
         /// </value>
-        [JsonProperty("deposit_id")]
-        public Guid DepositId { get; set; }
+        [JsonProperty("withdrawal_id")]
+        public Guid WithdrawalId { get; set; }
 
         #endregion
     }

@@ -99,7 +99,6 @@
                             {
                                 await handler.Handle(request, CancellationToken.None);
                             });
-
         }
 
         [Fact]

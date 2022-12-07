@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace EstateManagement.BusinessLogic.Tests.Mediator
 {
     using System.Diagnostics;
-    using System.Threading;
     using BusinessLogic.Services;
     using Lamar;
     using MediatR;
@@ -15,8 +14,6 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Models;
-    using Models.Contract;
     using Moq;
     using Shouldly;
     using Testing;
@@ -78,7 +75,6 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
                 String errorMessage = String.Join(Environment.NewLine, errors);
                 throw new Exception(errorMessage);
             }
-
         }
 
         private IConfigurationRoot SetupMemoryConfiguration()
@@ -116,202 +112,11 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             services.AddSingleton<IConfiguration>(Startup.Configuration);
             
             services.OverrideServices(s => {
-                                          s.AddSingleton<IMerchantDomainService, DummyDomainService>();
+                                          s.AddSingleton<IMerchantDomainService, DummyMerchantDomainService>();
                                           s.AddSingleton<IEstateDomainService, DummyEstateDomainService>();
                                           s.AddSingleton<IContractDomainService, DummyContractDomainService>();
                                           s.AddSingleton<IMerchantStatementDomainService, DummyMerchantStatementDomainService>();
                                       });
-        }
-    }
-
-    public class DummyContractDomainService : IContractDomainService
-    {
-        public async Task AddProductToContract(Guid productId,
-                                               Guid contractId,
-                                               String productName,
-                                               String displayText,
-                                               Decimal? value,
-                                               CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task AddTransactionFeeForProductToContract(Guid transactionFeeId,
-                                                                Guid contractId,
-                                                                Guid productId,
-                                                                String description,
-                                                                CalculationType calculationType,
-                                                                FeeType feeType,
-                                                                Decimal value,
-                                                                CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task DisableTransactionFeeForProduct(Guid transactionFeeId,
-                                                          Guid contractId,
-                                                          Guid productId,
-                                                          CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task CreateContract(Guid contractId,
-                                         Guid estateId,
-                                         Guid operatorId,
-                                         String description,
-                                         CancellationToken cancellationToken) {
-            
-        }
-    }
-
-    public class DummyEstateDomainService : IEstateDomainService
-    {
-        public async Task CreateEstate(Guid estateId,
-                                       String estateName,
-                                       CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task AddOperatorToEstate(Guid estateId,
-                                              Guid operatorId,
-                                              String operatorName,
-                                              Boolean requireCustomMerchantNumber,
-                                              Boolean requireCustomTerminalNumber,
-                                              CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task<Guid> CreateEstateUser(Guid estateId,
-                                                 String emailAddress,
-                                                 String password,
-                                                 String givenName,
-                                                 String middleName,
-                                                 String familyName,
-                                                 CancellationToken cancellationToken) {
-            return Guid.NewGuid();
-        }
-    }
-
-
-    public class DummyDomainService : IMerchantDomainService
-    {
-        public async Task CreateMerchant(Guid estateId,
-                                         Guid merchantId,
-                                         String name,
-                                         Guid addressId,
-                                         String addressLine1,
-                                         String addressLine2,
-                                         String addressLine3,
-                                         String addressLine4,
-                                         String town,
-                                         String region,
-                                         String postalCode,
-                                         String country,
-                                         Guid contactId,
-                                         String contactName,
-                                         String contactPhoneNumber,
-                                         String contactEmailAddress,
-                                         SettlementSchedule settlementSchedule,
-                                         DateTime createDateTime,
-                                         CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task AssignOperatorToMerchant(Guid estateId,
-                                             Guid merchantId,
-                                             Guid operatorId,
-                                             String merchantNumber,
-                                             String terminalNumber,
-                                             CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task<Guid> CreateMerchantUser(Guid estateId,
-                                             Guid merchantId,
-                                             String emailAddress,
-                                             String password,
-                                             String givenName,
-                                             String middleName,
-                                             String familyName,
-                                             CancellationToken cancellationToken) {
-            return Guid.NewGuid();
-
-        }
-
-        public async Task AddDeviceToMerchant(Guid estateId,
-                                              Guid merchantId,
-                                              Guid deviceId,
-                                              String deviceIdentifier,
-                                              CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task SwapMerchantDevice(Guid estateId,
-                                             Guid merchantId,
-                                             Guid deviceId,
-                                             String originalDeviceIdentifier,
-                                             String newDeviceIdentifier,
-                                             CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task<Guid> MakeMerchantDeposit(Guid estateId,
-                                                    Guid merchantId,
-                                                    MerchantDepositSource source,
-                                                    String reference,
-                                                    DateTime depositDateTime,
-                                                    Decimal amount,
-                                                    CancellationToken cancellationToken) {
-            return Guid.NewGuid();
-        }
-
-        public async Task<Guid> MakeMerchantWithdrawal(Guid estateId,
-                                                       Guid merchantId,
-                                                       DateTime withdrawalDateTime,
-                                                       Decimal amount,
-                                                       CancellationToken cancellationToken) {
-            return Guid.NewGuid();
-        }
-
-        public async Task SetMerchantSettlementSchedule(Guid estateId,
-                                                        Guid merchantId,
-                                                        SettlementSchedule settlementSchedule,
-                                                        CancellationToken cancellationToken) {
-            
-        }
-    }
-
-    public class DummyMerchantStatementDomainService : IMerchantStatementDomainService{
-        public async Task AddTransactionToStatement(Guid estateId,
-                                                    Guid merchantId,
-                                                    DateTime transactionDateTime,
-                                                    Decimal? transactionAmount,
-                                                    Boolean isAuthorised,
-                                                    Guid transactionId,
-                                                    CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task AddSettledFeeToStatement(Guid estateId,
-                                                   Guid merchantId,
-                                                   DateTime settledDateTime,
-                                                   Decimal settledAmount,
-                                                   Guid transactionId,
-                                                   Guid settledFeeId,
-                                                   CancellationToken cancellationToken) {
-            
-        }
-
-        public async Task<Guid> GenerateStatement(Guid estateId,
-                                                  Guid merchantId,
-                                                  DateTime statementDate,
-                                                  CancellationToken cancellationToken) {
-            return Guid.NewGuid();
-        }
-
-        public async Task EmailStatement(Guid estateId,
-                                         Guid merchantId,
-                                         Guid merchantStatementId,
-                                         CancellationToken cancellationToken) {
-            
         }
     }
 }
