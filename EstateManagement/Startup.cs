@@ -1,6 +1,7 @@
 namespace EstateManagement
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using Bootstrapper;
@@ -133,7 +134,10 @@ namespace EstateManagement
                                                                 String.Empty);
             ImportLogCreatedEvent i = new ImportLogCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
 
-            TypeProvider.LoadDomainEventsTypeDynamically();
+            TypeProvider.LoadDomainEventsTypeDynamically(new List<string>()
+                                                         {
+                                                             "Microsoft"
+                                                         });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
