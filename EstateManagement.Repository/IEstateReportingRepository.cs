@@ -609,7 +609,8 @@ namespace EstateManagement.Repository
                 ProductId = domainEvent.ProductId,
                 DisplayText = domainEvent.DisplayText,
                 ProductName = domainEvent.ProductName,
-                Value = null
+                Value = null,
+                ProductType = domainEvent.ProductType
             };
 
             await context.ContractProducts.AddAsync(contractProduct, cancellationToken);
@@ -636,7 +637,8 @@ namespace EstateManagement.Repository
                 ProductId = domainEvent.ProductId,
                 DisplayText = domainEvent.DisplayText,
                 ProductName = domainEvent.ProductName,
-                Value = domainEvent.Value
+                Value = domainEvent.Value,
+                ProductType = domainEvent.ProductType
             };
 
             await context.ContractProducts.AddAsync(contractProduct, cancellationToken);

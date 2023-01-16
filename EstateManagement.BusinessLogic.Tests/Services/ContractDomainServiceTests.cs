@@ -135,6 +135,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                          TestData.ProductName,
                                                                          TestData.ProductDisplayText,
                                                                          TestData.ProductFixedValue,
+                                                                         TestData.ProductTypeMobileTopup,
                                                                          CancellationToken.None);
                             });
         }
@@ -154,7 +155,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                          TestData.ContractId,
                                                                          TestData.ProductName,
                                                                          TestData.ProductDisplayText,
-                                                                         TestData.ProductFixedValue,
+                                                                         TestData.ProductFixedValue, TestData.ProductTypeMobileTopup,
                                                                          CancellationToken.None);
                             });
         }
@@ -174,7 +175,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                          TestData.ContractId,
                                                          TestData.ProductName,
                                                          TestData.ProductDisplayText,
-                                                         null,
+                                                         null, TestData.ProductTypeMobileTopup,
                                                          CancellationToken.None);
             });
         }
@@ -194,7 +195,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                          TestData.ContractId,
                                                          TestData.ProductName,
                                                          TestData.ProductDisplayText,
-                                                         null,
+                                                         null, TestData.ProductTypeMobileTopup,
                                                          CancellationToken.None);
             });
         }

@@ -648,6 +648,7 @@ namespace EstateManagement.BusinessLogic.Tests
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.ProductName);
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
+            contractProduct.ProductType.ShouldBe((ProductType)expectedContractProduct.ProductType);
             contractProduct.TransactionFees.ShouldNotBeNull();
             contractProduct.TransactionFees.ShouldHaveSingleItem();
 

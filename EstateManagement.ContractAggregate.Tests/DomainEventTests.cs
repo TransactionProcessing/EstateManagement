@@ -33,7 +33,8 @@ namespace EstateManagement.ContractAggregate.Tests
             FixedValueProductAddedToContractEvent fixedValueProductAddedToContractEvent = new FixedValueProductAddedToContractEvent(TestData.ContractId, TestData.EstateId,
                                                                                                                              TestData.ProductId, TestData.ProductName,
                                                                                                                              TestData.ProductDisplayText,
-                                                                                                                             TestData.ProductFixedValue);
+                                                                                                                             TestData.ProductFixedValue, 
+                                                                                                                             (Int32)TestData.ProductTypeMobileTopup);
 
             fixedValueProductAddedToContractEvent.ShouldNotBeNull();
             fixedValueProductAddedToContractEvent.AggregateId.ShouldBe(TestData.ContractId);
@@ -44,14 +45,18 @@ namespace EstateManagement.ContractAggregate.Tests
             fixedValueProductAddedToContractEvent.ProductName.ShouldBe(TestData.ProductName);
             fixedValueProductAddedToContractEvent.DisplayText.ShouldBe(TestData.ProductDisplayText);
             fixedValueProductAddedToContractEvent.Value.ShouldBe(TestData.ProductFixedValue);
+            fixedValueProductAddedToContractEvent.ProductType.ShouldBe((Int32)TestData.ProductTypeMobileTopup);
         }
 
         [Fact]
-        public void VariableValueProductAddedToContractEvent_CanBeCreated_IsCreated()
-        {
-            VariableValueProductAddedToContractEvent variableValueProductAddedToContractEvent = new VariableValueProductAddedToContractEvent(TestData.ContractId, TestData.EstateId,
-                                                                                                                                             TestData.ProductId, TestData.ProductName,
-                                                                                                                                             TestData.ProductDisplayText);
+        public void VariableValueProductAddedToContractEvent_CanBeCreated_IsCreated() {
+            VariableValueProductAddedToContractEvent variableValueProductAddedToContractEvent =
+                new VariableValueProductAddedToContractEvent(TestData.ContractId,
+                                                             TestData.EstateId,
+                                                             TestData.ProductId,
+                                                             TestData.ProductName,
+                                                             TestData.ProductDisplayText,
+                                                             (Int32)TestData.ProductTypeMobileTopup);
 
             variableValueProductAddedToContractEvent.ShouldNotBeNull();
             variableValueProductAddedToContractEvent.AggregateId.ShouldBe(TestData.ContractId);
@@ -61,6 +66,7 @@ namespace EstateManagement.ContractAggregate.Tests
             variableValueProductAddedToContractEvent.ProductId.ShouldBe(TestData.ProductId);
             variableValueProductAddedToContractEvent.ProductName.ShouldBe(TestData.ProductName);
             variableValueProductAddedToContractEvent.DisplayText.ShouldBe(TestData.ProductDisplayText);
+            variableValueProductAddedToContractEvent.ProductType.ShouldBe((Int32)TestData.ProductTypeMobileTopup);
         }
 
         [Theory]

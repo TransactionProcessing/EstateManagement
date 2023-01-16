@@ -47,7 +47,7 @@
                                                    TestData.ProductId,
                                                    TestData.ProductName,
                                                    TestData.ProductDisplayText,
-                                                   TestData.ProductFixedValue);
+                                                   TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
 
             addProductToContractRequest.ShouldNotBeNull();
             addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
@@ -56,12 +56,13 @@
             addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
             addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
             addProductToContractRequest.Value.ShouldBe(TestData.ProductFixedValue);
+            addProductToContractRequest.ProductType.ShouldBe(TestData.ProductTypeMobileTopup);
         }
 
         [Fact]
         public void AddProductToContractRequest_WithVariableValue_CanBeCreated_IsCreated() {
             AddProductToContractRequest addProductToContractRequest =
-                AddProductToContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, null);
+                AddProductToContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, null, TestData.ProductTypeMobileTopup);
 
             addProductToContractRequest.ShouldNotBeNull();
             addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
@@ -70,6 +71,7 @@
             addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
             addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
             addProductToContractRequest.Value.ShouldBeNull();
+            addProductToContractRequest.ProductType.ShouldBe(TestData.ProductTypeMobileTopup);
         }
 
         [Fact]

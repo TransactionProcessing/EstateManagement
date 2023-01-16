@@ -37,6 +37,15 @@
         [JsonProperty("value")]
         public Decimal? Value { get; set; }
 
+        /// <summary>
+        /// Gets or sets the type of the product.
+        /// </summary>
+        /// <value>
+        /// The type of the product.
+        /// </value>
+        [JsonProperty("product_type")]
+        public ProductType ProductType { get; set; }
+
         #endregion
     }
 }

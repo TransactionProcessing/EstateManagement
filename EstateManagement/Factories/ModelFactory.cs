@@ -12,7 +12,7 @@
     using CalculationType = DataTransferObjects.CalculationType;
     using FeeType = DataTransferObjects.FeeType;
     using SettlementSchedule = DataTransferObjects.SettlementSchedule;
-
+    using ProductType = DataTransferObjects.ProductType;
     /// <summary>
     /// 
     /// </summary>
@@ -62,8 +62,9 @@
                                                                                     ProductId = p.ProductId,
                                                                                     Value = p.Value,
                                                                                     DisplayText = p.DisplayText,
-                                                                                    Name = p.Name
-                                                                                };
+                                                                                    Name = p.Name,
+                                                                                    ProductType = Enum.Parse<ProductType>(p.ProductType.ToString())
+                                          };
                                               if (p.TransactionFees != null && p.TransactionFees.Any())
                                               {
                                                   contractProduct.TransactionFees = new List<ContractProductTransactionFee>();
