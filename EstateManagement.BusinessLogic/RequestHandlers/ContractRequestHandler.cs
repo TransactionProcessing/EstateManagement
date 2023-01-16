@@ -20,19 +20,12 @@
     {
         #region Fields
 
-        /// <summary>
-        /// The estate domain service
-        /// </summary>
         private readonly IContractDomainService ContractDomainService;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EstateRequestHandler" /> class.
-        /// </summary>
-        /// <param name="contractDomainService">The contract domain service.</param>
         public ContractRequestHandler(IContractDomainService contractDomainService)
         {
             this.ContractDomainService = contractDomainService;
@@ -42,14 +35,6 @@
 
         #region Methods
 
-        /// <summary>
-        /// Handles a request
-        /// </summary>
-        /// <param name="request">The request</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>
-        /// Response from the request
-        /// </returns>
         public async Task<Unit> Handle(CreateContractRequest request,
                                          CancellationToken cancellationToken)
         {
@@ -57,15 +42,7 @@
 
             return new Unit();
         }
-
-        /// <summary>
-        /// Handles a request
-        /// </summary>
-        /// <param name="request">The request</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>
-        /// Response from the request
-        /// </returns>
+        
         public async Task<Unit> Handle(AddProductToContractRequest request,
                                          CancellationToken cancellationToken)
         {
@@ -74,19 +51,12 @@
                                                                   request.ProductName,
                                                                   request.DisplayText,
                                                                   request.Value,
+                                                                  request.ProductType,
                                                                   cancellationToken);
 
             return new Unit();
         }
-
-        /// <summary>
-        /// Handles a request
-        /// </summary>
-        /// <param name="request">The request</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>
-        /// Response from the request
-        /// </returns>
+        
         public async Task<Unit> Handle(AddTransactionFeeForProductToContractRequest request,
                                          CancellationToken cancellationToken)
         {
@@ -103,14 +73,6 @@
 
         #endregion
 
-        /// <summary>
-        /// Handles a request
-        /// </summary>
-        /// <param name="request">The request</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>
-        /// Response from the request
-        /// </returns>
         public async Task<Unit> Handle(DisableTransactionFeeForProductRequest request,
                                          CancellationToken cancellationToken)
         {

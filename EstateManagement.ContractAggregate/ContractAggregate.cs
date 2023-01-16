@@ -19,18 +19,12 @@
     {
         #region Fields
 
-        /// <summary>
-        /// The products
-        /// </summary>
         private readonly List<Product> Products;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContractAggregate" /> class.
-        /// </summary>
         [ExcludeFromCodeCoverage]
         public ContractAggregate()
         {
@@ -38,10 +32,6 @@
             this.Products = new List<Product>();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContractAggregate" /> class.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
         private ContractAggregate(Guid aggregateId)
         {
             Guard.ThrowIfInvalidGuid(aggregateId, "Aggregate Id cannot be an Empty Guid");
@@ -54,55 +44,23 @@
 
         #region Properties
 
-        /// <summary>
-        /// Gets the description.
-        /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
         public String Description { get; private set; }
 
-        /// <summary>
-        /// Gets the estate identifier.
-        /// </summary>
-        /// <value>
-        /// The estate identifier.
-        /// </value>
         public Guid EstateId { get; private set; }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is created.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is created; otherwise, <c>false</c>.
-        /// </value>
         public Boolean IsCreated { get; private set; }
 
-        /// <summary>
-        /// Gets the operator identifier.
-        /// </summary>
-        /// <value>
-        /// The operator identifier.
-        /// </value>
         public Guid OperatorId { get; private set; }
 
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// Adds the product.
-        /// </summary>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="productName">Name of the product.</param>
-        /// <param name="displayText">The display text.</param>
-        /// <param name="value">The value.</param>
-        /// <exception cref="System.InvalidOperationException">Product Name {productName} has already been added to the contract</exception>
-        public void AddFixedValueProduct(Guid productId, 
+        public void AddFixedValueProduct(Guid productId,
                                          String productName,
                                          String displayText,
-                                         Decimal value)
-        {
+                                         Decimal value,
+                                         ProductType productType) {
             Guard.ThrowIfInvalidGuid(productId, typeof(ArgumentNullException), "Product Id cannot be an empty Guid");
             Guard.ThrowIfNullOrEmpty(productName, typeof(ArgumentNullException), "Product Name must not be null or empty");
             Guard.ThrowIfNullOrEmpty(displayText, typeof(ArgumentNullException), "Product Display Text must not be null or empty");
@@ -110,27 +68,16 @@
             Guard.ThrowIfNegative(value, typeof(ArgumentOutOfRangeException), "Product value must not be negative");
 
             // Check product not already added
-            if (this.Products.Any(p => p.Name == productName))
-            {
+            if (this.Products.Any(p => p.Name == productName)) {
                 throw new InvalidOperationException($"Product Name {productName} has already been added to the contract");
             }
 
             FixedValueProductAddedToContractEvent fixedValueProductAddedToContractEvent =
-                new FixedValueProductAddedToContractEvent(this.AggregateId, this.EstateId, productId, productName, displayText, value);
+                new(this.AggregateId, this.EstateId, productId, productName, displayText, value, (Int32)productType);
+
             this.ApplyAndAppend(fixedValueProductAddedToContractEvent);
         }
 
-        /// <summary>
-        /// Adds the transaction fee.
-        /// </summary>
-        /// <param name="product">The product.</param>
-        /// <param name="transactionFeeId">The transaction fee identifier.</param>
-        /// <param name="description">The description.</param>
-        /// <param name="calculationType">Type of the calculation.</param>
-        /// <param name="feeType">Type of the fee.</param>
-        /// <param name="value">The value.</param>
-        /// <exception cref="InvalidOperationException">Product Id {product.ProductId} is not a valid product on this contract</exception>
-        /// <exception cref="System.InvalidOperationException">Product Id {productId} is not a valid product on this contract</exception>
         public void AddTransactionFee(Product product,
                                       Guid transactionFeeId,
                                       String description,
@@ -158,11 +105,6 @@
             this.ApplyAndAppend(transactionFeeForProductAddedToContractEvent);
         }
 
-        /// <summary>
-        /// Disables the transaction fee.
-        /// </summary>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="transactionFeeId">The transaction fee identifier.</param>
         public void DisableTransactionFee(Guid productId,
                                           Guid transactionFeeId)
         {
@@ -195,17 +137,11 @@
             transactionFee.IsEnabled = false;
 
         }
-
-        /// <summary>
-        /// Adds the variable value product.
-        /// </summary>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="productName">Name of the product.</param>
-        /// <param name="displayText">The display text.</param>
-        /// <exception cref="System.InvalidOperationException">Product Name {productName} has already been added to the contract</exception>
+        
         public void AddVariableValueProduct(Guid productId,
                                             String productName,
-                                            String displayText)
+                                            String displayText,
+                                            ProductType productType)
         {
             Guard.ThrowIfNullOrEmpty(productName, typeof(ArgumentNullException), "Product Name must not be null or empty");
             Guard.ThrowIfNullOrEmpty(displayText, typeof(ArgumentNullException), "Product Display Text must not be null or empty");
@@ -217,26 +153,16 @@
             }
 
             VariableValueProductAddedToContractEvent variableValueProductAddedToContractEvent =
-                new VariableValueProductAddedToContractEvent(this.AggregateId, this.EstateId, productId, productName, displayText);
+                new(this.AggregateId, this.EstateId, productId, productName, displayText, (Int32)productType);
+
             this.ApplyAndAppend(variableValueProductAddedToContractEvent);
         }
 
-        /// <summary>
-        /// Creates the specified aggregate identifier.
-        /// </summary>
-        /// <param name="aggregateId">The aggregate identifier.</param>
-        /// <returns></returns>
         public static ContractAggregate Create(Guid aggregateId)
         {
             return new ContractAggregate(aggregateId);
         }
 
-        /// <summary>
-        /// Creates the specified estate identifier.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="operatorId">The operator identifier.</param>
-        /// <param name="description">The description.</param>
         public void Create(Guid estateId,
                            Guid operatorId,
                            String description)
@@ -266,19 +192,11 @@
             return contractModel;
         }
 
-        /// <summary>
-        /// Gets the products.
-        /// </summary>
-        /// <returns></returns>
         public List<Product> GetProducts()
         {
             return this.Products;
         }
 
-        /// <summary>
-        /// Gets the metadata.
-        /// </summary>
-        /// <returns></returns>
         [ExcludeFromCodeCoverage]
         protected override Object GetMetadata()
         {
@@ -288,19 +206,11 @@
                    };
         }
 
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
         public override void PlayEvent(IDomainEvent domainEvent)
         {
             this.PlayEvent((dynamic)domainEvent);
         }
 
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
         private void PlayEvent(ContractCreatedEvent domainEvent)
         {
             this.IsCreated = true;
@@ -309,10 +219,6 @@
             this.Description = domainEvent.Description;
         }
 
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
         private void PlayEvent(FixedValueProductAddedToContractEvent domainEvent)
         {
             this.Products.Add(new Product
@@ -320,14 +226,11 @@
                                   ProductId = domainEvent.ProductId,
                                   Name = domainEvent.ProductName,
                                   DisplayText = domainEvent.DisplayText,
-                                  Value = domainEvent.Value
+                                  Value = domainEvent.Value,
+                                  ProductType = (ProductType)domainEvent.ProductType
                               });
         }
 
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
         private void PlayEvent(VariableValueProductAddedToContractEvent domainEvent)
         {
             this.Products.Add(new Product
@@ -335,13 +238,10 @@
                                   ProductId = domainEvent.ProductId,
                                   Name = domainEvent.ProductName,
                                   DisplayText = domainEvent.DisplayText,
-                              });
+                                  ProductType = (ProductType)domainEvent.ProductType
+            });
         }
 
-        /// <summary>
-        /// Plays the event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
         private void PlayEvent(TransactionFeeForProductAddedToContractEvent domainEvent)
         {
             // Find the product

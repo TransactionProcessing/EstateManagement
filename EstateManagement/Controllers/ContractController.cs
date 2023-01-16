@@ -175,10 +175,17 @@
             }
 
             Guid productId = Guid.NewGuid();
-            
+
+            Models.Contract.ProductType productType = (Models.Contract.ProductType)addProductToContractRequest.ProductType;
+
             // Create the command
-            AddProductToContractRequest command = AddProductToContractRequest.Create(contractId , estateId, productId, addProductToContractRequest.ProductName, addProductToContractRequest.DisplayText,
-                                                                                     addProductToContractRequest.Value);
+            AddProductToContractRequest command = AddProductToContractRequest.Create(contractId,
+                                                                                     estateId,
+                                                                                     productId,
+                                                                                     addProductToContractRequest.ProductName,
+                                                                                     addProductToContractRequest.DisplayText,
+                                                                                     addProductToContractRequest.Value,
+                                                                                     productType);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);

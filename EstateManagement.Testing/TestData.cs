@@ -714,6 +714,11 @@
 
         public static Decimal ProductFixedValue = 100.00m;
 
+        public static ProductType ProductTypeMobileTopup = ProductType.MobileTopup;
+
+        public static ProductType ProductTypeBillPayment = ProductType.BillPayment;
+        public static ProductType ProductTypeVoucher = ProductType.Voucher;
+
         public static Guid TransactionFeeId = Guid.Parse("B83FCCCE-0D45-4FC2-8952-ED277A124BDB");
 
         public static Guid TransactionFeeId1 = Guid.Parse("2680A005-797C-4501-B1BB-2ACE124B352A");
@@ -722,10 +727,14 @@
 
         public static Decimal TransactionFeeValue = 0.5m;
 
-        public static AddProductToContractRequest AddProductToContractRequest = AddProductToContractRequest.Create(TestData.ContractId,TestData.EstateId,TestData.ProductId,
-                                                                                                                   TestData.ProductName,
-                                                                                                                   TestData.ProductDisplayText,
-                                                                                                                   TestData.ProductFixedValue);
+        public static AddProductToContractRequest AddProductToContractRequest =
+            AddProductToContractRequest.Create(TestData.ContractId,
+                                               TestData.EstateId,
+                                               TestData.ProductId,
+                                               TestData.ProductName,
+                                               TestData.ProductDisplayText,
+                                               TestData.ProductFixedValue,
+                                               TestData.ProductTypeMobileTopup);
 
         public static AddTransactionFeeForProductToContractRequest AddTransactionFeeForProductToContractRequest =
             AddTransactionFeeForProductToContractRequest.Create(TestData.ContractId,
@@ -743,7 +752,8 @@
 
             contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
             contractAggregate.AddFixedValueProduct(TestData.ProductId,TestData.ProductName,TestData.ProductDisplayText,
-                                                   TestData.ProductFixedValue);
+                                                   TestData.ProductFixedValue,
+                                                   TestData.ProductTypeMobileTopup);
 
             return contractAggregate;
         }
@@ -754,7 +764,8 @@
 
             contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
             contractAggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText,
-                                                   TestData.ProductFixedValue);
+                                                   TestData.ProductFixedValue,
+                                                   TestData.ProductTypeMobileTopup);
 
             Product product = contractAggregate.GetProducts().Single(p => p.ProductId == TestData.ProductId);
             contractAggregate.AddTransactionFee(product, TestData.TransactionFeeId, TestData.TransactionFeeDescription,
@@ -1507,7 +1518,8 @@
             TestData.ProductId,
             TestData.ProductName,
             TestData.ProductDisplayText,
-            TestData.ProductFixedValue);
+            TestData.ProductFixedValue,
+             (Int32)TestData.ProductTypeMobileTopup);
 
         public static DateTime ImportLogDateTime = new DateTime(2021, 5, 7);
 
@@ -1631,7 +1643,8 @@
         public static Int32 ValueOfFeesSettled = 1;
 
         public static VariableValueProductAddedToContractEvent VariableValueProductAddedToContractEvent =
-            new VariableValueProductAddedToContractEvent(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText);
+            new VariableValueProductAddedToContractEvent(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText
+                                                         ,(Int32)TestData.ProductTypeMobileTopup);
 
         public static String VoucherCode = "1234GHT";
 

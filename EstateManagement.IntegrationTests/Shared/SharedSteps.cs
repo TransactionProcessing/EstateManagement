@@ -831,6 +831,8 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                                               DisplayText =
                                                                                                                   SpecflowTableHelper.GetStringRowValue(tableRow,
                                                                                                                       "DisplayText"),
+                                                                                                              ProductType = SpecflowTableHelper.GetEnumValue<ProductType>(tableRow,
+                                                                                                                   "ProductType"),
                                                                                                               Value = null
                                                                                                           };
                 if (String.IsNullOrEmpty(productValue) == false) {

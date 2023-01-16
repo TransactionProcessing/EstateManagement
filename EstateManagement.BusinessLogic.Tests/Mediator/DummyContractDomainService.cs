@@ -13,6 +13,7 @@ public class DummyContractDomainService : IContractDomainService
                                            String productName,
                                            String displayText,
                                            Decimal? value,
+                                           ProductType productType,
                                            CancellationToken cancellationToken) {
     }
 

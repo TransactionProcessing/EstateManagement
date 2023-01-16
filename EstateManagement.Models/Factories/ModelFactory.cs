@@ -186,7 +186,8 @@
                                                                              ProductId = p.ProductId,
                                                                              Value = p.Value,
                                                                              Name = p.ProductName,
-                                                                             DisplayText = p.DisplayText
+                                                                             DisplayText = p.DisplayText,
+                                                                             ProductType = (ProductType)p.ProductType
                                                                          }));
             }
 

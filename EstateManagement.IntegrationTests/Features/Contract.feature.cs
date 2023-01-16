@@ -241,35 +241,40 @@ this.FeatureBackground();
                             "ContractDescription",
                             "ProductName",
                             "DisplayText",
-                            "Value"});
+                            "Value",
+                            "ProductType"});
                 table10.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table10.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
                 table10.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table10.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
 #line 47
  testRunner.When("I create the following Products", ((string)(null)), table10, "When ");
 #line hidden
@@ -367,35 +372,40 @@ this.FeatureBackground();
                             "ContractDescription",
                             "ProductName",
                             "DisplayText",
-                            "Value"});
+                            "Value",
+                            "ProductType"});
                 table13.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table13.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
                 table13.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table13.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
 #line 68
  testRunner.When("I create the following Products", ((string)(null)), table13, "When ");
 #line hidden
@@ -593,35 +603,40 @@ this.FeatureBackground();
                             "ContractDescription",
                             "ProductName",
                             "DisplayText",
-                            "Value"});
+                            "Value",
+                            "ProductType"});
                 table21.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table21.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
                 table21.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table21.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
 #line 112
  testRunner.When("I create the following Products", ((string)(null)), table21, "When ");
 #line hidden
@@ -754,35 +769,40 @@ this.FeatureBackground();
                             "ContractDescription",
                             "ProductName",
                             "DisplayText",
-                            "Value"});
+                            "Value",
+                            "ProductType"});
                 table26.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table26.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
                 table26.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "MobileTopup"});
                 table26.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract",
                             "Variable Topup",
                             "Custom",
-                            ""});
+                            "",
+                            "MobileTopup"});
 #line 144
  testRunner.When("I create the following Products", ((string)(null)), table26, "When ");
 #line hidden

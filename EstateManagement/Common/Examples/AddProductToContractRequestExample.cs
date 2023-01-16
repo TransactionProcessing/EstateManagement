@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects;
     using DataTransferObjects.Requests;
     using Swashbuckle.AspNetCore.Filters;
 
@@ -16,7 +17,8 @@
                                                                                                 Value =  new AddProductToContractRequest{
                                                                                                              DisplayText = ExampleData.ProductDisplayText,
                                                                                                              ProductName = ExampleData.ProductName,
-                                                                                                             Value = ExampleData.ProductNullValue
+                                                                                                             Value = ExampleData.ProductNullValue,
+                                                                                                             ProductType = ProductType.MobileTopup
                                                                                                          }
                                                                                             };
 
@@ -27,8 +29,9 @@
                                                                                                     {
                                                                                                         DisplayText = ExampleData.ProductDisplayText,
                                                                                                         ProductName = ExampleData.ProductName,
-                                                                                                        Value = ExampleData.ProductValue
-                                                                                                    }
+                                                                                                        Value = ExampleData.ProductValue,
+                                                                                                        ProductType = ProductType.MobileTopup
+                                                                                            }
                                                                                         };
 
             return new List<SwaggerExample<AddProductToContractRequest>>
