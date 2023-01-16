@@ -366,6 +366,7 @@ namespace EstateManagement.Tests.Factories
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.Name);
+            contractProduct.ProductType.ShouldBe(Enum.Parse<DataTransferObjects.ProductType>(expectedContractProduct.ProductType.ToString()));
             contractProduct.TransactionFees.ShouldBeNull();
         }
 
@@ -393,6 +394,7 @@ namespace EstateManagement.Tests.Factories
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.Name);
+            contractProduct.ProductType.ShouldBe(Enum.Parse<DataTransferObjects.ProductType>(expectedContractProduct.ProductType.ToString()));
             contractProduct.TransactionFees.ShouldNotBeNull();
             contractProduct.TransactionFees.ShouldHaveSingleItem();
 

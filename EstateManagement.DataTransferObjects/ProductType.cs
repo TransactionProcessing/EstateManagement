@@ -2,6 +2,8 @@
 {
     public enum ProductType
     {
+        NotSet = 0,
+
         MobileTopup,
 
         Voucher,
