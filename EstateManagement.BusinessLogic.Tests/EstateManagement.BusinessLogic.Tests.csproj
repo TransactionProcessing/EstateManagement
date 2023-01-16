@@ -14,7 +14,7 @@
     <PackageReference Include="Lamar" Version="8.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <PackageReference Include="Moq" Version="4.18.1" />
-    <PackageReference Include="Shared.EventStore" Version="2022.12.2" />
+    <PackageReference Include="Shared.EventStore" Version="2023.1.0" />
     <PackageReference Include="Shouldly" Version="4.1.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="17.0.15" />

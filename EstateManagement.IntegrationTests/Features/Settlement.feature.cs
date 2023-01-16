@@ -190,21 +190,24 @@ namespace EstateManagement.IntegrationTests.Features
                         "ContractDescription",
                         "ProductName",
                         "DisplayText",
-                        "Value"});
+                        "Value",
+                        "ProductType"});
             table112.AddRow(new string[] {
                         "Test Estate1",
                         "Safaricom",
                         "Safaricom Contract",
                         "Variable Topup",
                         "Custom",
-                        ""});
+                        "",
+                        "MobileTopup"});
             table112.AddRow(new string[] {
                         "Test Estate2",
                         "Safaricom",
                         "Safaricom Contract",
                         "Variable Topup",
                         "Custom",
-                        ""});
+                        "",
+                        "MobileTopup"});
 #line 39
  testRunner.When("I create the following Products", ((string)(null)), table112, "When ");
 #line hidden

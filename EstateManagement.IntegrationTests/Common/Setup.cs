@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.IntegrationTests.Common
 {
-    using System.Data;
-    using System.Data.SqlClient;
-    using System.IO;
-    using System.Net;
-    using System.Runtime.CompilerServices;
-    using System.Threading;
-    using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
-    using global::Shared.IntegrationTesting;
     using global::Shared.Logger;
-    using Microsoft.Data.SqlClient;
     using NLog;
     using Shouldly;
     using TechTalk.SpecFlow;
@@ -48,14 +37,14 @@ namespace EstateManagement.IntegrationTests.Common
 
         public static String GetConnectionString(String databaseName)
         {
-            return $"server={Setup.DatabaseServerContainer.Name};database={databaseName};user id={Setup.SqlCredentials.usename};password={Setup.SqlCredentials.password}";
+            return $"server={Setup.DatabaseServerContainer.Name};database={databaseName};user id={Setup.SqlCredentials.usename};password={Setup.SqlCredentials.password}&Encrypt=false";
         }
 
         public static String GetLocalConnectionString(String databaseName)
         {
             Int32 databaseHostPort = Setup.DatabaseServerContainer.ToHostExposedEndpoint("1433/tcp").Port;
 
-            return $"server=localhost,{databaseHostPort};database={databaseName};user id={Setup.SqlCredentials.usename};password={Setup.SqlCredentials.password}";
+            return $"server=localhost,{databaseHostPort};database={databaseName};user id={Setup.SqlCredentials.usename};password={Setup.SqlCredentials.password}&Encrypt=false";
         }
     }
 }
