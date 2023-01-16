@@ -57,9 +57,6 @@ public static class Extensions
                                                             }
                                                         };
 
-    static Action<TraceEventType, String> mainLog = (tt, message) => Extensions.log(tt, "MAIN", message);
-    static Action<TraceEventType, String> orderedLog = (tt, message) => Extensions.log(tt, "ORDERED", message);
-
     public static void PreWarm(this IApplicationBuilder applicationBuilder)
     {
         Startup.LoadTypes();
