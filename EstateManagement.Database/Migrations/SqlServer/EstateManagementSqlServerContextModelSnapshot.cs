@@ -17,10 +17,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.5")
+                .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Calendar", b =>
                 {
@@ -106,6 +106,9 @@ namespace EstateManagement.Database.Migrations.SqlServer
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductType")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("Value")
                         .HasColumnType("decimal(18,2)");
@@ -589,7 +592,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResponseCode"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResponseCode"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -884,7 +887,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     b.ToTable("uvwFileImportLogView");
 
-                    b.ToView("uvwFileImportLog");
+                    b.ToView("uvwFileImportLog", (string)null);
                 });
 
             modelBuilder.Entity("EstateManagement.Database.ViewEntities.FileView", b =>
@@ -932,7 +935,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     b.ToTable("uvwFileView");
 
-                    b.ToView("uvwFile");
+                    b.ToView("uvwFile", (string)null);
                 });
 
             modelBuilder.Entity("EstateManagement.Database.ViewEntities.SettlementView", b =>
@@ -993,7 +996,9 @@ namespace EstateManagement.Database.Migrations.SqlServer
                     b.Property<int>("YearNumber")
                         .HasColumnType("int");
 
-                    b.ToView("uvwSettlements");
+                    b.ToTable((string)null);
+
+                    b.ToView("uvwSettlements", (string)null);
                 });
 
             modelBuilder.Entity("EstateManagement.Database.ViewEntities.TransactionsView", b =>
@@ -1053,7 +1058,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     b.ToTable("uvwTransactionsView");
 
-                    b.ToView("uvwTransactions");
+                    b.ToView("uvwTransactions", (string)null);
                 });
 #pragma warning restore 612, 618
         }

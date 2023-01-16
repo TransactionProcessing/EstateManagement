@@ -37,9 +37,9 @@ Background:
 	| Test Estate2 | Safaricom | Safaricom Contract |
 
 	When I create the following Products
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | DisplayText | Value  |
-	| Test Estate1 | Safaricom | Safaricom Contract | Variable Topup | Custom      |        |
-	| Test Estate2 | Safaricom | Safaricom Contract | Variable Topup | Custom      |        |
+	| EstateName   | OperatorName | ContractDescription | ProductName    | DisplayText | Value | ProductType |
+	| Test Estate1 | Safaricom    | Safaricom Contract  | Variable Topup | Custom      |       | MobileTopup |
+	| Test Estate2 | Safaricom    | Safaricom Contract  | Variable Topup | Custom      |       | MobileTopup |
 
 	When I add the following Transaction Fees
 	| EstateName   | OperatorName | ContractDescription | ProductName    | CalculationType | FeeDescription      | Value | FeeType  |
