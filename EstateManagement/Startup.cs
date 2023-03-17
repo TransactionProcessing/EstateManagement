@@ -8,6 +8,7 @@ namespace EstateManagement
     using Contract.DomainEvents;
     using Estate.DomainEvents;
     using EventStore.Client;
+    using FileProcessor.File.DomainEvents;
     using FileProcessor.FileImportLog.DomainEvents;
     using HealthChecks.UI.Client;
     using Lamar;
@@ -132,6 +133,7 @@ namespace EstateManagement
                                                                 DateTime.Now,
                                                                 String.Empty);
             ImportLogCreatedEvent i = new ImportLogCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
+            FileCreatedEvent file = new FileCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), String.Empty, DateTime.Now);
 
             TypeProvider.LoadDomainEventsTypeDynamically();
         }
