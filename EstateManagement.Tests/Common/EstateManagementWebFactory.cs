@@ -1,8 +1,6 @@
 ﻿namespace EstateManagement.Tests.Common
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Net.Http;
     using System.Security.Claims;
     using System.Text;
@@ -19,7 +17,6 @@
     using Microsoft.Extensions.Options;
     using Moq;
     using Newtonsoft.Json;
-    using Shared.DomainDrivenDesign.CommandHandling;
     using Xunit;
 
     public class EstateManagementWebFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class

@@ -32,7 +32,7 @@
 
         #region Methods
 
-        public async Task<Unit> Handle(CreateMerchantRequest request,
+        public async Task Handle(CreateMerchantRequest request,
                                        CancellationToken cancellationToken) {
             await this.MerchantDomainService.CreateMerchant(request.EstateId,
                                                             request.MerchantId,
@@ -53,11 +53,9 @@
                                                             request.SettlementSchedule,
                                                             request.CreateDateTime,
                                                             cancellationToken);
-
-            return new Unit();
         }
 
-        public async Task<Unit> Handle(AssignOperatorToMerchantRequest request,
+        public async Task Handle(AssignOperatorToMerchantRequest request,
                                        CancellationToken cancellationToken) {
             await this.MerchantDomainService.AssignOperatorToMerchant(request.EstateId,
                                                                       request.MerchantId,
@@ -65,8 +63,6 @@
                                                                       request.MerchantNumber,
                                                                       request.TerminalNumber,
                                                                       cancellationToken);
-
-            return new Unit();
         }
 
         public async Task<Guid> Handle(CreateMerchantUserRequest request,
@@ -83,11 +79,9 @@
             return userId;
         }
 
-        public async Task<Unit> Handle(AddMerchantDeviceRequest request,
+        public async Task Handle(AddMerchantDeviceRequest request,
                                        CancellationToken cancellationToken) {
             await this.MerchantDomainService.AddDeviceToMerchant(request.EstateId, request.MerchantId, request.DeviceId, request.DeviceIdentifier, cancellationToken);
-
-            return new Unit();
         }
 
         public async Task<Guid> Handle(MakeMerchantDepositRequest request,
@@ -103,14 +97,12 @@
             return depositId;
         }
 
-        public async Task<Unit> Handle(SetMerchantSettlementScheduleRequest request,
+        public async Task Handle(SetMerchantSettlementScheduleRequest request,
                                        CancellationToken cancellationToken) {
             await this.MerchantDomainService.SetMerchantSettlementSchedule(request.EstateId, request.MerchantId, request.SettlementSchedule, cancellationToken);
-
-            return new Unit();
         }
 
-        public async Task<Unit> Handle(SwapMerchantDeviceRequest request,
+        public async Task Handle(SwapMerchantDeviceRequest request,
                                        CancellationToken cancellationToken) {
             await this.MerchantDomainService.SwapMerchantDevice(request.EstateId,
                                                                 request.MerchantId,
@@ -118,8 +110,6 @@
                                                                 request.OriginalDeviceIdentifier,
                                                                 request.NewDeviceIdentifier,
                                                                 cancellationToken);
-
-            return new Unit();
         }
 
         public async Task<Guid> Handle(MakeMerchantWithdrawalRequest request,

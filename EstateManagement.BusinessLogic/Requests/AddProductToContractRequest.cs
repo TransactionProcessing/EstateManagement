@@ -4,7 +4,7 @@
     using MediatR;
     using Models.Contract;
 
-    public class AddProductToContractRequest : IRequest<Unit>
+    public class AddProductToContractRequest : IRequest
     {
         #region Constructors
 

@@ -1,17 +1,10 @@
 ﻿namespace EstateManagement.BusinessLogic.Tests.CommandHandler
 {
-    using System;
     using System.Threading;
-    using System.Threading.Tasks;
     using BusinessLogic.Services;
-    using Commands;
-    using EstateAggregate;
-    using MediatR;
     using Moq;
     using RequestHandlers;
     using Requests;
-    using Shared.DomainDrivenDesign.CommandHandling;
-    using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
     using Xunit;

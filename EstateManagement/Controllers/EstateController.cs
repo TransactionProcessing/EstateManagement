@@ -15,7 +15,6 @@
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
     using Models;
-    using Shared.DomainDrivenDesign.CommandHandling;
     using Shared.Exceptions;
     using EstateManagement.BusinessLogic.Requests;
     using Microsoft.AspNetCore.Authorization;
