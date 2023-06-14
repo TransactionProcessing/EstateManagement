@@ -19,3 +19,5 @@
 ## Code Quality Results
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5bcb33c3c68e473193a872f0d3375f61)](https://www.codacy.com/manual/stuart_ferguson1/EstateManagement?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TransactionProcessing/EstateManagement&amp;utm_campaign=Badge_Grade)
+
+![Alt](https://repobeats.axiom.co/api/embed/4352b6d3c2cea574309c7f83b3045b7b934ec809.svg "Repobeats analytics image")
