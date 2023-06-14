@@ -10,12 +10,7 @@
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using EstateManagement.Testing;
-    using Microsoft.AspNetCore.Mvc.Testing;
-    //using Lamar;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
     using Newtonsoft.Json;
-    using Shared.DomainDrivenDesign.CommandHandling;
     using Shouldly;
     using Xunit;
 

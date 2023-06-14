@@ -25,8 +25,6 @@
             this.AddTransient<IMediator, Mediator>();
 
             // request & notification handlers
-            this.AddTransient<ServiceFactory>(context => { return t => context.GetService(t); });
-
             this.AddSingleton<IRequestHandler<CreateEstateRequest>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<AddOperatorToEstateRequest>, EstateRequestHandler>();

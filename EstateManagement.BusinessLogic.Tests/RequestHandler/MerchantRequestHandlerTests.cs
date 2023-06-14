@@ -5,7 +5,6 @@
     using Moq;
     using RequestHandlers;
     using Requests;
-    using Shared.DomainDrivenDesign.CommandHandling;
     using Shouldly;
     using Testing;
     using Xunit;

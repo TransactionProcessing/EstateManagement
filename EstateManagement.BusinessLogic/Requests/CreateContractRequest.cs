@@ -7,7 +7,7 @@
     /// 
     /// </summary>
     /// <seealso cref="MediatR.IRequest{System.String}" />
-    public class CreateContractRequest : IRequest<Unit>
+    public class CreateContractRequest : IRequest
     {
         #region Constructors
 

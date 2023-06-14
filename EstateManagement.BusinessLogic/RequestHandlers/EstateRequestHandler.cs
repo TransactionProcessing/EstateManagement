@@ -47,12 +47,10 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<Unit> Handle(CreateEstateRequest request,
+        public async Task Handle(CreateEstateRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.EstateDomainService.CreateEstate(request.EstateId, request.Name, cancellationToken);
-
-            return new Unit();
         }
 
         /// <summary>
@@ -81,7 +79,7 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<Unit> Handle(AddOperatorToEstateRequest request,
+        public async Task Handle(AddOperatorToEstateRequest request,
                                          CancellationToken cancellationToken)
         {
             await this.EstateDomainService.AddOperatorToEstate(request.EstateId,
@@ -90,8 +88,6 @@
                                                                request.RequireCustomMerchantNumber,
                                                                request.RequireCustomTerminalNumber,
                                                                cancellationToken);
-
-            return new Unit();
         }
 
         #endregion

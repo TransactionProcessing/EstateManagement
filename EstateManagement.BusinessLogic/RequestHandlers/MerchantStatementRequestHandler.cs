@@ -48,7 +48,7 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<Unit> Handle(AddTransactionToMerchantStatementRequest request,
+        public async Task Handle(AddTransactionToMerchantStatementRequest request,
                                        CancellationToken cancellationToken)
         {
             await this.MerchantStatementDomainService.AddTransactionToStatement(request.EstateId,
@@ -58,8 +58,6 @@
                                                                                 request.IsAuthorised,
                                                                                 request.TransactionId,
                                                                                 cancellationToken);
-
-            return new Unit();
         }
 
         /// <summary>
@@ -68,7 +66,7 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<Unit> Handle(AddSettledFeeToMerchantStatementRequest request,
+        public async Task Handle(AddSettledFeeToMerchantStatementRequest request,
                                        CancellationToken cancellationToken)
         {
             await this.MerchantStatementDomainService.AddSettledFeeToStatement(request.EstateId,
@@ -78,8 +76,6 @@
                                                                                request.TransactionId,
                                                                                request.SettledFeeId,
                                                                                cancellationToken);
-
-            return new Unit();
         }
 
         #endregion
@@ -90,12 +86,10 @@
             return await this.MerchantStatementDomainService.GenerateStatement(request.EstateId, request.MerchantId, request.StatementDate, cancellationToken);
         }
 
-        public async Task<Unit> Handle(EmailMerchantStatementRequest request,
+        public async Task Handle(EmailMerchantStatementRequest request,
                                        CancellationToken cancellationToken)
         {
             await this.MerchantStatementDomainService.EmailStatement(request.EstateId, request.MerchantId, request.MerchantStatementId, cancellationToken);
-
-            return new Unit();
         }
     }
 }

@@ -13,7 +13,6 @@ namespace EstateManagement.Controllers
     using DataTransferObjects.Responses;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
-    using Shared.DomainDrivenDesign.CommandHandling;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
 
