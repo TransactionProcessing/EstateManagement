@@ -308,11 +308,8 @@
         {
             return new MerchantStatementAggregate(aggregateId);
         }
-        
-        public override void PlayEvent(IDomainEvent domainEvent)
-        {
-            this.PlayEvent((dynamic)domainEvent);
-        }
+
+        public override void PlayEvent(IDomainEvent domainEvent) => MerchantStatementAggregateExtenions.PlayEvent(this, (dynamic)domainEvent);
         
         [ExcludeFromCodeCoverage]
         protected override Object GetMetadata()
