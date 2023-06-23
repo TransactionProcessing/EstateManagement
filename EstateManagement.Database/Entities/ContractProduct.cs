@@ -11,8 +11,6 @@
         public Guid ContractId { get; set; }
 
         public String DisplayText { get; set; }
-
-        public Guid EstateId { get; set; }
         
         public Guid ProductId { get; set; }
         

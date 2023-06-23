@@ -34,16 +34,20 @@ public static class Extensions
     public static ModelBuilder SetupEstateTables(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Estate>().HasKey(t => new {
+                                                          t.EstateReportingId
+                                                      }).IsClustered(true);
+
+        modelBuilder.Entity<Estate>().HasIndex(t => new {
                                                           t.EstateId
-                                                      });
+                                                      }).IsClustered(false).IsUnique(true);
 
         modelBuilder.Entity<EstateSecurityUser>().HasKey(t => new {
                                                                       t.SecurityUserId,
-                                                                      t.EstateId
+                                                                      t.EstateReportingId
                                                                   });
 
         modelBuilder.Entity<EstateOperator>().HasKey(t => new {
-                                                                  t.EstateId,
+                                                                  t.EstateReportingId,
                                                                   t.OperatorId
                                                               });
 
@@ -54,24 +58,22 @@ public static class Extensions
     public static ModelBuilder SetupFileTables(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FileImportLog>().HasKey(f => new {
-                                                                 f.EstateId,
+                                                                 f.EstateReportingId,
                                                                  f.FileImportLogId
                                                              });
 
         modelBuilder.Entity<FileImportLogFile>().HasKey(f => new {
-                                                                     f.EstateId,
                                                                      f.FileImportLogId,
                                                                      f.FileId
                                                                  });
 
         modelBuilder.Entity<File>().HasKey(f => new {
-                                                        f.EstateId,
+                                                        f.EstateReportingId,
                                                         f.FileImportLogId,
                                                         f.FileId
                                                     });
 
         modelBuilder.Entity<FileLine>().HasKey(f => new {
-                                                            f.EstateId,
                                                             f.FileId,
                                                             f.LineNumber
                                                         });
@@ -82,37 +84,32 @@ public static class Extensions
     public static ModelBuilder SetupMerchantTables(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Merchant>().HasKey(t => new {
-                                                            t.EstateId,
+                                                            t.EstateReportingId,
                                                             t.MerchantId
                                                         });
 
         modelBuilder.Entity<MerchantAddress>().HasKey(t => new {
-                                                                   t.EstateId,
                                                                    t.MerchantId,
                                                                    t.AddressId
                                                                });
 
         modelBuilder.Entity<MerchantContact>().HasKey(t => new {
-                                                                   t.EstateId,
                                                                    t.MerchantId,
                                                                    t.ContactId
                                                                });
 
         modelBuilder.Entity<MerchantDevice>().HasKey(t => new {
-                                                                  t.EstateId,
                                                                   t.MerchantId,
                                                                   t.DeviceId
                                                               });
 
         modelBuilder.Entity<MerchantSecurityUser>().HasKey(t => new {
-                                                                        t.EstateId,
                                                                         t.MerchantId,
                                                                         t.SecurityUserId
                                                                     });
 
 
         modelBuilder.Entity<MerchantOperator>().HasKey(t => new {
-                                                                    t.EstateId,
                                                                     t.MerchantId,
                                                                     t.OperatorId
                                                                 });
@@ -123,7 +120,6 @@ public static class Extensions
     public static ModelBuilder SetupTransactionTables(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Transaction>().HasKey(t => new {
-                                                               t.EstateId,
                                                                t.MerchantId,
                                                                t.TransactionId
                                                            });
@@ -134,13 +130,11 @@ public static class Extensions
                                                               });
 
         modelBuilder.Entity<TransactionAdditionalRequestData>().HasKey(t => new {
-                                                                                    t.EstateId,
                                                                                     t.MerchantId,
                                                                                     t.TransactionId
                                                                                 });
 
         modelBuilder.Entity<TransactionAdditionalRequestData>().HasKey(t => new {
-                                                                                    t.EstateId,
                                                                                     t.MerchantId,
                                                                                     t.TransactionId
                                                                                 });
@@ -153,20 +147,18 @@ public static class Extensions
     public static ModelBuilder SetupContractTables(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Contract>().HasKey(c => new {
-                                                            c.EstateId,
+                                                            c.EstateReportingId,
                                                             c.OperatorId,
                                                             c.ContractId
                                                         });
 
         modelBuilder.Entity<ContractProduct>().HasKey(c => new {
-                                                                   c.EstateId,
                                                                    c.ContractId,
                                                                    c.ProductId
                                                                });
 
         modelBuilder.Entity<ContractProductTransactionFee>().HasKey(c => new {
-                                                                                 c.EstateId,
-                                                                                 c.ContractId,
+                                                                   c.ContractId,
                                                                                  c.ProductId,
                                                                                  c.TransactionFeeId
                                                                              });
@@ -179,12 +171,11 @@ public static class Extensions
     public static ModelBuilder SetupSettlementTables(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Settlement>().HasKey(s => new {
-                                                              s.EstateId,
+                                                              s.EstateReportingId,
                                                               s.SettlementId
                                                           });
 
         modelBuilder.Entity<MerchantSettlementFee>().HasKey(s => new {
-                                                                         s.EstateId,
                                                                          s.SettlementId,
                                                                          s.TransactionId,
                                                                          s.FeeId

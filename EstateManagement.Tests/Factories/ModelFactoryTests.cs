@@ -112,7 +112,6 @@ namespace EstateManagement.Tests.Factories
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
             merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
-            merchantResponse.EstateId.ShouldBe(merchantModel.EstateId);
             merchantResponse.Addresses.ShouldHaveSingleItem();
             
             AddressResponse addressResponse = merchantResponse.Addresses.Single();
@@ -158,7 +157,6 @@ namespace EstateManagement.Tests.Factories
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
             merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
-            merchantResponse.EstateId.ShouldBe(merchantModel.EstateId);
 
             merchantResponse.Addresses.ShouldBeNull();
             
@@ -194,7 +192,6 @@ namespace EstateManagement.Tests.Factories
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
             merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
-            merchantResponse.EstateId.ShouldBe(merchantModel.EstateId);
             merchantResponse.Addresses.ShouldHaveSingleItem();
 
             AddressResponse addressResponse = merchantResponse.Addresses.Single();
@@ -235,7 +232,6 @@ namespace EstateManagement.Tests.Factories
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
             merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
-            merchantResponse.EstateId.ShouldBe(merchantModel.EstateId);
             merchantResponse.Addresses.ShouldHaveSingleItem();
 
             AddressResponse addressResponse = merchantResponse.Addresses.Single();
@@ -278,7 +274,6 @@ namespace EstateManagement.Tests.Factories
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
             merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
-            merchantResponse.EstateId.ShouldBe(merchantModel.EstateId);
             merchantResponse.Addresses.ShouldHaveSingleItem();
 
             AddressResponse addressResponse = merchantResponse.Addresses.Single();
@@ -334,7 +329,6 @@ namespace EstateManagement.Tests.Factories
             ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldNotBeNull();
-            contractResponse.EstateId.ShouldBe(contractModel.EstateId);
             contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
             contractResponse.OperatorName.ShouldBe(contractModel.OperatorName);
             contractResponse.ContractId.ShouldBe(contractModel.ContractId);
@@ -352,7 +346,6 @@ namespace EstateManagement.Tests.Factories
             ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldNotBeNull();
-            contractResponse.EstateId.ShouldBe(contractModel.EstateId);
             contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
             contractResponse.ContractId.ShouldBe(contractModel.ContractId);
             contractResponse.Description.ShouldBe(contractModel.Description);
@@ -380,7 +373,6 @@ namespace EstateManagement.Tests.Factories
             ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldNotBeNull();
-            contractResponse.EstateId.ShouldBe(contractModel.EstateId);
             contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
             contractResponse.ContractId.ShouldBe(contractModel.ContractId);
             contractResponse.Description.ShouldBe(contractModel.Description);
@@ -448,7 +440,6 @@ namespace EstateManagement.Tests.Factories
 
             contractResponses.ShouldNotBeNull();
             contractResponses.ShouldHaveSingleItem();
-            contractResponses.Single().EstateId.ShouldBe(contractModel.Single().EstateId);
             contractResponses.Single().OperatorId.ShouldBe(contractModel.Single().OperatorId);
             contractResponses.Single().ContractId.ShouldBe(contractModel.Single().ContractId);
             contractResponses.Single().Description.ShouldBe(contractModel.Single().Description);

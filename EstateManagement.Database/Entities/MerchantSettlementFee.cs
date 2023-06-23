@@ -10,8 +10,6 @@
 
         public Decimal CalculatedValue { get; set; }
 
-        public Guid EstateId { get; set; }
-
         public DateTime FeeCalculatedDateTime { get; set; }
 
         public Guid FeeId { get; set; }

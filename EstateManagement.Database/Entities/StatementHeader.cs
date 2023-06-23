@@ -8,8 +8,6 @@
     {
         public Guid StatementId { get; set; }
 
-        public Guid EstateId { get; set; }
-
         public Guid MerchantId { get; set; }
 
         public DateTime StatementCreatedDate { get; set; }

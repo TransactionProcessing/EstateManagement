@@ -95,7 +95,7 @@
                                          List<MerchantSecurityUserEntity> merchantSecurityUsers)
         {
             MerchantModel merchantModel = new MerchantModel();
-            merchantModel.EstateId = merchant.EstateId;
+            merchantModel.EstateReportingId = merchant.EstateReportingId;
             merchantModel.MerchantId = merchant.MerchantId;
             merchantModel.MerchantName = merchant.Name;
 
@@ -171,7 +171,7 @@
                                          List<ContractProductTransactionFeeEntity> productTransactionFees)
         {
             ContractModel contractModel = new ContractModel();
-            contractModel.EstateId = contract.EstateId;
+            contractModel.EstateReportingId = contract.EstateReportingId;
             contractModel.OperatorId = contract.OperatorId;
             contractModel.Description = contract.Description;
             contractModel.IsCreated = true; // Should this be stored at RM or is the fact its in RM mean true???

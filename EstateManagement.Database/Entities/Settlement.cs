@@ -8,7 +8,7 @@
     {
         #region Properties
 
-        public Guid EstateId { get; set; }
+        public Int32 EstateReportingId { get; set; }
 
         public Boolean IsCompleted { get; set; }
 

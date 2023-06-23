@@ -215,7 +215,6 @@ namespace EstateManagement.ContractAggregate.Tests
 
             Contract contract = aggregate.GetContract();
 
-            contract.EstateId.ShouldBe(TestData.EstateId);
             contract.ContractId.ShouldBe(TestData.ContractId);
             contract.Description.ShouldBe(TestData.ContractDescription);
             contract.IsCreated.ShouldBeTrue();

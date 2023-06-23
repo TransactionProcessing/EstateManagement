@@ -75,7 +75,7 @@
         {
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, ConnectionStringIdentifier, cancellationToken);
 
-            Contract contract = await context.Contracts.SingleOrDefaultAsync(c => c.EstateId == estateId && c.ContractId == contractId, cancellationToken);
+            Contract contract = await context.Contracts.SingleOrDefaultAsync(c => c.ContractId == contractId, cancellationToken);
 
             if (contract == null)
             {
@@ -87,12 +87,12 @@
 
             if (includeProducts || includeProductsWithFees)
             {
-                contractProducts = await context.ContractProducts.Where(cp => cp.EstateId == estateId && cp.ContractId == contractId).ToListAsync(cancellationToken);
+                contractProducts = await context.ContractProducts.Where(cp => cp.ContractId == contractId).ToListAsync(cancellationToken);
             }
 
             if (includeProductsWithFees)
             {
-                contractProductFees = await context.ContractProductTransactionFees.Where(f => f.EstateId == estateId && f.ContractId == contractId)
+                contractProductFees = await context.ContractProductTransactionFees.Where(f => f.ContractId == contractId)
                                                    .ToListAsync(cancellationToken);
             }
 
@@ -107,7 +107,7 @@
         {
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
-            Merchant merchant = await (from m in context.Merchants where m.EstateId == estateId && m.Reference == reference select m).SingleOrDefaultAsync(cancellationToken);
+            Merchant merchant = await (from m in context.Merchants where m.Reference == reference select m).SingleOrDefaultAsync(cancellationToken);
 
             return this.ModelFactory.ConvertFrom(merchant, null, null, null, null, null);
         }
@@ -120,7 +120,6 @@
                            join cp in context.ContractProducts on c.ContractId equals cp.ContractId into cps
                            from contractprouduct in cps.DefaultIfEmpty() 
                            join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
-                           where c.EstateId == estateId
                            select new
                            {
                                Contract = c,
@@ -140,7 +139,6 @@
                     // create the contract
                     contract = new ContractModel
                     {
-                        EstateId = contractData.Contract.EstateId,
                         OperatorId = contractData.Contract.OperatorId,
                         OperatorName = contractData.Operator.Name,
                         Products = new List<Product>(),
@@ -194,8 +192,8 @@
                 throw new NotFoundException($"No estate found in read model with Id [{estateId}]");
             }
 
-            List<EstateOperator> estateOperators = await context.EstateOperators.Where(eo => eo.EstateId == estateId).ToListAsync(cancellationToken);
-            List<EstateSecurityUser> estateSecurityUsers = await context.EstateSecurityUsers.Where(esu => esu.EstateId == estateId).ToListAsync(cancellationToken);
+            List<EstateOperator> estateOperators = await context.EstateOperators.Where(eo => eo.EstateReportingId == estate.EstateReportingId).ToListAsync(cancellationToken);
+            List<EstateSecurityUser> estateSecurityUsers = await context.EstateSecurityUsers.Where(esu => esu.EstateReportingId == estate.EstateReportingId).ToListAsync(cancellationToken);
 
             return this.ModelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
         }
@@ -216,8 +214,9 @@
             var x = await (from c in context.Contracts
                     join cp in context.ContractProducts on c.ContractId equals cp.ContractId
                     join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
-                    join m in context.Merchants on c.EstateId equals m.EstateId
-                    where m.MerchantId == merchantId && m.EstateId == estateId
+                    join m in context.Merchants on c.EstateReportingId equals m.EstateReportingId
+                    join e in context.Estates on c.EstateReportingId equals e.EstateReportingId
+                           where m.MerchantId == merchantId && e.EstateId == estateId
                     select new
                            {
                                Contract = c,
@@ -237,7 +236,6 @@
                     // create the contract
                     contract = new ContractModel
                                {
-                                   EstateId = test.Contract.EstateId,
                                    OperatorId = test.Contract.OperatorId,
                                    OperatorName = test.Operator.Name,
                                    Products = new List<Product>(),
@@ -276,38 +274,41 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public async Task<List<MerchantModel>> GetMerchants(Guid estateId,
-                                                            CancellationToken cancellationToken)
-        {
-            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
+                                                            CancellationToken cancellationToken){
 
-            List<Merchant> merchants = await (from m in context.Merchants where m.EstateId == estateId select m).ToListAsync(cancellationToken);
+            // TODO: Rework this flow
+            return null;
+            //EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
-            List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.EstateId == estateId select a).ToListAsync(cancellationToken);
-            List<MerchantContact> merchantContacts = await (from c in context.MerchantContacts where c.EstateId == estateId select c).ToListAsync(cancellationToken);
-            List<MerchantDevice> merchantDevices = await (from d in context.MerchantDevices where d.EstateId == estateId select d).ToListAsync(cancellationToken);
-            List<MerchantSecurityUser> merchantSecurityUsers =
-                await (from u in context.MerchantSecurityUsers where u.EstateId == estateId select u).ToListAsync(cancellationToken);
-            List<MerchantOperator> merchantOperators = await (from o in context.MerchantOperators where o.EstateId == estateId select o).ToListAsync(cancellationToken);
+            //var estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId);
+            //List<Merchant> merchants = await (from m in context.Merchants where m.EstateReportingId == estate.EstateReportingId select m).ToListAsync(cancellationToken);
 
-            if (merchants.Any() == false)
-            {
-                return null;
-            }
+            //List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.EstateId == estateId select a).ToListAsync(cancellationToken);
+            //List<MerchantContact> merchantContacts = await (from c in context.MerchantContacts where c.EstateId == estateId select c).ToListAsync(cancellationToken);
+            //List<MerchantDevice> merchantDevices = await (from d in context.MerchantDevices where d.EstateId == estateId select d).ToListAsync(cancellationToken);
+            //List<MerchantSecurityUser> merchantSecurityUsers =
+            //    await (from u in context.MerchantSecurityUsers where u.EstateId == estateId select u).ToListAsync(cancellationToken);
+            //List<MerchantOperator> merchantOperators = await (from o in context.MerchantOperators where o.EstateId == estateId select o).ToListAsync(cancellationToken);
 
-            List<MerchantModel> models = new List<MerchantModel>();
+            //if (merchants.Any() == false)
+            //{
+            //    return null;
+            //}
 
-            foreach (Merchant merchant in merchants)
-            {
-                List<MerchantAddress> addresses = merchantAddresses.Where(a => a.MerchantId == merchant.MerchantId).ToList();
-                List<MerchantContact> contacts = merchantContacts.Where(c => c.MerchantId == merchant.MerchantId).ToList();
-                List<MerchantDevice> devices = merchantDevices.Where(d => d.MerchantId == merchant.MerchantId).ToList();
-                List<MerchantSecurityUser> securityUsers = merchantSecurityUsers.Where(s => s.MerchantId == merchant.MerchantId).ToList();
-                List<MerchantOperator> operators = merchantOperators.Where(o => o.MerchantId == merchant.MerchantId).ToList();
+            //List<MerchantModel> models = new List<MerchantModel>();
 
-                models.Add(this.ModelFactory.ConvertFrom(merchant, addresses, contacts, operators, devices, securityUsers));
-            }
+            //foreach (Merchant merchant in merchants)
+            //{
+            //    List<MerchantAddress> addresses = merchantAddresses.Where(a => a.MerchantId == merchant.MerchantId).ToList();
+            //    List<MerchantContact> contacts = merchantContacts.Where(c => c.MerchantId == merchant.MerchantId).ToList();
+            //    List<MerchantDevice> devices = merchantDevices.Where(d => d.MerchantId == merchant.MerchantId).ToList();
+            //    List<MerchantSecurityUser> securityUsers = merchantSecurityUsers.Where(s => s.MerchantId == merchant.MerchantId).ToList();
+            //    List<MerchantOperator> operators = merchantOperators.Where(o => o.MerchantId == merchant.MerchantId).ToList();
 
-            return models;
+            //    models.Add(this.ModelFactory.ConvertFrom(merchant, addresses, contacts, operators, devices, securityUsers));
+            //}
+
+            //return models;
         }
         
         /// <summary>
@@ -329,7 +330,7 @@
 
             List<ContractProductTransactionFee> transactionFees = await context
                                                                         .ContractProductTransactionFees
-                                                                        .Where(c => c.EstateId == estateId && c.ContractId == contractId && c.ProductId == productId
+                                                                        .Where(c => c.ContractId == contractId && c.ProductId == productId
                                                                                && c.IsEnabled == true)
                                                                         .ToListAsync(cancellationToken);
 

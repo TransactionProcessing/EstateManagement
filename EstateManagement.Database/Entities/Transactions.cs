@@ -18,8 +18,6 @@
         
         public String? DeviceIdentifier { get; set; }
         
-        public Guid EstateId { get; set; }
-        
         public Boolean IsAuthorised { get; set; }
         
         public Boolean IsCompleted { get; set; }

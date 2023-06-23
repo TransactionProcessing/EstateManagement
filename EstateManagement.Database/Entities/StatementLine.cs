@@ -7,8 +7,6 @@ public class StatementLine
 {
     public Guid StatementId { get; set; }
 
-    public Guid EstateId { get; set; }
-
     public Guid MerchantId { get; set; }
 
     public DateTime ActivityDateTime { get; set; }

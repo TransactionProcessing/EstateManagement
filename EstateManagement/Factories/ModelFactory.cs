@@ -45,7 +45,6 @@
             ContractResponse contractResponse = new ContractResponse
                                                 {
                                                     ContractId = contract.ContractId,
-                                                    EstateId = contract.EstateId,
                                                     OperatorId = contract.OperatorId,
                                                     OperatorName = contract.OperatorName,
                                                     Description = contract.Description
@@ -148,7 +147,6 @@
 
             MerchantResponse merchantResponse = new MerchantResponse
                                                 {
-                                                    EstateId = merchant.EstateId,
                                                     MerchantId = merchant.MerchantId,
                                                     MerchantName = merchant.MerchantName,
                                                     SettlementSchedule = this.ConvertFrom(merchant.SettlementSchedule),

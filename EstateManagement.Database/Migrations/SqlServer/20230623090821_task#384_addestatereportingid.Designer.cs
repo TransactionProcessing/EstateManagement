@@ -4,6 +4,7 @@ using EstateManagement.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstateManagement.Database.Migrations.SqlServer
 {
     [DbContext(typeof(EstateManagementSqlServerContext))]
-    partial class EstateManagementSqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20230623090821_task#384_addestatereportingid")]
+    partial class task384_addestatereportingid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

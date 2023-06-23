@@ -323,7 +323,7 @@ public abstract class EstateManagementGenericContext : DbContext
         {
             await this.Database.MigrateAsync(cancellationToken);
             await this.SetIgnoreDuplicates(cancellationToken);
-            await this.CreateViews(cancellationToken);
+            //await this.CreateViews(cancellationToken);
             await this.SeedStandingData(cancellationToken);
         }
     }
