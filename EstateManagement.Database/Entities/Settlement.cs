@@ -16,6 +16,9 @@
 
         public Guid SettlementId { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 SettlementReportingId { get; set; }
+
         #endregion
     }
 }

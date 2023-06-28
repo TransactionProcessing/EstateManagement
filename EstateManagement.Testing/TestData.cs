@@ -596,7 +596,6 @@
                                                                                                  {
                                                                                                      ContactId = TestData.MerchantContactId,
                                                                                                      Name = TestData.MerchantContactName,
-                                                                                                     MerchantId = TestData.MerchantId,
                                                                                                      EmailAddress = TestData.MerchantContactEmailAddress,
                                                                                                      PhoneNumber = TestData.MerchantContactPhoneNumber,
                                                                                                      CreatedDateTime = TestData.DateMerchantCreated
@@ -605,7 +604,6 @@
         public static EstateManagement.Database.Entities.MerchantAddress MerchantAddressEntity = new MerchantAddress
                                                                                                  {
                                                                                                      AddressLine1 = TestData.MerchantAddressLine1,
-                                                                                                     MerchantId = TestData.MerchantId,
                                                                                                      CreatedDateTime = TestData.DateMerchantCreated,
                                                                                                      AddressLine2 = TestData.MerchantAddressLine2,
                                                                                                      AddressLine3 = TestData.MerchantAddressLine3,
@@ -619,7 +617,6 @@
 
         public static EstateManagement.Database.Entities.MerchantOperator MerchantOperatorEntity = new MerchantOperator
                                                                                                    {
-                                                                                                       MerchantId = TestData.MerchantId,
                                                                                                        Name = TestData.OperatorName,
                                                                                                        OperatorId = TestData.OperatorId,
                                                                                                        TerminalNumber = TestData.OperatorTerminalNumber,
@@ -628,7 +625,6 @@
 
         public static EstateManagement.Database.Entities.MerchantDevice MerchantDeviceEntity = new MerchantDevice
                                                                                                {
-                                                                                                   MerchantId = TestData.MerchantId,
                                                                                                    DeviceId = TestData.DeviceId,
                                                                                                    DeviceIdentifier = TestData.DeviceIdentifier,
                                                                                                    CreatedDateTime = TestData.DateMerchantCreated
@@ -636,7 +632,6 @@
 
         public static EstateManagement.Database.Entities.MerchantSecurityUser MerchantSecurityUserEntity = new MerchantSecurityUser
                                                                                                            {
-                                                                                                               MerchantId = TestData.MerchantId,
                                                                                                                SecurityUserId = TestData.SecurityUserId,
                                                                                                                EmailAddress = TestData.MerchantUserEmailAddress,
                                                                                                                CreatedDateTime = TestData.DateMerchantCreated
@@ -832,7 +827,6 @@
 
         public static EstateManagement.Database.Entities.ContractProduct ContractProductEntity = new EstateManagement.Database.Entities.ContractProduct
                                                                                                  {
-                                                                                                     ContractId = TestData.ContractId,
                                                                                                      Value = TestData.ProductFixedValue,
                                                                                                      ProductId = TestData.ProductId,
                                                                                                      ProductName = TestData.ProductName,
@@ -841,7 +835,6 @@
 
         public static EstateManagement.Database.Entities.ContractProduct ContractProductEntity2 = new EstateManagement.Database.Entities.ContractProduct
                                                                                                   {
-                                                                                                      ContractId = TestData.ContractId2,
                                                                                                       Value = TestData.ProductFixedValue,
                                                                                                       ProductId = TestData.ProductId2,
                                                                                                       ProductName = TestData.ProductName,
@@ -850,7 +843,6 @@
 
         public static EstateManagement.Database.Entities.ContractProduct ContractProductEntity3 = new EstateManagement.Database.Entities.ContractProduct
                                                                                                   {
-                                                                                                      ContractId = TestData.ContractId2,
                                                                                                       Value = TestData.ProductFixedValue,
                                                                                                       ProductId = TestData.ProductId3,
                                                                                                       ProductName = TestData.ProductName,
@@ -859,9 +851,7 @@
 
         public static EstateManagement.Database.Entities.ContractProductTransactionFee ContractProductTransactionFeeEntity = new EstateManagement.Database.Entities.ContractProductTransactionFee
         {
-                                                                                                    ContractId = TestData.ContractId,
                                                                                                     Value = TestData.ProductFixedValue,
-                                                                                                    ProductId = TestData.ProductId,
                                                                                                     TransactionFeeId = TestData.TransactionFeeId,
                                                                                                     Description = TestData.TransactionFeeDescription,
                                                                                                     CalculationType = 0

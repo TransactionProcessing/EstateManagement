@@ -13,7 +13,10 @@
 
         public Guid FileId { get; set; }
 
-        public Guid FileImportLogId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 FileReportingId{ get; set; }
+
+        public Int32 FileImportLogReportingId { get; set; }
 
         public string FileLocation { get; set; }
 
@@ -21,7 +24,7 @@
 
         public DateTime FileReceivedDateTime { get; set; }
 
-        public Guid MerchantId { get; set; }
+        public Int32 MerchantReportingId { get; set; }
 
         public Guid UserId { get; set; }
 

@@ -14,7 +14,7 @@
         
         public String? AuthorisationCode { get; set; }
         
-        public Guid ContractId { get; set; }
+        public Int32 ContractReportingId { get; set; }
         
         public String? DeviceIdentifier { get; set; }
         
@@ -22,11 +22,11 @@
         
         public Boolean IsCompleted { get; set; }
         
-        public Guid MerchantId { get; set; }
+        public Int32 MerchantReportingId { get; set; }
 
         public String? OperatorIdentifier { get; set; }
         
-        public Guid ProductId { get; set; }
+        public Int32 ContractProductReportingId { get; set; }
         
         public String? ResponseCode { get; set; }
         
@@ -36,9 +36,11 @@
         
         public DateTime TransactionDateTime { get; set; }
         
-        [Key]
         public Guid TransactionId { get; set; }
-        
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 TransactionReportingId { get; set; }
+
         public String? TransactionNumber { get; set; }
         
         public String? TransactionReference { get; set; }

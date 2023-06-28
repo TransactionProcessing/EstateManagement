@@ -25,7 +25,6 @@ public class MerchantSettlementDomainEventHandler : IDomainEventHandler
     private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                  CancellationToken cancellationToken)
     {
-        //throw new Exception();
         AddSettledFeeToMerchantStatementRequest addSettledFeeToMerchantStatementRequest = AddSettledFeeToMerchantStatementRequest.Create(domainEvent.EstateId,
             domainEvent.MerchantId,
             domainEvent.FeeCalculatedDateTime,

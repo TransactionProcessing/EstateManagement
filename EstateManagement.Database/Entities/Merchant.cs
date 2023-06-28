@@ -17,6 +17,9 @@
 
         public Guid MerchantId { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 MerchantReportingId { get; set; }
+
         public String Name { get; set; }
 
         public Int32 SettlementSchedule { get; set; }

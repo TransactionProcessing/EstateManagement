@@ -601,9 +601,11 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
+            Contract contract = await LoadContract(context, domainEvent);
+
             ContractProduct contractProduct = new ContractProduct
             {
-                ContractId = domainEvent.ContractId,
+                ContractReportingId = contract.ContractReportingId,
                 ProductId = domainEvent.ProductId,
                 DisplayText = domainEvent.DisplayText,
                 ProductName = domainEvent.ProductName,
@@ -626,9 +628,11 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
+            Contract contract = await LoadContract(context, domainEvent);
+
             ContractProduct contractProduct = new ContractProduct
             {
-                ContractId = domainEvent.ContractId,
+                ContractReportingId = contract.ContractReportingId,
                 ProductId = domainEvent.ProductId,
                 DisplayText = domainEvent.DisplayText,
                 ProductName = domainEvent.ProductName,
@@ -651,10 +655,12 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
+            Contract contract = await LoadContract(context, domainEvent);
+            ContractProduct contractProduct = await LoadContractProduct(context, domainEvent);
+
             ContractProductTransactionFee contractProductTransactionFee = new ContractProductTransactionFee
             {
-                ContractId = domainEvent.ContractId,
-                ProductId = domainEvent.ProductId,
+                ContractProductReportingId = contractProduct.ContractProductReportingId,
                 Description = domainEvent.Description,
                 Value = domainEvent.Value,
                 TransactionFeeId = domainEvent.TransactionFeeId,
@@ -754,6 +760,60 @@ namespace EstateManagement.Repository
             return await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId);
         }
 
+        private async Task<Merchant> LoadMerchant(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid merchantId = DomainEventHelper.GetMerchantId(domainEvent);
+            return await context.Merchants.SingleOrDefaultAsync(e => e.MerchantId == merchantId);
+        }
+
+        private async Task<Contract> LoadContract(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid contractId = DomainEventHelper.GetContractId(domainEvent);
+            return await context.Contracts.SingleOrDefaultAsync(e => e.ContractId== contractId);
+        }
+
+        private async Task<ContractProduct> LoadContractProduct(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid contractProductId = DomainEventHelper.GetContractProductId(domainEvent);
+            return await context.ContractProducts.SingleOrDefaultAsync(e => e.ProductId == contractProductId);
+        }
+
+        private async Task<FileImportLog> LoadFileImportLog(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid fileImportLogId = DomainEventHelper.GetFileImportLogId(domainEvent);
+            return await context.FileImportLogs.SingleOrDefaultAsync(e => e.FileImportLogId == fileImportLogId);
+        }
+
+        private async Task<File> LoadFile(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid fileId = DomainEventHelper.GetFileId(domainEvent);
+            return await context.Files.SingleOrDefaultAsync(e => e.FileId == fileId);
+        }
+
+        private async Task<ContractProductTransactionFee> LoadContractProductTransactionFee(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid contractProductTransactionFeeId = DomainEventHelper.GetContractProductTransactionFeeId(domainEvent);
+            return await context.ContractProductTransactionFees.SingleOrDefaultAsync(e => e.TransactionFeeId == contractProductTransactionFeeId);
+        }
+
+        private async Task<Transaction> LoadTransaction(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid transactionId = DomainEventHelper.GetTransactionId(domainEvent);
+            return await context.Transactions.SingleOrDefaultAsync(e => e.TransactionId == transactionId);
+        }
+
+        private async Task<Settlement> LoadSettlement(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid settlementId = DomainEventHelper.GetSettlementId(domainEvent);
+            return await context.Settlements.SingleOrDefaultAsync(e => e.SettlementId == settlementId);
+        }
+
+        private async Task<StatementHeader> LoadStatementHeader(EstateManagementGenericContext context, IDomainEvent domainEvent)
+        {
+            Guid statementHeaderId = DomainEventHelper.GetStatementHeaderId(domainEvent);
+            return await context.StatementHeaders.SingleOrDefaultAsync(e => e.StatementId == statementHeaderId);
+        }
+
         /// <summary>
         /// Adds the fee details to transaction.
         /// </summary>
@@ -766,8 +826,9 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            Transaction transaction =
-                await context.Transactions.SingleOrDefaultAsync(t => t.TransactionId == domainEvent.TransactionId, cancellationToken: cancellationToken);
+            ContractProductTransactionFee contractProductTransactionFee = await LoadContractProductTransactionFee(context, domainEvent);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
 
             if (transaction == null)
             {
@@ -776,13 +837,13 @@ namespace EstateManagement.Repository
 
             TransactionFee transactionFee = new TransactionFee
             {
-                FeeId = domainEvent.FeeId,
+                TransactionFeeReportingId = contractProductTransactionFee.TransactionFeeReportingId,
                 CalculatedValue = domainEvent.CalculatedValue,
                 CalculationType = domainEvent.FeeCalculationType,
                 EventId = domainEvent.EventId,
                 FeeType = 0,
                 FeeValue = domainEvent.FeeValue,
-                TransactionId = domainEvent.TransactionId
+                TransactionReportingId = transaction.TransactionReportingId
             };
 
             await context.TransactionFees.AddAsync(transactionFee, cancellationToken);
@@ -800,12 +861,11 @@ namespace EstateManagement.Repository
         public async Task AddFeeDetailsToTransaction(ServiceProviderFeeAddedToTransactionEnrichedEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            Guid estateId = domainEvent.EstateId;
+            EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            EstateManagementGenericContext context = await this.DbContextFactory.GetContext(estateId, ConnectionStringIdentifier, cancellationToken);
+            ContractProductTransactionFee contractProductTransactionFee = await LoadContractProductTransactionFee(context, domainEvent);
 
-            Transaction transaction =
-                await context.Transactions.SingleOrDefaultAsync(t => t.TransactionId == domainEvent.TransactionId, cancellationToken: cancellationToken);
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
 
             if (transaction == null)
             {
@@ -814,13 +874,13 @@ namespace EstateManagement.Repository
 
             TransactionFee transactionFee = new TransactionFee
             {
-                FeeId = domainEvent.FeeId,
+                TransactionFeeReportingId = contractProductTransactionFee.TransactionFeeReportingId,
                 CalculatedValue = domainEvent.CalculatedValue,
                 CalculationType = domainEvent.FeeCalculationType,
                 EventId = domainEvent.EventId,
                 FeeType = 1,
                 FeeValue = domainEvent.FeeValue,
-                TransactionId = domainEvent.TransactionId
+                TransactionReportingId = transaction.TransactionReportingId
             };
 
             await context.TransactionFees.AddAsync(transactionFee, cancellationToken);
@@ -840,11 +900,15 @@ namespace EstateManagement.Repository
 
             Estate estate = await LoadEstate(context, domainEvent);
 
+            Merchant merchant = await this.LoadMerchant(context, domainEvent);
+
+            FileImportLog fileImportLog = await this.LoadFileImportLog(context, domainEvent);
+
             File file = new File
             {
                 EstateReportingId = estate.EstateReportingId,
-                MerchantId = domainEvent.MerchantId,
-                FileImportLogId = domainEvent.FileImportLogId,
+                MerchantReportingId = merchant.MerchantReportingId,
+                FileImportLogReportingId = fileImportLog.FileImportLogReportingId,
                 UserId = domainEvent.UserId,
                 FileId = domainEvent.FileId,
                 FileProfileId = domainEvent.FileProfileId,
@@ -902,7 +966,7 @@ namespace EstateManagement.Repository
 
             FileLine fileLine = new FileLine
             {
-                FileId = domainEvent.FileId,
+                FileReportingId = file.FileReportingId,
                 LineNumber = domainEvent.LineNumber,
                 FileLineData = domainEvent.FileLine,
                 Status = "P" // Pending
@@ -925,7 +989,11 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            FileImportLog fileImportLog = await context.FileImportLogs.SingleOrDefaultAsync(f => f.FileImportLogId == domainEvent.FileImportLogId);
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
+            FileImportLog fileImportLog = await this.LoadFileImportLog(context, domainEvent);
+
+            File file = await this.LoadFile(context, domainEvent);
 
             if (fileImportLog == null)
             {
@@ -934,9 +1002,9 @@ namespace EstateManagement.Repository
 
             FileImportLogFile fileImportLogFile = new FileImportLogFile
             {
-                MerchantId = domainEvent.MerchantId,
-                FileImportLogId = domainEvent.FileImportLogId,
-                FileId = domainEvent.FileId,
+                MerchantReportingId = merchant.MerchantReportingId,
+                FileImportLogReportingId = fileImportLog.FileImportLogReportingId,
+                FileReportingId = file.FileReportingId,
                 FilePath = domainEvent.FilePath,
                 FileProfileId = domainEvent.FileProfileId,
                 FileUploadedDateTime = domainEvent.FileUploadedDateTime,
@@ -958,7 +1026,9 @@ namespace EstateManagement.Repository
                                               CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
             Voucher voucher = new Voucher
             {
                 ExpiryDate = domainEvent.ExpiryDateTime,
@@ -968,7 +1038,7 @@ namespace EstateManagement.Repository
                 Value = domainEvent.Value,
                 VoucherCode = domainEvent.VoucherCode,
                 VoucherId = domainEvent.VoucherId,
-                TransactionId = domainEvent.TransactionId,
+                TransactionReportingId = transaction.TransactionReportingId,
                 GenerateDateTime = domainEvent.GeneratedDateTime
             };
 
@@ -1013,10 +1083,12 @@ namespace EstateManagement.Repository
                                              CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
             MerchantAddress merchantAddress = new MerchantAddress
             {
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 AddressId = domainEvent.AddressId,
                 AddressLine1 = domainEvent.AddressLine1,
                 AddressLine2 = domainEvent.AddressLine2,
@@ -1043,9 +1115,11 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
             MerchantContact merchantContact = new MerchantContact
             {
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 Name = domainEvent.ContactName,
                 ContactId = domainEvent.ContactId,
                 EmailAddress = domainEvent.ContactEmailAddress,
@@ -1066,10 +1140,12 @@ namespace EstateManagement.Repository
                                             CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
             MerchantDevice merchantDevice = new MerchantDevice
             {
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 DeviceId = domainEvent.DeviceId,
                 DeviceIdentifier = domainEvent.DeviceIdentifier
             };
@@ -1089,10 +1165,12 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
             MerchantOperator merchantOperator = new MerchantOperator
             {
                 Name = domainEvent.Name,
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 MerchantNumber = domainEvent.MerchantNumber,
                 OperatorId = domainEvent.OperatorId,
                 TerminalNumber = domainEvent.TerminalNumber
@@ -1113,9 +1191,11 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
             MerchantSecurityUser merchantSecurityUser = new MerchantSecurityUser
             {
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 EmailAddress = domainEvent.EmailAddress,
                 SecurityUserId = domainEvent.SecurityUserId
             };
@@ -1134,18 +1214,27 @@ namespace EstateManagement.Repository
                                                             CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            ContractProductTransactionFee contractProductTransactionFee = await this.LoadContractProductTransactionFee(context, domainEvent);
+
+            Settlement settlement = await this.LoadSettlement(context, domainEvent);
+
             MerchantSettlementFee merchantSettlementFee = new MerchantSettlementFee
             {
-                SettlementId = domainEvent.SettlementId,
+                SettlementReportingId = settlement.SettlementReportingId,
                 CalculatedValue = domainEvent.CalculatedValue,
                 FeeCalculatedDateTime = domainEvent.FeeCalculatedDateTime,
-                FeeId = domainEvent.FeeId,
+                TransactionFeeReportingId = contractProductTransactionFee.TransactionFeeReportingId,
                 FeeValue = domainEvent.FeeValue,
                 IsSettled = false,
-                MerchantId = domainEvent.MerchantId,
-                TransactionId = domainEvent.TransactionId
+                MerchantReportingId = merchant.MerchantReportingId,
+                TransactionReportingId = transaction.TransactionReportingId
             };
+
             await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
             await context.SaveChangesAsync(cancellationToken);
@@ -1166,13 +1255,16 @@ namespace EstateManagement.Repository
             Transaction transaction =
                 await context.Transactions.SingleOrDefaultAsync(t => t.TransactionId == domainEvent.TransactionId, cancellationToken: cancellationToken);
 
+            var contract = await LoadContract(context, domainEvent);
+            var contractProduct = await this.LoadContractProduct(context, domainEvent);
+
             if (transaction == null)
             {
                 throw new NotFoundException($"Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model");
             }
 
-            transaction.ContractId = domainEvent.ContractId;
-            transaction.ProductId = domainEvent.ProductId;
+            transaction.ContractReportingId = contract.ContractReportingId;
+            transaction.ContractProductReportingId = contractProduct.ContractProductReportingId;
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -1189,21 +1281,22 @@ namespace EstateManagement.Repository
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
             // Find the corresponding transaction
-            TransactionsView transaction = await context.TransactionsView.SingleOrDefaultAsync(t => t.TransactionId == domainEvent.TransactionId, cancellationToken);
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
 
             if (transaction == null)
             {
                 throw new NotFoundException($"Transaction with Id {domainEvent.TransactionId} not found");
             }
 
+            StatementHeader statementHeader = await this.LoadStatementHeader(context, domainEvent); 
+
             StatementLine line = new StatementLine
             {
-                MerchantId = domainEvent.MerchantId,
-                StatementId = domainEvent.MerchantStatementId,
+                StatementReportingId = statementHeader.StatementReportingId,
                 ActivityDateTime = domainEvent.SettledDateTime,
                 ActivityDescription = $"{transaction.OperatorIdentifier} Transaction Fee",
                 ActivityType = 2, // Transaction Fee
-                TransactionId = domainEvent.TransactionId,
+                TransactionReportingId = transaction.TransactionReportingId,
                 InAmount = domainEvent.SettledValue
             };
 
@@ -1223,17 +1316,25 @@ namespace EstateManagement.Repository
                                                             CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            ContractProductTransactionFee contractProductTransactionFee = await this.LoadContractProductTransactionFee(context, domainEvent);
+
+            Settlement settlement = await this.LoadSettlement(context, domainEvent);
+
             MerchantSettlementFee merchantSettlementFee = new MerchantSettlementFee
             {
-                SettlementId = settlementId,
+                SettlementReportingId = settlement.SettlementReportingId,
                 CalculatedValue = domainEvent.CalculatedValue,
                 FeeCalculatedDateTime = domainEvent.FeeCalculatedDateTime,
-                FeeId = domainEvent.FeeId,
+                TransactionFeeReportingId = contractProductTransactionFee.TransactionFeeReportingId,
                 FeeValue = domainEvent.FeeValue,
                 IsSettled = true,
-                MerchantId = domainEvent.MerchantId,
-                TransactionId = domainEvent.TransactionId
+                MerchantReportingId = merchant.MerchantReportingId,
+                TransactionReportingId = transaction.TransactionReportingId
             };
             await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
@@ -1269,26 +1370,25 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            Estate estate = await LoadEstate(context, domainEvent);
-
             // Find the corresponding transaction
-            TransactionsView transaction = await context.TransactionsView.SingleOrDefaultAsync(t => t.TransactionId == domainEvent.TransactionId, cancellationToken);
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
 
             if (transaction == null)
             {
                 throw new NotFoundException($"Transaction with Id {domainEvent.TransactionId} not found");
             }
 
+            StatementHeader statementHeader = await this.LoadStatementHeader(context, domainEvent);
+
             StatementLine line = new StatementLine
-            {
-                MerchantId = domainEvent.MerchantId,
-                StatementId = domainEvent.MerchantStatementId,
-                ActivityDateTime = domainEvent.TransactionDateTime,
-                ActivityDescription = $"{transaction.OperatorIdentifier} Transaction",
-                ActivityType = 1, // Transaction
-                TransactionId = domainEvent.TransactionId,
-                OutAmount = domainEvent.TransactionValue
-            };
+                                 {
+                                     StatementReportingId = statementHeader.StatementReportingId,
+                                     ActivityDateTime = domainEvent.TransactionDateTime,
+                                     ActivityDescription = $"{transaction.OperatorIdentifier} Transaction",
+                                     ActivityType = 1, // Transaction
+                                     TransactionReportingId = transaction.TransactionReportingId,
+                                     OutAmount = domainEvent.TransactionValue
+                                 };
 
             await context.StatementLines.AddAsync(line, cancellationToken);
 
@@ -1397,10 +1497,12 @@ namespace EstateManagement.Repository
                                           CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
             StatementHeader header = new StatementHeader
             {
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 StatementCreatedDate = domainEvent.DateCreated,
                 StatementId = domainEvent.MerchantStatementId
             };
@@ -1445,10 +1547,19 @@ namespace EstateManagement.Repository
                                                    CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            ContractProductTransactionFee contractProductTransactionFee = await this.LoadContractProductTransactionFee(context, domainEvent);
+
+            Settlement settlement = await this.LoadSettlement(context, domainEvent);
+
             MerchantSettlementFee merchantFee = await context.MerchantSettlementFees.Where(m =>
-                                                                                               m.MerchantId == domainEvent.MerchantId && m.TransactionId == domainEvent.TransactionId &&
-                                                                                               m.SettlementId == domainEvent.SettlementId && m.FeeId == domainEvent.FeeId)
+                                                                                               m.MerchantReportingId == merchant.MerchantReportingId &&
+                                                                                               m.TransactionReportingId == transaction.TransactionReportingId &&
+                                                                                               m.SettlementReportingId == settlement.SettlementReportingId && m.TransactionFeeReportingId == contractProductTransactionFee.TransactionFeeReportingId)
                                                              .SingleOrDefaultAsync(cancellationToken);
             if (merchantFee == null)
             {
@@ -1512,11 +1623,12 @@ namespace EstateManagement.Repository
                                                                  CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
             TransactionAdditionalRequestData additionalRequestData = new TransactionAdditionalRequestData
             {
-                MerchantId = domainEvent.MerchantId,
-                TransactionId = domainEvent.TransactionId
+                TransactionReportingId = transaction.TransactionReportingId
             };
 
             foreach (String additionalRequestField in this.AdditionalRequestFields)
@@ -1562,11 +1674,12 @@ namespace EstateManagement.Repository
                                                                   CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
             TransactionAdditionalResponseData additionalResponseData = new TransactionAdditionalResponseData
             {
-                MerchantId = domainEvent.MerchantId,
-                TransactionId = domainEvent.TransactionId
+                TransactionReportingId = transaction.TransactionReportingId
             };
 
             foreach (String additionalResponseField in this.AdditionalResponseFields)
@@ -1598,10 +1711,12 @@ namespace EstateManagement.Repository
                                               CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            var merchant = await this.LoadMerchant(context, domainEvent);
+
             Reconciliation reconciliation = new Reconciliation
             {
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 TransactionDate = domainEvent.TransactionDateTime.Date,
                 TransactionDateTime = domainEvent.TransactionDateTime,
                 TransactionTime = domainEvent.TransactionDateTime.TimeOfDay,
@@ -1622,10 +1737,12 @@ namespace EstateManagement.Repository
                                            CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-            
+
+            var merchant = await this.LoadMerchant(context, domainEvent);
+
             Transaction transaction = new Transaction
             {
-                MerchantId = domainEvent.MerchantId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 TransactionDate = domainEvent.TransactionDateTime.Date,
                 TransactionDateTime = domainEvent.TransactionDateTime,
                 TransactionTime = domainEvent.TransactionDateTime.TimeOfDay,
@@ -1697,8 +1814,12 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            await this.UpdateFileLineStatus(context, domainEvent.FileId, domainEvent.LineNumber,
-                                            domainEvent.TransactionId, "S", cancellationToken);
+            File file = await this.LoadFile(context, domainEvent);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            await this.UpdateFileLineStatus(context, file.FileReportingId, domainEvent.LineNumber,
+                                            transaction.TransactionReportingId, "S", cancellationToken);
         }
 
         /// <summary>
@@ -1711,8 +1832,12 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            await this.UpdateFileLineStatus(context, domainEvent.FileId, domainEvent.LineNumber,
-                                            domainEvent.TransactionId, "F", cancellationToken);
+            File file = await this.LoadFile(context, domainEvent);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            await this.UpdateFileLineStatus(context, file.FileReportingId, domainEvent.LineNumber,
+                                            transaction.TransactionReportingId, "F", cancellationToken);
         }
 
         /// <summary>
@@ -1725,8 +1850,12 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            await this.UpdateFileLineStatus(context, domainEvent.FileId, domainEvent.LineNumber,
-                                            Guid.Empty, "I", cancellationToken);
+            File file = await this.LoadFile(context, domainEvent);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            await this.UpdateFileLineStatus(context, file.FileReportingId, domainEvent.LineNumber,
+                                            0, "I", cancellationToken);
         }
 
         /// <summary>
@@ -1740,7 +1869,7 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            Merchant merchant = await context.Merchants.SingleOrDefaultAsync(m => m.MerchantId == domainEvent.MerchantId, cancellationToken);
+            Merchant merchant = await LoadMerchant(context, domainEvent);
 
             if (merchant == null)
             {
@@ -1765,7 +1894,7 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            Merchant merchant = await context.Merchants.SingleOrDefaultAsync(m => m.MerchantId == domainEvent.MerchantId, cancellationToken);
+            Merchant merchant = await LoadMerchant(context, domainEvent);
 
             if (merchant == null)
             {
@@ -1787,7 +1916,7 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            Merchant merchant = await context.Merchants.SingleOrDefaultAsync(m => m.MerchantId == domainEvent.MerchantId, cancellationToken);
+            Merchant merchant = await LoadMerchant(context, domainEvent);
 
             if (merchant == null)
             {
@@ -2055,21 +2184,21 @@ namespace EstateManagement.Repository
         /// <exception cref="Shared.Exceptions.NotFoundException">FileLine number {lineNumber} in File Id {fileId} not found for estate Id {estateId}</exception>
         /// <exception cref="NotFoundException">FileLine number {lineNumber} in File Id {fileId} not found for estate Id {estateId}</exception>
         private async Task UpdateFileLineStatus(EstateManagementGenericContext context,
-                                                Guid fileId,
+                                                Int32 fileReportingId,
                                                 Int32 lineNumber,
-                                                Guid transactionId,
+                                                Int32 transactionReportingId,
                                                 String newStatus,
                                                 CancellationToken cancellationToken)
         {
-            FileLine fileLine = await context.FileLines.SingleOrDefaultAsync(f => f.FileId == fileId && f.LineNumber == lineNumber);
+            FileLine fileLine = await context.FileLines.SingleOrDefaultAsync(f => f.FileReportingId == fileReportingId && f.LineNumber == lineNumber);
 
             if (fileLine == null)
             {
-                throw new NotFoundException($"FileLine number {lineNumber} in File Id {fileId} not found");
+                throw new NotFoundException($"FileLine number {lineNumber} in File Reporting Id {fileReportingId} not found");
             }
 
             fileLine.Status = newStatus;
-            fileLine.TransactionId = transactionId;
+            fileLine.TransactionReportingId = transactionReportingId;
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -2134,5 +2263,23 @@ namespace EstateManagement.Repository
         }
 
         public static Guid GetEstateId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "EstateId");
+
+        public static Guid GetMerchantId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "MerchantId");
+
+        public static Guid GetContractId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "ContractId");
+
+        public static Guid GetContractProductId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "ProductId");
+
+        public static Guid GetContractProductTransactionFeeId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FeeId");
+
+        public static Guid GetFileImportLogId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FileImportLogId");
+
+        public static Guid GetFileId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FileId");
+
+        public static Guid GetTransactionId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "TransactionId");
+
+        public static Guid GetSettlementId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "SettlementId");
+
+        public static Guid GetStatementHeaderId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "StatementId");
     }
 }

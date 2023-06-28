@@ -11,11 +11,8 @@
     public class TransactionAdditionalResponseData
     {
         #region Properties
-
-        public Guid MerchantId { get; set; }
-
-        [Key]
-        public Guid TransactionId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Int32 TransactionReportingId { get; set; }
 
         #endregion
     }

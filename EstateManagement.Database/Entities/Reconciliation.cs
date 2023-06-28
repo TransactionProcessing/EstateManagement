@@ -15,7 +15,7 @@
 
         public Boolean IsCompleted { get; set; }
 
-        public Guid MerchantId { get; set; }
+        public Int32 MerchantReportingId { get; set; }
 
         public String? ResponseCode { get; set; }
 
@@ -27,8 +27,10 @@
 
         public DateTime TransactionDateTime { get; set; }
 
-        [Key]
         public Guid TransactionId { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 TransactionReportingId { get; set; }
 
         public TimeSpan TransactionTime { get; set; }
 

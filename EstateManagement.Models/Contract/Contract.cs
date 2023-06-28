@@ -12,6 +12,8 @@
     {
         #region Properties
 
+        public Int32 ContractReportingId { get; set; }
+
         public Guid ContractId { get; set; }
 
         public String Description { get; set; }

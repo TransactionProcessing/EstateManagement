@@ -11,6 +11,9 @@
     {
         public Int32 EstateReportingId { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 FileImportLogReportingId { get; set; }
+
         public Guid FileImportLogId { get; set; }
 
         public DateTime ImportLogDateTime { get; set; }

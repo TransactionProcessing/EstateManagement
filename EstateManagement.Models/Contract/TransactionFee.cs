@@ -51,6 +51,8 @@
         /// </value>
         public Guid TransactionFeeId { get; set; }
 
+        public Int32 TransactionFeeReportingId { get; set; }
+
         /// <summary>
         /// Gets or sets the value.
         /// </summary>

@@ -8,7 +8,10 @@
     {
         public Guid StatementId { get; set; }
 
-        public Guid MerchantId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 StatementReportingId { get; set; }
+
+        public Int32 MerchantReportingId { get; set; }
 
         public DateTime StatementCreatedDate { get; set; }
 

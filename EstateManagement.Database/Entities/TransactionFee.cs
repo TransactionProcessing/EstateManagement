@@ -16,13 +16,13 @@
         public Int32 CalculationType { get; set; }
 
         public Guid EventId { get; set; }
-        public Guid FeeId { get; set; }
+        public Int32 TransactionFeeReportingId { get; set; }
 
         public Int32 FeeType { get; set; }
 
         public Decimal FeeValue { get; set; }
 
-        public Guid TransactionId { get; set; }
+        public Int32 TransactionReportingId { get; set; }
 
         #endregion
     }

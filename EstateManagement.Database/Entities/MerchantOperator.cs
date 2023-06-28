@@ -10,7 +10,7 @@
     public class MerchantOperator
     {
         #region Properties
-        public Guid MerchantId { get; set; }
+        public Int32 MerchantReportingId { get; set; }
 
         public String? MerchantNumber { get; set; }
 

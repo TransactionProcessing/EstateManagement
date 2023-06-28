@@ -17,7 +17,7 @@
 
         public String? EmailAddress { get; set; }
         
-        public Guid MerchantId { get; set; }
+        public Int32 MerchantReportingId { get; set; }
 
         public String Name { get; set; }
 

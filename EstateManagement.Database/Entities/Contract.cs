@@ -9,7 +9,10 @@
         #region Properties
         
         public Guid ContractId { get; set; }
-        
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 ContractReportingId { get; set; }
+
         public Int32 EstateReportingId { get; set; }
 
         public Guid OperatorId { get; set; }
