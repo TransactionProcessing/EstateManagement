@@ -247,9 +247,6 @@ public static class Extensions
 
     public static ModelBuilder SetupViewEntities(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TransactionsView>().HasNoKey().ToView("uvwTransactions");
-        modelBuilder.Entity<FileImportLogView>().HasNoKey().ToView("uvwFileImportLog");
-        modelBuilder.Entity<FileView>().HasNoKey().ToView("uvwFile");
         modelBuilder.Entity<SettlementView>().HasNoKey().ToView("uvwSettlements");
 
         return modelBuilder;

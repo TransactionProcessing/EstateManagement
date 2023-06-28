@@ -101,14 +101,6 @@ public abstract class EstateManagementGenericContext : DbContext
     public virtual DbSet<FileImportLog> FileImportLogs { get; set; }
 
     /// <summary>
-    /// Gets or sets the file import log view.
-    /// </summary>
-    /// <value>
-    /// The file import log view.
-    /// </value>
-    public virtual DbSet<FileImportLogView> FileImportLogView { get; set; }
-
-    /// <summary>
     /// Gets or sets the file lines.
     /// </summary>
     /// <value>
@@ -123,15 +115,7 @@ public abstract class EstateManagementGenericContext : DbContext
     /// The files.
     /// </value>
     public virtual DbSet<File> Files { get; set; }
-
-    /// <summary>
-    /// Gets or sets the file view.
-    /// </summary>
-    /// <value>
-    /// The file view.
-    /// </value>
-    public virtual DbSet<FileView> FileView { get; set; }
-
+    
     /// <summary>
     /// Gets or sets the merchant addresses.
     /// </summary>
@@ -233,14 +217,6 @@ public abstract class EstateManagementGenericContext : DbContext
     public DbSet<TransactionAdditionalResponseData> TransactionsAdditionalResponseData { get; set; }
 
     /// <summary>
-    /// Gets or sets the transactions view.
-    /// </summary>
-    /// <value>
-    /// The transactions view.
-    /// </value>
-    public virtual DbSet<TransactionsView> TransactionsView { get; set; }
-
-    /// <summary>
     /// Gets or sets the vouchers.
     /// </summary>
     /// <value>
@@ -323,7 +299,7 @@ public abstract class EstateManagementGenericContext : DbContext
         {
             await this.Database.MigrateAsync(cancellationToken);
             await this.SetIgnoreDuplicates(cancellationToken);
-            //await this.CreateViews(cancellationToken);
+            await this.CreateViews(cancellationToken);
             await this.SeedStandingData(cancellationToken);
         }
     }
