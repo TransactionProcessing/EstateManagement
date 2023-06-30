@@ -18,6 +18,9 @@
         
         public Guid SecurityUserId { get; set; }
 
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //public Int32 EstateSecurityUserReportingId { get; set; }
+
         #endregion
     }
 }

@@ -13,6 +13,7 @@
         #region Properties
         
         public DateTime ExpiryDate { get; set; }
+        public DateTime ExpiryDateTime { get; set; }
 
         public Boolean IsGenerated { get; set; }
         
@@ -39,6 +40,12 @@
         public DateTime IssuedDateTime { get; set; }
 
         public DateTime RedeemedDateTime { get; set; }
+
+        public DateTime GenerateDate { get; set; }
+
+        public DateTime IssuedDate { get; set; }
+
+        public DateTime RedeemedDate { get; set; }
 
         #endregion
     }

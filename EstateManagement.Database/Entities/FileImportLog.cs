@@ -17,5 +17,7 @@
         public Guid FileImportLogId { get; set; }
 
         public DateTime ImportLogDateTime { get; set; }
+
+        public DateTime ImportLogDate { get; set; }
     }
 }

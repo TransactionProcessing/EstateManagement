@@ -19,6 +19,8 @@
 
         public DateTime FileUploadedDateTime { get; set; }
 
+        public DateTime FileUploadedDate { get; set; }
+
         public Int32 MerchantReportingId { get; set; }
 
         public string OriginalFileName { get; set; }

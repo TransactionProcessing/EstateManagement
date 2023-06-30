@@ -1,6 +1,8 @@
 ﻿namespace EstateManagement.Database.Contexts;
 
+using EntityFramework.Exceptions.MySQL.Pomelo;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shared.General;
 
 public class EstateManagementMySqlContext : EstateManagementGenericContext
@@ -23,5 +25,7 @@ public class EstateManagementMySqlContext : EstateManagementGenericContext
         {
             options.UseMySql(this.ConnectionString, ServerVersion.Parse("8.0.27")).AddInterceptors(new MySqlIgnoreDuplicatesOnInsertInterceptor());
         }
+
+        options.UseExceptionProcessor();
     }
 }

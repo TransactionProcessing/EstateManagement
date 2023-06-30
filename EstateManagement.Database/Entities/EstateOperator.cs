@@ -8,6 +8,9 @@
     {
         #region Properties
 
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //public Int32 EstateOperatorReportingId { get; set; }
+
         public Int32 EstateReportingId { get; set; }
 
         public String Name { get; set; }

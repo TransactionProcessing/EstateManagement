@@ -11,6 +11,15 @@ namespace EstateManagement.Database.Migrations.SqlServer
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "uvwFileImportLogView");
+
+            migrationBuilder.DropTable(
+                name: "uvwFileView");
+
+            migrationBuilder.DropTable(
+                name: "uvwTransactionsView");
+
             migrationBuilder.DropPrimaryKey(
                 name: "PK_transactionfee",
                 table: "transactionfee");
@@ -121,10 +130,6 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
             migrationBuilder.DropColumn(
                 name: "TransactionId",
-                table: "transactionfee");
-
-            migrationBuilder.DropColumn(
-                name: "FeeId",
                 table: "transactionfee");
 
             migrationBuilder.AddColumn<int>(
@@ -357,6 +362,50 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 name: "EstateId",
                 table: "contract");
 
+            migrationBuilder.AlterColumn<string>(
+                name: "VoucherCode",
+                table: "voucher",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "ExpiryDate",
+                table: "voucher",
+                type: "date",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ExpiryDateTime",
+                table: "voucher",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "GenerateDate",
+                table: "voucher",
+                type: "date",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "IssuedDate",
+                table: "voucher",
+                type: "date",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "RedeemedDate",
+                table: "voucher",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
             migrationBuilder.AddColumn<int>(
                 name: "TransactionReportingId",
                 table: "voucher",
@@ -376,14 +425,24 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "transactionfee",
                 type: "int",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
             
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "TransactionDate",
+                table: "transaction",
+                type: "date",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
+
             migrationBuilder.AddColumn<int>(
-                name: "MerchantReportingId",
+                name: "TransactionReportingId",
                 table: "transaction",
                 type: "int",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
 
             migrationBuilder.AddColumn<int>(
                 name: "ContractProductReportingId",
@@ -400,12 +459,11 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "TransactionReportingId",
+                name: "MerchantReportingId",
                 table: "transaction",
                 type: "int",
                 nullable: false,
-                defaultValue: 0)
-                .Annotation("SqlServer:Identity", "1, 1");
+                defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
                 name: "StatementReportingId",
@@ -420,6 +478,29 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ActivityDate",
+                table: "statementline",
+                type: "date",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "StatementGeneratedDate",
+                table: "statementheader",
+                type: "date",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "StatementCreatedDate",
+                table: "statementheader",
+                type: "date",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
 
             migrationBuilder.AddColumn<int>(
                 name: "MerchantReportingId",
@@ -428,9 +509,39 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 nullable: false,
                 defaultValue: 0);
 
+            migrationBuilder.AddColumn<DateTime>(
+                name: "StatementCreatedDateTime",
+                table: "statementheader",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "StatementGeneratedDateTime",
+                table: "statementheader",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
             migrationBuilder.AddColumn<int>(
                 name: "StatementReportingId",
                 table: "statementheader",
+                type: "int",
+                nullable: false,
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "SettlementDate",
+                table: "settlement",
+                type: "date",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
+
+            migrationBuilder.AddColumn<int>(
+                name: "SettlementReportingId",
+                table: "settlement",
                 type: "int",
                 nullable: false,
                 defaultValue: 0)
@@ -443,9 +554,17 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 nullable: false,
                 defaultValue: 0);
 
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "TransactionDate",
+                table: "reconciliation",
+                type: "date",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
+
             migrationBuilder.AddColumn<int>(
-                name: "SettlementReportingId",
-                table: "settlement",
+                name: "TransactionReportingId",
+                table: "reconciliation",
                 type: "int",
                 nullable: false,
                 defaultValue: 0)
@@ -457,14 +576,6 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "TransactionReportingId",
-                table: "reconciliation",
-                type: "int",
-                nullable: false,
-                defaultValue: 0)
-                .Annotation("SqlServer:Identity", "1, 1");
 
             migrationBuilder.AddColumn<int>(
                 name: "SettlementReportingId",
@@ -572,6 +683,13 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 nullable: false,
                 defaultValue: 0);
 
+            migrationBuilder.AddColumn<DateTime>(
+                name: "FileUploadedDate",
+                table: "fileimportlogfile",
+                type: "date",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
             migrationBuilder.AddColumn<int>(
                 name: "MerchantReportingId",
                 table: "fileimportlogfile",
@@ -594,6 +712,21 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 defaultValue: 0)
                 .Annotation("SqlServer:Identity", "1, 1");
 
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ImportLogDate",
+                table: "fileimportlog",
+                type: "date",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<int>(
+                name: "FileReportingId",
+                table: "file",
+                type: "int",
+                nullable: false,
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
+
             migrationBuilder.AddColumn<int>(
                 name: "EstateReportingId",
                 table: "file",
@@ -608,13 +741,12 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 nullable: false,
                 defaultValue: 0);
 
-            migrationBuilder.AddColumn<int>(
-                name: "FileReportingId",
+            migrationBuilder.AddColumn<DateTime>(
+                name: "FileReceivedDate",
                 table: "file",
-                type: "int",
+                type: "date",
                 nullable: false,
-                defaultValue: 0)
-                .Annotation("SqlServer:Identity", "1, 1");
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<int>(
                 name: "MerchantReportingId",
@@ -708,7 +840,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
             migrationBuilder.AddPrimaryKey(
                 name: "PK_transaction",
                 table: "transaction",
-                columns: new[] { "MerchantReportingId", "TransactionId" })
+                column: "TransactionReportingId")
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.AddPrimaryKey(
@@ -725,13 +857,13 @@ namespace EstateManagement.Database.Migrations.SqlServer
             migrationBuilder.AddPrimaryKey(
                 name: "PK_settlement",
                 table: "settlement",
-                columns: new[] { "EstateReportingId", "SettlementId" })
+                column: "SettlementReportingId")
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_reconciliation",
                 table: "reconciliation",
-                column: "TransactionId")
+                column: "TransactionReportingId")
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.AddPrimaryKey(
@@ -767,8 +899,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
             migrationBuilder.AddPrimaryKey(
                 name: "PK_merchant",
                 table: "merchant",
-                columns: new[] { "EstateReportingId", "MerchantId" })
-                .Annotation("SqlServer:Clustered", false);
+                columns: new[] { "EstateReportingId", "MerchantReportingId" });
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_fileline",
@@ -784,14 +915,12 @@ namespace EstateManagement.Database.Migrations.SqlServer
             migrationBuilder.AddPrimaryKey(
                 name: "PK_fileimportlog",
                 table: "fileimportlog",
-                columns: new[] { "EstateReportingId", "FileImportLogId" })
-                .Annotation("SqlServer:Clustered", false);
+                columns: new[] { "EstateReportingId", "FileImportLogReportingId" });
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_file",
                 table: "file",
-                columns: new[] { "EstateReportingId", "FileImportLogReportingId", "FileId" })
-                .Annotation("SqlServer:Clustered", false);
+                column: "FileReportingId");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_estatesecurityuser",
@@ -806,18 +935,17 @@ namespace EstateManagement.Database.Migrations.SqlServer
             migrationBuilder.AddPrimaryKey(
                 name: "PK_estate",
                 table: "estate",
-                column: "EstateId")
-                .Annotation("SqlServer:Clustered", false);
+                column: "EstateReportingId");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_contractproducttransactionfee",
                 table: "contractproducttransactionfee",
-                columns: new[] { "ContractProductReportingId", "TransactionFeeReportingId" });
+                columns: new[] { "ContractProductReportingId", "TransactionFeeId" });
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_contractproduct",
                 table: "contractproduct",
-                columns: new[] { "ContractReportingId", "ContractProductReportingId" });
+                columns: new[] { "ContractReportingId", "ProductId" });
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_contract",
@@ -825,10 +953,33 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 columns: new[] { "EstateReportingId", "OperatorId", "ContractId" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_voucher_TransactionReportingId",
+                table: "voucher",
+                column: "TransactionReportingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_voucher_VoucherCode",
+                table: "voucher",
+                column: "VoucherCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_transactionfee_FeeId",
+                table: "transactionfee",
+                column: "FeeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_transaction_TransactionDate_MerchantReportingId",
                 table: "transaction",
                 columns: new[] { "TransactionDate", "MerchantReportingId" })
                 .Annotation("SqlServer:Clustered", true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_transaction_TransactionId_MerchantReportingId",
+                table: "transaction",
+                columns: new[] { "TransactionId", "MerchantReportingId" },
+                unique: true)
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_statementheader_MerchantReportingId_StatementGeneratedDate",
@@ -838,10 +989,16 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 .Annotation("SqlServer:Clustered", true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_settlement_EstateReportingId_SettlementId",
+                table: "settlement",
+                columns: new[] { "EstateReportingId", "SettlementId" },
+                unique: true)
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_settlement_SettlementDate_EstateReportingId",
                 table: "settlement",
-                columns: new[] { "SettlementDate", "EstateReportingId" },
-                unique: true)
+                columns: new[] { "SettlementDate", "EstateReportingId" })
                 .Annotation("SqlServer:Clustered", true);
 
             migrationBuilder.CreateIndex(
@@ -851,45 +1008,59 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 .Annotation("SqlServer:Clustered", true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_merchant_EstateReportingId_MerchantReportingId",
-                table: "merchant",
-                columns: new[] { "EstateReportingId", "MerchantReportingId" },
+                name: "IX_reconciliation_TransactionId_MerchantReportingId",
+                table: "reconciliation",
+                columns: new[] { "TransactionId", "MerchantReportingId" },
                 unique: true)
-                .Annotation("SqlServer:Clustered", true);
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_merchant_EstateReportingId_MerchantId",
+                table: "merchant",
+                columns: new[] { "EstateReportingId", "MerchantId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_fileline_TransactionReportingId",
                 table: "fileline",
-                column: "TransactionReportingId",
+                column: "TransactionReportingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_fileimportlog_EstateReportingId_FileImportLogId",
+                table: "fileimportlog",
+                columns: new[] { "EstateReportingId", "FileImportLogId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_fileimportlog_EstateReportingId_FileImportLogReportingId_ImportLogDateTime",
-                table: "fileimportlog",
-                columns: new[] { "EstateReportingId", "FileImportLogReportingId", "ImportLogDateTime" },
-                unique: true)
-                .Annotation("SqlServer:Clustered", true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_file_EstateReportingId_FileImportLogReportingId_FileReportingId",
+                name: "IX_file_FileId",
                 table: "file",
-                columns: new[] { "EstateReportingId", "FileImportLogReportingId", "FileReportingId" },
-                unique: true)
-                .Annotation("SqlServer:Clustered", true);
+                column: "FileId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_estate_EstateReportingId",
+                name: "IX_estate_EstateId",
                 table: "estate",
-                column: "EstateReportingId",
-                unique: true)
-                .Annotation("SqlServer:Clustered", true);
+                column: "EstateId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "IX_voucher_TransactionReportingId",
+                table: "voucher");
+
+            migrationBuilder.DropIndex(
+                name: "IX_voucher_VoucherCode",
+                table: "voucher");
+
             migrationBuilder.DropPrimaryKey(
                 name: "PK_transactionfee",
+                table: "transactionfee");
+
+            migrationBuilder.DropIndex(
+                name: "IX_transactionfee_FeeId",
                 table: "transactionfee");
 
             migrationBuilder.DropPrimaryKey(
@@ -906,6 +1077,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
             migrationBuilder.DropIndex(
                 name: "IX_transaction_TransactionDate_MerchantReportingId",
+                table: "transaction");
+
+            migrationBuilder.DropIndex(
+                name: "IX_transaction_TransactionId_MerchantReportingId",
                 table: "transaction");
 
             migrationBuilder.DropPrimaryKey(
@@ -925,6 +1100,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "settlement");
 
             migrationBuilder.DropIndex(
+                name: "IX_settlement_EstateReportingId_SettlementId",
+                table: "settlement");
+
+            migrationBuilder.DropIndex(
                 name: "IX_settlement_SettlementDate_EstateReportingId",
                 table: "settlement");
 
@@ -934,6 +1113,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
             migrationBuilder.DropIndex(
                 name: "IX_reconciliation_TransactionDate_MerchantReportingId",
+                table: "reconciliation");
+
+            migrationBuilder.DropIndex(
+                name: "IX_reconciliation_TransactionId_MerchantReportingId",
                 table: "reconciliation");
 
             migrationBuilder.DropPrimaryKey(
@@ -965,7 +1148,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "merchant");
 
             migrationBuilder.DropIndex(
-                name: "IX_merchant_EstateReportingId_MerchantReportingId",
+                name: "IX_merchant_EstateReportingId_MerchantId",
                 table: "merchant");
 
             migrationBuilder.DropPrimaryKey(
@@ -985,7 +1168,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "fileimportlog");
 
             migrationBuilder.DropIndex(
-                name: "IX_fileimportlog_EstateReportingId_FileImportLogReportingId_ImportLogDateTime",
+                name: "IX_fileimportlog_EstateReportingId_FileImportLogId",
                 table: "fileimportlog");
 
             migrationBuilder.DropPrimaryKey(
@@ -993,7 +1176,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "file");
 
             migrationBuilder.DropIndex(
-                name: "IX_file_EstateReportingId_FileImportLogReportingId_FileReportingId",
+                name: "IX_file_FileId",
                 table: "file");
 
             migrationBuilder.DropPrimaryKey(
@@ -1009,7 +1192,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "estate");
 
             migrationBuilder.DropIndex(
-                name: "IX_estate_EstateReportingId",
+                name: "IX_estate_EstateId",
                 table: "estate");
 
             migrationBuilder.DropPrimaryKey(
@@ -1023,6 +1206,22 @@ namespace EstateManagement.Database.Migrations.SqlServer
             migrationBuilder.DropPrimaryKey(
                 name: "PK_contract",
                 table: "contract");
+
+            migrationBuilder.DropColumn(
+                name: "ExpiryDateTime",
+                table: "voucher");
+
+            migrationBuilder.DropColumn(
+                name: "GenerateDate",
+                table: "voucher");
+
+            migrationBuilder.DropColumn(
+                name: "IssuedDate",
+                table: "voucher");
+
+            migrationBuilder.DropColumn(
+                name: "RedeemedDate",
+                table: "voucher");
 
             migrationBuilder.DropColumn(
                 name: "TransactionReportingId",
@@ -1045,7 +1244,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "transactionadditionalrequestdata");
 
             migrationBuilder.DropColumn(
-                name: "MerchantReportingId",
+                name: "TransactionReportingId",
                 table: "transaction");
 
             migrationBuilder.DropColumn(
@@ -1057,7 +1256,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "transaction");
 
             migrationBuilder.DropColumn(
-                name: "TransactionReportingId",
+                name: "MerchantReportingId",
                 table: "transaction");
 
             migrationBuilder.DropColumn(
@@ -1069,7 +1268,19 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "statementline");
 
             migrationBuilder.DropColumn(
+                name: "ActivityDate",
+                table: "statementline");
+
+            migrationBuilder.DropColumn(
                 name: "MerchantReportingId",
+                table: "statementheader");
+
+            migrationBuilder.DropColumn(
+                name: "StatementCreatedDateTime",
+                table: "statementheader");
+
+            migrationBuilder.DropColumn(
+                name: "StatementGeneratedDateTime",
                 table: "statementheader");
 
             migrationBuilder.DropColumn(
@@ -1077,19 +1288,19 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "statementheader");
 
             migrationBuilder.DropColumn(
-                name: "EstateReportingId",
-                table: "settlement");
-
-            migrationBuilder.DropColumn(
                 name: "SettlementReportingId",
                 table: "settlement");
 
             migrationBuilder.DropColumn(
-                name: "MerchantReportingId",
-                table: "reconciliation");
+                name: "EstateReportingId",
+                table: "settlement");
 
             migrationBuilder.DropColumn(
                 name: "TransactionReportingId",
+                table: "reconciliation");
+
+            migrationBuilder.DropColumn(
+                name: "MerchantReportingId",
                 table: "reconciliation");
 
             migrationBuilder.DropColumn(
@@ -1153,6 +1364,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "fileimportlogfile");
 
             migrationBuilder.DropColumn(
+                name: "FileUploadedDate",
+                table: "fileimportlogfile");
+
+            migrationBuilder.DropColumn(
                 name: "MerchantReportingId",
                 table: "fileimportlogfile");
 
@@ -1165,6 +1380,14 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "fileimportlog");
 
             migrationBuilder.DropColumn(
+                name: "ImportLogDate",
+                table: "fileimportlog");
+
+            migrationBuilder.DropColumn(
+                name: "FileReportingId",
+                table: "file");
+
+            migrationBuilder.DropColumn(
                 name: "EstateReportingId",
                 table: "file");
 
@@ -1173,7 +1396,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 table: "file");
 
             migrationBuilder.DropColumn(
-                name: "FileReportingId",
+                name: "FileReceivedDate",
                 table: "file");
 
             migrationBuilder.DropColumn(
@@ -1216,6 +1439,22 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 name: "ContractReportingId",
                 table: "contract");
 
+            migrationBuilder.AlterColumn<string>(
+                name: "VoucherCode",
+                table: "voucher",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "ExpiryDate",
+                table: "voucher",
+                type: "datetime2",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "date");
+
             migrationBuilder.AddColumn<Guid>(
                 name: "EstateId",
                 table: "voucher",
@@ -1232,13 +1471,6 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
             migrationBuilder.AddColumn<Guid>(
                 name: "TransactionId",
-                table: "transactionfee",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "FeeId",
                 table: "transactionfee",
                 type: "uniqueidentifier",
                 nullable: false,
@@ -1285,6 +1517,14 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 type: "uniqueidentifier",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "TransactionDate",
+                table: "transaction",
+                type: "datetime2",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "date");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "EstateId",
@@ -1342,6 +1582,22 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "StatementGeneratedDate",
+                table: "statementheader",
+                type: "datetime2",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "date");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "StatementCreatedDate",
+                table: "statementheader",
+                type: "datetime2",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "date");
+
             migrationBuilder.AddColumn<Guid>(
                 name: "EstateId",
                 table: "statementheader",
@@ -1356,12 +1612,28 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "SettlementDate",
+                table: "settlement",
+                type: "datetime2",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "date");
+
             migrationBuilder.AddColumn<Guid>(
                 name: "EstateId",
                 table: "settlement",
                 type: "uniqueidentifier",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "TransactionDate",
+                table: "reconciliation",
+                type: "datetime2",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "date");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "EstateId",
@@ -1746,6 +2018,68 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 name: "PK_contract",
                 table: "contract",
                 columns: new[] { "EstateId", "OperatorId", "ContractId" });
+
+            migrationBuilder.CreateTable(
+                name: "uvwFileImportLogView",
+                columns: table => new
+                {
+                    FileCount = table.Column<int>(type: "int", nullable: false),
+                    FileImportLogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ImportLogDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ImportLogDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ImportLogTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    MerchantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
+                name: "uvwFileView",
+                columns: table => new
+                {
+                    EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FailedCount = table.Column<int>(type: "int", nullable: false),
+                    FileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileReceivedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FileReceivedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FileReceivedTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    LineCount = table.Column<int>(type: "int", nullable: false),
+                    MerchantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MerchantName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PendingCount = table.Column<int>(type: "int", nullable: false),
+                    SuccessCount = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
+                name: "uvwTransactionsView",
+                columns: table => new
+                {
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DayOfWeek = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EstateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsAuthorised = table.Column<bool>(type: "bit", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    MerchantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Month = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MonthNumber = table.Column<int>(type: "int", nullable: false),
+                    OperatorIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResponseCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TransactionDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WeekNumber = table.Column<int>(type: "int", nullable: false),
+                    YearNumber = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
         }
     }
 }

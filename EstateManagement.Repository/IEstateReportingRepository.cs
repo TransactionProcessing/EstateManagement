@@ -588,7 +588,7 @@ namespace EstateManagement.Repository
 
             await context.Contracts.AddAsync(contract, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -615,7 +615,7 @@ namespace EstateManagement.Repository
 
             await context.ContractProducts.AddAsync(contractProduct, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -642,7 +642,7 @@ namespace EstateManagement.Repository
 
             await context.ContractProducts.AddAsync(contractProduct, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -671,7 +671,7 @@ namespace EstateManagement.Repository
 
             await context.ContractProductTransactionFees.AddAsync(contractProductTransactionFee, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -693,7 +693,7 @@ namespace EstateManagement.Repository
                                              };
             await context.Estates.AddAsync(estate, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -719,7 +719,7 @@ namespace EstateManagement.Repository
 
             await context.EstateOperators.AddAsync(estateOperator, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         private async Task<EstateManagementGenericContext> GetContextFromDomainEvent(IDomainEvent domainEvent, CancellationToken cancellationToken){
@@ -752,7 +752,7 @@ namespace EstateManagement.Repository
 
             await context.EstateSecurityUsers.AddAsync(estateSecurityUser, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         private async Task<Estate> LoadEstate(EstateManagementGenericContext context, IDomainEvent domainEvent){
@@ -848,7 +848,7 @@ namespace EstateManagement.Repository
 
             await context.TransactionFees.AddAsync(transactionFee, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -885,7 +885,7 @@ namespace EstateManagement.Repository
 
             await context.TransactionFees.AddAsync(transactionFee, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -914,11 +914,12 @@ namespace EstateManagement.Repository
                 FileProfileId = domainEvent.FileProfileId,
                 FileLocation = domainEvent.FileLocation,
                 FileReceivedDateTime = domainEvent.FileReceivedDateTime,
+                FileReceivedDate = domainEvent.FileReceivedDateTime.Date
             };
 
             await context.Files.AddAsync(file, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -937,12 +938,13 @@ namespace EstateManagement.Repository
             {
                 EstateReportingId = estate.EstateReportingId,
                 FileImportLogId = domainEvent.FileImportLogId,
-                ImportLogDateTime = domainEvent.ImportLogDateTime
+                ImportLogDateTime = domainEvent.ImportLogDateTime,
+                ImportLogDate = domainEvent.ImportLogDateTime.Date
             };
 
             await context.FileImportLogs.AddAsync(fileImportLog, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -974,7 +976,7 @@ namespace EstateManagement.Repository
 
             await context.FileLines.AddAsync(fileLine, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1008,13 +1010,14 @@ namespace EstateManagement.Repository
                 FilePath = domainEvent.FilePath,
                 FileProfileId = domainEvent.FileProfileId,
                 FileUploadedDateTime = domainEvent.FileUploadedDateTime,
+                FileUploadedDate = domainEvent.FileUploadedDateTime.Date,
                 OriginalFileName = domainEvent.OriginalFileName,
                 UserId = domainEvent.UserId
             };
 
             await context.FileImportLogFiles.AddAsync(fileImportLogFile, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1031,7 +1034,8 @@ namespace EstateManagement.Repository
 
             Voucher voucher = new Voucher
             {
-                ExpiryDate = domainEvent.ExpiryDateTime,
+                ExpiryDateTime = domainEvent.ExpiryDateTime,
+                ExpiryDate = domainEvent.ExpiryDateTime.Date,
                 IsGenerated = true,
                 IsIssued = false,
                 OperatorIdentifier = domainEvent.OperatorIdentifier,
@@ -1039,12 +1043,13 @@ namespace EstateManagement.Repository
                 VoucherCode = domainEvent.VoucherCode,
                 VoucherId = domainEvent.VoucherId,
                 TransactionReportingId = transaction.TransactionReportingId,
-                GenerateDateTime = domainEvent.GeneratedDateTime
+                GenerateDateTime = domainEvent.GeneratedDateTime,
+                GenerateDate = domainEvent.GeneratedDateTime.Date
             };
 
             await context.Vouchers.AddAsync(voucher, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1071,7 +1076,7 @@ namespace EstateManagement.Repository
 
             await context.Merchants.AddAsync(merchant, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1102,7 +1107,7 @@ namespace EstateManagement.Repository
 
             await context.MerchantAddresses.AddAsync(merchantAddress, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1128,7 +1133,7 @@ namespace EstateManagement.Repository
 
             await context.MerchantContacts.AddAsync(merchantContact, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1152,7 +1157,7 @@ namespace EstateManagement.Repository
 
             await context.MerchantDevices.AddAsync(merchantDevice, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1178,7 +1183,7 @@ namespace EstateManagement.Repository
 
             await context.MerchantOperators.AddAsync(merchantOperator, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1202,7 +1207,7 @@ namespace EstateManagement.Repository
 
             await context.MerchantSecurityUsers.AddAsync(merchantSecurityUser, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1237,7 +1242,7 @@ namespace EstateManagement.Repository
 
             await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1255,8 +1260,8 @@ namespace EstateManagement.Repository
             Transaction transaction =
                 await context.Transactions.SingleOrDefaultAsync(t => t.TransactionId == domainEvent.TransactionId, cancellationToken: cancellationToken);
 
-            var contract = await LoadContract(context, domainEvent);
-            var contractProduct = await this.LoadContractProduct(context, domainEvent);
+            Contract contract = await LoadContract(context, domainEvent);
+            ContractProduct contractProduct = await this.LoadContractProduct(context, domainEvent);
 
             if (transaction == null)
             {
@@ -1294,6 +1299,7 @@ namespace EstateManagement.Repository
             {
                 StatementReportingId = statementHeader.StatementReportingId,
                 ActivityDateTime = domainEvent.SettledDateTime,
+                ActivityDate= domainEvent.SettledDateTime.Date,
                 ActivityDescription = $"{transaction.OperatorIdentifier} Transaction Fee",
                 ActivityType = 2, // Transaction Fee
                 TransactionReportingId = transaction.TransactionReportingId,
@@ -1302,7 +1308,7 @@ namespace EstateManagement.Repository
 
             await context.StatementLines.AddAsync(line, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1338,7 +1344,7 @@ namespace EstateManagement.Repository
             };
             await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         public async Task AddSourceDetailsToTransaction(TransactionSourceAddedToTransactionEvent domainEvent,
@@ -1384,7 +1390,8 @@ namespace EstateManagement.Repository
                                  {
                                      StatementReportingId = statementHeader.StatementReportingId,
                                      ActivityDateTime = domainEvent.TransactionDateTime,
-                                     ActivityDescription = $"{transaction.OperatorIdentifier} Transaction",
+                                     ActivityDate = domainEvent.TransactionDateTime.Date,
+                ActivityDescription = $"{transaction.OperatorIdentifier} Transaction",
                                      ActivityType = 1, // Transaction
                                      TransactionReportingId = transaction.TransactionReportingId,
                                      OutAmount = domainEvent.TransactionValue
@@ -1392,7 +1399,7 @@ namespace EstateManagement.Repository
 
             await context.StatementLines.AddAsync(line, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1485,7 +1492,7 @@ namespace EstateManagement.Repository
 
             await context.Settlements.AddAsync(settlement, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1503,13 +1510,14 @@ namespace EstateManagement.Repository
             StatementHeader header = new StatementHeader
             {
                 MerchantReportingId = merchant.MerchantReportingId,
-                StatementCreatedDate = domainEvent.DateCreated,
+                StatementCreatedDateTime = domainEvent.DateCreated,
+                StatementCreatedDate = domainEvent.DateCreated.Date,
                 StatementId = domainEvent.MerchantStatementId
             };
 
             await context.StatementHeaders.AddAsync(header, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1662,7 +1670,7 @@ namespace EstateManagement.Repository
 
             await context.TransactionsAdditionalRequestData.AddAsync(additionalRequestData, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1699,7 +1707,7 @@ namespace EstateManagement.Repository
 
             await context.TransactionsAdditionalResponseData.AddAsync(additionalResponseData, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1725,7 +1733,7 @@ namespace EstateManagement.Repository
 
             await context.Reconciliations.AddAsync(reconciliation, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1755,7 +1763,7 @@ namespace EstateManagement.Repository
 
             await context.Transactions.AddAsync(transaction, cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
         }
 
         /// <summary>
@@ -1792,7 +1800,7 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
             
-            File file = await context.Files.SingleOrDefaultAsync(f => f.FileId == domainEvent.FileId);
+            File file = await context.Files.SingleOrDefaultAsync(f => f.FileId == domainEvent.FileId, cancellationToken:cancellationToken);
 
             if (file == null)
             {
@@ -2144,6 +2152,7 @@ namespace EstateManagement.Repository
             voucher.RecipientEmail = domainEvent.RecipientEmail;
             voucher.RecipientMobile = domainEvent.RecipientMobile;
             voucher.IssuedDateTime = domainEvent.IssuedDateTime;
+            voucher.IssuedDate = domainEvent.IssuedDateTime.Date;
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -2169,20 +2178,11 @@ namespace EstateManagement.Repository
 
             voucher.IsRedeemed = true;
             voucher.RedeemedDateTime = domainEvent.RedeemedDateTime;
+            voucher.RedeemedDate = domainEvent.RedeemedDateTime.Date;
 
             await context.SaveChangesAsync(cancellationToken);
         }
-
-        /// <summary>
-        /// Updates the file line status.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="fileId">The file identifier.</param>
-        /// <param name="lineNumber">The line number.</param>
-        /// <param name="newStatus">The new status.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <exception cref="Shared.Exceptions.NotFoundException">FileLine number {lineNumber} in File Id {fileId} not found for estate Id {estateId}</exception>
-        /// <exception cref="NotFoundException">FileLine number {lineNumber} in File Id {fileId} not found for estate Id {estateId}</exception>
+        
         private async Task UpdateFileLineStatus(EstateManagementGenericContext context,
                                                 Int32 fileReportingId,
                                                 Int32 lineNumber,

@@ -24,6 +24,8 @@
 
         public DateTime FileReceivedDateTime { get; set; }
 
+        public DateTime FileReceivedDate { get; set; }
+
         public Int32 MerchantReportingId { get; set; }
 
         public Guid UserId { get; set; }

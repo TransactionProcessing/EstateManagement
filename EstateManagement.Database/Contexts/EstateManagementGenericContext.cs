@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using Entities;
+using EntityFramework.Exceptions.Common;
 using Microsoft.EntityFrameworkCore;
 using Shared.Logger;
 using ViewEntities;
@@ -303,17 +304,38 @@ public abstract class EstateManagementGenericContext : DbContext
             await this.SeedStandingData(cancellationToken);
         }
     }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.SetupResponseCodesTable()
-                    .SetupEstateTables()
-                    .SetupMerchantTables()
-                    .SetupTransactionTables()
-                    .SetupContractTables()
-                    .SetupFileTables()
-                    .SetupSettlementTables()
-                    .SetupStatementTables();
+        modelBuilder.SetupResponseCodes()
+                    .SetupEstate()
+                    .SetupEstateOperator()
+                    .SetupEstateSecurityUser()
+                    .SetupMerchant()
+                    .SetupMerchantAddress()
+                    .SetupMerchantContact()
+                    .SetupMerchantDevice()
+                    .SetupMerchantDevice()
+                    .SetupMerchantOperator()
+                    .SetupMerchantSecurityUser()
+                    .SetupContract()
+                    .SetupContractProduct()
+                    .SetupContractProductTransactionFee()
+                    .SetupTransaction()
+                    .SetupTransactionAdditionalResponseData()
+                    .SetupTransactionAdditionalRequestData()
+                    .SetupTransactionFee()
+                    .SetupSettlement()
+                    .SetupMerchantSettlementFee()
+                    .SetupFile()
+                    .SetupFileImportLog()
+                    .SetupFileImportLogFile()
+                    .SetupFileLine()
+                    .SetupStatementHeader()
+                    .SetupStatementLine()
+                    .SetupReconciliation()
+                    .SetupVoucher();
+
 
         modelBuilder.SetupViewEntities();
 
@@ -327,34 +349,47 @@ public abstract class EstateManagementGenericContext : DbContext
     protected virtual async Task SetIgnoreDuplicates(CancellationToken cancellationToken)
     {
         EstateManagementGenericContext.TablesToIgnoreDuplicates = new List<String> {
-                                                                                      nameof(Estate),
-                                                                                      nameof(EstateSecurityUser),
-                                                                                      nameof(EstateOperator),
-                                                                                      nameof(Merchant),
-                                                                                      nameof(MerchantAddress),
-                                                                                      nameof(MerchantContact),
-                                                                                      nameof(MerchantDevice),
-                                                                                      nameof(MerchantSecurityUser),
-                                                                                      nameof(MerchantOperator),
-                                                                                      nameof(Transaction),
-                                                                                      nameof(TransactionFee),
-                                                                                      nameof(TransactionAdditionalRequestData),
-                                                                                      nameof(TransactionAdditionalResponseData),
-                                                                                      nameof(Contract),
-                                                                                      nameof(ContractProduct),
-                                                                                      nameof(ContractProductTransactionFee),
-                                                                                      nameof(Reconciliation),
-                                                                                      nameof(Voucher),
-                                                                                      nameof(FileImportLog),
-                                                                                      nameof(FileImportLogFile),
-                                                                                      nameof(File),
-                                                                                      nameof(FileLine),
-                                                                                      nameof(Settlement),
-                                                                                      nameof(MerchantSettlementFee),
-                                                                                      nameof(StatementHeader),
-                                                                                      nameof(StatementLine),
+                                                                                      //nameof(Estate),
+                                                                                      //nameof(EstateSecurityUser),
+                                                                                      //nameof(EstateOperator),
+                                                                                      //nameof(Merchant),
+                                                                                      //nameof(MerchantAddress),
+                                                                                      //nameof(MerchantContact),
+                                                                                      //nameof(MerchantDevice),
+                                                                                      //nameof(MerchantSecurityUser),
+                                                                                      //nameof(MerchantOperator),
+                                                                                      //nameof(Transaction),
+                                                                                      //nameof(TransactionFee),
+                                                                                      //nameof(TransactionAdditionalRequestData),
+                                                                                      //nameof(TransactionAdditionalResponseData),
+                                                                                      //nameof(Contract),
+                                                                                      //nameof(ContractProduct),
+                                                                                      //nameof(ContractProductTransactionFee),
+                                                                                      //nameof(Reconciliation),
+                                                                                      //nameof(Voucher),
+                                                                                      //nameof(FileImportLog),
+                                                                                      //nameof(FileImportLogFile),
+                                                                                      //nameof(File),
+                                                                                      //nameof(FileLine),
+                                                                                      //nameof(Settlement),
+                                                                                      //nameof(MerchantSettlementFee),
+                                                                                      //nameof(StatementHeader),
+                                                                                      //nameof(StatementLine),
                                                                                       nameof(this.ResponseCodes)
                                                                                   };
+    }
+
+    public virtual async Task SaveChangesWithDuplicateHandling(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await this.SaveChangesAsync(cancellationToken);
+        }
+        catch (UniqueConstraintException uex)
+        {
+            // Swallow the error
+            // TODO: maybe log some trace
+        }
     }
 
     #endregion

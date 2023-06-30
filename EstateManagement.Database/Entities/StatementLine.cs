@@ -9,6 +9,8 @@ public class StatementLine
 
     public DateTime ActivityDateTime { get; set; }
 
+    public DateTime ActivityDate { get; set; }
+
     public Int32 ActivityType { get; set; }
 
     public String? ActivityDescription { get; set; }

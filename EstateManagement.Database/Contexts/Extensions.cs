@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ViewEntities;
 
-public static class Extensions
-{
+public static class Extensions{
     #region Methods
 
     /// <summary>
@@ -18,214 +17,265 @@ public static class Extensions
     /// <returns></returns>
     public static PropertyBuilder DecimalPrecision(this PropertyBuilder propertyBuilder,
                                                    Int32 precision,
-                                                   Int32 scale)
-    {
+                                                   Int32 scale){
         return propertyBuilder.HasColumnType($"decimal({precision},{scale})");
     }
 
-    public static ModelBuilder SetupResponseCodesTable(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<ResponseCodes>().HasKey(r => new {
-                                                                 r.ResponseCode
-                                                             });
-        return modelBuilder;
+    public static PropertyBuilder IsDateOnly(this PropertyBuilder propertyBuilder){
+        return propertyBuilder.HasColumnType("date");
     }
 
-    public static ModelBuilder SetupEstateTables(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Estate>().HasKey(t => new {
-                                                          t.EstateId
-                                                      }).IsClustered(false);
-
-        modelBuilder.Entity<Estate>().HasIndex(t => new {
-                                                          t.EstateReportingId
-                                                      }).IsClustered(true).IsUnique(true);
-
-        modelBuilder.Entity<EstateSecurityUser>().HasKey(t => new {
-                                                                      t.SecurityUserId,
-                                                                      t.EstateReportingId
-                                                                  });
-
-        modelBuilder.Entity<EstateOperator>().HasKey(t => new {
-                                                                  t.EstateReportingId,
-                                                                  t.OperatorId
-                                                              });
-
-
-        return modelBuilder;
-    }
-
-    public static ModelBuilder SetupFileTables(this ModelBuilder modelBuilder)
-    {
-
-
-        modelBuilder.Entity<FileImportLog>().HasKey(f => new {
-                                                                 f.EstateReportingId,
-                                                                 f.FileImportLogId
-                                                             }).IsClustered(false);
-
-        modelBuilder.Entity<FileImportLog>().HasIndex(f => new{
-                                                                  f.EstateReportingId,
-                                                                  f.FileImportLogReportingId,
-                                                                  f.ImportLogDateTime
-                                                              }).IsClustered(true).IsUnique(true);
-
-
-        modelBuilder.Entity<FileImportLogFile>().HasKey(f => new{
-                                                                    f.FileImportLogReportingId,
-                                                                    f.FileReportingId,
-                                                                });
-
-        modelBuilder.Entity<File>().HasKey(f => new{
-                                                       f.EstateReportingId,
-                                                       f.FileImportLogReportingId,
-                                                       f.FileId
-                                                   }).IsClustered(false);
-
-        modelBuilder.Entity<File>().HasIndex(f => new {
-                                                        f.EstateReportingId,
-                                                        f.FileImportLogReportingId,
-                                                        f.FileReportingId
-                                                    }).IsClustered(true).IsUnique(true);
-
-        modelBuilder.Entity<FileLine>().HasKey(f => new {
-                                                            f.FileReportingId,
-                                                            f.LineNumber
-                                                        }).IsClustered(true);
-
-        modelBuilder.Entity<FileLine>().HasIndex(f => new {
-                                                            f.TransactionReportingId
-                                                        }).IsUnique(false);
-
-        return modelBuilder;
-    }
-
-    public static ModelBuilder SetupMerchantTables(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Merchant>().HasKey(t => new {
-                                                            t.EstateReportingId,
-                                                            t.MerchantId
-                                                        }).IsClustered(false);
-
-        modelBuilder.Entity<Merchant>().HasIndex(t => new{
-                                                             t.EstateReportingId,
-                                                             t.MerchantReportingId
-                                                         }).IsClustered(true).IsUnique(true);
-
-        modelBuilder.Entity<MerchantAddress>().HasKey(t => new {
-                                                                   t.MerchantReportingId,
-                                                                   t.AddressId
-                                                               });
-
-        modelBuilder.Entity<MerchantContact>().HasKey(t => new {
-                                                                   t.MerchantReportingId,
-                                                                   t.ContactId
-                                                               });
-
-        modelBuilder.Entity<MerchantDevice>().HasKey(t => new {
-                                                                  t.MerchantReportingId,
-                                                                  t.DeviceId
-                                                              });
-
-        modelBuilder.Entity<MerchantSecurityUser>().HasKey(t => new {
-                                                                        t.MerchantReportingId,
-                                                                        t.SecurityUserId
-                                                                    });
-        
-        modelBuilder.Entity<MerchantOperator>().HasKey(t => new {
-                                                                    t.MerchantReportingId,
-                                                                    t.OperatorId
-                                                                });
-        
-        return modelBuilder;
-    }
-
-    public static ModelBuilder SetupTransactionTables(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Transaction>().HasKey(t => new {
-                                                               t.MerchantReportingId,
-                                                               t.TransactionId,
-                                                           }).IsClustered(false);
-
-        modelBuilder.Entity<Transaction>().HasIndex(t => new {
-                                                               t.TransactionDate,
-                                                               t.MerchantReportingId
-                                                           }).IsClustered(true);
-
-        modelBuilder.Entity<TransactionFee>().HasKey(t => new {
-                                                                  t.TransactionReportingId,
-                                                                  t.TransactionFeeReportingId
-                                                              });
-
-        modelBuilder.Entity<TransactionAdditionalRequestData>().HasKey(t => new {
-                                                                                    t.TransactionReportingId
-                                                                                });
-
-        modelBuilder.Entity<TransactionAdditionalResponseData>().HasKey(t => new {
-                                                                                    t.TransactionReportingId
-                                                                                });
-
-        modelBuilder.Entity<Reconciliation>().HasKey(t => new {
-                                                               t.TransactionId,
-                                                           }).IsClustered(false);
-
-        modelBuilder.Entity<Reconciliation>().HasIndex(t => new {
-                                                                    t.TransactionDate,
-                                                                    t.MerchantReportingId
-                                                                }).IsClustered(true);
-
-        return modelBuilder;
-    }
-
-    public static ModelBuilder SetupContractTables(this ModelBuilder modelBuilder)
-    {
+    public static ModelBuilder SetupContract(this ModelBuilder modelBuilder){
         modelBuilder.Entity<Contract>().HasKey(c => new {
                                                             c.EstateReportingId,
                                                             c.OperatorId,
                                                             c.ContractId
                                                         });
 
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupContractProduct(this ModelBuilder modelBuilder){
         modelBuilder.Entity<ContractProduct>().HasKey(c => new {
                                                                    c.ContractReportingId,
-                                                                   c.ContractProductReportingId
+                                                                   c.ProductId
                                                                });
 
-        modelBuilder.Entity<ContractProductTransactionFee>().HasKey(c => new{
-                                                                                c.ContractProductReportingId,
-                                                                                c.TransactionFeeReportingId
-                                                                            });
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupContractProductTransactionFee(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<ContractProductTransactionFee>().HasKey(c => new {
+                                                                                 c.ContractProductReportingId,
+                                                                                 c.TransactionFeeId
+                                                                             });
 
         modelBuilder.Entity<ContractProductTransactionFee>().Property(p => p.Value).DecimalPrecision(18, 4);
 
         return modelBuilder;
     }
 
-    public static ModelBuilder SetupSettlementTables(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Settlement>().HasKey(s => new {
-                                                              s.EstateReportingId,
-                                                              s.SettlementId
-                                                          }).IsClustered(false);
+    public static ModelBuilder SetupEstate(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<Estate>().HasKey(t => new{
+                                                         t.EstateReportingId
+                                                     });
 
-        modelBuilder.Entity<Settlement>().HasIndex(s => new {
-                                                              s.SettlementDate,
-                                                              s.EstateReportingId,
-                                                          }).IsClustered(true).IsUnique(true);
+        modelBuilder.Entity<Estate>().HasIndex(t => new{
+                                                           t.EstateId
+                                                       }).IsUnique();
 
-        modelBuilder.Entity<MerchantSettlementFee>().HasKey(s => new {
-                                                                         s.SettlementReportingId,
-                                                                         s.TransactionReportingId,
-                                                                         s.TransactionFeeReportingId
-                                                                     });
         return modelBuilder;
     }
 
-    public static ModelBuilder SetupStatementTables(this ModelBuilder modelBuilder)
-    {
-        //modelBuilder.Entity<StatementHeader>().HasKey(t => new {
-        //                                                           t.StatementId
-        //                                                       });
+    public static ModelBuilder SetupEstateOperator(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<EstateOperator>().HasKey(t => new{
+                                                                 t.EstateReportingId,
+                                                                 t.OperatorId
+                                                             });
+        return modelBuilder;
+    }
 
+    public static ModelBuilder SetupEstateSecurityUser(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<EstateSecurityUser>().HasKey(t => new{
+                                                                     t.SecurityUserId,
+                                                                     t.EstateReportingId
+                                                                 });
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupMerchant(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<Merchant>().HasKey(t => new {
+                                                            t.EstateReportingId,
+                                                            t.MerchantReportingId
+        });
+
+        modelBuilder.Entity<Merchant>().HasIndex(t => new {
+                                                              t.EstateReportingId,
+                                                              t.MerchantId
+                                                          }).IsUnique();
+
+        return modelBuilder;
+    }
+    
+    public static ModelBuilder SetupMerchantAddress(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<MerchantAddress>().HasKey(t => new {
+                                                                   t.MerchantReportingId,
+                                                                   t.AddressId
+                                                               });
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupMerchantContact(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<MerchantContact>().HasKey(t => new {
+                                                                   t.MerchantReportingId,
+                                                                   t.ContactId
+                                                               });
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupMerchantDevice(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<MerchantDevice>().HasKey(t => new {
+                                                                  t.MerchantReportingId,
+                                                                  t.DeviceId
+                                                              });
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupMerchantSecurityUser(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<MerchantSecurityUser>().HasKey(t => new {
+                                                                        t.MerchantReportingId,
+                                                                        t.SecurityUserId
+                                                                    });
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupMerchantOperator(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<MerchantOperator>().HasKey(t => new {
+                                                                    t.MerchantReportingId,
+                                                                    t.OperatorId
+                                                                });
+        return modelBuilder;
+    }
+    
+    public static ModelBuilder SetupResponseCodes(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<ResponseCodes>().HasKey(r => new{
+                                                                r.ResponseCode
+                                                            });
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupSettlement(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<Settlement>().HasKey(s => new {
+                                                              s.SettlementReportingId
+                                                          }).IsClustered(false);
+
+        modelBuilder.Entity<Settlement>().HasIndex(s => new {
+                                                                s.EstateReportingId,
+                                                                s.SettlementId
+                                                            }).IsClustered(false).IsUnique(true);
+
+        modelBuilder.Entity<Settlement>().HasIndex(s => new {
+                                                                s.SettlementDate,
+                                                                s.EstateReportingId,
+                                                            }).IsClustered(true);
+
+        modelBuilder.Entity<Settlement>(e => { e.Property(p => p.SettlementDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupMerchantSettlementFee(this ModelBuilder modelBuilder){
+        
+
+        modelBuilder.Entity<MerchantSettlementFee>().HasKey(s => new{
+                                                                        s.SettlementReportingId,
+                                                                        s.TransactionReportingId,
+                                                                        s.TransactionFeeReportingId
+                                                                    });
+        
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupTransaction(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<Transaction>().HasKey(t => new {
+                                                               t.TransactionReportingId,
+                                                           }).IsClustered(false);
+
+        modelBuilder.Entity<Transaction>().HasIndex(t => new {
+                                                                 t.TransactionId,
+                                                                 t.MerchantReportingId,
+                                                             }).IsClustered(false).IsUnique(true);
+
+        modelBuilder.Entity<Transaction>().HasIndex(t => new {
+                                                                 t.TransactionDate,
+                                                                 t.MerchantReportingId,
+                                                                 }).IsClustered(true);
+
+        modelBuilder.Entity<Transaction>(e => { e.Property(p => p.TransactionDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupTransactionFee(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<TransactionFee>().HasKey(t => new {
+                                                                  t.TransactionReportingId,
+                                                                  t.TransactionFeeReportingId
+                                                              });
+
+        modelBuilder.Entity<TransactionFee>().HasIndex(t => new {
+                                                                  t.FeeId
+                                                              }).IsUnique(true);
+
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupTransactionAdditionalRequestData(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TransactionAdditionalRequestData>().HasKey(t => new {
+                                                                                    t.TransactionReportingId
+                                                                                });
+
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupTransactionAdditionalResponseData(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TransactionAdditionalResponseData>().HasKey(t => new {
+                                                                                     t.TransactionReportingId
+                                                                                 });
+
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupVoucher(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<Voucher>().HasKey(t => new{
+                                                          t.VoucherId
+                                                      });
+
+        modelBuilder.Entity<Voucher>().HasIndex(t => new {
+                                                           t.VoucherCode
+                                                       });
+
+        modelBuilder.Entity<Voucher>().HasIndex(t => new {
+                                                             t.TransactionReportingId
+                                                         });
+
+        modelBuilder.Entity<Voucher>(e => { e.Property(p => p.IssuedDate).IsDateOnly(); });
+        modelBuilder.Entity<Voucher>(e => { e.Property(p => p.GenerateDate).IsDateOnly(); });
+        modelBuilder.Entity<Voucher>(e => { e.Property(p => p.ExpiryDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupReconciliation(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Reconciliation>().HasKey(t => new {
+                                                               t.TransactionReportingId,
+                                                           }).IsClustered(false);
+
+        modelBuilder.Entity<Reconciliation>().HasIndex(t => new {
+                                                                    t.TransactionId,
+                                                                    t.MerchantReportingId,
+                                                                }).IsClustered(false).IsUnique(true);
+
+        modelBuilder.Entity<Reconciliation>().HasIndex(t => new {
+                                                                    t.TransactionDate,
+                                                                    t.MerchantReportingId,
+                                                                }).IsClustered(true);
+
+        modelBuilder.Entity<Reconciliation>(e => { e.Property(p => p.TransactionDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupStatementHeader(this ModelBuilder modelBuilder){
         modelBuilder.Entity<StatementHeader>().HasKey(s => new {
                                                                    s.MerchantReportingId,
                                                                    s.StatementId
@@ -234,23 +284,89 @@ public static class Extensions
         modelBuilder.Entity<StatementHeader>().HasIndex(s => new {
                                                                      s.MerchantReportingId,
                                                                      s.StatementGeneratedDate,
-                                                                 }).IsClustered(true).IsUnique(true);
-        
+                                                                 }).IsClustered().IsUnique();
+
+        modelBuilder.Entity<StatementHeader>(e => { e.Property(p => p.StatementGeneratedDate).IsDateOnly(); });
+        modelBuilder.Entity<StatementHeader>(e => { e.Property(p => p.StatementCreatedDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupStatementLine(this ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<StatementLine>().HasKey(t => new {
                                                                  t.StatementReportingId,
                                                                  t.TransactionReportingId,
                                                                  t.ActivityDateTime,
                                                                  t.ActivityType
                                                              });
+        
+        modelBuilder.Entity<StatementLine>(e => { e.Property(p => p.ActivityDate).IsDateOnly(); });
+        
+
         return modelBuilder;
     }
 
-    public static ModelBuilder SetupViewEntities(this ModelBuilder modelBuilder)
-    {
+    public static ModelBuilder SetupViewEntities(this ModelBuilder modelBuilder){
         modelBuilder.Entity<SettlementView>().HasNoKey().ToView("uvwSettlements");
 
         return modelBuilder;
     }
 
+    public static ModelBuilder SetupFileImportLog(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<FileImportLog>().HasKey(f => new{
+                                                                f.EstateReportingId,
+                                                                f.FileImportLogReportingId
+                                                            });
+
+        modelBuilder.Entity<FileImportLog>().HasIndex(f => new {
+                                                                   f.EstateReportingId,
+                                                                   f.FileImportLogId
+                                                               }).IsUnique();
+
+        modelBuilder.Entity<FileImportLog>(e => { e.Property(p => p.ImportLogDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupFileImportLogFile(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<FileImportLogFile>().HasKey(f => new {
+                                                                     f.FileImportLogReportingId,
+                                                                     f.FileReportingId,
+                                                                 });
+
+        modelBuilder.Entity<FileImportLogFile>(e => { e.Property(p => p.FileUploadedDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupFile(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<File>().HasKey(f => new {
+                                                        f.FileReportingId
+                                                    });
+
+        modelBuilder.Entity<File>().HasIndex(f => new {
+                                                          f.FileId
+                                                      }).IsUnique();
+
+        modelBuilder.Entity<File>(e => { e.Property(p => p.FileReceivedDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupFileLine(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<FileLine>().HasKey(f => new {
+            f.FileReportingId,
+            f.LineNumber
+        }).IsClustered();
+
+        modelBuilder.Entity<FileLine>().HasIndex(f => new {
+            f.TransactionReportingId
+        }).IsUnique(false);
+        
+        return modelBuilder;
+    }
+    
     #endregion
 }

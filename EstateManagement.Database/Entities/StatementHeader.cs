@@ -16,5 +16,10 @@
         public DateTime StatementCreatedDate { get; set; }
 
         public DateTime StatementGeneratedDate { get; set; }
+
+        public DateTime StatementCreatedDateTime { get; set; }
+
+        public DateTime StatementGeneratedDateTime { get; set; }
     }
 }
+
