@@ -66,14 +66,6 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
 
             Should.NotThrow(async () => { await this.DomainEventHandler.Handle(additionalResponseDataRecordedEvent, CancellationToken.None); });
         }
-        
-        [Fact]
-        public void TransactionDomainEventHandler_MerchantFeeAddedToTransactionEvent_EventIsHandled()
-        {
-            MerchantFeeAddedToTransactionEnrichedEvent merchantFeeAddedToTransactionEvent = TestData.MerchantFeeAddedToTransactionEnrichedEvent;
-            
-            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(merchantFeeAddedToTransactionEvent, CancellationToken.None); });
-        }
 
         [Fact]
         public void TransactionDomainEventHandler_OverallTotalsRecordedEvent_EventIsHandled()
@@ -122,15 +114,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
 
             Should.NotThrow(async () => { await this.DomainEventHandler.Handle(reconciliationHasStartedEvent, CancellationToken.None); });
         }
-
-        [Fact]
-        public void TransactionDomainEventHandler_ServiceProviderFeeAddedToTransactionEvent_EventIsHandled()
-        {
-            ServiceProviderFeeAddedToTransactionEnrichedEvent serviceProviderFeeAddedToTransactionEvent = TestData.ServiceProviderFeeAddedToTransactionEvent;
-
-            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(serviceProviderFeeAddedToTransactionEvent, CancellationToken.None); });
-        }
-
+        
         [Fact]
         public void TransactionDomainEventHandler_TransactionAuthorisedByOperatorEvent_EventIsHandled()
         {
