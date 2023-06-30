@@ -11,36 +11,15 @@
     {
         #region Properties
 
-        /// <summary>
-        /// Gets or sets the created date time.
-        /// </summary>
-        /// <value>
-        /// The created date time.
-        /// </value>
         public DateTime CreatedDateTime { get; set; }
 
-        /// <summary>
-        /// Gets or sets the estate identifier.
-        /// </summary>
-        /// <value>
-        /// The estate identifier.
-        /// </value>
-        public Guid EstateId { get; set; }
+        public Int32 EstateReportingId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the merchant identifier.
-        /// </summary>
-        /// <value>
-        /// The merchant identifier.
-        /// </value>
         public Guid MerchantId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 MerchantReportingId { get; set; }
+
         public String Name { get; set; }
 
         public Int32 SettlementSchedule { get; set; }

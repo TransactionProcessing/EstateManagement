@@ -80,7 +80,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 
             merchantModel.ShouldNotBeNull();
-            merchantModel.EstateId.ShouldBe(TestData.EstateId);
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
             merchantModel.MerchantName.ShouldBe(TestData.MerchantName);
             merchantModel.Addresses.ShouldBeNull();
@@ -95,7 +94,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 
             merchantModel.ShouldNotBeNull();
-            merchantModel.EstateId.ShouldBe(TestData.EstateId);
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
             merchantModel.MerchantName.ShouldBe(TestData.MerchantName);
             merchantModel.Addresses.ShouldHaveSingleItem();
@@ -110,7 +108,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 
             merchantModel.ShouldNotBeNull();
-            merchantModel.EstateId.ShouldBe(TestData.EstateId);
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
             merchantModel.MerchantName.ShouldBe(TestData.MerchantName);
             merchantModel.Addresses.ShouldBeNull();
@@ -141,7 +138,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             Contract contractModel = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, false, false, CancellationToken.None);
 
             contractModel.ShouldNotBeNull();
-            contractModel.EstateId.ShouldBe(TestData.EstateId);
             contractModel.ContractId.ShouldBe(TestData.ContractId);
             contractModel.Description.ShouldBe(TestData.ContractDescription);
             contractModel.OperatorId.ShouldBe(TestData.OperatorId);

@@ -49,6 +49,7 @@
         {
             EstateModel estateModel = new EstateModel();
             estateModel.EstateId = estate.EstateId;
+            estateModel.EstateReportingId = estate.EstateReportingId;
             estateModel.Name = estate.Name;
             estateModel.Reference = estate.Reference;
 
@@ -95,7 +96,8 @@
                                          List<MerchantSecurityUserEntity> merchantSecurityUsers)
         {
             MerchantModel merchantModel = new MerchantModel();
-            merchantModel.EstateId = merchant.EstateId;
+            merchantModel.EstateReportingId = merchant.EstateReportingId;
+            merchantModel.MerchantReportingId = merchant.MerchantReportingId;
             merchantModel.MerchantId = merchant.MerchantId;
             merchantModel.MerchantName = merchant.Name;
 
@@ -171,18 +173,20 @@
                                          List<ContractProductTransactionFeeEntity> productTransactionFees)
         {
             ContractModel contractModel = new ContractModel();
-            contractModel.EstateId = contract.EstateId;
+            contractModel.EstateReportingId = contract.EstateReportingId;
             contractModel.OperatorId = contract.OperatorId;
             contractModel.Description = contract.Description;
             contractModel.IsCreated = true; // Should this be stored at RM or is the fact its in RM mean true???
             contractModel.ContractId = contract.ContractId;
-
+            contractModel.ContractReportingId=contract.ContractReportingId;
+            
             if (contractProducts != null && contractProducts.Any())
             {
                 contractModel.Products = new List<Product>();
 
                 contractProducts.ForEach(p => contractModel.Products.Add(new Product
                                                                          {
+                                                                             ContractProductReportingId = p.ContractProductReportingId,
                                                                              ProductId = p.ProductId,
                                                                              Value = p.Value,
                                                                              Name = p.ProductName,
@@ -195,10 +199,11 @@
             {
                 productTransactionFees.ForEach(f =>
                                                {
-                                                   Product product = contractModel.Products.Single(p => p.ProductId == f.ProductId);
+                                                   Product product = contractModel.Products.Single(p => p.ContractProductReportingId == f.ContractProductReportingId);
 
                                                    product.TransactionFees.Add(new TransactionFee
                                                                                {
+                                                                                   TransactionFeeReportingId = f.TransactionFeeReportingId,
                                                                                    TransactionFeeId = f.TransactionFeeId,
                                                                                    Value = f.Value,
                                                                                    Description = f.Description,

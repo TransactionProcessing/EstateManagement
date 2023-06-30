@@ -7,39 +7,17 @@
     public class Contract
     {
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the contract identifier.
-        /// </summary>
-        /// <value>
-        /// The contract identifier.
-        /// </value>
+        
         public Guid ContractId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the description.
-        /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
-        public String Description { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 ContractReportingId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the estate identifier.
-        /// </summary>
-        /// <value>
-        /// The estate identifier.
-        /// </value>
-        public Guid EstateId { get; set; }
+        public Int32 EstateReportingId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the operator identifier.
-        /// </summary>
-        /// <value>
-        /// The operator identifier.
-        /// </value>
         public Guid OperatorId { get; set; }
 
+        public String Description { get; set; }
         #endregion
     }
 }

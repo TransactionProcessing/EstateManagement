@@ -12,38 +12,16 @@
     {
         #region Properties
 
-        /// <summary>
-        /// Gets or sets the estate identifier.
-        /// </summary>
-        /// <value>
-        /// The estate identifier.
-        /// </value>
+        public Int32 EstateReportingId { get; set; }
+
         public Guid EstateId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         public String Name { get; set; }
 
         public String Reference { get; set; }
 
-        /// <summary>
-        /// Gets or sets the operators.
-        /// </summary>
-        /// <value>
-        /// The operators.
-        /// </value>
         public List<Operator> Operators { get; set; }
 
-        /// <summary>
-        /// Gets or sets the security users.
-        /// </summary>
-        /// <value>
-        /// The security users.
-        /// </value>
         public List<SecurityUser> SecurityUsers { get; set; }
 
         #endregion

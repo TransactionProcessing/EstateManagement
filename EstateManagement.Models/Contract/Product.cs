@@ -26,6 +26,8 @@
 
         public Guid ProductId { get; set; }
 
+        public Int32 ContractProductReportingId { get; set; }
+
         public ProductType ProductType { get; set; }
 
         public List<TransactionFee> TransactionFees { get; set; }

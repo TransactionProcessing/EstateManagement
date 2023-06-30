@@ -120,7 +120,7 @@
         public static Contract GetContract(this ContractAggregate aggregate){
             Contract contractModel = new Contract();
 
-            contractModel.EstateId = aggregate.EstateId;
+            //contractModel.EstateId = aggregate.EstateId;
             contractModel.IsCreated = aggregate.IsCreated;
             contractModel.OperatorId = aggregate.OperatorId;
             contractModel.Description = aggregate.Description;

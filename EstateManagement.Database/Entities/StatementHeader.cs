@@ -8,12 +8,18 @@
     {
         public Guid StatementId { get; set; }
 
-        public Guid EstateId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int32 StatementReportingId { get; set; }
 
-        public Guid MerchantId { get; set; }
+        public Int32 MerchantReportingId { get; set; }
 
         public DateTime StatementCreatedDate { get; set; }
 
         public DateTime StatementGeneratedDate { get; set; }
+
+        public DateTime StatementCreatedDateTime { get; set; }
+
+        public DateTime StatementGeneratedDateTime { get; set; }
     }
 }
+

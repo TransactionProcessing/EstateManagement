@@ -16,7 +16,7 @@ namespace EstateManagement.Database.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Calendar", b =>
@@ -67,8 +67,8 @@ namespace EstateManagement.Database.Migrations.MySql
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Contract", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("OperatorId")
                         .HasColumnType("char(36)");
@@ -76,25 +76,30 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<Guid>("ContractId")
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("ContractReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "OperatorId", "ContractId");
+                    b.HasKey("EstateReportingId", "OperatorId", "ContractId");
 
                     b.ToTable("contract");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.ContractProduct", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ContractId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ContractReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("char(36)");
+
+                    b.Property<int>("ContractProductReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("DisplayText")
                         .IsRequired()
@@ -110,21 +115,15 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<decimal?>("Value")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("EstateId", "ContractId", "ProductId");
+                    b.HasKey("ContractReportingId", "ProductId");
 
                     b.ToTable("contractproduct");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.ContractProductTransactionFee", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ContractId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ContractProductReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("TransactionFeeId")
                         .HasColumnType("char(36)");
@@ -142,22 +141,29 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("TransactionFeeReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,4)");
 
-                    b.HasKey("EstateId", "ContractId", "ProductId", "TransactionFeeId");
+                    b.HasKey("ContractProductReportingId", "TransactionFeeId");
 
                     b.ToTable("contractproducttransactionfee");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Estate", b =>
                 {
-                    b.Property<Guid>("EstateId")
+                    b.Property<int>("EstateReportingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("EstateId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -166,15 +172,18 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("Reference")
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId");
+                    b.HasKey("EstateReportingId");
+
+                    b.HasIndex("EstateId")
+                        .IsUnique();
 
                     b.ToTable("estate");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.EstateOperator", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("OperatorId")
                         .HasColumnType("char(36)");
@@ -189,7 +198,7 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<bool>("RequireCustomTerminalNumber")
                         .HasColumnType("tinyint(1)");
 
-                    b.HasKey("EstateId", "OperatorId");
+                    b.HasKey("EstateReportingId", "OperatorId");
 
                     b.ToTable("estateoperator");
                 });
@@ -199,8 +208,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<Guid>("SecurityUserId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime(6)");
@@ -209,21 +218,25 @@ namespace EstateManagement.Database.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("SecurityUserId", "EstateId");
+                    b.HasKey("SecurityUserId", "EstateReportingId");
 
                     b.ToTable("estatesecurityuser");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.File", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("FileReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("FileImportLogId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("FileId")
                         .HasColumnType("char(36)");
+
+                    b.Property<int>("FileImportLogReportingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FileLocation")
                         .IsRequired()
@@ -232,49 +245,62 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<Guid>("FileProfileId")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("FileReceivedDate")
+                        .HasColumnType("date");
+
                     b.Property<DateTime>("FileReceivedDateTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("EstateId", "FileImportLogId", "FileId");
+                    b.HasKey("FileReportingId");
+
+                    b.HasIndex("FileId")
+                        .IsUnique();
 
                     b.ToTable("file");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.FileImportLog", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FileImportLogReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<Guid>("FileImportLogId")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("ImportLogDate")
+                        .HasColumnType("date");
+
                     b.Property<DateTime>("ImportLogDateTime")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("EstateId", "FileImportLogId");
+                    b.HasKey("EstateReportingId", "FileImportLogReportingId");
+
+                    b.HasIndex("EstateReportingId", "FileImportLogId")
+                        .IsUnique();
 
                     b.ToTable("fileimportlog");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.FileImportLogFile", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("FileImportLogReportingId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("FileImportLogId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("FileId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("FileReportingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
@@ -283,11 +309,14 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<Guid>("FileProfileId")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("FileUploadedDate")
+                        .HasColumnType("date");
+
                     b.Property<DateTime>("FileUploadedDateTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
@@ -296,18 +325,15 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("EstateId", "FileImportLogId", "FileId");
+                    b.HasKey("FileImportLogReportingId", "FileReportingId");
 
                     b.ToTable("fileimportlogfile");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.FileLine", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("FileId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("FileReportingId")
+                        .HasColumnType("int");
 
                     b.Property<int>("LineNumber")
                         .HasColumnType("int");
@@ -320,27 +346,34 @@ namespace EstateManagement.Database.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .HasColumnType("int");
 
-                    b.HasKey("EstateId", "FileId", "LineNumber");
+                    b.HasKey("FileReportingId", "LineNumber")
+                        .HasAnnotation("SqlServer:Clustered", true);
+
+                    b.HasIndex("TransactionReportingId");
 
                     b.ToTable("fileline");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Merchant", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("LastStatementGenerated")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -352,18 +385,18 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("SettlementSchedule")
                         .HasColumnType("int");
 
-                    b.HasKey("EstateId", "MerchantId");
+                    b.HasKey("EstateReportingId", "MerchantReportingId");
+
+                    b.HasIndex("EstateReportingId", "MerchantId")
+                        .IsUnique();
 
                     b.ToTable("merchant");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.MerchantAddress", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("AddressId")
                         .HasColumnType("char(36)");
@@ -396,18 +429,15 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("Town")
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "MerchantId", "AddressId");
+                    b.HasKey("MerchantReportingId", "AddressId");
 
                     b.ToTable("merchantaddress");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.MerchantContact", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ContactId")
                         .HasColumnType("char(36)");
@@ -425,18 +455,15 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "MerchantId", "ContactId");
+                    b.HasKey("MerchantReportingId", "ContactId");
 
                     b.ToTable("merchantcontact");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.MerchantDevice", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("DeviceId")
                         .HasColumnType("char(36)");
@@ -448,18 +475,15 @@ namespace EstateManagement.Database.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "MerchantId", "DeviceId");
+                    b.HasKey("MerchantReportingId", "DeviceId");
 
                     b.ToTable("merchantdevice");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.MerchantOperator", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("OperatorId")
                         .HasColumnType("char(36)");
@@ -474,18 +498,15 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("TerminalNumber")
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "MerchantId", "OperatorId");
+                    b.HasKey("MerchantReportingId", "OperatorId");
 
                     b.ToTable("merchantoperator");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.MerchantSecurityUser", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("SecurityUserId")
                         .HasColumnType("char(36)");
@@ -497,24 +518,21 @@ namespace EstateManagement.Database.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "MerchantId", "SecurityUserId");
+                    b.HasKey("MerchantReportingId", "SecurityUserId");
 
                     b.ToTable("merchantsecurityuser");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.MerchantSettlementFee", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("SettlementReportingId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("SettlementId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("FeeId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionFeeReportingId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("CalculatedValue")
                         .HasColumnType("decimal(65,30)");
@@ -528,25 +546,22 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<bool>("IsSettled")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
-                    b.HasKey("EstateId", "SettlementId", "TransactionId", "FeeId");
+                    b.HasKey("SettlementReportingId", "TransactionReportingId", "TransactionFeeReportingId");
 
                     b.ToTable("merchantsettlementfee");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Reconciliation", b =>
                 {
-                    b.Property<Guid>("TransactionId")
+                    b.Property<int>("TransactionReportingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
 
                     b.Property<string>("DeviceIdentifier")
                         .HasColumnType("longtext");
-
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
 
                     b.Property<bool>("IsAuthorised")
                         .HasColumnType("tinyint(1)");
@@ -554,8 +569,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ResponseCode")
                         .HasColumnType("longtext");
@@ -567,10 +582,13 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("TransactionDateTime")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("char(36)");
 
                     b.Property<TimeSpan>("TransactionTime")
                         .HasColumnType("time(6)");
@@ -578,7 +596,15 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<decimal>("TransactionValue")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("TransactionId");
+                    b.HasKey("TransactionReportingId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("TransactionDate", "MerchantReportingId")
+                        .HasAnnotation("SqlServer:Clustered", true);
+
+                    b.HasIndex("TransactionId", "MerchantReportingId")
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("reconciliation");
                 });
@@ -600,53 +626,76 @@ namespace EstateManagement.Database.Migrations.MySql
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Settlement", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("SettlementReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("SettlementId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("SettlementDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("date");
 
-                    b.HasKey("EstateId", "SettlementId");
+                    b.Property<Guid>("SettlementId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("SettlementReportingId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("EstateReportingId", "SettlementId")
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("SettlementDate", "EstateReportingId")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("settlement");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.StatementHeader", b =>
                 {
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("StatementId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("StatementCreatedDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("StatementCreatedDateTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("StatementGeneratedDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("StatementGeneratedDateTime")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("StatementId");
+                    b.Property<int>("StatementReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.HasKey("MerchantReportingId", "StatementId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("MerchantReportingId", "StatementGeneratedDate")
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("statementheader");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.StatementLine", b =>
                 {
-                    b.Property<Guid>("StatementId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("StatementReportingId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ActivityDateTime")
                         .HasColumnType("datetime(6)");
@@ -654,42 +703,37 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("ActivityType")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("ActivityDate")
+                        .HasColumnType("date");
+
                     b.Property<string>("ActivityDescription")
                         .HasColumnType("longtext");
-
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("InAmount")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
-
                     b.Property<decimal>("OutAmount")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("StatementId", "TransactionId", "ActivityDateTime", "ActivityType");
+                    b.HasKey("StatementReportingId", "TransactionReportingId", "ActivityDateTime", "ActivityType");
 
                     b.ToTable("statementline");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Transaction", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("AuthorisationCode")
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("ContractId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ContractProductReportingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ContractReportingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("DeviceIdentifier")
                         .HasColumnType("longtext");
@@ -700,11 +744,11 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
+
                     b.Property<string>("OperatorIdentifier")
                         .HasColumnType("longtext");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("ResponseCode")
                         .HasColumnType("longtext");
@@ -713,10 +757,13 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("TransactionDateTime")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("TransactionNumber")
                         .HasColumnType("longtext");
@@ -733,21 +780,23 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("TransactionType")
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "MerchantId", "TransactionId");
+                    b.HasKey("TransactionReportingId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("TransactionDate", "MerchantReportingId")
+                        .HasAnnotation("SqlServer:Clustered", true);
+
+                    b.HasIndex("TransactionId", "MerchantReportingId")
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("transaction");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.TransactionAdditionalRequestData", b =>
                 {
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Amount")
                         .HasColumnType("longtext");
@@ -755,35 +804,29 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("CustomerAccountNumber")
                         .HasColumnType("longtext");
 
-                    b.HasKey("EstateId", "MerchantId", "TransactionId");
+                    b.HasKey("TransactionReportingId");
 
                     b.ToTable("transactionadditionalrequestdata");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.TransactionAdditionalResponseData", b =>
                 {
-                    b.Property<Guid>("TransactionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("TransactionId");
+                    b.HasKey("TransactionReportingId");
 
                     b.ToTable("transactionadditionalresponsedata");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.TransactionFee", b =>
                 {
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("FeeId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionFeeReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<decimal>("CalculatedValue")
                         .HasColumnType("decimal(65,30)");
@@ -794,13 +837,19 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<Guid>("EventId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid>("FeeId")
+                        .HasColumnType("char(36)");
+
                     b.Property<int>("FeeType")
                         .HasColumnType("int");
 
                     b.Property<decimal>("FeeValue")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("TransactionId", "FeeId");
+                    b.HasKey("TransactionReportingId", "TransactionFeeReportingId");
+
+                    b.HasIndex("FeeId")
+                        .IsUnique();
 
                     b.ToTable("transactionfee");
                 });
@@ -811,11 +860,14 @@ namespace EstateManagement.Database.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("ExpiryDateTime")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("GenerateDate")
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("GenerateDateTime")
                         .HasColumnType("datetime(6)");
@@ -828,6 +880,9 @@ namespace EstateManagement.Database.Migrations.MySql
 
                     b.Property<bool>("IsRedeemed")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("IssuedDate")
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("IssuedDateTime")
                         .HasColumnType("datetime(6)");
@@ -842,95 +897,29 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("RecipientMobile")
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("RedeemedDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("RedeemedDateTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TransactionReportingId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("VoucherCode")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("VoucherId");
 
+                    b.HasIndex("TransactionReportingId");
+
+                    b.HasIndex("VoucherCode");
+
                     b.ToTable("voucher");
-                });
-
-            modelBuilder.Entity("EstateManagement.Database.ViewEntities.FileImportLogView", b =>
-                {
-                    b.Property<int>("FileCount")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("FileImportLogId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("ImportLogDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("ImportLogDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<TimeSpan>("ImportLogTime")
-                        .HasColumnType("time(6)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
-
-                    b.ToTable("uvwFileImportLogView");
-
-                    b.ToView("uvwFileImportLog", (string)null);
-                });
-
-            modelBuilder.Entity("EstateManagement.Database.ViewEntities.FileView", b =>
-                {
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("FailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("FileId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("FileReceivedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("FileReceivedDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<TimeSpan>("FileReceivedTime")
-                        .HasColumnType("time(6)");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("LineCount")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("MerchantName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("PendingCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SuccessCount")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.ToTable("uvwFileView");
-
-                    b.ToView("uvwFile", (string)null);
                 });
 
             modelBuilder.Entity("EstateManagement.Database.ViewEntities.SettlementView", b =>
@@ -994,66 +983,6 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.ToTable((string)null);
 
                     b.ToView("uvwSettlements", (string)null);
-                });
-
-            modelBuilder.Entity("EstateManagement.Database.ViewEntities.TransactionsView", b =>
-                {
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<string>("DayOfWeek")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("IsAuthorised")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Month")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("MonthNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OperatorIdentifier")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ResponseCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("TransactionDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("TransactionType")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("WeekNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("YearNumber")
-                        .HasColumnType("int");
-
-                    b.ToTable("uvwTransactionsView");
-
-                    b.ToView("uvwTransactions", (string)null);
                 });
 #pragma warning restore 612, 618
         }

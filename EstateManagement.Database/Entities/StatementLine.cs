@@ -5,13 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("statementline")]
 public class StatementLine
 {
-    public Guid StatementId { get; set; }
-
-    public Guid EstateId { get; set; }
-
-    public Guid MerchantId { get; set; }
+    public Int32 StatementReportingId { get; set; }
 
     public DateTime ActivityDateTime { get; set; }
+
+    public DateTime ActivityDate { get; set; }
 
     public Int32 ActivityType { get; set; }
 
@@ -20,5 +18,5 @@ public class StatementLine
     public Decimal InAmount { get; set; }
     public Decimal OutAmount { get; set; }
 
-    public Guid TransactionId { get; set; }
+    public Int32 TransactionReportingId { get; set; }
 }

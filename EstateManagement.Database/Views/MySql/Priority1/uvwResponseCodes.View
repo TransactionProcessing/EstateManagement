@@ -1,6 +1,0 @@
-CREATE OR REPLACE VIEW uvwResponseCodes
-AS
-SELECT
-	ResponseCode, 
-	Description
-from [responsecodes]

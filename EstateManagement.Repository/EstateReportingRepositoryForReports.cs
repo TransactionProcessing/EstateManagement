@@ -125,20 +125,21 @@ public class EstateReportingRepositoryForReports : IEstateReportingRepositoryFor
             query = query.Where(t => t.MerchantId == merchantId);
         }
 
-        List<SettlementModel> result = await query.GroupBy(t => new {
-                                                                        t.SettlementId,
-                                                                        t.SettlementDate,
-                                                                        t.IsCompleted
-                                                                    }).Select(t => new SettlementModel
-                                                                                   {
-                                                                                       SettlementId = t.Key.SettlementId,
-                                                                                       SettlementDate = t.Key.SettlementDate,
-                                                                                       NumberOfFeesSettled = t.Count(),
-                                                                                       ValueOfFeesSettled = t.Sum(x => x.CalculatedValue),
-                                                                                       IsCompleted = t.Key.IsCompleted
-                                                                                   }).OrderByDescending(t => t.SettlementDate)
+        List<SettlementModel> result = await query.GroupBy(t => new
+        {
+            t.SettlementId,
+            t.SettlementDate,
+            t.IsCompleted
+        }).Select(t => new SettlementModel
+        {
+            SettlementId = t.Key.SettlementId,
+            SettlementDate = t.Key.SettlementDate,
+            NumberOfFeesSettled = t.Count(),
+            ValueOfFeesSettled = t.Sum(x => x.CalculatedValue),
+            IsCompleted = t.Key.IsCompleted
+        }).OrderByDescending(t => t.SettlementDate)
                                                   .ToListAsync(cancellationToken);
-
+        
         return result;
     }
 

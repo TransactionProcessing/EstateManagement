@@ -11,9 +11,9 @@ SELECT
 	DATEPART(MM, s.SettlementDate) as MonthNumber,
 	YEAR(s.SettlementDate) as YearNumber,
 	f.CalculatedValue,
-	f.TransactionId,
-	t.EstateId,
-	t.MerchantId,
+	t.TransactionId,
+	e.EstateId,
+	m.MerchantId,
 	m.Name as MerchantName,
 	cptf.Description as FeeDescription,
 	CASE t.OperatorIdentifier
@@ -23,9 +23,10 @@ SELECT
 	CAST(ISNULL(tar.Amount,0) as decimal) as Amount,
 	f.IsSettled
 from settlement s 
-inner join merchantsettlementfee f on s.SettlementId = f.SettlementId
-inner join [transaction] t on t.TransactionId = f.TransactionId
-inner join [merchant] m on t.MerchantId = m.MerchantId
-left outer join contractproducttransactionfee cptf on f.FeeId = cptf.TransactionFeeId
-left outer join transactionadditionalrequestdata tar on tar.TransactionId = t.TransactionId AND tar.MerchantId = t.MerchantId and tar.EstateId = t.EstateId
-inner join contract c on c.ContractId = t.ContractId
+inner join merchantsettlementfee f on s.SettlementReportingId = f.SettlementReportingId
+inner join [transaction] t on t.TransactionReportingId = f.TransactionReportingId
+inner join [merchant] m on t.MerchantReportingId = m.MerchantReportingId
+inner join [estate] e on e.EstateReportingId = m.EstateReportingId
+left outer join contractproducttransactionfee cptf on f.TransactionFeeReportingId = cptf.TransactionFeeReportingId
+left outer join transactionadditionalrequestdata tar on tar.TransactionReportingId = t.TransactionReportingId
+inner join contract c on c.ContractReportingId = t.ContractReportingId
