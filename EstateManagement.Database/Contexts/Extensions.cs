@@ -200,20 +200,6 @@ public static class Extensions{
         return modelBuilder;
     }
 
-    public static ModelBuilder SetupTransactionFee(this ModelBuilder modelBuilder){
-        modelBuilder.Entity<TransactionFee>().HasKey(t => new {
-                                                                  t.TransactionReportingId,
-                                                                  t.TransactionFeeReportingId
-                                                              });
-
-        modelBuilder.Entity<TransactionFee>().HasIndex(t => new {
-                                                                  t.FeeId
-                                                              }).IsUnique(true);
-
-
-        return modelBuilder;
-    }
-
     public static ModelBuilder SetupTransactionAdditionalRequestData(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TransactionAdditionalRequestData>().HasKey(t => new {

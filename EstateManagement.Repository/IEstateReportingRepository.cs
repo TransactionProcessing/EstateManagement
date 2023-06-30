@@ -91,158 +91,49 @@ namespace EstateManagement.Repository
         /// <returns></returns>
         Task AddEstateSecurityUser(SecurityUserAddedToEstateEvent domainEvent,
                                    CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Adds the fee details to transaction.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task AddFeeDetailsToTransaction(MerchantFeeAddedToTransactionEnrichedEvent domainEvent,
-                                        CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Adds the fee details to transaction.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task AddFeeDetailsToTransaction(ServiceProviderFeeAddedToTransactionEnrichedEvent domainEvent,
-                                        CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Adds the file.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        
         Task AddFile(FileCreatedEvent domainEvent,
                      CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the file import log.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddFileImportLog(ImportLogCreatedEvent domainEvent,
                               CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the file line to file.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddFileLineToFile(FileLineAddedEvent domainEvent,
                                CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the file to import log.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddFileToImportLog(FileAddedToImportLogEvent domainEvent,
                                 CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the generated voucher.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddGeneratedVoucher(VoucherGeneratedEvent domainEvent,
                                  CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the merchant.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddMerchant(MerchantCreatedEvent domainEvent,
                          CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the merchant address.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddMerchantAddress(AddressAddedEvent domainEvent,
                                 CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the merchant contact.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddMerchantContact(ContactAddedEvent domainEvent,
                                 CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the merchant device.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddMerchantDevice(DeviceAddedToMerchantEvent domainEvent,
                                CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the merchant operator.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddMerchantOperator(OperatorAssignedToMerchantEvent domainEvent,
                                  CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the merchant security user.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddMerchantSecurityUser(SecurityUserAddedToMerchantEvent domainEvent,
                                      CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the pending merchant fee to settlement.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddPendingMerchantFeeToSettlement(MerchantFeeAddedPendingSettlementEvent domainEvent,
                                                CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the product details to transaction.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddProductDetailsToTransaction(ProductDetailsAddedToTransactionEvent domainEvent,
                                             CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the settled fee to statement.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddSettledFeeToStatement(SettledFeeAddedToStatementEvent domainEvent,
                                       CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the settled merchant fee to settlement.
-        /// </summary>
-        /// <param name="settlementId">The settlement identifier.</param>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddSettledMerchantFeeToSettlement(Guid settlementId,
                                                MerchantFeeAddedToTransactionEvent domainEvent,
                                                CancellationToken cancellationToken);
@@ -250,30 +141,12 @@ namespace EstateManagement.Repository
         Task AddSourceDetailsToTransaction(TransactionSourceAddedToTransactionEvent domainEvent,
                                            CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the transaction to statement.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddTransactionToStatement(TransactionAddedToStatementEvent domainEvent,
                                        CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Completes the reconciliation.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task CompleteReconciliation(ReconciliationHasCompletedEvent domainEvent,
                                     CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Completes the transaction.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task CompleteTransaction(TransactionHasBeenCompletedEvent domainEvent,
                                  CancellationToken cancellationToken);
 
@@ -813,81 +686,7 @@ namespace EstateManagement.Repository
             Guid statementHeaderId = DomainEventHelper.GetStatementHeaderId(domainEvent);
             return await context.StatementHeaders.SingleOrDefaultAsync(e => e.StatementId == statementHeaderId);
         }
-
-        /// <summary>
-        /// Adds the fee details to transaction.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-        /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-        public async Task AddFeeDetailsToTransaction(MerchantFeeAddedToTransactionEnrichedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-
-            ContractProductTransactionFee contractProductTransactionFee = await LoadContractProductTransactionFee(context, domainEvent);
-
-            Transaction transaction = await this.LoadTransaction(context, domainEvent);
-
-            if (transaction == null)
-            {
-                throw new NotFoundException($"Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model");
-            }
-
-            TransactionFee transactionFee = new TransactionFee
-            {
-                TransactionFeeReportingId = contractProductTransactionFee.TransactionFeeReportingId,
-                CalculatedValue = domainEvent.CalculatedValue,
-                CalculationType = domainEvent.FeeCalculationType,
-                EventId = domainEvent.EventId,
-                FeeType = 0,
-                FeeValue = domainEvent.FeeValue,
-                TransactionReportingId = transaction.TransactionReportingId
-            };
-
-            await context.TransactionFees.AddAsync(transactionFee, cancellationToken);
-
-            await context.SaveChangesWithDuplicateHandling(cancellationToken);
-        }
-
-        /// <summary>
-        /// Adds the fee details to transaction.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-        /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-        public async Task AddFeeDetailsToTransaction(ServiceProviderFeeAddedToTransactionEnrichedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
-
-            ContractProductTransactionFee contractProductTransactionFee = await LoadContractProductTransactionFee(context, domainEvent);
-
-            Transaction transaction = await this.LoadTransaction(context, domainEvent);
-
-            if (transaction == null)
-            {
-                throw new NotFoundException($"Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model");
-            }
-
-            TransactionFee transactionFee = new TransactionFee
-            {
-                TransactionFeeReportingId = contractProductTransactionFee.TransactionFeeReportingId,
-                CalculatedValue = domainEvent.CalculatedValue,
-                CalculationType = domainEvent.FeeCalculationType,
-                EventId = domainEvent.EventId,
-                FeeType = 1,
-                FeeValue = domainEvent.FeeValue,
-                TransactionReportingId = transaction.TransactionReportingId
-            };
-
-            await context.TransactionFees.AddAsync(transactionFee, cancellationToken);
-
-            await context.SaveChangesWithDuplicateHandling(cancellationToken);
-        }
-
+        
         /// <summary>
         /// Adds the file.
         /// </summary>

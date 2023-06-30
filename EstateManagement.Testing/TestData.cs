@@ -1381,17 +1381,6 @@
 
         public static Decimal FeeValue = 0.0005m;
 
-        public static MerchantFeeAddedToTransactionEnrichedEvent MerchantFeeAddedToTransactionEnrichedEvent =
-            new MerchantFeeAddedToTransactionEnrichedEvent(TestData.TransactionId,
-                                                           Guid.Parse("9646B63F-1956-4261-99FF-E90B2F8BFC79"),
-                                                           TestData.EstateId,
-                                                           TestData.MerchantId,
-                                                           TestData.CalculatedValue,
-                                                           TestData.FeeCalculationType,
-                                                           TestData.TransactionFeeId,
-                                                           TestData.FeeValue,
-                                                           TestData.FeeCalculatedDateTime);
-
         public static MerchantFeeAddedToTransactionEvent MerchantFeeAddedToTransactionEvent = new MerchantFeeAddedToTransactionEvent(TestData.TransactionId,
             TestData.EstateId,
             TestData.MerchantId,
@@ -1402,17 +1391,6 @@
             TestData.FeeCalculatedDateTime,
             TestData.SettlementDueDate,
             TestData.SettledDate);
-
-        public static ServiceProviderFeeAddedToTransactionEnrichedEvent ServiceProviderFeeAddedToTransactionEvent =
-            new ServiceProviderFeeAddedToTransactionEnrichedEvent(TestData.TransactionId,
-                                                                  Guid.Parse("9646B63F-1956-4261-99FF-E90B2F8BFC79"),
-                                                                  TestData.EstateId,
-                                                                  TestData.MerchantId,
-                                                                  TestData.CalculatedValue,
-                                                                  TestData.FeeCalculationType,
-                                                                  TestData.TransactionFeeId,
-                                                                  TestData.FeeValue,
-                                                                  TestData.FeeCalculatedDateTime);
 
         public static DateTime FeeCalculatedDateTime = new DateTime(2021, 3, 23);
 
