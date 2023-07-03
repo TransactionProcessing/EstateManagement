@@ -152,6 +152,7 @@ namespace EstateManagement.BusinessLogic.Tests
         [Fact]
         public void MerchantEntities_ConvertFrom_MerchantConverted()
         {
+            EstateEntity estate = TestData.EstateEntity;
             MerchantEntity merchant = TestData.MerchantEntity;
             List<MerchantAddress> merchantAddresses = new List<MerchantAddressEntity>
                                                       {
@@ -175,7 +176,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -215,7 +216,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -254,7 +255,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -293,7 +294,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -332,7 +333,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -371,7 +372,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -410,7 +411,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -449,7 +450,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -488,7 +489,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -528,7 +529,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -568,7 +569,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Merchant merchantModel = modelFactory.ConvertFrom(merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            Merchant merchantModel = modelFactory.ConvertFrom(TestData.EstateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(merchant.MerchantId);
@@ -621,7 +622,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+            ContractModel contractModel = modelFactory.ConvertFrom(TestData.EstateId, contract, contractProducts, contractProductsTransactionFees);
 
             contractModel.ShouldNotBeNull();
             contractModel.ContractId.ShouldBe(contract.ContractId);
@@ -657,7 +658,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+            ContractModel contractModel = modelFactory.ConvertFrom(TestData.EstateId, contract, contractProducts, contractProductsTransactionFees);
 
             contractModel.ShouldNotBeNull();
             contractModel.ContractId.ShouldBe(contract.ContractId);
@@ -675,7 +676,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+            ContractModel contractModel = modelFactory.ConvertFrom(TestData.EstateId, contract, contractProducts, contractProductsTransactionFees);
 
             contractModel.ShouldNotBeNull();
             contractModel.ContractId.ShouldBe(contract.ContractId);
@@ -696,7 +697,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+            ContractModel contractModel = modelFactory.ConvertFrom(TestData.EstateId, contract, contractProducts, contractProductsTransactionFees);
 
             contractModel.ShouldNotBeNull();
             contractModel.ContractId.ShouldBe(contract.ContractId);
@@ -726,7 +727,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            ContractModel contractModel = modelFactory.ConvertFrom(contract, contractProducts, contractProductsTransactionFees);
+            ContractModel contractModel = modelFactory.ConvertFrom(TestData.EstateId, contract, contractProducts, contractProductsTransactionFees);
 
             contractModel.ShouldNotBeNull();
             contractModel.ContractId.ShouldBe(contract.ContractId);
