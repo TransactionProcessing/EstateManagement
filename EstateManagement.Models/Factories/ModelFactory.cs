@@ -88,7 +88,8 @@
         /// <param name="merchantDevices">The merchant devices.</param>
         /// <param name="merchantSecurityUsers">The merchant security users.</param>
         /// <returns></returns>
-        public MerchantModel ConvertFrom(MerchantEntity merchant,
+        public MerchantModel ConvertFrom(Guid estateId, 
+                                         MerchantEntity merchant,
                                          List<MerchantAddressEntity> merchantAddresses,
                                          List<MerchantContactEntity> merchantContacts,
                                          List<MerchantOperatorEntity> merchantOperators,
@@ -96,10 +97,12 @@
                                          List<MerchantSecurityUserEntity> merchantSecurityUsers)
         {
             MerchantModel merchantModel = new MerchantModel();
+            merchantModel.EstateId = estateId;
             merchantModel.EstateReportingId = merchant.EstateReportingId;
             merchantModel.MerchantReportingId = merchant.MerchantReportingId;
             merchantModel.MerchantId = merchant.MerchantId;
             merchantModel.MerchantName = merchant.Name;
+            merchantModel.Reference = merchant.Reference;
 
             if (merchantAddresses != null && merchantAddresses.Any())
             {
@@ -168,11 +171,13 @@
         /// <param name="contractProducts">The contract products.</param>
         /// <param name="productTransactionFees">The product transaction fees.</param>
         /// <returns></returns>
-        public ContractModel ConvertFrom(ContractEntity contract,
+        public ContractModel ConvertFrom(Guid estateId,
+                                         ContractEntity contract,
                                          List<ContractProductEntity> contractProducts,
                                          List<ContractProductTransactionFeeEntity> productTransactionFees)
         {
             ContractModel contractModel = new ContractModel();
+            contractModel.EstateId = estateId;
             contractModel.EstateReportingId = contract.EstateReportingId;
             contractModel.OperatorId = contract.OperatorId;
             contractModel.Description = contract.Description;
@@ -229,6 +234,7 @@
                                                productTransactionFeesModelList.Add(new TransactionFee
                                                                                    {
                                                                                        TransactionFeeId = f.TransactionFeeId,
+                                                                                       TransactionFeeReportingId = f.TransactionFeeReportingId,
                                                                                        Value = f.Value,
                                                                                        Description = f.Description,
                                                                                        CalculationType = (CalculationType)f.CalculationType,

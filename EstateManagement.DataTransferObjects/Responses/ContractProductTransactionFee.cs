@@ -43,6 +43,9 @@
         [JsonProperty("transaction_fee_id")]
         public Guid TransactionFeeId { get; set; }
 
+        [JsonProperty("transaction_fee_reporting_id")]
+        public Int32 TransactionFeeReportingId { get; set; }
+
         /// <summary>
         /// Gets or sets the value.
         /// </summary>

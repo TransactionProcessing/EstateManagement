@@ -44,7 +44,10 @@
 
             ContractResponse contractResponse = new ContractResponse
                                                 {
+                                                    EstateId = contract.EstateId,
+                                                    EstateReportingId = contract.EstateReportingId,
                                                     ContractId = contract.ContractId,
+                                                    ContractReportingId = contract.ContractReportingId,
                                                     OperatorId = contract.OperatorId,
                                                     OperatorName = contract.OperatorName,
                                                     Description = contract.Description
@@ -58,6 +61,7 @@
                                           {
                                               ContractProduct contractProduct = new ContractProduct
                                                                                 {
+                                                                                    ProductReportingId = p.ContractProductReportingId,
                                                                                     ProductId = p.ProductId,
                                                                                     Value = p.Value,
                                                                                     DisplayText = p.DisplayText,
@@ -71,6 +75,7 @@
                                                                             {
                                                                                 ContractProductTransactionFee transactionFee = new ContractProductTransactionFee
                                                                                                                                {
+                                                                                                                                   TransactionFeeReportingId = tf.TransactionFeeReportingId,
                                                                                                                                    TransactionFeeId = tf.TransactionFeeId,
                                                                                                                                    Value = tf.Value,
                                                                                                                                    Description = tf.Description,
@@ -105,6 +110,7 @@
                                             {
                                                 EstateName = estate.Name,
                                                 EstateId = estate.EstateId,
+                                                EstateReportingId = estate.EstateReportingId,
                                                 EstateReference = estate.Reference,
                                                 Operators = new List<EstateOperatorResponse>(),
                                                 SecurityUsers = new List<SecurityUserResponse>()
@@ -147,7 +153,10 @@
 
             MerchantResponse merchantResponse = new MerchantResponse
                                                 {
+                                                    EstateId = merchant.EstateId,
+                                                    EstateReportingId = merchant.EstateReportingId,
                                                     MerchantId = merchant.MerchantId,
+                                                    MerchantReportingId = merchant.MerchantReportingId,
                                                     MerchantName = merchant.MerchantName,
                                                     SettlementSchedule = this.ConvertFrom(merchant.SettlementSchedule),
                                                     MerchantReference = merchant.Reference,
@@ -249,6 +258,7 @@
                                         ContractProductTransactionFee transactionFee = new ContractProductTransactionFee
                                                                                        {
                                                                                            TransactionFeeId = tf.TransactionFeeId,
+                                                                                           TransactionFeeReportingId = tf.TransactionFeeReportingId,
                                                                                            Value = tf.Value,
                                                                                            Description = tf.Description,
                                                                                        };

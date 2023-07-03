@@ -22,6 +22,9 @@
         [JsonProperty("estate_id")]
         public Guid EstateId { get; set; }
 
+        [JsonProperty("estate_reporting_id")]
+        public Int32 EstateReportingId { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the estate.
         /// </summary>

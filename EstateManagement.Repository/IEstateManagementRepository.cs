@@ -69,6 +69,10 @@
         Task<List<Merchant>> GetMerchants(Guid estateId,
                                           CancellationToken cancellationToken);
 
+        Task<Merchant> GetMerchant(Guid estateId,
+                                         Guid merchantId,
+                                         CancellationToken cancellationToken);
+
         /// <summary>
         /// Gets the merchant from reference.
         /// </summary>

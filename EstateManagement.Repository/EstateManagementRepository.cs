@@ -17,6 +17,8 @@
     using ContractModel = Models.Contract.Contract;
     using StatementHeader = Models.MerchantStatement.StatementHeader;
     using StatementLine = Models.MerchantStatement.StatementLine;
+    using EstateManagement.Models.Estate;
+    using Estate = Database.Entities.Estate;
 
     public class EstateManagementRepository : IEstateManagementRepository{
         #region Fields
@@ -51,7 +53,7 @@
             if (contract == null){
                 throw new NotFoundException($"No contract found in read model with Id [{contractId}]");
             }
-
+            
             List<ContractProduct> contractProducts = null;
             List<ContractProductTransactionFee> contractProductFees = null;
 
@@ -60,11 +62,13 @@
             }
 
             if (includeProductsWithFees){
-                contractProductFees = await context.ContractProductTransactionFees.Where(f => f.ContractProductReportingId == contract.ContractReportingId)
-                                                   .ToListAsync(cancellationToken);
+                contractProductFees = await (from cptf in context.ContractProductTransactionFees
+                                             join cp in context.ContractProducts on cptf.ContractProductReportingId equals cp.ContractProductReportingId
+                                             where cp.ContractReportingId == contract.ContractReportingId
+                                             select cptf).ToListAsync(cancellationToken);
             }
 
-            return this.ModelFactory.ConvertFrom(contract, contractProducts, contractProductFees);
+            return this.ModelFactory.ConvertFrom(estateId, contract, contractProducts, contractProductFees);
         }
 
         public async Task<List<ContractModel>> GetContracts(Guid estateId,
@@ -75,7 +79,9 @@
                                join cp in context.ContractProducts on c.ContractReportingId equals cp.ContractReportingId into cps
                                from contractprouduct in cps.DefaultIfEmpty()
                                join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
+                               join e in context.Estates on eo.EstateReportingId equals e.EstateReportingId
                                select new{
+                                             Estate = e,
                                              Contract = c,
                                              Product = contractprouduct,
                                              Operator = eo
@@ -90,6 +96,8 @@
                 if (contract == null){
                     // create the contract
                     contract = new ContractModel{
+                                                    EstateReportingId = contractData.Estate.EstateReportingId,
+                                                    EstateId = contractData.Estate.EstateId,
                                                     OperatorId = contractData.Contract.OperatorId,
                                                     OperatorName = contractData.Operator.Name,
                                                     Products = new List<Product>(),
@@ -170,7 +178,10 @@
                                                     Products = new List<Product>(),
                                                     Description = test.Contract.Description,
                                                     IsCreated = true,
-                                                    ContractId = test.Contract.ContractId
+                                                    ContractId = test.Contract.ContractId,
+                                                    ContractReportingId = test.Contract.ContractReportingId,
+                                                    EstateReportingId = test.Operator.EstateReportingId,
+                                                    EstateId = estateId
                                                 };
 
                     contracts.Add(contract);
@@ -183,6 +194,7 @@
                     // Not already there so need to add it
                     contract.Products.Add(new Product{
                                                          ProductId = test.Product.ProductId,
+                                                         ContractProductReportingId = test.Product.ContractProductReportingId,
                                                          TransactionFees = null,
                                                          Value = test.Product.Value,
                                                          Name = test.Product.ProductName,
@@ -194,6 +206,20 @@
             return contracts;
         }
 
+        public async Task<MerchantModel> GetMerchant(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
+
+            Merchant merchant = await (from m in context.Merchants where m.MerchantId == merchantId select m).SingleOrDefaultAsync(cancellationToken);
+
+            List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.MerchantReportingId == merchant.MerchantReportingId select a).ToListAsync(cancellationToken);
+            List<MerchantContact> merchantContacts = await (from c in context.MerchantContacts where c.MerchantReportingId == merchant.MerchantReportingId select c).ToListAsync(cancellationToken);
+            List<MerchantOperator> merchantOperators = await (from o in context.MerchantOperators where o.MerchantReportingId == merchant.MerchantReportingId select o).ToListAsync(cancellationToken);
+            List<MerchantSecurityUser> merchantSecurityUsers = await (from u in context.MerchantSecurityUsers where u.MerchantReportingId == merchant.MerchantReportingId select u).ToListAsync(cancellationToken);
+            List<MerchantDevice> merchantDevices = await (from d in context.MerchantDevices where d.MerchantReportingId == merchant.MerchantReportingId select d).ToListAsync(cancellationToken);
+
+            return this.ModelFactory.ConvertFrom(estateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+        }
+
         public async Task<MerchantModel> GetMerchantFromReference(Guid estateId,
                                                                   String reference,
                                                                   CancellationToken cancellationToken){
@@ -201,7 +227,7 @@
 
             Merchant merchant = await (from m in context.Merchants where m.Reference == reference select m).SingleOrDefaultAsync(cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(merchant, null, null, null, null, null);
+            return this.ModelFactory.ConvertFrom(estateId,merchant, null, null, null, null, null);
         }
 
         public async Task<List<MerchantModel>> GetMerchants(Guid estateId,
@@ -229,7 +255,7 @@
                 List<MerchantSecurityUser> u = merchantSecurityUsers.Where(msu => msu.MerchantReportingId == m.MerchantReportingId).ToList();
                 List<MerchantDevice> d = merchantDevices.Where(ma => ma.MerchantReportingId == m.MerchantReportingId).ToList();
 
-                models.Add(this.ModelFactory.ConvertFrom(m, a, c, o, d, u));
+                models.Add(this.ModelFactory.ConvertFrom(estateId, m, a, c, o, d, u));
             }
 
             return models;

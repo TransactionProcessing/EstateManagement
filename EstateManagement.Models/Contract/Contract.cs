@@ -17,7 +17,9 @@
         public Guid ContractId { get; set; }
 
         public String Description { get; set; }
-        
+
+        public Guid EstateId { get; set; }
+
         public Int32 EstateReportingId { get; set; }
 
         public Boolean IsCreated { get; set; }
