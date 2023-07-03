@@ -25,22 +25,12 @@
     public class EstateManagementManager : IEstateManagementManager
     {
         #region Fields
-
-        /// <summary>
-        /// The estate aggregate repository
-        /// </summary>
-        private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
-
+        
         /// <summary>
         /// The estate management repository
         /// </summary>
         private readonly IEstateManagementRepository EstateManagementRepository;
         
-        /// <summary>
-        /// The merchant aggregate repository
-        /// </summary>
-        private readonly IAggregateRepository<MerchantAggregate, DomainEvent> MerchantAggregateRepository;
-
         /// <summary>
         /// The model factory
         /// </summary>
@@ -49,22 +39,10 @@
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EstateManagementManager" /> class.
-        /// </summary>
-        /// <param name="estateAggregateRepository">The estate aggregate repository.</param>
-        /// <param name="merchantAggregateRepository">The merchant aggregate repository.</param>
-        /// <param name="estateManagementRepository">The estate management repository.</param>
-        /// <param name="eventStoreContext">The event store context.</param>
-        /// <param name="modelFactory">The model factory.</param>
-        public EstateManagementManager(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
-                                       IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
-                                       IEstateManagementRepository estateManagementRepository,
+        
+        public EstateManagementManager(IEstateManagementRepository estateManagementRepository,
                                        IModelFactory modelFactory)
         {
-            this.EstateAggregateRepository = estateAggregateRepository;
-            this.MerchantAggregateRepository = merchantAggregateRepository;
             this.EstateManagementRepository = estateManagementRepository;
             this.ModelFactory = modelFactory;
         }
@@ -117,14 +95,8 @@
         public async Task<Estate> GetEstate(Guid estateId,
                                             CancellationToken cancellationToken) {
 
-            // Get the estate from the aggregate repository
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-            if (estateAggregate.IsCreated == false) {
-                throw new NotFoundException($"No estate found with Id [{estateId}]");
-            }
-
             Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
-
+            
             return estateModel;
         }
 
