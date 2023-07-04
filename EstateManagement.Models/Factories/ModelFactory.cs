@@ -103,6 +103,7 @@
             merchantModel.MerchantId = merchant.MerchantId;
             merchantModel.MerchantName = merchant.Name;
             merchantModel.Reference = merchant.Reference;
+            merchantModel.SettlementSchedule = (SettlementSchedule)merchant.SettlementSchedule;
 
             if (merchantAddresses != null && merchantAddresses.Any())
             {
