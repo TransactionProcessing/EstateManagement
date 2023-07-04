@@ -17,6 +17,9 @@ namespace EstateManagement.DataTransferObjects.Responses
         [JsonProperty("contract_id")]
         public Guid ContractId { get; set; }
 
+        [JsonProperty("contract_reporting_id")]
+        public Int32 ContractReportingId { get; set; }
+
         /// <summary>
         /// Gets or sets the description.
         /// </summary>
@@ -34,6 +37,9 @@ namespace EstateManagement.DataTransferObjects.Responses
         /// </value>
         [JsonProperty("estate_id")]
         public Guid EstateId { get; set; }
+
+        [JsonProperty("estate_reporting_id")]
+        public Int32 EstateReportingId { get; set; }
 
         /// <summary>
         /// Gets or sets the operator identifier.

@@ -28,32 +28,24 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
     public class EstateManagementManagerTests
     {
-        private readonly Mock<IAggregateRepository<EstateAggregate, DomainEvent>> EstateAggregateRepository;
-        private readonly Mock<IAggregateRepository<MerchantAggregate, DomainEvent>> MerchantAggregateRepository;
         private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
-        private readonly Mock<IEventStoreContext> EventStoreContext;
         private readonly Mock<IModelFactory> ModelFactory;
 
         private readonly EstateManagementManager EstateManagementManager;
 
         public EstateManagementManagerTests()
         {
-            this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
-            this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
             this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
             
             this.ModelFactory = new Mock<IModelFactory>();
             
             this.EstateManagementManager =
-                new EstateManagementManager(this.EstateAggregateRepository.Object,
-                                            this.MerchantAggregateRepository.Object,
-                                            this.EstateManagementRepository.Object, this.ModelFactory.Object);
+                new EstateManagementManager(this.EstateManagementRepository.Object, this.ModelFactory.Object);
         }
 
         [Fact]
         public async Task EstateManagementManager_GetEstate_EstateIsReturned()
         {
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
 
             Estate estateModel =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
@@ -64,18 +56,55 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
-        public async Task EstateManagementManager_GetEstate_InvalidEstateId_ErrorIsThrown()
-        {
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
-            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
+        public async Task EstateManagementManager_GetMerchant_MerchantIsReturned(){
+            Merchant expectedModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators(SettlementSchedule.Monthly);
+            this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedModel);
 
-            Should.Throw<NotFoundException>(async () => { await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None); });
+            Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+
+            merchantModel.ShouldNotBeNull();
+            merchantModel.MerchantReportingId.ShouldBe(expectedModel.MerchantReportingId);
+            merchantModel.EstateId.ShouldBe(expectedModel.EstateId);
+            merchantModel.EstateReportingId.ShouldBe(expectedModel.EstateReportingId);
+            merchantModel.NextSettlementDueDate.ShouldBe(expectedModel.NextSettlementDueDate);
+            merchantModel.NextStatementDate.ShouldBe(expectedModel.NextStatementDate);
+            merchantModel.MerchantId.ShouldBe(expectedModel.MerchantId);
+            merchantModel.MerchantName.ShouldBe(expectedModel.MerchantName);
+            merchantModel.SettlementSchedule.ShouldBe(expectedModel.SettlementSchedule);
+
+            merchantModel.Addresses.ShouldHaveSingleItem();
+            merchantModel.Addresses.Single().AddressId.ShouldBe(expectedModel.Addresses.Single().AddressId);
+            merchantModel.Addresses.Single().AddressLine1.ShouldBe(expectedModel.Addresses.Single().AddressLine1);
+            merchantModel.Addresses.Single().AddressLine2.ShouldBe(expectedModel.Addresses.Single().AddressLine2);
+            merchantModel.Addresses.Single().AddressLine3.ShouldBe(expectedModel.Addresses.Single().AddressLine3);
+            merchantModel.Addresses.Single().AddressLine4.ShouldBe(expectedModel.Addresses.Single().AddressLine4);
+            merchantModel.Addresses.Single().Country.ShouldBe(expectedModel.Addresses.Single().Country);
+            merchantModel.Addresses.Single().PostalCode.ShouldBe(expectedModel.Addresses.Single().PostalCode);
+            merchantModel.Addresses.Single().Region.ShouldBe(expectedModel.Addresses.Single().Region);
+            merchantModel.Addresses.Single().Town.ShouldBe(expectedModel.Addresses.Single().Town);
+            
+            merchantModel.Contacts.ShouldHaveSingleItem();
+            merchantModel.Contacts.Single().ContactEmailAddress.ShouldBe(expectedModel.Contacts.Single().ContactEmailAddress);
+            merchantModel.Contacts.Single().ContactId.ShouldBe(expectedModel.Contacts.Single().ContactId);
+            merchantModel.Contacts.Single().ContactName.ShouldBe(expectedModel.Contacts.Single().ContactName);
+            merchantModel.Contacts.Single().ContactPhoneNumber.ShouldBe(expectedModel.Contacts.Single().ContactPhoneNumber);
+
+            merchantModel.Devices.ShouldHaveSingleItem();
+            merchantModel.Devices.Single().Key.ShouldBe(expectedModel.Devices.Single().Key);
+            merchantModel.Devices.Single().Value.ShouldBe(expectedModel.Devices.Single().Value);
+
+            merchantModel.Operators.ShouldHaveSingleItem();
+            merchantModel.Operators.Single().MerchantNumber.ShouldBe(expectedModel.Operators.Single().MerchantNumber);
+            merchantModel.Operators.Single().Name.ShouldBe(expectedModel.Operators.Single().Name);
+            merchantModel.Operators.Single().OperatorId.ShouldBe(expectedModel.Operators.Single().OperatorId);
+            merchantModel.Operators.Single().TerminalNumber.ShouldBe(expectedModel.Operators.Single().TerminalNumber);
+
         }
 
         [Fact]
         public async Task EstateManagementManager_GetMerchant_MerchantIsReturnedWithNullAddressesAndContacts()
         {
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullAddressesAndContacts);
 
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 
@@ -89,7 +118,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_WithAddress_MerchantIsReturnedWithNullContacts()
         {
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithAddress);
+            this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullContacts);
 
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 
@@ -103,7 +132,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_WithContact_MerchantIsReturnedWithNullAddresses()
         {
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithContact);
+            this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullAddresses);
 
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 

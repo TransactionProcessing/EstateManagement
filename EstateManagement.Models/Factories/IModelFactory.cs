@@ -19,6 +19,7 @@ using StatementLineModel = EstateManagement.Models.MerchantStatement.StatementLi
 
 namespace EstateManagement.Models.Factories
 {
+    using System;
     using System.Collections.Generic;
     using EstateManagement.Database.ViewEntities;
     using MerchantStatement;
@@ -51,7 +52,8 @@ namespace EstateManagement.Models.Factories
         /// <param name="merchantDevices">The merchant devices.</param>
         /// <param name="merchantSecurityUsers">The merchant security users.</param>
         /// <returns></returns>
-        MerchantModel ConvertFrom(MerchantEntity merchant,
+        MerchantModel ConvertFrom(Guid estateId, 
+                                  MerchantEntity merchant,
                                   List<MerchantAddressEntity> merchantAddresses,
                                   List<MerchantContactEntity> merchantContacts,
                                   List<MerchantOperatorEntity> merchantOperators,
@@ -65,7 +67,8 @@ namespace EstateManagement.Models.Factories
         /// <param name="contractProducts">The contract products.</param>
         /// <param name="productTransactionFees">The product transaction fees.</param>
         /// <returns></returns>
-        ContractModel ConvertFrom(ContractEntity contract,
+        ContractModel ConvertFrom(Guid estateId, 
+                                  ContractEntity contract,
                                   List<ContractProductEntity> contractProducts,
                                   List<ContractProductTransactionFeeEntity> productTransactionFees);
 

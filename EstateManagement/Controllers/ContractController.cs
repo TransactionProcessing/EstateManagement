@@ -25,6 +25,7 @@
     using Shared.Exceptions;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
+    using Microsoft.AspNetCore.Authorization;
 
     /// <summary>
     /// 
@@ -33,6 +34,7 @@
     [ExcludeFromCodeCoverage]
     [Route(ContractController.ControllerRoute)]
     [ApiController]
+    [Authorize]
     public class ContractController : ControllerBase
     {
         #region Fields

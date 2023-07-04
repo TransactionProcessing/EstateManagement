@@ -15,6 +15,8 @@
         
         public Dictionary<Guid, String> Devices { get; set; }
 
+        public Guid EstateId { get; set; }
+
         public Int32 EstateReportingId { get; set; }
 
         public Int32 MerchantReportingId { get; set; }

@@ -365,6 +365,29 @@
                                                                                                }
                                                                                };
 
+        public static Merchant MerchantModelWithNullAddressesAndContacts = new Merchant
+        {
+            MerchantId = TestData.MerchantId,
+            MerchantName = TestData.MerchantName,
+            SettlementSchedule = SettlementSchedule.Immediate,
+            Addresses = null,
+            Contacts = null,
+            Devices = new Dictionary<Guid, String>
+                                                                                             {
+                                                                                                 {TestData.DeviceId, TestData.DeviceIdentifier}
+                                                                                             },
+            Operators = new List<Models.Merchant.Operator>
+                                                                                               {
+                                                                                                   new Models.Merchant.Operator
+                                                                                                   {
+                                                                                                       Name = TestData.OperatorName,
+                                                                                                       TerminalNumber = TestData.OperatorTerminalNumber,
+                                                                                                       MerchantNumber = TestData.OperatorMerchantNumber,
+                                                                                                       OperatorId = TestData.OperatorId
+                                                                                                   }
+                                                                                               }
+        };
+
         public static Merchant MerchantModelWithNullContacts = new Merchant
                                                                            {
                                                                                MerchantId = TestData.MerchantId,
