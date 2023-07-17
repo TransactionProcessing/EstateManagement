@@ -119,7 +119,7 @@ Background:
 	| SettlementDate | EstateName   | MerchantName    | NumberOfFees |
 	| 2022-02-06     | Test Estate2 | Test Merchant 3 | 1            |
 
-	When I process the settlement for '2022-02-06' on Estate 'Test Estate2' then 1 fees are marked as settled and the settlement is completed
+	When I process the settlement for '2022-02-06' on Estate 'Test Estate2' for Merchant 'Test Merchant 3' then 1 fees are marked as settled and the settlement is completed
 
 @PRTest
 Scenario: Get Settlements - No Merchant Filter
