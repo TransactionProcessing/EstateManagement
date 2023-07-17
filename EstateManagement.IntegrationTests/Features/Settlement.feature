@@ -107,14 +107,17 @@ Background:
 	| Test Estate2 | Test Merchant 3 | 1                 | 0000         | SUCCESS |
 
 	When I get the pending settlements the following information should be returned
-	| SettlementDate | EstateName    | NumberOfFees |
-	| 2022-01-13          | Test Estate1 | 9            |
+	| SettlementDate | EstateName   | MerchantName | NumberOfFees |
+	| 2022-01-13     | Test Estate1 | Test Merchant 1             | 6            |
+	| 2022-01-13     | Test Estate1 | Test Merchant 2             | 3            |
 
-	When I process the settlement for '2022-01-13' on Estate 'Test Estate1' then 9 fees are marked as settled and the settlement is completed
+	When I process the settlement for '2022-01-13' on Estate 'Test Estate1' for Merchant 'Test Merchant 1' then 6 fees are marked as settled and the settlement is completed
+
+	When I process the settlement for '2022-01-13' on Estate 'Test Estate1' for Merchant 'Test Merchant 2' then 3 fees are marked as settled and the settlement is completed
 
 	When I get the pending settlements the following information should be returned
-	| SettlementDate | EstateName   | NumberOfFees |
-	| 2022-02-06     | Test Estate2 | 1            |
+	| SettlementDate | EstateName   | MerchantName    | NumberOfFees |
+	| 2022-02-06     | Test Estate2 | Test Merchant 3 | 1            |
 
 	When I process the settlement for '2022-02-06' on Estate 'Test Estate2' then 1 fees are marked as settled and the settlement is completed
 

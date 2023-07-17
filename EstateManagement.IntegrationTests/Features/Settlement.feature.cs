@@ -632,30 +632,45 @@ namespace EstateManagement.IntegrationTests.Features
             TechTalk.SpecFlow.Table table120 = new TechTalk.SpecFlow.Table(new string[] {
                         "SettlementDate",
                         "EstateName",
+                        "MerchantName",
                         "NumberOfFees"});
             table120.AddRow(new string[] {
                         "2022-01-13",
                         "Test Estate1",
-                        "9"});
+                        "Test Merchant 1",
+                        "6"});
+            table120.AddRow(new string[] {
+                        "2022-01-13",
+                        "Test Estate1",
+                        "Test Merchant 2",
+                        "3"});
 #line 109
  testRunner.When("I get the pending settlements the following information should be returned", ((string)(null)), table120, "When ");
 #line hidden
-#line 113
- testRunner.When("I process the settlement for \'2022-01-13\' on Estate \'Test Estate1\' then 9 fees ar" +
-                    "e marked as settled and the settlement is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 114
+ testRunner.When("I process the settlement for \'2022-01-13\' on Estate \'Test Estate1\' for Merchant \'" +
+                    "Test Merchant 1\' then 6 fees are marked as settled and the settlement is complet" +
+                    "ed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 116
+ testRunner.When("I process the settlement for \'2022-01-13\' on Estate \'Test Estate1\' for Merchant \'" +
+                    "Test Merchant 2\' then 3 fees are marked as settled and the settlement is complet" +
+                    "ed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table121 = new TechTalk.SpecFlow.Table(new string[] {
                         "SettlementDate",
                         "EstateName",
+                        "MerchantName",
                         "NumberOfFees"});
             table121.AddRow(new string[] {
                         "2022-02-06",
                         "Test Estate2",
+                        "Test Merchant 3",
                         "1"});
-#line 115
+#line 118
  testRunner.When("I get the pending settlements the following information should be returned", ((string)(null)), table121, "When ");
 #line hidden
-#line 119
+#line 122
  testRunner.When("I process the settlement for \'2022-02-06\' on Estate \'Test Estate2\' then 1 fees ar" +
                     "e marked as settled and the settlement is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -676,7 +691,7 @@ namespace EstateManagement.IntegrationTests.Features
                     "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Settlements - No Merchant Filter", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 122
+#line 125
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -699,7 +714,7 @@ this.FeatureBackground();
                             "9",
                             "3.10",
                             "True"});
-#line 123
+#line 126
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' with the Start Date " +
                         "\'2022-01-13\' and the End Date \'2022-02-06\' the following data is returned", ((string)(null)), table122, "When ");
 #line hidden
@@ -713,7 +728,7 @@ this.FeatureBackground();
                             "1",
                             "0.85",
                             "True"});
-#line 127
+#line 130
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' with the Start Date " +
                         "\'2022-01-13\' and the End Date \'2022-02-06\' the following data is returned", ((string)(null)), table123, "When ");
 #line hidden
@@ -777,7 +792,7 @@ this.FeatureBackground();
                             "Test Merchant 2",
                             "Safaricom",
                             "0.08"});
-#line 131
+#line 134
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' with the Date \'2022-" +
                         "01-13\' the following fees are settled", ((string)(null)), table124, "When ");
 #line hidden
@@ -793,7 +808,7 @@ this.FeatureBackground();
                             "Test Merchant 3",
                             "Safaricom",
                             "0.85"});
-#line 144
+#line 147
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' with the Date \'2022-" +
                         "02-06\' the following fees are settled", ((string)(null)), table125, "When ");
 #line hidden
@@ -811,7 +826,7 @@ this.FeatureBackground();
                     "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Settlements - Merchant Filter", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 149
+#line 152
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -834,7 +849,7 @@ this.FeatureBackground();
                             "6",
                             "2.39",
                             "True"});
-#line 150
+#line 153
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
                         "erchant 1\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
                         "llowing data is returned", ((string)(null)), table126, "When ");
@@ -849,7 +864,7 @@ this.FeatureBackground();
                             "3",
                             "0.71",
                             "True"});
-#line 154
+#line 157
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
                         "erchant 2\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
                         "llowing data is returned", ((string)(null)), table127, "When ");
@@ -864,7 +879,7 @@ this.FeatureBackground();
                             "1",
                             "0.85",
                             "True"});
-#line 158
+#line 161
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' for Merchant \'Test M" +
                         "erchant 3\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
                         "llowing data is returned", ((string)(null)), table128, "When ");
@@ -904,7 +919,7 @@ this.FeatureBackground();
                             "True",
                             "Safaricom",
                             "0.51"});
-#line 162
+#line 165
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
                         "erchant 1\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table129, "When ");
 #line hidden
@@ -928,7 +943,7 @@ this.FeatureBackground();
                             "True",
                             "Safaricom",
                             "0.08"});
-#line 171
+#line 174
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
                         "erchant 2\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table130, "When ");
 #line hidden
@@ -942,7 +957,7 @@ this.FeatureBackground();
                             "True",
                             "Safaricom",
                             "0.85"});
-#line 177
+#line 180
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' for Merchant \'Test M" +
                         "erchant 3\' with the Date \'2022-02-06\' the following fees are settled", ((string)(null)), table131, "When ");
 #line hidden

@@ -1243,34 +1243,38 @@ namespace EstateManagement.IntegrationTests.Shared
             foreach (TableRow tableRow in table.Rows) {
                 // Get the merchant name
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+                Guid merchantId = estateDetails.GetMerchantId(tableRow["MerchantName"]);
                 String settlementDateString = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementDate");
                 Int32 numberOfFees = SpecflowTableHelper.GetIntValue(tableRow, "NumberOfFees");
                 DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
 
-                Guid aggregateid = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
                 await Retry.For(async () => {
                                     SettlementResponse settlements =
                                         await this.TestingContext.DockerHelper.TransactionProcessorClient.GetSettlementByDate(this.TestingContext.AccessToken,
                                             settlementDate,
                                             estateDetails.EstateId,
+                                            merchantId,
                                             CancellationToken.None);
 
-                                    settlements.NumberOfFeesPendingSettlement.ShouldBe(numberOfFees, $"Settlment date {settlementDate}");
+                                    settlements.NumberOfFeesPendingSettlement.ShouldBe(numberOfFees, $"Settlement date {settlementDate}");
                                 },
                                 TimeSpan.FromMinutes(3));
             }
         }
 
-        [When(@"I process the settlement for '([^']*)' on Estate '([^']*)' then (.*) fees are marked as settled and the settlement is completed")]
-        public async Task WhenIProcessTheSettlementForOnEstateThenFeesAreMarkedAsSettledAndTheSettlementIsCompleted(String dateString,
-            String estateName,
-            Int32 numberOfFeesSettled) {
+        [When(@"I process the settlement for '([^']*)' on Estate '([^']*)' for Merchant '([^']*)' then (.*) fees are marked as settled and the settlement is completed")]
+        public async Task WhenIProcessTheSettlementForOnEstateForMerchantThenFeesAreMarkedAsSettledAndTheSettlementIsCompleted(String dateString,
+                                                                                                                               String estateName,
+                                                                                                                               String merchantName,
+                                                                                                                               Int32 numberOfFeesSettled) {
             DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(dateString, DateTime.UtcNow.Date);
 
             EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+            Guid merchantId = estateDetails.GetMerchantId(merchantName);
             await this.TestingContext.DockerHelper.TransactionProcessorClient.ProcessSettlement(this.TestingContext.AccessToken,
                                                                                                 settlementDate,
                                                                                                 estateDetails.EstateId,
+                                                                                                merchantId,
                                                                                                 CancellationToken.None);
 
             await Retry.For(async () => {
@@ -1278,6 +1282,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                     await this.TestingContext.DockerHelper.TransactionProcessorClient.GetSettlementByDate(this.TestingContext.AccessToken,
                                         settlementDate,
                                         estateDetails.EstateId,
+                                        merchantId,
                                         CancellationToken.None);
 
                                 settlement.NumberOfFeesPendingSettlement.ShouldBe(0);

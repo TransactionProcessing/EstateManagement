@@ -10,6 +10,9 @@
 
         public Int32 EstateReportingId { get; set; }
 
+        public Boolean ProcessingStarted { get; set; }
+        public DateTime ProcessingStartedDateTIme { get; set; }
+
         public Boolean IsCompleted { get; set; }
 
         public DateTime SettlementDate { get; set; }
