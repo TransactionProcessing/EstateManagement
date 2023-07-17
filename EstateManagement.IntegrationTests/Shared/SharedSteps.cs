@@ -1321,12 +1321,12 @@ namespace EstateManagement.IntegrationTests.Shared
                                     settlementList.ShouldNotBeNull();
                                     settlementList.ShouldNotBeEmpty();
 
-                                    DataTransferObjects.Responses.SettlementResponse settlement =
-                                        settlementList.SingleOrDefault(s => s.SettlementDate == settlementDate && s.NumberOfFeesSettled == numberOfFeesSettled &&
-                                                                            s.ValueOfFeesSettled == valueOfFeesSettled && s.IsCompleted == isCompleted);
+                                    List<DataTransferObjects.Responses.SettlementResponse> x  = settlementList.Where(s => s.SettlementDate == settlementDate && s.IsCompleted == isCompleted).ToList();
+                                    x.Sum(s => s.NumberOfFeesSettled).ShouldBe(numberOfFeesSettled);
+                                    x.Sum(s => s.ValueOfFeesSettled).ShouldBe(valueOfFeesSettled);
+                                    
 
-                                    settlement.ShouldNotBeNull();
-                                },
+                },
                                 TimeSpan.FromMinutes(2));
             }
         }

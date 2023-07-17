@@ -671,8 +671,9 @@ namespace EstateManagement.IntegrationTests.Features
  testRunner.When("I get the pending settlements the following information should be returned", ((string)(null)), table121, "When ");
 #line hidden
 #line 122
- testRunner.When("I process the settlement for \'2022-02-06\' on Estate \'Test Estate2\' then 1 fees ar" +
-                    "e marked as settled and the settlement is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I process the settlement for \'2022-02-06\' on Estate \'Test Estate2\' for Merchant \'" +
+                    "Test Merchant 3\' then 1 fees are marked as settled and the settlement is complet" +
+                    "ed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
         }
         
