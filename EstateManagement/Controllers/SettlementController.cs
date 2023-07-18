@@ -39,7 +39,7 @@ public class SettlementController : ControllerBase
     [Route("{settlementId}")]
     [HttpGet]
     public async Task<IActionResult> GetSettlement([FromRoute] Guid estateId,
-                                                   [FromQuery] Guid? merchantId,
+                                                   [FromQuery] Guid merchantId,
                                                    [FromRoute] Guid settlementId,
                                                    CancellationToken cancellationToken)
     {

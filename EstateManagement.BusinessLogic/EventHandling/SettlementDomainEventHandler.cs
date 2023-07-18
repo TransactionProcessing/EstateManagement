@@ -59,6 +59,12 @@
             await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
         }
 
+        private async Task HandleSpecificDomainEvent(SettlementProcessingStartedEvent domainEvent,
+                                                     CancellationToken cancellationToken)
+        {
+            await this.EstateReportingRepository.MarkSettlementAsProcessingStarted(domainEvent, cancellationToken);
+        }
+
         private async Task HandleSpecificDomainEvent(SettlementCreatedForDateEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
@@ -85,7 +91,7 @@
         {
             await this.EstateReportingRepository.MarkSettlementAsCompleted(domainEvent, cancellationToken);
         }
-
+        
         public static Guid GetSettlementId(DateTime dt)
         {
             Byte[] bytes = BitConverter.GetBytes(dt.Ticks);

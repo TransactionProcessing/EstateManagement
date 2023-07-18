@@ -663,6 +663,12 @@ namespace EstateManagement.Database.Migrations.SqlServer
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("ProcessingStarted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ProcessingStartedDateTIme")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("SettlementDate")
                         .HasColumnType("date");
 
@@ -856,43 +862,6 @@ namespace EstateManagement.Database.Migrations.SqlServer
                     b.HasKey("TransactionReportingId");
 
                     b.ToTable("transactionadditionalresponsedata");
-                });
-
-            modelBuilder.Entity("EstateManagement.Database.Entities.TransactionFee", b =>
-                {
-                    b.Property<int>("TransactionReportingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransactionFeeReportingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionFeeReportingId"));
-
-                    b.Property<decimal>("CalculatedValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("CalculationType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("FeeType")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("FeeValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("TransactionReportingId", "TransactionFeeReportingId");
-
-                    b.HasIndex("FeeId")
-                        .IsUnique();
-
-                    b.ToTable("transactionfee");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Voucher", b =>

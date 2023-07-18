@@ -1714,7 +1714,7 @@
         public static SettlementCompletedEvent SettlementCompletedEvent => new SettlementCompletedEvent(TestData.SettlementId, TestData.EstateId);
 
         public static SettlementCreatedForDateEvent SettlementCreatedForDateEvent =>
-            new SettlementCreatedForDateEvent(TestData.SettlementId, TestData.EstateId, TestData.SettlementDate);
+            new SettlementCreatedForDateEvent(TestData.SettlementId, TestData.EstateId, TestData.MerchantId, TestData.SettlementDate);
 
         public static SettlementFeeModel SettlementFeeModel =>
             new SettlementFeeModel

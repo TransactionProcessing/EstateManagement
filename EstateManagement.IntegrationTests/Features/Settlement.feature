@@ -107,43 +107,19 @@ Background:
 	| Test Estate2 | Test Merchant 3 | 1                 | 0000         | SUCCESS |
 
 	When I get the pending settlements the following information should be returned
-	| SettlementDate | EstateName    | NumberOfFees |
-	| 2022-01-13          | Test Estate1 | 9            |
+	| SettlementDate | EstateName   | MerchantName | NumberOfFees |
+	| 2022-01-13     | Test Estate1 | Test Merchant 1             | 6            |
+	| 2022-01-13     | Test Estate1 | Test Merchant 2             | 3            |
 
-	When I process the settlement for '2022-01-13' on Estate 'Test Estate1' then 9 fees are marked as settled and the settlement is completed
+	When I process the settlement for '2022-01-13' on Estate 'Test Estate1' for Merchant 'Test Merchant 1' then 6 fees are marked as settled and the settlement is completed
+
+	When I process the settlement for '2022-01-13' on Estate 'Test Estate1' for Merchant 'Test Merchant 2' then 3 fees are marked as settled and the settlement is completed
 
 	When I get the pending settlements the following information should be returned
-	| SettlementDate | EstateName   | NumberOfFees |
-	| 2022-02-06     | Test Estate2 | 1            |
+	| SettlementDate | EstateName   | MerchantName    | NumberOfFees |
+	| 2022-02-06     | Test Estate2 | Test Merchant 3 | 1            |
 
-	When I process the settlement for '2022-02-06' on Estate 'Test Estate2' then 1 fees are marked as settled and the settlement is completed
-
-@PRTest
-Scenario: Get Settlements - No Merchant Filter
-	When I get the Estate Settlement Report for Estate 'Test Estate1' with the Start Date '2022-01-13' and the End Date '2022-02-06' the following data is returned
-	| SettlementDate | NumberOfFeesSettled | ValueOfFeesSettled | IsCompleted |
-	| 2022-01-13     | 9                   | 3.10              | True        |
-
-	When I get the Estate Settlement Report for Estate 'Test Estate2' with the Start Date '2022-01-13' and the End Date '2022-02-06' the following data is returned
-	| SettlementDate | NumberOfFeesSettled | ValueOfFeesSettled | IsCompleted |
-	| 2022-02-06     | 1                   | 0.85               | True        |
-	
-	When I get the Estate Settlement Report for Estate 'Test Estate1' with the Date '2022-01-13' the following fees are settled
-	| FeeDescription      | IsSettled | MerchantName    | Operator  | CalculatedValue |
-	| Merchant Commission | True      | Test Merchant 1 | Safaricom | 0.50            |
-	| Merchant Commission | True      | Test Merchant 1 | Safaricom | 0.13           |
-	| Merchant Commission | True      | Test Merchant 1 | Safaricom | 0.75            |
-	| Merchant Commission | True      | Test Merchant 1 | Safaricom | 0.20            |
-	| Merchant Commission | True      | Test Merchant 1 | Safaricom | 0.30            |
-	| Merchant Commission | True      | Test Merchant 1 | Safaricom | 0.51            |
-
-	| Merchant Commission | True      | Test Merchant 2 | Safaricom | 0.50            |
-	| Merchant Commission | True      | Test Merchant 2 | Safaricom | 0.13           |
-	| Merchant Commission | True      | Test Merchant 2 | Safaricom | 0.08            |
-	
-	When I get the Estate Settlement Report for Estate 'Test Estate2' with the Date '2022-02-06' the following fees are settled
-	| FeeDescription      | IsSettled | MerchantName    | Operator  | CalculatedValue |
-	| Merchant Commission | True      | Test Merchant 3 | Safaricom | 0.85            |
+	When I process the settlement for '2022-02-06' on Estate 'Test Estate2' for Merchant 'Test Merchant 3' then 1 fees are marked as settled and the settlement is completed
 
 @PRTest
 Scenario: Get Settlements - Merchant Filter

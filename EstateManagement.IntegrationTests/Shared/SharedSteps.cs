@@ -1243,34 +1243,38 @@ namespace EstateManagement.IntegrationTests.Shared
             foreach (TableRow tableRow in table.Rows) {
                 // Get the merchant name
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow);
+                Guid merchantId = estateDetails.GetMerchantId(tableRow["MerchantName"]);
                 String settlementDateString = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementDate");
                 Int32 numberOfFees = SpecflowTableHelper.GetIntValue(tableRow, "NumberOfFees");
                 DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
 
-                Guid aggregateid = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
                 await Retry.For(async () => {
                                     SettlementResponse settlements =
                                         await this.TestingContext.DockerHelper.TransactionProcessorClient.GetSettlementByDate(this.TestingContext.AccessToken,
                                             settlementDate,
                                             estateDetails.EstateId,
+                                            merchantId,
                                             CancellationToken.None);
 
-                                    settlements.NumberOfFeesPendingSettlement.ShouldBe(numberOfFees, $"Settlment date {settlementDate}");
+                                    settlements.NumberOfFeesPendingSettlement.ShouldBe(numberOfFees, $"Settlement date {settlementDate}");
                                 },
                                 TimeSpan.FromMinutes(3));
             }
         }
 
-        [When(@"I process the settlement for '([^']*)' on Estate '([^']*)' then (.*) fees are marked as settled and the settlement is completed")]
-        public async Task WhenIProcessTheSettlementForOnEstateThenFeesAreMarkedAsSettledAndTheSettlementIsCompleted(String dateString,
-            String estateName,
-            Int32 numberOfFeesSettled) {
+        [When(@"I process the settlement for '([^']*)' on Estate '([^']*)' for Merchant '([^']*)' then (.*) fees are marked as settled and the settlement is completed")]
+        public async Task WhenIProcessTheSettlementForOnEstateForMerchantThenFeesAreMarkedAsSettledAndTheSettlementIsCompleted(String dateString,
+                                                                                                                               String estateName,
+                                                                                                                               String merchantName,
+                                                                                                                               Int32 numberOfFeesSettled) {
             DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(dateString, DateTime.UtcNow.Date);
 
             EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+            Guid merchantId = estateDetails.GetMerchantId(merchantName);
             await this.TestingContext.DockerHelper.TransactionProcessorClient.ProcessSettlement(this.TestingContext.AccessToken,
                                                                                                 settlementDate,
                                                                                                 estateDetails.EstateId,
+                                                                                                merchantId,
                                                                                                 CancellationToken.None);
 
             await Retry.For(async () => {
@@ -1278,6 +1282,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                     await this.TestingContext.DockerHelper.TransactionProcessorClient.GetSettlementByDate(this.TestingContext.AccessToken,
                                         settlementDate,
                                         estateDetails.EstateId,
+                                        merchantId,
                                         CancellationToken.None);
 
                                 settlement.NumberOfFeesPendingSettlement.ShouldBe(0);
@@ -1316,12 +1321,12 @@ namespace EstateManagement.IntegrationTests.Shared
                                     settlementList.ShouldNotBeNull();
                                     settlementList.ShouldNotBeEmpty();
 
-                                    DataTransferObjects.Responses.SettlementResponse settlement =
-                                        settlementList.SingleOrDefault(s => s.SettlementDate == settlementDate && s.NumberOfFeesSettled == numberOfFeesSettled &&
-                                                                            s.ValueOfFeesSettled == valueOfFeesSettled && s.IsCompleted == isCompleted);
+                                    List<DataTransferObjects.Responses.SettlementResponse> x  = settlementList.Where(s => s.SettlementDate == settlementDate && s.IsCompleted == isCompleted).ToList();
+                                    x.Sum(s => s.NumberOfFeesSettled).ShouldBe(numberOfFeesSettled);
+                                    x.Sum(s => s.ValueOfFeesSettled).ShouldBe(valueOfFeesSettled);
+                                    
 
-                                    settlement.ShouldNotBeNull();
-                                },
+                },
                                 TimeSpan.FromMinutes(2));
             }
         }
@@ -1333,41 +1338,41 @@ namespace EstateManagement.IntegrationTests.Shared
         }
 
 
-        [When(@"I get the Estate Settlement Report for Estate '([^']*)' with the Date '([^']*)' the following fees are settled")]
-        public async Task WhenIGetTheEstateSettlementReportForEstateWithTheDateTheFollowingFeesAreSettled(string estateName,
-                                                                                                          string settlementDateString,
-                                                                                                          Table table) {
-            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
-            DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
+        //[When(@"I get the Estate Settlement Report for Estate '([^']*)' with the Date '([^']*)' the following fees are settled")]
+        //public async Task WhenIGetTheEstateSettlementReportForEstateWithTheDateTheFollowingFeesAreSettled(string estateName,
+        //                                                                                                  string settlementDateString,
+        //                                                                                                  Table table) {
+        //    EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+        //    DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
 
-            foreach (TableRow tableRow in table.Rows) {
-                Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
-                DataTransferObjects.Responses.SettlementResponse settlement =
-                    await this.TestingContext.DockerHelper.EstateClient.GetSettlement(this.TestingContext.AccessToken,
-                                                                                               estateDetails.EstateId,
-                                                                                               null,
-                                                                                               settlementId,
-                                                                                               CancellationToken.None);
+        //    foreach (TableRow tableRow in table.Rows) {
+        //        Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
+        //        DataTransferObjects.Responses.SettlementResponse settlement =
+        //            await this.TestingContext.DockerHelper.EstateClient.GetSettlement(this.TestingContext.AccessToken,
+        //                                                                                       estateDetails.EstateId,
+        //                                                                                       null,
+        //                                                                                       settlementId,
+        //                                                                                       CancellationToken.None);
 
-                settlement.ShouldNotBeNull();
+        //        settlement.ShouldNotBeNull();
 
-                settlement.SettlementFees.ShouldNotBeNull();
-                settlement.SettlementFees.ShouldNotBeEmpty();
+        //        settlement.SettlementFees.ShouldNotBeNull();
+        //        settlement.SettlementFees.ShouldNotBeEmpty();
 
-                String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
-                Boolean isSettled = SpecflowTableHelper.GetBooleanValue(tableRow, "IsSettled");
-                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "Operator");
-                Decimal calculatedValue = SpecflowTableHelper.GetDecimalValue(tableRow, "CalculatedValue");
+        //        String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
+        //        Boolean isSettled = SpecflowTableHelper.GetBooleanValue(tableRow, "IsSettled");
+        //        String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+        //        String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "Operator");
+        //        Decimal calculatedValue = SpecflowTableHelper.GetDecimalValue(tableRow, "CalculatedValue");
 
-                SettlementFeeResponse settlementFee = settlement.SettlementFees.SingleOrDefault(sf => sf.FeeDescription == feeDescription && sf.IsSettled == isSettled &&
-                                                                                                      sf.MerchantName == merchantName &&
-                                                                                                      sf.OperatorIdentifier == operatorName &&
-                                                                                                      sf.CalculatedValue == calculatedValue);
+        //        SettlementFeeResponse settlementFee = settlement.SettlementFees.SingleOrDefault(sf => sf.FeeDescription == feeDescription && sf.IsSettled == isSettled &&
+        //                                                                                              sf.MerchantName == merchantName &&
+        //                                                                                              sf.OperatorIdentifier == operatorName &&
+        //                                                                                              sf.CalculatedValue == calculatedValue);
 
-                settlementFee.ShouldNotBeNull();
-            }
-        }
+        //        settlementFee.ShouldNotBeNull();
+        //    }
+        //}
 
         [When(@"I get the Estate Settlement Report for Estate '([^']*)' for Merchant '([^']*)' with the Start Date '([^']*)' and the End Date '([^']*)' the following data is returned")]
         public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(string estateName,
@@ -1420,7 +1425,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
             foreach (TableRow tableRow in table.Rows) {
                 await Retry.For(async () => {
-                                    Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
+                                    Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate,merchantId, estateDetails.EstateId);
                                     DataTransferObjects.Responses.SettlementResponse settlement =
                                         await this.TestingContext.DockerHelper.EstateClient.GetSettlement(this.TestingContext.AccessToken,
                                             estateDetails.EstateId,
@@ -1596,8 +1601,9 @@ namespace EstateManagement.IntegrationTests.Shared
     public static class Helpers
     {
         public static Guid CalculateSettlementAggregateId(DateTime settlementDate,
+                                                          Guid merchantId,
                                                           Guid estateId) {
-            Guid aggregateId = GuidCalculator.Combine(estateId, settlementDate.ToGuid());
+            Guid aggregateId = GuidCalculator.Combine(estateId, merchantId, settlementDate.ToGuid());
             return aggregateId;
         }
     }

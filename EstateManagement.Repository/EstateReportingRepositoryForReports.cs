@@ -49,19 +49,15 @@ public class EstateReportingRepositoryForReports : IEstateReportingRepositoryFor
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     public async Task<SettlementModel> GetSettlement(Guid estateId,
-                                                     Guid? merchantId,
+                                                     Guid merchantId,
                                                      Guid settlementId,
                                                      CancellationToken cancellationToken)
     {
         EstateManagementGenericContext context = await this.DbContextFactory.GetContext(estateId, EstateReportingRepositoryForReports.ConnectionStringIdentifier, cancellationToken);
 
-        IQueryable<SettlementView> query = context.SettlementsView.Where(t => t.EstateId == estateId && t.SettlementId == settlementId).AsQueryable();
-
-        if (merchantId.HasValue)
-        {
-            query = query.Where(t => t.MerchantId == merchantId);
-        }
-
+        IQueryable<SettlementView> query = context.SettlementsView.Where(t => t.EstateId == estateId && t.SettlementId == settlementId
+                                                                         && t.MerchantId == merchantId).AsQueryable();
+        
         var result = query.AsEnumerable().GroupBy(t => new {
                                                                t.SettlementId,
                                                                t.SettlementDate,
