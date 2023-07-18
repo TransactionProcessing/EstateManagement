@@ -42,7 +42,7 @@ public class ReportingManager : IReportingManager
     #region Methods
 
     public async Task<SettlementModel> GetSettlement(Guid estateId,
-                                                     Guid? merchantId,
+                                                     Guid merchantId,
                                                      Guid settlementId,
                                                      CancellationToken cancellationToken)
     {

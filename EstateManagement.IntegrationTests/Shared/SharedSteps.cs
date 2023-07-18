@@ -1338,41 +1338,41 @@ namespace EstateManagement.IntegrationTests.Shared
         }
 
 
-        [When(@"I get the Estate Settlement Report for Estate '([^']*)' with the Date '([^']*)' the following fees are settled")]
-        public async Task WhenIGetTheEstateSettlementReportForEstateWithTheDateTheFollowingFeesAreSettled(string estateName,
-                                                                                                          string settlementDateString,
-                                                                                                          Table table) {
-            EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
-            DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
+        //[When(@"I get the Estate Settlement Report for Estate '([^']*)' with the Date '([^']*)' the following fees are settled")]
+        //public async Task WhenIGetTheEstateSettlementReportForEstateWithTheDateTheFollowingFeesAreSettled(string estateName,
+        //                                                                                                  string settlementDateString,
+        //                                                                                                  Table table) {
+        //    EstateDetails estateDetails = this.TestingContext.GetEstateDetails(estateName);
+        //    DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
 
-            foreach (TableRow tableRow in table.Rows) {
-                Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
-                DataTransferObjects.Responses.SettlementResponse settlement =
-                    await this.TestingContext.DockerHelper.EstateClient.GetSettlement(this.TestingContext.AccessToken,
-                                                                                               estateDetails.EstateId,
-                                                                                               null,
-                                                                                               settlementId,
-                                                                                               CancellationToken.None);
+        //    foreach (TableRow tableRow in table.Rows) {
+        //        Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
+        //        DataTransferObjects.Responses.SettlementResponse settlement =
+        //            await this.TestingContext.DockerHelper.EstateClient.GetSettlement(this.TestingContext.AccessToken,
+        //                                                                                       estateDetails.EstateId,
+        //                                                                                       null,
+        //                                                                                       settlementId,
+        //                                                                                       CancellationToken.None);
 
-                settlement.ShouldNotBeNull();
+        //        settlement.ShouldNotBeNull();
 
-                settlement.SettlementFees.ShouldNotBeNull();
-                settlement.SettlementFees.ShouldNotBeEmpty();
+        //        settlement.SettlementFees.ShouldNotBeNull();
+        //        settlement.SettlementFees.ShouldNotBeEmpty();
 
-                String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
-                Boolean isSettled = SpecflowTableHelper.GetBooleanValue(tableRow, "IsSettled");
-                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "Operator");
-                Decimal calculatedValue = SpecflowTableHelper.GetDecimalValue(tableRow, "CalculatedValue");
+        //        String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
+        //        Boolean isSettled = SpecflowTableHelper.GetBooleanValue(tableRow, "IsSettled");
+        //        String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+        //        String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "Operator");
+        //        Decimal calculatedValue = SpecflowTableHelper.GetDecimalValue(tableRow, "CalculatedValue");
 
-                SettlementFeeResponse settlementFee = settlement.SettlementFees.SingleOrDefault(sf => sf.FeeDescription == feeDescription && sf.IsSettled == isSettled &&
-                                                                                                      sf.MerchantName == merchantName &&
-                                                                                                      sf.OperatorIdentifier == operatorName &&
-                                                                                                      sf.CalculatedValue == calculatedValue);
+        //        SettlementFeeResponse settlementFee = settlement.SettlementFees.SingleOrDefault(sf => sf.FeeDescription == feeDescription && sf.IsSettled == isSettled &&
+        //                                                                                              sf.MerchantName == merchantName &&
+        //                                                                                              sf.OperatorIdentifier == operatorName &&
+        //                                                                                              sf.CalculatedValue == calculatedValue);
 
-                settlementFee.ShouldNotBeNull();
-            }
-        }
+        //        settlementFee.ShouldNotBeNull();
+        //    }
+        //}
 
         [When(@"I get the Estate Settlement Report for Estate '([^']*)' for Merchant '([^']*)' with the Start Date '([^']*)' and the End Date '([^']*)' the following data is returned")]
         public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(string estateName,
@@ -1425,7 +1425,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
             foreach (TableRow tableRow in table.Rows) {
                 await Retry.For(async () => {
-                                    Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate, estateDetails.EstateId);
+                                    Guid settlementId = Helpers.CalculateSettlementAggregateId(settlementDate,merchantId, estateDetails.EstateId);
                                     DataTransferObjects.Responses.SettlementResponse settlement =
                                         await this.TestingContext.DockerHelper.EstateClient.GetSettlement(this.TestingContext.AccessToken,
                                             estateDetails.EstateId,
@@ -1601,8 +1601,9 @@ namespace EstateManagement.IntegrationTests.Shared
     public static class Helpers
     {
         public static Guid CalculateSettlementAggregateId(DateTime settlementDate,
+                                                          Guid merchantId,
                                                           Guid estateId) {
-            Guid aggregateId = GuidCalculator.Combine(estateId, settlementDate.ToGuid());
+            Guid aggregateId = GuidCalculator.Combine(estateId, merchantId, settlementDate.ToGuid());
             return aggregateId;
         }
     }

@@ -22,7 +22,7 @@ namespace EstateManagement.BusinessLogic.Manger
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<SettlementModel> GetSettlement(Guid estateId,
-                                            Guid? merchantId,
+                                            Guid merchantId,
                                             Guid settlementId,
                                             CancellationToken cancellationToken);
 

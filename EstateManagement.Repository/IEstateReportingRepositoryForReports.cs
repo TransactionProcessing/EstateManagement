@@ -11,7 +11,7 @@ public interface IEstateReportingRepositoryForReports
     #region Methods
 
     Task<SettlementModel> GetSettlement(Guid estateId,
-                                        Guid? merchantId,
+                                        Guid merchantId,
                                         Guid settlementId,
                                         CancellationToken cancellationToken);
 
