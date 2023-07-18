@@ -569,6 +569,8 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     b.HasKey("SettlementReportingId", "TransactionReportingId", "TransactionFeeReportingId");
 
+                    b.HasIndex("TransactionReportingId");
+
                     b.ToTable("merchantsettlementfee");
                 });
 

@@ -176,7 +176,11 @@ public static class Extensions{
                                                                         s.TransactionReportingId,
                                                                         s.TransactionFeeReportingId
                                                                     });
-        
+
+        modelBuilder.Entity<MerchantSettlementFee>().HasIndex(s => new{
+                                                                          s.TransactionReportingId
+                                                                      }).IsUnique(false);
+
         return modelBuilder;
     }
 
