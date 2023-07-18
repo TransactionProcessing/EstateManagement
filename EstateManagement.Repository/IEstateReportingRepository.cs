@@ -902,6 +902,8 @@ namespace EstateManagement.Repository
 
             Contract contract = await LoadContract(context, domainEvent);
             ContractProduct contractProduct = await this.LoadContractProduct(context, domainEvent);
+            EstateOperator estateOperator = await LoadEstateOperator(context, contract.OperatorId);
+            
 
             if (transaction == null)
             {
@@ -910,8 +912,13 @@ namespace EstateManagement.Repository
 
             transaction.ContractReportingId = contract.ContractReportingId;
             transaction.ContractProductReportingId = contractProduct.ContractProductReportingId;
+            transaction.OperatorIdentifier = estateOperator.Name;
 
             await context.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task<EstateOperator> LoadEstateOperator(EstateManagementGenericContext context, Guid operatorId){
+            return await context.EstateOperators.SingleOrDefaultAsync(e => e.OperatorId == operatorId);
         }
 
         /// <summary>
@@ -1751,8 +1758,7 @@ namespace EstateManagement.Repository
             transaction.ResponseCode = domainEvent.ResponseCode;
             transaction.AuthorisationCode = domainEvent.AuthorisationCode;
             transaction.ResponseMessage = domainEvent.ResponseMessage;
-            transaction.OperatorIdentifier = domainEvent.OperatorIdentifier;
-
+            
             await context.SaveChangesAsync(cancellationToken);
         }
 
@@ -1779,8 +1785,7 @@ namespace EstateManagement.Repository
             transaction.IsAuthorised = false;
             transaction.ResponseCode = domainEvent.ResponseCode;
             transaction.ResponseMessage = domainEvent.ResponseMessage;
-            transaction.OperatorIdentifier = domainEvent.OperatorIdentifier;
-
+            
             await context.SaveChangesAsync(cancellationToken);
         }
 
