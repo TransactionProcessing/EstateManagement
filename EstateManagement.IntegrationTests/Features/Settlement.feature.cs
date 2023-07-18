@@ -682,16 +682,16 @@ namespace EstateManagement.IntegrationTests.Features
             this.TestTearDown();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Get Settlements - No Merchant Filter")]
+        [Xunit.SkippableFactAttribute(DisplayName="Get Settlements - Merchant Filter")]
         [Xunit.TraitAttribute("FeatureTitle", "Settlement")]
-        [Xunit.TraitAttribute("Description", "Get Settlements - No Merchant Filter")]
+        [Xunit.TraitAttribute("Description", "Get Settlements - Merchant Filter")]
         [Xunit.TraitAttribute("Category", "PRTest")]
-        public void GetSettlements_NoMerchantFilter()
+        public void GetSettlements_MerchantFilter()
         {
             string[] tagsOfScenario = new string[] {
                     "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Settlements - No Merchant Filter", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Settlements - Merchant Filter", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 125
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -712,12 +712,13 @@ this.FeatureBackground();
                             "IsCompleted"});
                 table122.AddRow(new string[] {
                             "2022-01-13",
-                            "9",
-                            "3.10",
+                            "6",
+                            "2.39",
                             "True"});
 #line 126
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' with the Start Date " +
-                        "\'2022-01-13\' and the End Date \'2022-02-06\' the following data is returned", ((string)(null)), table122, "When ");
+ testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
+                        "erchant 1\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
+                        "llowing data is returned", ((string)(null)), table122, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table123 = new TechTalk.SpecFlow.Table(new string[] {
                             "SettlementDate",
@@ -725,242 +726,106 @@ this.FeatureBackground();
                             "ValueOfFeesSettled",
                             "IsCompleted"});
                 table123.AddRow(new string[] {
+                            "2022-01-13",
+                            "3",
+                            "0.71",
+                            "True"});
+#line 130
+ testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
+                        "erchant 2\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
+                        "llowing data is returned", ((string)(null)), table123, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table124 = new TechTalk.SpecFlow.Table(new string[] {
+                            "SettlementDate",
+                            "NumberOfFeesSettled",
+                            "ValueOfFeesSettled",
+                            "IsCompleted"});
+                table124.AddRow(new string[] {
                             "2022-02-06",
                             "1",
                             "0.85",
                             "True"});
-#line 130
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' with the Start Date " +
-                        "\'2022-01-13\' and the End Date \'2022-02-06\' the following data is returned", ((string)(null)), table123, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table124 = new TechTalk.SpecFlow.Table(new string[] {
-                            "FeeDescription",
-                            "IsSettled",
-                            "MerchantName",
-                            "Operator",
-                            "CalculatedValue"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 1",
-                            "Safaricom",
-                            "0.50"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 1",
-                            "Safaricom",
-                            "0.13"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 1",
-                            "Safaricom",
-                            "0.75"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 1",
-                            "Safaricom",
-                            "0.20"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 1",
-                            "Safaricom",
-                            "0.30"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 1",
-                            "Safaricom",
-                            "0.51"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 2",
-                            "Safaricom",
-                            "0.50"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 2",
-                            "Safaricom",
-                            "0.13"});
-                table124.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
-                            "Test Merchant 2",
-                            "Safaricom",
-                            "0.08"});
 #line 134
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' with the Date \'2022-" +
-                        "01-13\' the following fees are settled", ((string)(null)), table124, "When ");
+ testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' for Merchant \'Test M" +
+                        "erchant 3\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
+                        "llowing data is returned", ((string)(null)), table124, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table125 = new TechTalk.SpecFlow.Table(new string[] {
                             "FeeDescription",
                             "IsSettled",
-                            "MerchantName",
                             "Operator",
                             "CalculatedValue"});
                 table125.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
-                            "Test Merchant 3",
-                            "Safaricom",
-                            "0.85"});
-#line 147
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' with the Date \'2022-" +
-                        "02-06\' the following fees are settled", ((string)(null)), table125, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Get Settlements - Merchant Filter")]
-        [Xunit.TraitAttribute("FeatureTitle", "Settlement")]
-        [Xunit.TraitAttribute("Description", "Get Settlements - Merchant Filter")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
-        public void GetSettlements_MerchantFilter()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Settlements - Merchant Filter", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 152
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table126 = new TechTalk.SpecFlow.Table(new string[] {
-                            "SettlementDate",
-                            "NumberOfFeesSettled",
-                            "ValueOfFeesSettled",
-                            "IsCompleted"});
-                table126.AddRow(new string[] {
-                            "2022-01-13",
-                            "6",
-                            "2.39",
-                            "True"});
-#line 153
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
-                        "erchant 1\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
-                        "llowing data is returned", ((string)(null)), table126, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table127 = new TechTalk.SpecFlow.Table(new string[] {
-                            "SettlementDate",
-                            "NumberOfFeesSettled",
-                            "ValueOfFeesSettled",
-                            "IsCompleted"});
-                table127.AddRow(new string[] {
-                            "2022-01-13",
-                            "3",
-                            "0.71",
-                            "True"});
-#line 157
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
-                        "erchant 2\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
-                        "llowing data is returned", ((string)(null)), table127, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table128 = new TechTalk.SpecFlow.Table(new string[] {
-                            "SettlementDate",
-                            "NumberOfFeesSettled",
-                            "ValueOfFeesSettled",
-                            "IsCompleted"});
-                table128.AddRow(new string[] {
-                            "2022-02-06",
-                            "1",
-                            "0.85",
-                            "True"});
-#line 161
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' for Merchant \'Test M" +
-                        "erchant 3\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
-                        "llowing data is returned", ((string)(null)), table128, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table129 = new TechTalk.SpecFlow.Table(new string[] {
-                            "FeeDescription",
-                            "IsSettled",
-                            "Operator",
-                            "CalculatedValue"});
-                table129.AddRow(new string[] {
-                            "Merchant Commission",
-                            "True",
                             "Safaricom",
                             "0.50"});
-                table129.AddRow(new string[] {
+                table125.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.13"});
-                table129.AddRow(new string[] {
+                table125.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.75"});
-                table129.AddRow(new string[] {
+                table125.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.20"});
-                table129.AddRow(new string[] {
+                table125.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.30"});
-                table129.AddRow(new string[] {
+                table125.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.51"});
-#line 165
+#line 138
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
-                        "erchant 1\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table129, "When ");
+                        "erchant 1\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table125, "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table130 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table126 = new TechTalk.SpecFlow.Table(new string[] {
                             "FeeDescription",
                             "IsSettled",
                             "Operator",
                             "CalculatedValue"});
-                table130.AddRow(new string[] {
+                table126.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.50"});
-                table130.AddRow(new string[] {
+                table126.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.13"});
-                table130.AddRow(new string[] {
+                table126.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.08"});
-#line 174
+#line 147
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate1\' for Merchant \'Test M" +
-                        "erchant 2\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table130, "When ");
+                        "erchant 2\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table126, "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table131 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table127 = new TechTalk.SpecFlow.Table(new string[] {
                             "FeeDescription",
                             "IsSettled",
                             "Operator",
                             "CalculatedValue"});
-                table131.AddRow(new string[] {
+                table127.AddRow(new string[] {
                             "Merchant Commission",
                             "True",
                             "Safaricom",
                             "0.85"});
-#line 180
+#line 153
  testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' for Merchant \'Test M" +
-                        "erchant 3\' with the Date \'2022-02-06\' the following fees are settled", ((string)(null)), table131, "When ");
+                        "erchant 3\' with the Date \'2022-02-06\' the following fees are settled", ((string)(null)), table127, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
