@@ -9,6 +9,7 @@
         #region Properties
 
         public Int32 EstateReportingId { get; set; }
+        public Int32 MerchantReportingId { get; set; }
 
         public Boolean ProcessingStarted { get; set; }
         public DateTime ProcessingStartedDateTIme { get; set; }
