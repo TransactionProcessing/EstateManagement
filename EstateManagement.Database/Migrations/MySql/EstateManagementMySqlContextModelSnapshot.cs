@@ -638,6 +638,9 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("ProcessingStarted")
                         .HasColumnType("tinyint(1)");
 

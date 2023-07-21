@@ -1127,11 +1127,12 @@ namespace EstateManagement.Repository
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-            Estate estate = await LoadEstate(context, domainEvent);
+            Merchant merchant = await LoadMerchant(context, domainEvent);
 
             Settlement settlement = new Settlement
             {
-                EstateReportingId = estate.EstateReportingId,
+                EstateReportingId = merchant.EstateReportingId,
+                MerchantReportingId = merchant.MerchantReportingId,
                 IsCompleted = false,
                 SettlementDate = domainEvent.SettlementDate.Date,
                 SettlementId = domainEvent.SettlementId
