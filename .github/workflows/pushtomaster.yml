@@ -20,7 +20,7 @@ jobs:
         fetch-depth: 0
           
     - name: Restore Nuget Packages
-      run: dotnet restore EstateManagement.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+      run: dotnet restore EstateManagement.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
 
     - name: Build Code
       run: dotnet build EstateManagement.sln --configuration Release
@@ -45,17 +45,17 @@ jobs:
     - name: Build and Publish Nuget Packages
       run: |
         dotnet pack "EstateManagement.Client\EstateManagement.Client.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release            
-        dotnet nuget push Nugets/EstateManagement.Client.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet nuget push Nugets/EstateManagement.Client.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.PRIVATEFEED_APIKEY }} --source ${{ secrets.PRIVATEFEED_URL }}
         dotnet pack "EstateManagement.Estate.DomainEvents\EstateManagement.Estate.DomainEvents.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.Estate.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet nuget push Nugets/EstateManagement.Estate.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.PRIVATEFEED_APIKEY }} --source ${{ secrets.PRIVATEFEED_URL }}
         dotnet pack "EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.Merchant.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet nuget push Nugets/EstateManagement.Merchant.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.PRIVATEFEED_APIKEY }} --source ${{ secrets.PRIVATEFEED_URL }}
         dotnet pack "EstateManagement.Contract.DomainEvents\EstateManagement.Contract.DomainEvents.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.Contract.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet nuget push Nugets/EstateManagement.Contract.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.PRIVATEFEED_APIKEY }} --source ${{ secrets.PRIVATEFEED_URL }}
         dotnet pack "EstateManagement.MerchantStatement.DomainEvents\EstateManagement.MerchantStatement.DomainEvents.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.MerchantStatement.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet nuget push Nugets/EstateManagement.MerchantStatement.DomainEvents.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.PRIVATEFEED_APIKEY }} --source ${{ secrets.PRIVATEFEED_URL }}
         dotnet pack "EstateManagement.Database\EstateManagement.Database.csproj" /p:PackageVersion=${{ steps.next_version.outputs.VERSION }} --output Nugets -c Release
-        dotnet nuget push Nugets/EstateManagement.Database.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.MYGET_APIKEY }} --source https://www.myget.org/F/transactionprocessing/api/v2/package
+        dotnet nuget push Nugets/EstateManagement.Database.${{ steps.next_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.PRIVATEFEED_APIKEY }} --source ${{ secrets.PRIVATEFEED_URL }}
 
     - name: Publish Images to Docker Hub
       run: |
