@@ -210,6 +210,9 @@ namespace EstateManagement.Repository
         Task UpdateMerchant(SettlementScheduleChangedEvent domainEvent,
                             CancellationToken cancellationToken);
 
+        Task UpdateMerchant(TransactionHasBeenCompletedEvent domainEvent,
+                            CancellationToken cancellationToken);
+
         Task UpdateReconciliationOverallTotals(OverallTotalsRecordedEvent domainEvent,
                                                CancellationToken cancellationToken);
 
@@ -1574,6 +1577,25 @@ namespace EstateManagement.Repository
 
             merchant.SettlementSchedule = domainEvent.SettlementSchedule;
             await context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateMerchant(TransactionHasBeenCompletedEvent domainEvent, CancellationToken cancellationToken){
+            EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+            Merchant merchant = await LoadMerchant(context, domainEvent);
+
+            if (merchant == null)
+            {
+                throw new NotFoundException($"Merchant not found with Id {domainEvent.MerchantId}");
+            }
+
+            if (domainEvent.CompletedDateTime > merchant.LastSaleDateTime){
+                merchant.LastSaleDate = domainEvent.CompletedDateTime.Date;
+                merchant.LastSaleDateTime = domainEvent.CompletedDateTime;
+            }
+
+            await context.SaveChangesAsync(cancellationToken);
+
         }
 
         /// <summary>

@@ -16,6 +16,7 @@
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventHandling;
+    using TransactionProcessor.Transaction.DomainEvents;
     using Deposit = CallbackHandler.DataTransferObjects.Deposit;
 
     public class MerchantDomainEventHandler : IDomainEventHandler
@@ -157,6 +158,12 @@
         }
 
         private async Task HandleSpecificDomainEvent(StatementGeneratedEvent domainEvent,
+                                                     CancellationToken cancellationToken)
+        {
+            await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);
+        }
+
+        private async Task HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
             await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);

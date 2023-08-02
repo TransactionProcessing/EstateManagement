@@ -387,6 +387,12 @@ namespace EstateManagement.Database.Migrations.SqlServer
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("LastSaleDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("LastSaleDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("LastStatementGenerated")
                         .HasColumnType("datetime2");
 

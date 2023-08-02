@@ -28,6 +28,10 @@
 
         public DateTime LastStatementGenerated { get; set; }
 
+        public DateTime LastSaleDate { get; set; }
+
+        public DateTime LastSaleDateTime { get; set; }
+
         #endregion
     }
 }
