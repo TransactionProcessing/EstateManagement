@@ -94,6 +94,8 @@ public static class Extensions{
                                                               t.MerchantId
                                                           }).IsUnique();
 
+        modelBuilder.Entity<Merchant>(e => { e.Property(p => p.LastSaleDate).IsDateOnly(); });
+        
         return modelBuilder;
     }
     
