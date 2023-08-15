@@ -22,6 +22,9 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
     public class MediatorTests
     {
         private List<IBaseRequest> Requests = new List<IBaseRequest>();
+
+        private IMediator mediator;
+
         public MediatorTests() {
             this.Requests.Add(TestData.AddMerchantDeviceRequest);
             this.Requests.Add(TestData.AddOperatorToEstateRequest);
@@ -42,10 +45,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.MakeMerchantWithdrawalRequest);
             this.Requests.Add(TestData.SetMerchantSettlementScheduleRequest);
             this.Requests.Add(TestData.SwapMerchantDeviceRequest);
-        }
 
-        [Fact]
-        public async Task Mediator_Send_RequestHandled() {
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(he => he.EnvironmentName).Returns("Development");
             hostingEnvironment.Setup(he => he.ContentRootPath).Returns("/home");
@@ -58,9 +58,15 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.AddTestRegistrations(services, hostingEnvironment.Object);
             s.ConfigureContainer(services);
             Startup.Container.AssertConfigurationIsValid(AssertMode.Full);
+            
+            this.mediator = Startup.Container.GetService<IMediator>();
+        }
+
+        [Fact]
+        public async Task Mediator_Send_RequestHandled() {
 
             List<String> errors = new List<String>();
-            IMediator mediator = Startup.Container.GetService<IMediator>();
+
             foreach (IBaseRequest baseRequest in this.Requests) {
                 try {
                     await mediator.Send(baseRequest);

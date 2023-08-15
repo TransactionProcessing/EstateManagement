@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFramework>net7.0</TargetFramework>
-    <DebugType>Full</DebugType>
+    <DebugType>None</DebugType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -33,6 +33,12 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

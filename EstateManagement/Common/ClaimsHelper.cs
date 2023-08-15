@@ -7,7 +7,7 @@
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Shared.Exceptions;
 
-    [ExcludeFromCodeCoverage]
+    /*[ExcludeFromCodeCoverage]
     public class ClaimsHelper
     {
         #region Methods
@@ -104,5 +104,5 @@
         }
 
         #endregion
-    }
+    }*/
 }

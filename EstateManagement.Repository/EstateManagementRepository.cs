@@ -18,7 +18,10 @@
     using StatementHeader = Models.MerchantStatement.StatementHeader;
     using StatementLine = Models.MerchantStatement.StatementLine;
     using EstateManagement.Models.Estate;
+    using Models.File;
     using Estate = Database.Entities.Estate;
+    using File = Models.File.File;
+    using Transaction = Models.File.Transaction;
 
     public class EstateManagementRepository : IEstateManagementRepository{
         #region Fields
@@ -319,6 +322,60 @@
             header.TransactionFeesValue = $"{feesTotal} KES";
 
             return header;
+        }
+
+        public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){
+
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
+
+            Database.Entities.File file = await context.Files.SingleOrDefaultAsync(f => f.FileId == fileId, cancellationToken);
+
+            if (file == null){
+                throw new NotFoundException($"File with Id [{fileId}] not found");
+            }
+
+            // Now get all the lines
+            var fileLinesWithTransactions = await (from fileLine in context.FileLines
+                                                   join txn in context.Transactions on fileLine.TransactionReportingId equals txn.TransactionReportingId into transactions
+                                                   from t in transactions.DefaultIfEmpty()
+                                                   where fileLine.FileReportingId == file.FileReportingId
+                                                   select new{
+                                                                 FileLine = fileLine,
+                                                                 Transaction = t
+                                                             }).ToListAsync(cancellationToken);
+
+            Merchant m = await context.Merchants.SingleOrDefaultAsync(m => m.MerchantReportingId == file.MerchantReportingId, cancellationToken);
+
+            File result = new File{
+                                      FileId = file.FileId,
+                                      Merchant = this.ModelFactory.ConvertFrom(estateId, m),
+                                      FileReceivedDate = file.FileReceivedDate,
+                                      FileReceivedDateTime = file.FileReceivedDateTime,
+                                      FileLineDetails = new List<FileLineDetails>()
+                                  };
+
+            foreach (var fileLinesWithTransaction in fileLinesWithTransactions){
+                FileLineDetails fileLineDetails = new FileLineDetails{
+                                                                         FileLineData = fileLinesWithTransaction.FileLine.FileLineData,
+                                                                         Status = fileLinesWithTransaction.FileLine.Status,
+                                                                         FileLineNumber = fileLinesWithTransaction.FileLine.LineNumber
+                                                                     };
+
+                if(fileLinesWithTransaction.Transaction != null){
+                    fileLineDetails.Transaction = new Transaction{
+                                                                     AuthCode = fileLinesWithTransaction.Transaction.AuthorisationCode,
+                                                                     IsAuthorised = fileLinesWithTransaction.Transaction.IsAuthorised,
+                                                                     IsCompleted = fileLinesWithTransaction.Transaction.IsCompleted,
+                                                                     ResponseCode = fileLinesWithTransaction.Transaction.ResponseCode,
+                                                                     ResponseMessage = fileLinesWithTransaction.Transaction.ResponseMessage,
+                                                                     TransactionId = fileLinesWithTransaction.Transaction.TransactionId,
+                                                                     TransactionNumber = fileLinesWithTransaction.Transaction.TransactionNumber
+                                                                 };
+                }
+                result.FileLineDetails.Add(fileLineDetails);
+            }
+
+            return result;
         }
 
         public async Task<List<TransactionFeeModel>> GetTransactionFeesForProduct(Guid estateId,

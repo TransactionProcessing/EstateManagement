@@ -25,7 +25,6 @@
             this.AddSingleton<IReportingManager, ReportingManager>();
             this.AddSingleton<IEstateManagementManager, EstateManagementManager>();
             this.AddSingleton<IModelFactory, ModelFactory>();
-            this.AddSingleton<Factories.IModelFactory, Factories.ModelFactory>();
             this.AddSingleton<IStatementBuilder, StatementBuilder>();
             this.AddSingleton<IFileSystem, FileSystem>();
             this.AddSingleton<IPDFGenerator, PDFGenerator>();

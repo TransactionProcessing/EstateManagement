@@ -19,6 +19,7 @@
     using MerchantStatementAggregate;
     using Models;
     using Models.Contract;
+    using Models.File;
     using Models.Merchant;
     using Models.MerchantStatement;
     using Newtonsoft.Json;
@@ -37,6 +38,7 @@
     using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
     using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
     using Estate = Models.Estate;
+    using File = Models.File.File;
     using Merchant = Models.Merchant.Merchant;
     using Operator = Models.Estate.Operator;
     using SecurityUser = Models.SecurityUser;
@@ -1652,6 +1654,56 @@
         public static readonly DateTime VoucherRedeemedDate = new DateTime(2021, 12, 16);
 
         public static Int32 TransactionSource = 1;
+
+        public static FileLineDetails FileLineDetails1 = new FileLineDetails{
+                                                                                Transaction = new Models.File.Transaction{
+                                                                                                                             AuthCode = "ABCD1234",
+                                                                                                                             IsAuthorised = true,
+                                                                                                                             IsCompleted = true,
+                                                                                                                             ResponseCode = "0000",
+                                                                                                                             ResponseMessage = "SUCCESS",
+                                                                                                                             TransactionId = Guid.Parse("B7CB5ACE-84FC-4F29-B297-3D71FC229687"),
+                                                                                                                             TransactionNumber = "0001"
+                                                                                                                         },
+                                                                                FileLineData = "FileDataLine1",
+                                                                                Status = "S",
+                                                                                FileLineNumber = 1
+        };
+
+        public static FileLineDetails FileLineDetails2 = new FileLineDetails
+                                                         {
+                                                             Transaction = new Models.File.Transaction
+                                                                           {
+                                                                               AuthCode = "ABCD1235",
+                                                                               IsAuthorised = true,
+                                                                               IsCompleted = true,
+                                                                               ResponseCode = "0000",
+                                                                               ResponseMessage = "SUCCESS",
+                                                                               TransactionId = Guid.Parse("E14C986F-34D7-4B3C-BC1E-EEEAC8399897"),
+                                                                               TransactionNumber = "0002"
+                                                                           },
+                                                             FileLineData = "FileDataLine2",
+                                                             Status = "S",
+                                                             FileLineNumber = 2
+                                                         };
+
+        public static List<FileLineDetails> FileLineDetailsList = new List<FileLineDetails>{
+                                                                                               TestData.FileLineDetails1,
+                                                                                               TestData.FileLineDetails2
+                                                                                           };
+
+        public static File FileModel => new File
+                                       {
+                                           FileId = TestData.FileId,
+                                           FileLineDetails = TestData.FileLineDetailsList,
+                                           FileReceivedDate = TestData.FileReceivedDate,
+                                           FileReceivedDateTime = TestData.FileReceivedDateTime
+                                       };
+
+
+        public static DateTime FileReceivedDate = new DateTime(2021, 12, 16);
+
+        public static DateTime FileReceivedDateTime = new DateTime(2021, 12, 16, 1,2,3);
 
         public static MerchantBalanceResponse MerchantBalance =>
             new MerchantBalanceResponse() {

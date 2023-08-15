@@ -78,6 +78,19 @@
             return estateModel;
         }
 
+        public MerchantModel ConvertFrom(Guid estateId, MerchantEntity merchant){
+            MerchantModel merchantModel = new MerchantModel();
+            merchantModel.EstateId = estateId;
+            merchantModel.EstateReportingId = merchant.EstateReportingId;
+            merchantModel.MerchantReportingId = merchant.MerchantReportingId;
+            merchantModel.MerchantId = merchant.MerchantId;
+            merchantModel.MerchantName = merchant.Name;
+            merchantModel.Reference = merchant.Reference;
+            merchantModel.SettlementSchedule = (SettlementSchedule)merchant.SettlementSchedule;
+
+            return merchantModel;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -96,14 +109,7 @@
                                          List<MerchantDeviceEntity> merchantDevices,
                                          List<MerchantSecurityUserEntity> merchantSecurityUsers)
         {
-            MerchantModel merchantModel = new MerchantModel();
-            merchantModel.EstateId = estateId;
-            merchantModel.EstateReportingId = merchant.EstateReportingId;
-            merchantModel.MerchantReportingId = merchant.MerchantReportingId;
-            merchantModel.MerchantId = merchant.MerchantId;
-            merchantModel.MerchantName = merchant.Name;
-            merchantModel.Reference = merchant.Reference;
-            merchantModel.SettlementSchedule = (SettlementSchedule)merchant.SettlementSchedule;
+            MerchantModel merchantModel = this.ConvertFrom(estateId, merchant);
 
             if (merchantAddresses != null && merchantAddresses.Any())
             {

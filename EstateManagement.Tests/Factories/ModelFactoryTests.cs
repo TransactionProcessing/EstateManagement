@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EstateManagement.Tests.Factories
-{
+namespace EstateManagement.Tests.Factories{
     using System.Linq;
     using DataTransferObjects.Responses;
     using EstateAggregate;
@@ -11,21 +10,18 @@ namespace EstateManagement.Tests.Factories
     using Models;
     using Models.Contract;
     using Models.Estate;
+    using Models.File;
     using Models.Merchant;
     using Shouldly;
     using Testing;
     using Xunit;
 
-    public class ModelFactoryTests
-    {
+    public class ModelFactoryTests{
         [Fact]
-        public void ModelFactory_Estate_WithNoOperatorsOrSecurityUsers_IsConverted()
-        {
+        public void ModelFactory_Estate_WithNoOperatorsOrSecurityUsers_IsConverted(){
             Estate estateModel = TestData.EstateModel;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+            EstateResponse estateResponse = ModelFactory.ConvertFrom(estateModel);
 
             estateResponse.ShouldNotBeNull();
             estateResponse.EstateId.ShouldBe(estateModel.EstateId);
@@ -33,13 +29,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Estate_WithOperators_IsConverted()
-        {
+        public void ModelFactory_Estate_WithOperators_IsConverted(){
             Estate estateModel = TestData.EstateModelWithOperators;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+            EstateResponse estateResponse = ModelFactory.ConvertFrom(estateModel);
 
             estateResponse.ShouldNotBeNull();
             estateResponse.EstateId.ShouldBe(estateModel.EstateId);
@@ -50,13 +43,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Estate_WithSecurityUsers_IsConverted()
-        {
+        public void ModelFactory_Estate_WithSecurityUsers_IsConverted(){
             Estate estateModel = TestData.EstateModelWithSecurityUsers;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+            EstateResponse estateResponse = ModelFactory.ConvertFrom(estateModel);
 
             estateResponse.ShouldNotBeNull();
             estateResponse.EstateId.ShouldBe(estateModel.EstateId);
@@ -67,13 +57,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Estate_WithOperatorsAndSecurityUsers_IsConverted()
-        {
+        public void ModelFactory_Estate_WithOperatorsAndSecurityUsers_IsConverted(){
             Estate estateModel = TestData.EstateModelWithOperatorsAndSecurityUsers;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+            EstateResponse estateResponse = ModelFactory.ConvertFrom(estateModel);
 
             estateResponse.ShouldNotBeNull();
             estateResponse.EstateId.ShouldBe(estateModel.EstateId);
@@ -85,13 +72,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Estate_NullInput_IsConverted()
-        {
+        public void ModelFactory_Estate_NullInput_IsConverted(){
             Estate estateModel = null;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            EstateResponse estateResponse = modelFactory.ConvertFrom(estateModel);
+            EstateResponse estateResponse = ModelFactory.ConvertFrom(estateModel);
 
             estateResponse.ShouldBeNull();
         }
@@ -101,19 +85,16 @@ namespace EstateManagement.Tests.Factories
         [InlineData(SettlementSchedule.Immediate)]
         [InlineData(SettlementSchedule.Weekly)]
         [InlineData(SettlementSchedule.Monthly)]
-        public void ModelFactory_Merchant_IsConverted(SettlementSchedule settlementSchedule)
-        {
+        public void ModelFactory_Merchant_IsConverted(SettlementSchedule settlementSchedule){
             Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators(settlementSchedule);
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantResponse merchantResponse = modelFactory.ConvertFrom(merchantModel);
+            MerchantResponse merchantResponse = ModelFactory.ConvertFrom(merchantModel);
 
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
             merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
             merchantResponse.Addresses.ShouldHaveSingleItem();
-            
+
             AddressResponse addressResponse = merchantResponse.Addresses.Single();
             addressResponse.AddressId.ShouldBe(merchantModel.Addresses.Single().AddressId);
             addressResponse.AddressLine1.ShouldBe(merchantModel.Addresses.Single().AddressLine1);
@@ -132,34 +113,28 @@ namespace EstateManagement.Tests.Factories
             contactResponse.ContactName.ShouldBe(merchantModel.Contacts.Single().ContactName);
             contactResponse.ContactPhoneNumber.ShouldBe(merchantModel.Contacts.Single().ContactPhoneNumber);
         }
-        
+
         [Fact]
-        public void ModelFactory_Merchant_NullInput_IsConverted()
-        {
+        public void ModelFactory_Merchant_NullInput_IsConverted(){
             Merchant merchantModel = null;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantResponse merchantResponse = modelFactory.ConvertFrom(merchantModel);
+            MerchantResponse merchantResponse = ModelFactory.ConvertFrom(merchantModel);
 
             merchantResponse.ShouldBeNull();
         }
 
         [Fact]
-        public void ModelFactory_Merchant_NullAddresses_IsConverted()
-        {
+        public void ModelFactory_Merchant_NullAddresses_IsConverted(){
             Merchant merchantModel = TestData.MerchantModelWithNullAddresses;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantResponse merchantResponse = modelFactory.ConvertFrom(merchantModel);
+            MerchantResponse merchantResponse = ModelFactory.ConvertFrom(merchantModel);
 
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
             merchantResponse.MerchantName.ShouldBe(merchantModel.MerchantName);
 
             merchantResponse.Addresses.ShouldBeNull();
-            
+
             merchantResponse.Contacts.ShouldHaveSingleItem();
             ContactResponse contactResponse = merchantResponse.Contacts.Single();
             contactResponse.ContactId.ShouldBe(merchantModel.Contacts.Single().ContactId);
@@ -181,13 +156,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Merchant_NullContacts_IsConverted()
-        {
+        public void ModelFactory_Merchant_NullContacts_IsConverted(){
             Merchant merchantModel = TestData.MerchantModelWithNullContacts;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantResponse merchantResponse = modelFactory.ConvertFrom(merchantModel);
+            MerchantResponse merchantResponse = ModelFactory.ConvertFrom(merchantModel);
 
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
@@ -221,13 +193,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Merchant_NullDevices_IsConverted()
-        {
+        public void ModelFactory_Merchant_NullDevices_IsConverted(){
             Merchant merchantModel = TestData.MerchantModelWithNullDevices;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantResponse merchantResponse = modelFactory.ConvertFrom(merchantModel);
+            MerchantResponse merchantResponse = ModelFactory.ConvertFrom(merchantModel);
 
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
@@ -263,13 +232,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Merchant_NullOperators_IsConverted()
-        {
+        public void ModelFactory_Merchant_NullOperators_IsConverted(){
             Merchant merchantModel = TestData.MerchantModelWithNullOperators;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            MerchantResponse merchantResponse = modelFactory.ConvertFrom(merchantModel);
+            MerchantResponse merchantResponse = ModelFactory.ConvertFrom(merchantModel);
 
             merchantResponse.ShouldNotBeNull();
             merchantResponse.MerchantId.ShouldBe(merchantModel.MerchantId);
@@ -303,30 +269,23 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_MerchantList_IsConverted()
-        {
-            List<Merchant> merchantModelList = new List<Merchant>
-                                               {
-                                                   TestData.MerchantModelWithAddressesContactsDevicesAndOperators()
-                                               };
+        public void ModelFactory_MerchantList_IsConverted(){
+            List<Merchant> merchantModelList = new List<Merchant>{
+                                                                     TestData.MerchantModelWithAddressesContactsDevicesAndOperators()
+                                                                 };
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            List<MerchantResponse> merchantResponseList = modelFactory.ConvertFrom(merchantModelList);
+            List<MerchantResponse> merchantResponseList = ModelFactory.ConvertFrom(merchantModelList);
 
             merchantResponseList.ShouldNotBeNull();
             merchantResponseList.ShouldNotBeEmpty();
             merchantResponseList.Count.ShouldBe(merchantModelList.Count);
         }
-        
+
         [Fact]
-        public void ModelFactory_Contract_ContractOnly_IsConverted()
-        {
+        public void ModelFactory_Contract_ContractOnly_IsConverted(){
             Contract contractModel = TestData.ContractModel;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+            ContractResponse contractResponse = ModelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldNotBeNull();
             contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
@@ -337,13 +296,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Contract_ContractWithProducts_IsConverted()
-        {
+        public void ModelFactory_Contract_ContractWithProducts_IsConverted(){
             Contract contractModel = TestData.ContractModelWithProducts;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+            ContractResponse contractResponse = ModelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldNotBeNull();
             contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
@@ -364,13 +320,10 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Contract_ContractWithProductsAndFees_IsConverted()
-        {
+        public void ModelFactory_Contract_ContractWithProductsAndFees_IsConverted(){
             Contract contractModel = TestData.ContractModelWithProductsAndTransactionFees;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+            ContractResponse contractResponse = ModelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldNotBeNull();
             contractResponse.OperatorId.ShouldBe(contractModel.OperatorId);
@@ -378,7 +331,7 @@ namespace EstateManagement.Tests.Factories
             contractResponse.Description.ShouldBe(contractModel.Description);
             contractResponse.Products.ShouldNotBeNull();
             contractResponse.Products.ShouldHaveSingleItem();
-            
+
             ContractProduct contractProduct = contractResponse.Products.Single();
             Product expectedContractProduct = contractModel.Products.Single();
 
@@ -400,26 +353,20 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_Contract_NullContract_IsConverted()
-        {
+        public void ModelFactory_Contract_NullContract_IsConverted(){
             Contract contractModel = null;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            ContractResponse contractResponse = modelFactory.ConvertFrom(contractModel);
+            ContractResponse contractResponse = ModelFactory.ConvertFrom(contractModel);
 
             contractResponse.ShouldBeNull();
         }
 
 
         [Fact]
-        public void ModelFactory_TransactionFeeList_IsConverted()
-        {
+        public void ModelFactory_TransactionFeeList_IsConverted(){
             List<TransactionFee> transactionFeeModelList = TestData.ProductTransactionFees;
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            List<ContractProductTransactionFee> transactionFeeResponseList = modelFactory.ConvertFrom(transactionFeeModelList);
+            List<ContractProductTransactionFee> transactionFeeResponseList = ModelFactory.ConvertFrom(transactionFeeModelList);
 
             transactionFeeResponseList.ShouldNotBeNull();
             transactionFeeResponseList.ShouldNotBeEmpty();
@@ -427,16 +374,12 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_ContractList_IsConverted()
-        {
-            List<Contract> contractModel = new List<Contract>
-                                           {
-                                               TestData.ContractModel
-                                           };
+        public void ModelFactory_ContractList_IsConverted(){
+            List<Contract> contractModel = new List<Contract>{
+                                                                 TestData.ContractModel
+                                                             };
 
-            ModelFactory modelFactory = new ModelFactory();
-
-            var contractResponses = modelFactory.ConvertFrom(contractModel);
+            var contractResponses = ModelFactory.ConvertFrom(contractModel);
 
             contractResponses.ShouldNotBeNull();
             contractResponses.ShouldHaveSingleItem();
@@ -447,10 +390,8 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModel_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
-            SettlementFeeResponse response = factory.ConvertFrom(TestData.SettlementFeeModel);
+        public void ModelFactory_ConvertFrom_SettlementFeeModel_ModelConverted(){
+            SettlementFeeResponse response = ModelFactory.ConvertFrom(TestData.SettlementFeeModel);
 
             response.ShouldSatisfyAllConditions(r => r.SettlementDate.ShouldBe(TestData.SettlementFeeModel.SettlementDate),
                                                 r => r.SettlementId.ShouldBe(TestData.SettlementFeeModel.SettlementId),
@@ -463,20 +404,16 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModel_ModelIsNull_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
+        public void ModelFactory_ConvertFrom_SettlementFeeModel_ModelIsNull_ModelConverted(){
             SettlementFeeModel model = null;
-            SettlementFeeResponse response = factory.ConvertFrom(model);
+            SettlementFeeResponse response = ModelFactory.ConvertFrom(model);
 
             response.ShouldBeNull();
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
-            var response = factory.ConvertFrom(TestData.SettlementFeeModels);
+        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ModelConverted(){
+            var response = ModelFactory.ConvertFrom(TestData.SettlementFeeModels);
 
             response.ShouldNotBeNull();
             response.ShouldNotBeEmpty();
@@ -484,32 +421,26 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ListIsNull_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
+        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ListIsNull_ModelConverted(){
             List<SettlementFeeModel> modelList = null;
-            List<SettlementFeeResponse> response = factory.ConvertFrom(modelList);
+            List<SettlementFeeResponse> response = ModelFactory.ConvertFrom(modelList);
 
             response.ShouldNotBeNull();
             response.ShouldBeEmpty();
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ListIsEmpty_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
+        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ListIsEmpty_ModelConverted(){
             List<SettlementFeeModel> modelList = new List<SettlementFeeModel>();
-            List<SettlementFeeResponse> response = factory.ConvertFrom(modelList);
+            List<SettlementFeeResponse> response = ModelFactory.ConvertFrom(modelList);
 
             response.ShouldNotBeNull();
             response.ShouldBeEmpty();
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementModel_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
-            SettlementResponse response = factory.ConvertFrom(TestData.SettlementModel);
+        public void ModelFactory_ConvertFrom_SettlementModel_ModelConverted(){
+            SettlementResponse response = ModelFactory.ConvertFrom(TestData.SettlementModel);
 
             response.ShouldSatisfyAllConditions(r => r.SettlementDate.ShouldBe(TestData.SettlementModel.SettlementDate),
                                                 r => r.SettlementId.ShouldBe(TestData.SettlementModel.SettlementId),
@@ -520,20 +451,16 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementModel_ModelIsNull_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
+        public void ModelFactory_ConvertFrom_SettlementModel_ModelIsNull_ModelConverted(){
             SettlementModel model = null;
-            SettlementResponse response = factory.ConvertFrom(model);
+            SettlementResponse response = ModelFactory.ConvertFrom(model);
 
             response.ShouldBeNull();
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementModelList_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
-            List<SettlementResponse> response = factory.ConvertFrom(TestData.SettlementModels);
+        public void ModelFactory_ConvertFrom_SettlementModelList_ModelConverted(){
+            List<SettlementResponse> response = ModelFactory.ConvertFrom(TestData.SettlementModels);
 
             response.ShouldNotBeNull();
             response.ShouldNotBeEmpty();
@@ -541,25 +468,61 @@ namespace EstateManagement.Tests.Factories
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementModelList_ListIsNull_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
+        public void ModelFactory_ConvertFrom_SettlementModelList_ListIsNull_ModelConverted(){
             List<SettlementModel> settlementModeList = null;
-            List<SettlementResponse> response = factory.ConvertFrom(settlementModeList);
+            List<SettlementResponse> response = ModelFactory.ConvertFrom(settlementModeList);
 
             response.ShouldNotBeNull();
             response.ShouldBeEmpty();
         }
 
         [Fact]
-        public void ModelFactory_ConvertFrom_SettlementModelList_ListIsEmpty_ModelConverted()
-        {
-            ModelFactory factory = new ModelFactory();
+        public void ModelFactory_ConvertFrom_SettlementModelList_ListIsEmpty_ModelConverted(){
             List<SettlementModel> settlementModeList = new List<SettlementModel>();
-            List<SettlementResponse> response = factory.ConvertFrom(settlementModeList);
+            List<SettlementResponse> response = ModelFactory.ConvertFrom(settlementModeList);
 
             response.ShouldNotBeNull();
             response.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_FileDetails_ModelConverted(){
+            FileDetailsResponse response = ModelFactory.ConvertFrom(TestData.FileModel);
+
+            response.ShouldNotBeNull();
+            response.FileId.ShouldBe(TestData.FileId);
+            response.FileReceivedDate.ShouldBe(TestData.FileReceivedDate);
+            response.FileReceivedDateTime.ShouldBe(TestData.FileReceivedDateTime);
+            response.FileLineDetails.ShouldNotBeNull();
+            response.FileLineDetails.ShouldNotBeEmpty();
+
+            foreach (FileLineDetails fileModelFileLineDetail in TestData.FileModel.FileLineDetails){
+                FileLineDetailsResponse responseLine = response.FileLineDetails.SingleOrDefault(f => f.FileLineNumber == fileModelFileLineDetail.FileLineNumber);
+                responseLine.ShouldNotBeNull();
+                responseLine.FileLineNumber.ShouldBe(fileModelFileLineDetail.FileLineNumber);
+                responseLine.FileLineData.ShouldBe(fileModelFileLineDetail.FileLineData);
+                responseLine.Status.ShouldBe(fileModelFileLineDetail.Status);
+
+                if (fileModelFileLineDetail.Transaction != null){
+                    responseLine.Transaction.ShouldNotBeNull();
+                    responseLine.Transaction.IsCompleted.ShouldBe(fileModelFileLineDetail.Transaction.IsCompleted);
+                    responseLine.Transaction.AuthCode.ShouldBe(fileModelFileLineDetail.Transaction.AuthCode);
+                    responseLine.Transaction.IsAuthorised.ShouldBe(fileModelFileLineDetail.Transaction.IsAuthorised);
+                    responseLine.Transaction.ResponseMessage.ShouldBe(fileModelFileLineDetail.Transaction.ResponseMessage);
+                    responseLine.Transaction.ResponseCode.ShouldBe(fileModelFileLineDetail.Transaction.ResponseCode);
+                    responseLine.Transaction.TransactionId.ShouldBe(fileModelFileLineDetail.Transaction.TransactionId);
+                    responseLine.Transaction.TransactionNumber.ShouldBe(fileModelFileLineDetail.Transaction.TransactionNumber);
+                }
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_FileDetailsIsNull_ModelConverted(){
+            File fileModel = null;
+
+            FileDetailsResponse response = ModelFactory.ConvertFrom(fileModel);
+
+            response.ShouldBeNull();
         }
     }
 }

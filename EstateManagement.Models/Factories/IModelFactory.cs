@@ -41,17 +41,9 @@ namespace EstateManagement.Models.Factories
         EstateModel ConvertFrom(EstateEntity estate,
                                 List<EstateOperatorEntity> estateOperators,
                                 List<EstateSecurityUserEntity> estateSecurityUsers);
+        
+        MerchantModel ConvertFrom(Guid estateId, MerchantEntity merchant);
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchant">The merchant.</param>
-        /// <param name="merchantAddresses">The merchant addresses.</param>
-        /// <param name="merchantContacts">The merchant contacts.</param>
-        /// <param name="merchantOperators">The merchant operators.</param>
-        /// <param name="merchantDevices">The merchant devices.</param>
-        /// <param name="merchantSecurityUsers">The merchant security users.</param>
-        /// <returns></returns>
         MerchantModel ConvertFrom(Guid estateId, 
                                   MerchantEntity merchant,
                                   List<MerchantAddressEntity> merchantAddresses,

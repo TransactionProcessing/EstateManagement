@@ -7,6 +7,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
 {
     using System.Threading;
     using BusinessLogic.EventHandling;
+    using BusinessLogic.Events;
     using EstateManagement.Merchant.DomainEvents;
     using EstateManagement.MerchantStatement.DomainEvents;
     using Events;

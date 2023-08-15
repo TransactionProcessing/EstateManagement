@@ -9,6 +9,7 @@
     using Models.Contract;
     using Models.Estate;
     using Models.Factories;
+    using Models.File;
     using Models.Merchant;
     using Newtonsoft.Json.Linq;
     using NLog;
@@ -143,16 +144,7 @@
         {
             return await this.EstateManagementRepository.GetMerchants(estateId, cancellationToken);
         }
-
-        /// <summary>
-        /// Gets the transaction fees for product.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        
         public async Task<List<TransactionFee>> GetTransactionFeesForProduct(Guid estateId,
                                                                              Guid merchantId,
                                                                              Guid contractId,
@@ -160,6 +152,10 @@
                                                                              CancellationToken cancellationToken)
         {
             return await this.EstateManagementRepository.GetTransactionFeesForProduct(estateId, merchantId, contractId, productId, cancellationToken);
+        }
+
+        public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){
+            return await this.EstateManagementRepository.GetFileDetails(estateId, fileId, cancellationToken);
         }
 
         #endregion

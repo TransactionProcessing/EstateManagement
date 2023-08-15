@@ -7,6 +7,7 @@
     using Models;
     using Models.Contract;
     using Models.Estate;
+    using Models.File;
     using Models.Merchant;
 
     public interface IEstateManagementManager
@@ -89,6 +90,8 @@
                                                                 Guid contractId,
                                                                 Guid productId,
                                                                 CancellationToken cancellationToken);
+
+        Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken);
 
         #endregion
     }
