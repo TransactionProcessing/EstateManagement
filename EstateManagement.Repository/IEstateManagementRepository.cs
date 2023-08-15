@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Models.Contract;
     using Models.Estate;
+    using Models.File;
     using Models.Merchant;
     using Models.MerchantStatement;
 
@@ -102,6 +103,8 @@
         Task<StatementHeader> GetStatement(Guid estateId,
                                            Guid merchantStatementId,
                                            CancellationToken cancellationToken);
+
+        Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken);
 
         #endregion
     }

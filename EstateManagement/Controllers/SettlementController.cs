@@ -17,19 +17,15 @@ public class SettlementController : ControllerBase
 {
     #region Fields
 
-    private readonly IModelFactory ModelFactory;
-
     private readonly IReportingManager ReportingManager;
 
     #endregion
 
     #region Constructors
 
-    public SettlementController(IReportingManager reportingManager,
-                                IModelFactory modelFactory)
+    public SettlementController(IReportingManager reportingManager)
     {
         this.ReportingManager = reportingManager;
-        this.ModelFactory = modelFactory;
     }
 
     #endregion
@@ -45,7 +41,7 @@ public class SettlementController : ControllerBase
     {
         SettlementModel model = await this.ReportingManager.GetSettlement(estateId, merchantId, settlementId, cancellationToken);
 
-        return this.Ok(this.ModelFactory.ConvertFrom(model));
+        return this.Ok(ModelFactory.ConvertFrom(model));
     }
 
     [Route("")]
@@ -58,7 +54,7 @@ public class SettlementController : ControllerBase
     {
         List<SettlementModel> model = await this.ReportingManager.GetSettlements(estateId, merchantId, startDate, endDate, cancellationToken);
 
-        return this.Ok(this.ModelFactory.ConvertFrom(model));
+        return this.Ok(ModelFactory.ConvertFrom(model));
     }
 
     #endregion

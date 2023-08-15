@@ -213,20 +213,6 @@
             return merchantModel;
         }
         
-        private static Guid GenerateGuidFromString(String input)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                //Generate hash from the key
-                Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-                Byte[] j = bytes.Skip(Math.Max(0, bytes.Count() - 16)).ToArray(); //Take last 16
-
-                //Create our Guid.
-                return new Guid(j);
-            }
-        }
-
         public static void SetSettlementSchedule(this MerchantAggregate aggregate, SettlementSchedule settlementSchedule)
         {
             // Check if there has actually been a change or not, if not ignore the request

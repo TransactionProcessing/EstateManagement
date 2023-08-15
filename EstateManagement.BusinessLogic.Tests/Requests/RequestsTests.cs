@@ -321,6 +321,18 @@
             setMerchantSettlementScheduleRequest.SettlementSchedule.ShouldBe(TestData.SettlementSchedule);
         }
 
+        [Fact]
+        public void EmailMerchantStatementRequest_CanBeCreated_IsCreated()
+        {
+            EmailMerchantStatementRequest emailMerchantStatementRequest =
+                EmailMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.MerchantStatementId);
+
+            emailMerchantStatementRequest.ShouldNotBeNull();
+            emailMerchantStatementRequest.EstateId.ShouldBe(TestData.EstateId);
+            emailMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
+            emailMerchantStatementRequest.MerchantStatementId.ShouldBe(TestData.MerchantStatementId);
+        }
+
         #endregion
     }
 }

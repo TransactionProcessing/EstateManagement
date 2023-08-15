@@ -26,6 +26,7 @@
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
     using Microsoft.AspNetCore.Authorization;
+    using Shared.General;
 
     /// <summary>
     /// 
@@ -46,23 +47,15 @@
 
         private readonly IEstateManagementManager EstateManagementManager;
 
-        private readonly IModelFactory ModelFactory;
-
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContractController"/> class.
-        /// </summary>
-        /// <param name="mediator">The mediator.</param>
         public ContractController(IMediator mediator,
-                                  IEstateManagementManager estateManagementManager,
-                                  IModelFactory modelFactory)
+                                  IEstateManagementManager estateManagementManager)
         {
             this.Mediator = mediator;
             this.EstateManagementManager = estateManagementManager;
-            this.ModelFactory = modelFactory;
         }
 
         #endregion
@@ -109,7 +102,7 @@
                 throw new NotFoundException($"Contract not found with estate Id {estateId} and contract Id {contractId}");
             }
 
-            return this.Ok(this.ModelFactory.ConvertFrom(contract));
+            return this.Ok(ModelFactory.ConvertFrom(contract));
         }
 
         /// <summary>
@@ -141,7 +134,7 @@
 
             List<Contract> contracts = await this.EstateManagementManager.GetContracts(estateId, cancellationToken);
 
-            return this.Ok(this.ModelFactory.ConvertFrom(contracts));
+            return this.Ok(ModelFactory.ConvertFrom(contracts));
 
         }
 

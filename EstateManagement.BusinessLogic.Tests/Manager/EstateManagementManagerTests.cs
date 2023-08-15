@@ -210,5 +210,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantContracts.ShouldHaveSingleItem();
             merchantContracts.Single().ContractId.ShouldBe(TestData.ContractId);
         }
+
+        [Fact]
+        public async Task EstateManagementManager_GetFileDetails_FileDetailsAreReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetFileDetails(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.FileModel);
+
+            var fileDetails = await this.EstateManagementManager.GetFileDetails(TestData.EstateId, TestData.FileId, CancellationToken.None);
+
+            fileDetails.ShouldNotBeNull();
+        }
     }
 }

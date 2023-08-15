@@ -19,6 +19,7 @@
     using EstateManagement.BusinessLogic.Requests;
     using Microsoft.AspNetCore.Authorization;
     using Models.Estate;
+    using Shared.General;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
@@ -44,28 +45,15 @@
         /// </summary>
         private readonly IEstateManagementManager EstateManagementManager;
 
-        /// <summary>
-        /// The model factory
-        /// </summary>
-        private readonly IModelFactory ModelFactory;
-
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EstateController" /> class.
-        /// </summary>
-        /// <param name="mediator">The mediator.</param>
-        /// <param name="estateManagementManager">The estate management manager.</param>
-        /// <param name="modelFactory">The model factory.</param>
         public EstateController(IMediator mediator,
-                                IEstateManagementManager estateManagementManager,
-                                IModelFactory modelFactory)
+                                IEstateManagementManager estateManagementManager)
         {
             this.Mediator = mediator;
             this.EstateManagementManager = estateManagementManager;
-            this.ModelFactory = modelFactory;
         }
 
         #endregion
@@ -142,7 +130,7 @@
                 throw new NotFoundException($"Estate not found with estate Id {estateId}");
             }
 
-            return this.Ok(this.ModelFactory.ConvertFrom(estate));
+            return this.Ok(ModelFactory.ConvertFrom(estate));
         }
 
         /// <summary>

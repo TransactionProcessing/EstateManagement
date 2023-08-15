@@ -1,16 +1,10 @@
 ﻿namespace EstateManagement.BusinessLogic.Events
 {
     using System;
+    using Google.Protobuf.WellKnownTypes;
     using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.EventSourcing;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.DomainEventRecord.DomainEvent" />
-    /// <seealso cref="Shared.DomainDrivenDesign.EventSourcing.IDomainEvent" />
-    /// <seealso cref="System.IEquatable&lt;Shared.DomainDrivenDesign.EventSourcing.DomainEventRecord.DomainEvent&gt;" />
-    /// <seealso cref="System.IEquatable&lt;EstateManagement.BusinessLogic.Events.CallbackReceivedEnrichedEvent&gt;" />
     public record CallbackReceivedEnrichedEvent : DomainEvent
     {
         #region Constructors
@@ -21,6 +15,16 @@
         /// <param name="aggregateId">The aggregate identifier.</param>
         public CallbackReceivedEnrichedEvent(Guid aggregateId) : base(aggregateId, Guid.NewGuid())
         {
+        }
+
+        public CallbackReceivedEnrichedEvent(Guid aggregateId, Guid estateId, Int32 messageFormat,
+                                             String reference, String typeString,
+                                             String callbackMessage) : base(aggregateId, Guid.NewGuid()){
+            this.EstateId = estateId;
+            this.MessageFormat = messageFormat;
+            this.Reference = reference;
+            this.TypeString = typeString;
+            this.CallbackMessage = callbackMessage;
         }
 
         #endregion

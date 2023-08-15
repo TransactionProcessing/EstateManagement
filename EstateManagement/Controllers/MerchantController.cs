@@ -21,6 +21,7 @@
     using Models.Contract;
     using Models.Merchant;
     using Shared.Exceptions;
+    using Shared.General;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
     using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
@@ -61,12 +62,7 @@
         /// The mediator
         /// </summary>
         private readonly IMediator Mediator;
-
-        /// <summary>
-        /// The model factory
-        /// </summary>
-        private readonly IModelFactory ModelFactory;
-
+        
         #endregion
 
         #region Constructors
@@ -78,12 +74,10 @@
         /// <param name="estateManagementManager">The estate management manager.</param>
         /// <param name="modelFactory">The model factory.</param>
         public MerchantController(IMediator mediator,
-                                  IEstateManagementManager estateManagementManager,
-                                  IModelFactory modelFactory)
+                                  IEstateManagementManager estateManagementManager)
         {
             this.Mediator = mediator;
             this.EstateManagementManager = estateManagementManager;
-            this.ModelFactory = modelFactory;
         }
 
         #endregion
@@ -436,7 +430,7 @@
                 throw new NotFoundException($"Merchant not found with estate Id {estateId} and merchant Id {merchantId}");
             }
             
-            return this.Ok(this.ModelFactory.ConvertFrom(merchant));
+            return this.Ok(ModelFactory.ConvertFrom(merchant));
         }
         
         /// <summary>
@@ -495,7 +489,7 @@
 
             List<Contract> contracts = await this.EstateManagementManager.GetMerchantContracts(estateId, merchantId, cancellationToken);
 
-            return this.Ok(this.ModelFactory.ConvertFrom(contracts));
+            return this.Ok(ModelFactory.ConvertFrom(contracts));
         }
 
         /// <summary>
@@ -534,7 +528,7 @@
                 throw new NotFoundException($"No Merchants found for estate Id {estateId}");
             }
 
-            return this.Ok(this.ModelFactory.ConvertFrom(merchants));
+            return this.Ok(ModelFactory.ConvertFrom(merchants));
         }
 
         /// <summary>
@@ -599,7 +593,7 @@
             List<TransactionFee> transactionFees =
                 await this.EstateManagementManager.GetTransactionFeesForProduct(estateId, merchantId, contractId, productId, cancellationToken);
 
-            return this.Ok(this.ModelFactory.ConvertFrom(transactionFees));
+            return this.Ok(ModelFactory.ConvertFrom(transactionFees));
         }
 
         /// <summary>

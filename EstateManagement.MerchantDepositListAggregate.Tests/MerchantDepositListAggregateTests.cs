@@ -29,6 +29,22 @@ namespace EstateManagement.MerchantDepositListAggregate.Tests
         }
 
         [Fact]
+        public void MerchantDepositListAggregate_Create_AlreadyCreated_IsCreated()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            MerchantDepositListAggregate merchantDepositListAggregate = MerchantDepositListAggregate.Create(TestData.MerchantId);
+            merchantDepositListAggregate.Create(merchantAggregate, TestData.DateMerchantCreated);
+
+            merchantDepositListAggregate.Create(merchantAggregate, TestData.DateMerchantCreated);
+
+            merchantDepositListAggregate.AggregateId.ShouldBe(TestData.MerchantId);
+            merchantDepositListAggregate.EstateId.ShouldBe(TestData.EstateId);
+            merchantDepositListAggregate.DateCreated.ShouldBe(TestData.DateMerchantCreated);
+        }
+
+        [Fact]
         public void MerchantDepositListAggregate_Create_MerchantNotCreated_ErrorThrown() {
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
 
