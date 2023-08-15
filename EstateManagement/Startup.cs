@@ -36,10 +36,6 @@ namespace EstateManagement
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        public Startup(){
-            
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>

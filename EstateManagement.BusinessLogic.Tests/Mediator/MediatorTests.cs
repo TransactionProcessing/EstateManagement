@@ -52,7 +52,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             hostingEnvironment.Setup(he => he.ApplicationName).Returns("Test Application");
 
             ServiceRegistry services = new ServiceRegistry();
-            Startup s = new Startup();
+            Startup s = new Startup(hostingEnvironment.Object);
             Startup.Configuration = this.SetupMemoryConfiguration();
 
             this.AddTestRegistrations(services, hostingEnvironment.Object);
