@@ -109,6 +109,7 @@
                                                      CancellationToken cancellationToken)
         {
             await this.EstateReportingRepository.RecordTransactionAdditionalRequestData(domainEvent, cancellationToken);
+            await this.EstateReportingRepository.SetTransactionAmount(domainEvent, cancellationToken);
         }
 
         /// <summary>

@@ -773,6 +773,9 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("ResponseMessage")
                         .HasColumnType("longtext");
 
+                    b.Property<decimal>("TransactionAmount")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("date");
 
@@ -798,6 +801,10 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("longtext");
 
                     b.HasKey("TransactionReportingId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("TransactionId")
+                        .IsUnique()
                         .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("TransactionDate", "MerchantReportingId")
