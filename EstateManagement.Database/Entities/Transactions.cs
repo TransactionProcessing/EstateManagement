@@ -51,6 +51,8 @@
 
         public Int32 TransactionSource { get; set; }
 
+        public Decimal TransactionAmount { get; set; }
+
         #endregion
     }
 }

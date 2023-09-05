@@ -192,6 +192,10 @@ public static class Extensions{
                                                            }).IsClustered(false);
 
         modelBuilder.Entity<Transaction>().HasIndex(t => new {
+                                                                 t.TransactionId
+                                                             }).IsClustered(false).IsUnique(true);
+
+        modelBuilder.Entity<Transaction>().HasIndex(t => new {
                                                                  t.TransactionId,
                                                                  t.MerchantReportingId,
                                                              }).IsClustered(false).IsUnique(true);

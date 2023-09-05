@@ -177,6 +177,9 @@ namespace EstateManagement.Repository
         Task RecordTransactionAdditionalRequestData(AdditionalRequestDataRecordedEvent domainEvent,
                                                     CancellationToken cancellationToken);
 
+        Task SetTransactionAmount(AdditionalRequestDataRecordedEvent domainEvent,
+                                                    CancellationToken cancellationToken);
+
         Task RecordTransactionAdditionalResponseData(AdditionalResponseDataRecordedEvent domainEvent,
                                                      CancellationToken cancellationToken);
 
@@ -1288,11 +1291,43 @@ namespace EstateManagement.Repository
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        /// <summary>
-        /// Records the transaction additional request data.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
+        public async Task SetTransactionAmount(AdditionalRequestDataRecordedEvent domainEvent,
+                                               CancellationToken cancellationToken){
+
+            EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+            Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            foreach (String additionalRequestField in this.AdditionalRequestFields)
+            {
+                if (domainEvent.AdditionalTransactionRequestMetadata.Any(m => m.Key.ToLower() == additionalRequestField.ToLower()))
+                {
+                    //Type dbTableType = additionalRequestData.GetType();
+                    //PropertyInfo propertyInfo = dbTableType.GetProperty(additionalRequestField);
+
+                    //if (propertyInfo != null)
+                    //{
+                    //    propertyInfo.SetValue(additionalRequestData, value);
+
+                        if (additionalRequestField == "Amount")
+                        {
+                            String value = domainEvent.AdditionalTransactionRequestMetadata.Single(m => m.Key.ToLower() == additionalRequestField.ToLower()).Value;
+                        // Load this value to the transaction as well
+                        transaction.TransactionAmount = Decimal.Parse(value);
+                        break;
+                        }
+                    //}
+                    //else
+                    //{
+                    //    Logger.LogInformation("propertyInfo == null");
+                    //}
+                }
+            }
+
+            context.Transactions.Entry(transaction).State = EntityState.Modified;
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task RecordTransactionAdditionalRequestData(AdditionalRequestDataRecordedEvent domainEvent,
                                                                  CancellationToken cancellationToken)
         {
@@ -1322,10 +1357,14 @@ namespace EstateManagement.Repository
                     Type dbTableType = additionalRequestData.GetType();
                     PropertyInfo propertyInfo = dbTableType.GetProperty(additionalRequestField);
 
-                    if (propertyInfo != null)
-                    {
-                        propertyInfo.SetValue(additionalRequestData,
-                                              domainEvent.AdditionalTransactionRequestMetadata.Single(m => m.Key.ToLower() == additionalRequestField.ToLower()).Value);
+                    if (propertyInfo != null){
+                        String value = domainEvent.AdditionalTransactionRequestMetadata.Single(m => m.Key.ToLower() == additionalRequestField.ToLower()).Value;
+                        propertyInfo.SetValue(additionalRequestData,value);
+
+                        if (additionalRequestField == "Amount"){
+                            // Load this value to the transaction as well
+                            transaction.TransactionAmount = Decimal.Parse(value);
+                        }
                     }
                     else
                     {
