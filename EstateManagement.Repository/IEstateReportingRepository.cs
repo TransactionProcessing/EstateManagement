@@ -1463,8 +1463,12 @@ namespace EstateManagement.Repository
                 TransactionNumber = domainEvent.TransactionNumber,
                 TransactionReference = domainEvent.TransactionReference,
                 TransactionType = domainEvent.TransactionType,
-                DeviceIdentifier = domainEvent.DeviceIdentifier
+                DeviceIdentifier = domainEvent.DeviceIdentifier,
             };
+
+            if (domainEvent.TransactionAmount.HasValue){
+                transaction.TransactionAmount = domainEvent.TransactionAmount.Value;
+            }
 
             await context.Transactions.AddAsync(transaction, cancellationToken);
 
