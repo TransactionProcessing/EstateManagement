@@ -43,7 +43,7 @@ public class SettlementDomainEventHandlerTests
     [Fact]
     public void SettlementDomainEventHandler_MerchantFeeAddedToTransactionEvent_EventIsHandled()
     {
-        MerchantFeeAddedToTransactionEvent domainEvent = TestData.MerchantFeeAddedToTransactionEvent;
+        SettledMerchantFeeAddedToTransactionEvent domainEvent = TestData.MerchantFeeAddedToTransactionEvent;
             
         Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
     }

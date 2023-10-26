@@ -133,9 +133,8 @@ namespace EstateManagement.Repository
 
         Task AddSettledFeeToStatement(SettledFeeAddedToStatementEvent domainEvent,
                                       CancellationToken cancellationToken);
-
-        Task AddSettledMerchantFeeToSettlement(Guid settlementId,
-                                               MerchantFeeAddedToTransactionEvent domainEvent,
+        
+        Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                CancellationToken cancellationToken);
 
         Task AddSourceDetailsToTransaction(TransactionSourceAddedToTransactionEvent domainEvent,
@@ -525,6 +524,11 @@ namespace EstateManagement.Repository
         private async Task<Settlement> LoadSettlement(EstateManagementGenericContext context, IDomainEvent domainEvent)
         {
             Guid settlementId = DomainEventHelper.GetSettlementId(domainEvent);
+            return await context.Settlements.SingleOrDefaultAsync(e => e.SettlementId == settlementId);
+        }
+
+        private async Task<Settlement> LoadSettlement(EstateManagementGenericContext context, Guid settlementId)
+        {
             return await context.Settlements.SingleOrDefaultAsync(e => e.SettlementId == settlementId);
         }
 
@@ -970,8 +974,7 @@ namespace EstateManagement.Repository
         /// <param name="settlementId">The settlement identifier.</param>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task AddSettledMerchantFeeToSettlement(Guid settlementId,
-                                                            MerchantFeeAddedToTransactionEvent domainEvent,
+        public async Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                             CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -981,9 +984,9 @@ namespace EstateManagement.Repository
             Transaction transaction = await this.LoadTransaction(context, domainEvent);
 
             ContractProductTransactionFee contractProductTransactionFee = await this.LoadContractProductTransactionFee(context, domainEvent);
-
+            
             Settlement settlement = await this.LoadSettlement(context, domainEvent);
-
+            
             MerchantSettlementFee merchantSettlementFee = new MerchantSettlementFee
             {
                 SettlementReportingId = settlement.SettlementReportingId,
@@ -1218,6 +1221,7 @@ namespace EstateManagement.Repository
 
             Settlement settlement = await this.LoadSettlement(context, domainEvent);
 
+            
             MerchantSettlementFee merchantFee = await context.MerchantSettlementFees.Where(m =>
                                                                                                m.MerchantReportingId == merchant.MerchantReportingId &&
                                                                                                m.TransactionReportingId == transaction.TransactionReportingId &&

@@ -121,6 +121,7 @@ namespace EstateManagement
                                                                     0,
                                                                     Guid.NewGuid(),
                                                                     0,
+                                                                    DateTime.MinValue,
                                                                     DateTime.MinValue);
             StatementCreatedEvent s = new StatementCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.MinValue);
             VoucherGeneratedEvent g = new VoucherGeneratedEvent(Guid.NewGuid(),
