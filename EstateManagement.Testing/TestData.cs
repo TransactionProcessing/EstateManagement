@@ -1406,16 +1406,16 @@
 
         public static Decimal FeeValue = 0.0005m;
 
-        public static MerchantFeeAddedToTransactionEvent MerchantFeeAddedToTransactionEvent = new MerchantFeeAddedToTransactionEvent(TestData.TransactionId,
-            TestData.EstateId,
-            TestData.MerchantId,
-            TestData.CalculatedValue,
-            TestData.FeeCalculationType,
-            TestData.TransactionFeeId,
-            TestData.FeeValue,
-            TestData.FeeCalculatedDateTime,
-            TestData.SettlementDueDate,
-            TestData.SettledDate);
+        public static SettledMerchantFeeAddedToTransactionEvent MerchantFeeAddedToTransactionEvent = new SettledMerchantFeeAddedToTransactionEvent(TestData.TransactionId,
+                                                                                                                                                   TestData.EstateId,
+                                                                                                                                                   TestData.MerchantId,
+                                                                                                                                                   TestData.CalculatedValue,
+                                                                                                                                                   TestData.FeeCalculationType,
+                                                                                                                                                   TestData.TransactionFeeId,
+                                                                                                                                                   TestData.FeeValue,
+                                                                                                                                                   TestData.FeeCalculatedDateTime,
+                                                                                                                                                   TestData.SettledDate,
+                                                                                                                                                   TestData.SettlementId);
 
         public static DateTime FeeCalculatedDateTime = new DateTime(2021, 3, 23);
 
@@ -1758,7 +1758,8 @@
                                         TestData.FeeCalculationType,
                                         TestData.TransactionFeeId,
                                         TestData.FeeValue,
-                                        TestData.FeeCalculatedDateTime);
+                                        TestData.FeeCalculatedDateTime,
+                                        TestData.SettledDate);
 
         public static MerchantReferenceAllocatedEvent MerchantReferenceAllocatedEvent =>
             new MerchantReferenceAllocatedEvent(TestData.MerchantId, TestData.EstateId, TestData.MerchantReference);

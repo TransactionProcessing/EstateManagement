@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.Repository{
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -23,6 +24,7 @@
     using File = Models.File.File;
     using Transaction = Models.File.Transaction;
 
+    [ExcludeFromCodeCoverage]
     public class EstateManagementRepository : IEstateManagementRepository{
         #region Fields
 
@@ -214,7 +216,11 @@
 
             Merchant merchant = await (from m in context.Merchants where m.MerchantId == merchantId select m).SingleOrDefaultAsync(cancellationToken);
 
-            List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.MerchantReportingId == merchant.MerchantReportingId select a).ToListAsync(cancellationToken);
+            if (merchant == null){
+                throw new NotFoundException($"Merchant with Id {merchantId} not found for Estate {estateId}");
+            }
+
+                List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.MerchantReportingId == merchant.MerchantReportingId select a).ToListAsync(cancellationToken);
             List<MerchantContact> merchantContacts = await (from c in context.MerchantContacts where c.MerchantReportingId == merchant.MerchantReportingId select c).ToListAsync(cancellationToken);
             List<MerchantOperator> merchantOperators = await (from o in context.MerchantOperators where o.MerchantReportingId == merchant.MerchantReportingId select o).ToListAsync(cancellationToken);
             List<MerchantSecurityUser> merchantSecurityUsers = await (from u in context.MerchantSecurityUsers where u.MerchantReportingId == merchant.MerchantReportingId select u).ToListAsync(cancellationToken);

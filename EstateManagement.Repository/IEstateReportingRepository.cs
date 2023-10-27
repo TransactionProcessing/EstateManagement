@@ -123,9 +123,8 @@
 
         Task AddSettledFeeToStatement(SettledFeeAddedToStatementEvent domainEvent,
                                       CancellationToken cancellationToken);
-
-        Task AddSettledMerchantFeeToSettlement(Guid settlementId,
-                                               MerchantFeeAddedToTransactionEvent domainEvent,
+        
+        Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                CancellationToken cancellationToken);
 
         Task AddSourceDetailsToTransaction(TransactionSourceAddedToTransactionEvent domainEvent,

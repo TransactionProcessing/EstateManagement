@@ -8,6 +8,9 @@
     using Requests;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.EventHandling;
+    using Shared.Extensions;
+    using Shared.General;
+    using Shared.Logger;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
 
@@ -56,7 +59,9 @@
         private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
+            Logger.LogInformation("Inside HandleSpecificDomainEvent for MerchantFeeSettledEvent");
             await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
+            Logger.LogInformation("Leaving HandleSpecificDomainEvent for MerchantFeeSettledEvent");
         }
 
         private async Task HandleSpecificDomainEvent(SettlementProcessingStartedEvent domainEvent,
@@ -71,13 +76,10 @@
             await this.EstateReportingRepository.CreateSettlement(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(MerchantFeeAddedToTransactionEvent domainEvent,
+        private async Task HandleSpecificDomainEvent(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            // Generate the settlement id from the date
-            Guid settlementId = SettlementDomainEventHandler.GetSettlementId(domainEvent.SettlementDueDate);
-
-            await this.EstateReportingRepository.AddSettledMerchantFeeToSettlement(settlementId, domainEvent, cancellationToken);
+            await this.EstateReportingRepository.AddSettledMerchantFeeToSettlement(domainEvent, cancellationToken);
         }
 
         private async Task HandleSpecificDomainEvent(MerchantFeeAddedPendingSettlementEvent domainEvent,

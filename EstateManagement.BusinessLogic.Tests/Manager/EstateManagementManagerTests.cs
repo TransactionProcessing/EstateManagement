@@ -29,6 +29,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     public class EstateManagementManagerTests
     {
         private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
+        private readonly Mock<IAggregateRepository<EstateAggregate, DomainEvent>> EstateAggregateRepository;
+
         private readonly Mock<IModelFactory> ModelFactory;
 
         private readonly EstateManagementManager EstateManagementManager;
@@ -36,16 +38,21 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         public EstateManagementManagerTests()
         {
             this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
+
+            this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             
             this.ModelFactory = new Mock<IModelFactory>();
+
             
             this.EstateManagementManager =
-                new EstateManagementManager(this.EstateManagementRepository.Object, this.ModelFactory.Object);
+                new EstateManagementManager(this.EstateManagementRepository.Object, 
+                                            this.EstateAggregateRepository.Object,
+                                            this.ModelFactory.Object);
         }
 
         [Fact]
-        public async Task EstateManagementManager_GetEstate_EstateIsReturned()
-        {
+        public async Task EstateManagementManager_GetEstate_EstateIsReturned(){
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
 
             Estate estateModel =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
@@ -53,6 +60,17 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(TestData.EstateModel.EstateId);
             estateModel.Name.ShouldBe(TestData.EstateModel.Name);
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetEstate_InvalidEstateId_ErrorisThrown()
+        {
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
+                                            });
         }
 
         [Fact]

@@ -27,14 +27,10 @@
     {
         #region Fields
         
-        /// <summary>
-        /// The estate management repository
-        /// </summary>
         private readonly IEstateManagementRepository EstateManagementRepository;
-        
-        /// <summary>
-        /// The model factory
-        /// </summary>
+
+        private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
+
         private readonly IModelFactory ModelFactory;
 
         #endregion
@@ -42,9 +38,11 @@
         #region Constructors
         
         public EstateManagementManager(IEstateManagementRepository estateManagementRepository,
+                                       IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
                                        IModelFactory modelFactory)
         {
             this.EstateManagementRepository = estateManagementRepository;
+            this.EstateAggregateRepository = estateAggregateRepository;
             this.ModelFactory = modelFactory;
         }
 
@@ -94,7 +92,12 @@
         /// <returns></returns>
         /// <exception cref="NotFoundException">No estate found with Id [{estateId}]</exception>
         public async Task<Estate> GetEstate(Guid estateId,
-                                            CancellationToken cancellationToken) {
+                                            CancellationToken cancellationToken){
+
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false){
+                throw new NotFoundException($"No estate found in read model with Id [{estateId}]");
+            }
 
             Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
             
