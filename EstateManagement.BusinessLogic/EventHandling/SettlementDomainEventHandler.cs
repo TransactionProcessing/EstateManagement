@@ -59,9 +59,9 @@
         private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Inside HandleSpecificDomainEvent for MerchantFeeSettledEvent");
+            Logger.LogInformation($"Inside HandleSpecificDomainEvent for MerchantFeeSettledEvent - {domainEvent.EventId}");
             await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
-            Logger.LogInformation("Leaving HandleSpecificDomainEvent for MerchantFeeSettledEvent");
+            Logger.LogInformation($"Leaving HandleSpecificDomainEvent for MerchantFeeSettledEvent - {domainEvent.EventId}");
         }
 
         private async Task HandleSpecificDomainEvent(SettlementProcessingStartedEvent domainEvent,
