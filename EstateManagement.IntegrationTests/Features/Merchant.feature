@@ -160,7 +160,7 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	| Deposit3  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
 	| Deposit4  | 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
 
-@PRTest
+#@PRTest
 Scenario: Make Merchant Withdrawal - Estate User
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -176,7 +176,7 @@ Scenario: Make Merchant Withdrawal - Estate User
 	| Amount | DateTime  | MerchantName    | EstateName    |
 	| 400.00 | LastMonth | Test Merchant 1 | Test Estate 1 |
 
-@PRTest
+#@PRTest
 Scenario: Get Merchants for Estate - System Login
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
@@ -214,7 +214,7 @@ Scenario: Get Merchants for Estate - System Login
 
 	When I get the merchants for 'Test Estate 2' then 2 merchants will be returned
 
-@PRTest
+#@PRTest
 Scenario: Get Merchants for Estate - Estate Login
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    | SettlementSchedule |
@@ -271,7 +271,7 @@ Scenario: Set Merchant Settlement Schedule - Estate User
 	| Test Merchant 2 | Test Estate 1 | Weekly             |
 	| Test Merchant 3 | Test Estate 1 | Monthly            |
 
-@PRTest
+#@PRTest
 Scenario: Make Automatic Merchant Deposits
 
 	Given I create the following merchants

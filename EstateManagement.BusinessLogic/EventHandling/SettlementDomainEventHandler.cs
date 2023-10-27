@@ -10,6 +10,7 @@
     using Shared.EventStore.EventHandling;
     using Shared.Extensions;
     using Shared.General;
+    using Shared.Logger;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
 
@@ -58,7 +59,9 @@
         private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
+            Logger.LogInformation("Inside HandleSpecificDomainEvent for MerchantFeeSettledEvent");
             await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
+            Logger.LogInformation("Leaving HandleSpecificDomainEvent for MerchantFeeSettledEvent");
         }
 
         private async Task HandleSpecificDomainEvent(SettlementProcessingStartedEvent domainEvent,

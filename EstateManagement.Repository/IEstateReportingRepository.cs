@@ -1215,13 +1215,43 @@ namespace EstateManagement.Repository
 
             Merchant merchant = await LoadMerchant(context, domainEvent);
 
+            if (merchant == null){
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Found");
+            }
+
             Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            if (transaction == null)
+            {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Transaction Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Transaction Found");
+            }
 
             ContractProductTransactionFee contractProductTransactionFee = await this.LoadContractProductTransactionFee(context, domainEvent);
 
+            if (contractProductTransactionFee == null)
+            {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - ContractProductTransactionFee Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - ContractProductTransactionFee Found");
+            }
+
             Settlement settlement = await this.LoadSettlement(context, domainEvent);
 
-            
+            if (settlement == null)
+            {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Settlement Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Settlement Found");
+            }
+
             MerchantSettlementFee merchantFee = await context.MerchantSettlementFees.Where(m =>
                                                                                                m.MerchantReportingId == merchant.MerchantReportingId &&
                                                                                                m.TransactionReportingId == transaction.TransactionReportingId &&
@@ -1229,11 +1259,16 @@ namespace EstateManagement.Repository
                                                              .SingleOrDefaultAsync(cancellationToken);
             if (merchantFee == null)
             {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Fee Not Found");
                 throw new NotFoundException("Merchant Fee not found to update as settled");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Fee Found");
             }
 
             merchantFee.IsSettled = true;
             await context.SaveChangesAsync(cancellationToken);
+            Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Fee Saved");
         }
 
         /// <summary>
