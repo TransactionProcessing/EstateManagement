@@ -133,9 +133,8 @@ namespace EstateManagement.Repository
 
         Task AddSettledFeeToStatement(SettledFeeAddedToStatementEvent domainEvent,
                                       CancellationToken cancellationToken);
-
-        Task AddSettledMerchantFeeToSettlement(Guid settlementId,
-                                               MerchantFeeAddedToTransactionEvent domainEvent,
+        
+        Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                CancellationToken cancellationToken);
 
         Task AddSourceDetailsToTransaction(TransactionSourceAddedToTransactionEvent domainEvent,
@@ -525,6 +524,11 @@ namespace EstateManagement.Repository
         private async Task<Settlement> LoadSettlement(EstateManagementGenericContext context, IDomainEvent domainEvent)
         {
             Guid settlementId = DomainEventHelper.GetSettlementId(domainEvent);
+            return await context.Settlements.SingleOrDefaultAsync(e => e.SettlementId == settlementId);
+        }
+
+        private async Task<Settlement> LoadSettlement(EstateManagementGenericContext context, Guid settlementId)
+        {
             return await context.Settlements.SingleOrDefaultAsync(e => e.SettlementId == settlementId);
         }
 
@@ -970,8 +974,7 @@ namespace EstateManagement.Repository
         /// <param name="settlementId">The settlement identifier.</param>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task AddSettledMerchantFeeToSettlement(Guid settlementId,
-                                                            MerchantFeeAddedToTransactionEvent domainEvent,
+        public async Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                             CancellationToken cancellationToken)
         {
             EstateManagementGenericContext context = await GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -981,9 +984,9 @@ namespace EstateManagement.Repository
             Transaction transaction = await this.LoadTransaction(context, domainEvent);
 
             ContractProductTransactionFee contractProductTransactionFee = await this.LoadContractProductTransactionFee(context, domainEvent);
-
+            
             Settlement settlement = await this.LoadSettlement(context, domainEvent);
-
+            
             MerchantSettlementFee merchantSettlementFee = new MerchantSettlementFee
             {
                 SettlementReportingId = settlement.SettlementReportingId,
@@ -1212,11 +1215,42 @@ namespace EstateManagement.Repository
 
             Merchant merchant = await LoadMerchant(context, domainEvent);
 
+            if (merchant == null){
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Found");
+            }
+
             Transaction transaction = await this.LoadTransaction(context, domainEvent);
+
+            if (transaction == null)
+            {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Transaction Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Transaction Found");
+            }
 
             ContractProductTransactionFee contractProductTransactionFee = await this.LoadContractProductTransactionFee(context, domainEvent);
 
+            if (contractProductTransactionFee == null)
+            {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - ContractProductTransactionFee Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - ContractProductTransactionFee Found");
+            }
+
             Settlement settlement = await this.LoadSettlement(context, domainEvent);
+
+            if (settlement == null)
+            {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Settlement Not Found");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Settlement Found");
+            }
 
             MerchantSettlementFee merchantFee = await context.MerchantSettlementFees.Where(m =>
                                                                                                m.MerchantReportingId == merchant.MerchantReportingId &&
@@ -1225,11 +1259,16 @@ namespace EstateManagement.Repository
                                                              .SingleOrDefaultAsync(cancellationToken);
             if (merchantFee == null)
             {
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Fee Not Found");
                 throw new NotFoundException("Merchant Fee not found to update as settled");
+            }
+            else{
+                Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Fee Found");
             }
 
             merchantFee.IsSettled = true;
             await context.SaveChangesAsync(cancellationToken);
+            Logger.LogInformation("MarkMerchantFeeAsSettled - Merchant Fee Saved");
         }
 
         /// <summary>
