@@ -608,8 +608,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
     /// <param name="settlementId">The settlement identifier.</param>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    public async Task AddSettledMerchantFeeToSettlement(Guid settlementId,
-                                                        MerchantFeeAddedToTransactionEvent domainEvent,
+    public async Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                         CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
 
