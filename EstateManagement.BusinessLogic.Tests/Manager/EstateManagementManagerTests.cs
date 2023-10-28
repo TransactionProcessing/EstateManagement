@@ -8,6 +8,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using System.Threading;
     using System.Threading.Tasks;
     using Castle.DynamicProxy.Generators;
+    using ContractAggregate;
     using EstateAggregate;
     using Manger;
     using MerchantAggregate;
@@ -30,6 +31,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     {
         private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
         private readonly Mock<IAggregateRepository<EstateAggregate, DomainEvent>> EstateAggregateRepository;
+        private readonly Mock<IAggregateRepository<ContractAggregate, DomainEvent>> ContractAggregateRepository;
+        private readonly Mock<IAggregateRepository<MerchantAggregate, DomainEvent>> MerchantAggregateRepository;
 
         private readonly Mock<IModelFactory> ModelFactory;
 
@@ -40,13 +43,17 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.EstateManagementRepository = new Mock<IEstateManagementRepository>();
 
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
-            
+            this.ContractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
+            this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
+
             this.ModelFactory = new Mock<IModelFactory>();
 
             
             this.EstateManagementManager =
                 new EstateManagementManager(this.EstateManagementRepository.Object, 
                                             this.EstateAggregateRepository.Object,
+                                            this.ContractAggregateRepository.Object,
+                                            this.MerchantAggregateRepository.Object,
                                             this.ModelFactory.Object);
         }
 
@@ -75,6 +82,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
         [Fact]
         public async Task EstateManagementManager_GetMerchant_MerchantIsReturned(){
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithOperator);
+            
             Merchant expectedModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators(SettlementSchedule.Monthly);
             this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedModel);
 
@@ -122,6 +131,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_MerchantIsReturnedWithNullAddressesAndContacts()
         {
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithOperator);
             this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullAddressesAndContacts);
 
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
@@ -136,6 +146,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_WithAddress_MerchantIsReturnedWithNullContacts()
         {
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithOperator);
+
             this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullContacts);
 
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
@@ -150,6 +162,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_WithContact_MerchantIsReturnedWithNullAddresses()
         {
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithOperator);
+
             this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullAddresses);
 
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
@@ -178,8 +192,9 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
-        public async Task EstateManagementManager_GetContract_ContractIsReturned()
-        {
+        public async Task EstateManagementManager_GetContract_ContractIsReturned(){
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
+
             this.EstateManagementRepository.Setup(e => e.GetContract(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Boolean>(), It.IsAny<Boolean>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.ContractModelWithProductsAndTransactionFees);
 
             Contract contractModel = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, false, false, CancellationToken.None);
