@@ -38,6 +38,7 @@ Background:
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |
 	| estateuser1@testestate2.co.uk | 123456   | TestEstate | User1      | Test Estate 2 |
 
+@contract
 Scenario: Create Contract
 	Given I create a contract with the following values
 	| EstateName    | OperatorName    | ContractDescription |
@@ -58,6 +59,7 @@ Scenario: Create Contract
 	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant | Merchant Commission | 0.75  |
 	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Percentage      | Merchant | Merchant Commission | 0.75  |
 
+@contract
 Scenario: Get Transaction Fees for a Product
 
 	Given I create a contract with the following values
@@ -97,6 +99,7 @@ Scenario: Get Transaction Fees for a Product
 	| CalculationType | FeeDescription      | Value | FeeType  |
 	| Percentage      | Merchant Commission | 0.85  | Merchant |
 
+@contract
 Scenario: Get Merchant Contracts
 
 	Given I create the following merchants
@@ -134,6 +137,7 @@ Scenario: Get Merchant Contracts
 	| Operator 1 Contract | 100 KES Topup  |
 	| Operator 1 Contract | Variable Topup |
 
+@contract
 Scenario: Get Estate Contracts
 	
 	Given I create a contract with the following values

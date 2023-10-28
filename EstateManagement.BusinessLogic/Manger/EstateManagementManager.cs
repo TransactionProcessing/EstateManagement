@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using ContractAggregate;
     using EstateAggregate;
     using MerchantAggregate;
     using Models.Contract;
@@ -31,6 +32,10 @@
 
         private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
 
+        private readonly IAggregateRepository<ContractAggregate, DomainEvent> ContractAggregateRepository;
+
+        private readonly IAggregateRepository<MerchantAggregate, DomainEvent> MerchantAggregateRepository;
+
         private readonly IModelFactory ModelFactory;
 
         #endregion
@@ -39,10 +44,14 @@
         
         public EstateManagementManager(IEstateManagementRepository estateManagementRepository,
                                        IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
+                                       IAggregateRepository<ContractAggregate,DomainEvent> contractAggregateRepository,
+                                       IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
                                        IModelFactory modelFactory)
         {
             this.EstateManagementRepository = estateManagementRepository;
             this.EstateAggregateRepository = estateAggregateRepository;
+            this.ContractAggregateRepository = contractAggregateRepository;
+            this.MerchantAggregateRepository = merchantAggregateRepository;
             this.ModelFactory = modelFactory;
         }
 
@@ -77,8 +86,11 @@
                                                 Guid contractId,
                                                 Boolean includeProducts,
                                                 Boolean includeProductsWithFees,
-                                                CancellationToken cancellationToken)
-        {
+                                                CancellationToken cancellationToken){
+            ContractAggregate contractAgggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+            if (contractAgggregate.IsCreated == false){
+                throw new NotFoundException($"No contract found with Id [{estateId}]");
+            }
             Contract contractModel = await this.EstateManagementRepository.GetContract(estateId, contractId, includeProducts, includeProductsWithFees, cancellationToken);
 
             return contractModel;
@@ -96,7 +108,7 @@
 
             EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
             if (estateAggregate.IsCreated == false){
-                throw new NotFoundException($"No estate found in read model with Id [{estateId}]");
+                throw new NotFoundException($"No estate found with Id [{estateId}]");
             }
 
             Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
@@ -115,6 +127,12 @@
                                                 Guid merchantId,
                                                 CancellationToken cancellationToken)
         {
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            if (merchantAggregate.IsCreated == false)
+            {
+                throw new NotFoundException($"No merchant found with Id [{merchantId}]");
+            }
+
             Merchant merchantModel = await this.EstateManagementRepository.GetMerchant(estateId, merchantId, cancellationToken);
 
             return merchantModel;

@@ -23,7 +23,7 @@ Background:
 	| ClientId      | 
 	| serviceClient | 
 
-
+@estate
 Scenario: Create Estate
 	
 	When I create the following estates
@@ -71,6 +71,7 @@ Scenario: Get Estate - System Login
 	| estateuser1@testestate1.co.uk |
 	| estateuser2@testestate1.co.uk |
 
+@estate
 Scenario: Get Estate - Estate user
 	Given I have created the following estates
 	| EstateName    |
@@ -96,9 +97,11 @@ Scenario: Get Estate - Estate user
 	| estateuser1@testestate1.co.uk |
 	| estateuser2@testestate1.co.uk |
 
+@estate
 Scenario: Get Invalid Estate - System Login
 	When I get the estate "Test Estate 1" an error is returned
 
+@estate
 Scenario: Get Invalid Estate - Estate user
 	Given I have created the following estates
 	| EstateName    |

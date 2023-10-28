@@ -40,24 +40,29 @@ Background:
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |
 	| estateuser1@testestate2.co.uk | 123456   | TestEstate | User1      | Test Estate 2 |
 
+@merchant
 Scenario: Get Invalid Merchant - System Login
 	When I get the merchant "Test Merchant 1" for estate "Test Estate 1" an error is returned
 
+@merchant
 Scenario: Get Invalid Merchant - Estate User
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 	When I get the merchant "Test Merchant 1" for estate "Test Estate 1" an error is returned
-	
+
+@merchant	
 Scenario: Create Merchant - System Login	 
 	When I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    | SettlementSchedule |
 	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 | Weekly             |
 
+@merchant
 Scenario: Create Merchant - Estate User	
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 	When I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    | SettlementSchedule |
 	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 | Weekly             |
-	
+
+@merchant	
 Scenario: Assign Operator To Merchant - System Login	
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
@@ -67,6 +72,7 @@ Scenario: Assign Operator To Merchant - System Login
 	| OperatorName    | MerchantName    | MerchantNumber | TerminalNumber | EstateName    |
 	| Test Operator 1 | Test Merchant 1 | 00000001       | 10000001       | Test Estate 1 |
 
+@merchant
 Scenario: Assign Operator To Merchant - Estate User	
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -78,6 +84,7 @@ Scenario: Assign Operator To Merchant - Estate User
 	| OperatorName    | MerchantName    | MerchantNumber | TerminalNumber | EstateName    |
 	| Test Operator 1 | Test Merchant 1 | 00000001       | 10000001       | Test Estate 1 |
 
+@merchant
 Scenario: Create Security User - System Login	
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
@@ -87,6 +94,7 @@ Scenario: Create Security User - System Login
 	| EmailAddress                      | Password | GivenName    | FamilyName | MerchantName    | EstateName    |
 	| merchantuser1@testmerchant1.co.uk | 123456   | TestMerchant | User1      | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 Scenario: Create Security User - Estate User	
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -98,6 +106,7 @@ Scenario: Create Security User - Estate User
 	| EmailAddress                      | Password | GivenName    | FamilyName | MerchantName    | EstateName    |
 	| merchantuser1@testmerchant1.co.uk | 123456   | TestMerchant | User1      | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 Scenario: Add Device To Merchant - Estate User	
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -109,6 +118,7 @@ Scenario: Add Device To Merchant - Estate User
 	| DeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1      | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 Scenario: Add Device To Merchant - System Login	
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
@@ -118,6 +128,7 @@ Scenario: Add Device To Merchant - System Login
 	| DeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1      | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 Scenario: Swap Device For Merchant - Estate User	
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -133,6 +144,7 @@ Scenario: Swap Device For Merchant - Estate User
 	| OriginalDeviceIdentifier | NewDeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1              | TestDevice2         | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 Scenario: Swap Device For Merchant - System Login	
 	Given I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
@@ -146,6 +158,7 @@ Scenario: Swap Device For Merchant - System Login
 	| OriginalDeviceIdentifier | NewDeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1              | TestDevice2         | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 Scenario: Make Manual Merchant Deposit - Estate User
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -160,6 +173,7 @@ Scenario: Make Manual Merchant Deposit - Estate User
 	| Deposit3  | 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
 	| Deposit4  | 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 @PRTest
 Scenario: Make Merchant Withdrawal - Estate User
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
@@ -176,6 +190,7 @@ Scenario: Make Merchant Withdrawal - Estate User
 	| Amount | DateTime  | MerchantName    | EstateName    |
 	| 400.00 | LastMonth | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 @PRTest
 Scenario: Get Merchants for Estate - System Login
 	Given I create the following merchants
@@ -214,6 +229,7 @@ Scenario: Get Merchants for Estate - System Login
 
 	When I get the merchants for 'Test Estate 2' then 2 merchants will be returned
 
+@merchant
 @PRTest
 Scenario: Get Merchants for Estate - Estate Login
 	Given I create the following merchants
@@ -256,6 +272,7 @@ Scenario: Get Merchants for Estate - Estate Login
 
 	When I get the merchants for 'Test Estate 2' then 2 merchants will be returned
 
+@merchant
 Scenario: Set Merchant Settlement Schedule - Estate User	
 	Given I am logged in as "estateuser1@testestate1.co.uk" with password "123456" for Estate "Test Estate 1" with client "estateClient"
 
@@ -271,6 +288,7 @@ Scenario: Set Merchant Settlement Schedule - Estate User
 	| Test Merchant 2 | Test Estate 1 | Weekly             |
 	| Test Merchant 3 | Test Estate 1 | Monthly            |
 
+@merchant
 @PRTest
 Scenario: Make Automatic Merchant Deposits
 
@@ -285,6 +303,7 @@ Scenario: Make Automatic Merchant Deposits
 	| 1000.00 | Yesterday | Test Merchant 1 | Test Estate 1 |
 	| 400.00  | Today     | Test Merchant 1 | Test Estate 1 |
 
+@merchant
 Scenario: Non Positive Merchant Deposits Are Rejected
 
 	Given I create the following merchants
