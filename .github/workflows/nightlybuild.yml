@@ -83,30 +83,9 @@ jobs:
     - name: Build Docker Image
       run: docker build . --file EstateManagement/Dockerfile --tag estatemanagement:latest
 
-    #- name: Run Integration Tests
-      #run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj"
+    - name: Run Integration Tests
+      run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj"
     
-    - name: Check disk space
-      run: df . -h
-
-    - name: Run Estate Integration Tests
-      run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj" --filter Category=estate
-
-    - name: Check disk space
-      run: df . -h
-
-    - name: Run Merchant Integration Tests
-      run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj" --filter Category=merchant
-
-    - name: Check disk space
-      run: df . -h
-
-    - name: Run Contract Integration Tests
-      run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj" --filter Category=contract
-
-    - name: Run Settlement Integration Tests
-      run: dotnet test "EstateManagement.IntegrationTests\EstateManagement.IntegrationTests.csproj" --filter Category=settlement
-
     - uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
