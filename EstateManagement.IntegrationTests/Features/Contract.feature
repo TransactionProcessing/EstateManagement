@@ -38,68 +38,6 @@ Background:
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |
 	| estateuser1@testestate2.co.uk | 123456   | TestEstate | User1      | Test Estate 2 |
 
-@contract
-Scenario: Create Contract
-	Given I create a contract with the following values
-	| EstateName    | OperatorName    | ContractDescription |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract |
-
-	When I create the following Products
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | DisplayText | Value  | ProductType |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 | MobileTopup |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        | MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 | MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        | MobileTopup |
-
-	When I add the following Transaction Fees
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | CalculationType | FeeType  | FeeDescription      | Value |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Fixed           | Merchant | Merchant Commission | 2.00  |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Fixed           | Merchant | Merchant Commission | 2.00  |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant | Merchant Commission | 0.75  |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Percentage      | Merchant | Merchant Commission | 0.75  |
-
-@contract
-Scenario: Get Transaction Fees for a Product
-
-	Given I create a contract with the following values
-	| EstateName    | OperatorName    | ContractDescription |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract |
-
-	When I create the following Products
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | DisplayText | Value  | ProductType |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 |MobileTopup |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        |MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 |MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        |MobileTopup |
-
-	When I add the following Transaction Fees
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | CalculationType | FeeType  | FeeDescription      | Value |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Fixed           | Merchant | Merchant Commission | 2.00  |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant | Merchant Commission | 0.025 |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Fixed           | Merchant | Merchant Commission | 2.50  |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant | Merchant Commission | 0.85  |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Percentage      | Merchant | Merchant Commission | 0.85  |
-
-	Then I get the Transaction Fees for '100 KES Topup' on the 'Operator 1 Contract' contract for 'Test Estate 1' the following fees are returned
-	| CalculationType | FeeDescription      | Value | FeeType  |
-	| Fixed           | Merchant Commission | 2.00  | Merchant |
-	| Percentage      | Merchant Commission | 0.025 | Merchant |
-
-	Then I get the Transaction Fees for 'Variable Topup' on the 'Operator 1 Contract' contract for 'Test Estate 1' the following fees are returned
-	| CalculationType | FeeDescription      | Value | FeeType  |
-	| Fixed           | Merchant Commission | 2.50  | Merchant |
-													  
-	Then I get the Transaction Fees for '100 KES Topup' on the 'Operator 1 Contract' contract for 'Test Estate 2' the following fees are returned
-	| CalculationType | FeeDescription      | Value | FeeType  |
-	| Percentage      | Merchant Commission | 0.85  | Merchant |
-
-	Then I get the Transaction Fees for 'Variable Topup' on the 'Operator 1 Contract' contract for 'Test Estate 2' the following fees are returned
-	| CalculationType | FeeDescription      | Value | FeeType  |
-	| Percentage      | Merchant Commission | 0.85  | Merchant |
-
-@contract
 Scenario: Get Merchant Contracts
 
 	Given I create the following merchants
@@ -109,67 +47,60 @@ Scenario: Get Merchant Contracts
 	
 	Given I create a contract with the following values
 	| EstateName    | OperatorName    | ContractDescription |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract Estate 1 |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract Estate 2 |
 
 	When I create the following Products
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | DisplayText | Value  | ProductType |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 | MobileTopup |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        | MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 | MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        | MobileTopup |
+	| EstateName    | OperatorName    | ContractDescription          | ProductName      | DisplayText | Value  | ProductType |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract Estate 1 | 100 KES Topup    | 100 KES     | 100.00 | MobileTopup |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract Estate 1 | Variable Topup 1 | Custom      |        | MobileTopup |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract Estate 2 | 200 KES Topup    | 100 KES     | 100.00 | MobileTopup |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract Estate 2 | Variable Topup 2 | Custom      |        | MobileTopup |
 
 	When I add the following Transaction Fees
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | CalculationType | FeeDescription      | Value | FeeType  |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Fixed           | Merchant Commission | 2.00  | Merchant |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.025 | Merchant |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Fixed           | Merchant Commission | 2.50  | Merchant |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.85  | Merchant |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Percentage      | Merchant Commission | 0.85  | Merchant |
+	| EstateName    | OperatorName    | ContractDescription          | ProductName      | CalculationType | FeeDescription      | Value | FeeType  |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract Estate 1 | 100 KES Topup    | Fixed           | Merchant Commission | 1.00  | Merchant |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract Estate 1 | 100 KES Topup    | Percentage      | Merchant Commission | 0.015 | Merchant |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract Estate 1 | Variable Topup 1 | Fixed           | Merchant Commission | 1.50  | Merchant |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract Estate 2 | 200 KES Topup    | Percentage      | Merchant Commission | 0.25  | Merchant |
+	| Test Estate 2 | Test Operator 1 | Operator 1 Contract Estate 2 | Variable Topup 2 | Percentage      | Merchant Commission | 2.25  | Merchant |
+
+	Then I get the Contracts for 'Test Estate 1' the following contract details are returned
+	| ContractDescription          | ProductName      |
+	| Operator 1 Contract Estate 1 | 100 KES Topup    |
+	| Operator 1 Contract Estate 1 | Variable Topup 1 |
+
+	Then I get the Contracts for 'Test Estate 2' the following contract details are returned
+	| ContractDescription          | ProductName      |
+	| Operator 1 Contract Estate 2 | 200 KES Topup    |
+	| Operator 1 Contract Estate 2 | Variable Topup 2 |
 
 	Then I get the Merchant Contracts for 'Test Merchant 1' for 'Test Estate 1' the following contract details are returned
 	| ContractDescription | ProductName    |
-	| Operator 1 Contract | 100 KES Topup  |
-	| Operator 1 Contract | Variable Topup |
+	| Operator 1 Contract Estate 1 | 100 KES Topup  |
+	| Operator 1 Contract Estate 1 | Variable Topup 1|
 
 	Then I get the Merchant Contracts for 'Test Merchant 2' for 'Test Estate 2' the following contract details are returned
-	| ContractDescription | ProductName    |
-	| Operator 1 Contract | 100 KES Topup  |
-	| Operator 1 Contract | Variable Topup |
+	| ContractDescription          | ProductName      |
+	| Operator 1 Contract Estate 2 | 200 KES Topup    |
+	| Operator 1 Contract Estate 2 | Variable Topup 2 |
 
-@contract
-Scenario: Get Estate Contracts
-	
-	Given I create a contract with the following values
-	| EstateName    | OperatorName    | ContractDescription |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract |
+	Then I get the Transaction Fees for '100 KES Topup' on the 'Operator 1 Contract Estate 1' contract for 'Test Estate 1' the following fees are returned
+	| CalculationType | FeeDescription      | Value | FeeType  |
+	| Fixed           | Merchant Commission | 1.00  | Merchant |
+	| Percentage      | Merchant Commission | 0.015 | Merchant |
 
-	When I create the following Products
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | DisplayText | Value  | ProductType |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 | MobileTopup |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        | MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | 100 KES     | 100.00 | MobileTopup |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Custom      |        | MobileTopup |
+	Then I get the Transaction Fees for 'Variable Topup 1' on the 'Operator 1 Contract Estate 1' contract for 'Test Estate 1' the following fees are returned
+	| CalculationType | FeeDescription      | Value | FeeType  |
+	| Fixed           | Merchant Commission | 1.50  | Merchant |
+													  
+	Then I get the Transaction Fees for '200 KES Topup' on the 'Operator 1 Contract Estate 2' contract for 'Test Estate 2' the following fees are returned
+	| CalculationType | FeeDescription      | Value | FeeType  |
+	| Percentage      | Merchant Commission | 0.25  | Merchant |
 
-	When I add the following Transaction Fees
-	| EstateName    | OperatorName    | ContractDescription | ProductName    | CalculationType | FeeDescription      | Value | FeeType  |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Fixed           | Merchant Commission | 2.00  | Merchant |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.025 | Merchant |
-	| Test Estate 1 | Test Operator 1 | Operator 1 Contract | Variable Topup | Fixed           | Merchant Commission | 2.50  | Merchant |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | 100 KES Topup  | Percentage      | Merchant Commission | 0.85  | Merchant |
-	| Test Estate 2 | Test Operator 1 | Operator 1 Contract | Variable Topup | Percentage      | Merchant Commission | 0.85  | Merchant |
+	Then I get the Transaction Fees for 'Variable Topup 2' on the 'Operator 1 Contract Estate 2' contract for 'Test Estate 2' the following fees are returned
+	| CalculationType | FeeDescription      | Value | FeeType  |
+	| Percentage      | Merchant Commission | 2.25  | Merchant |
 
-	Then I get the Contracts for 'Test Estate 1' the following contract details are returned
-	| ContractDescription | ProductName    |
-	| Operator 1 Contract | 100 KES Topup  |
-	| Operator 1 Contract | Variable Topup |
-
-	Then I get the Contracts for 'Test Estate 2' the following contract details are returned
-	| ContractDescription | ProductName    |
-	| Operator 1 Contract | 100 KES Topup  |
-	| Operator 1 Contract | Variable Topup |
-
-	
 
 	
