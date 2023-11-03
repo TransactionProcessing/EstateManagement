@@ -114,9 +114,9 @@
             this.Trace($"HostTraceFolder is [{this.HostTraceFolder}]");
         }
 
-        public override async Task StartContainersForScenarioRun(String scenarioName) {
+        public override async Task StartContainersForScenarioRun(String scenarioName, DockerServices dockerServices) {
 
-            await base.StartContainersForScenarioRun(scenarioName);
+            await base.StartContainersForScenarioRun(scenarioName, dockerServices);
 
             this.Trace($"Estate Management Port is [{this.EstateManagementPort}]");
             this.Trace($"Security Service Port is [{this.SecurityServicePort}]");

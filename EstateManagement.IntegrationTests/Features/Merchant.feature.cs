@@ -83,116 +83,116 @@ namespace EstateManagement.IntegrationTests.Features
         {
 #line 4
 #line hidden
-            TechTalk.SpecFlow.Table table55 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
                         "RoleName"});
-            table55.AddRow(new string[] {
+            table35.AddRow(new string[] {
                         "Estate"});
-            table55.AddRow(new string[] {
+            table35.AddRow(new string[] {
                         "Merchant"});
 #line 6
- testRunner.Given("the following security roles exist", ((string)(null)), table55, "Given ");
+ testRunner.Given("the following security roles exist", ((string)(null)), table35, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table56 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
                         "DisplayName",
                         "Description"});
-            table56.AddRow(new string[] {
+            table36.AddRow(new string[] {
                         "estateManagement",
                         "Estate Managememt REST Scope",
                         "A scope for Estate Managememt REST"});
 #line 11
- testRunner.Given("I create the following api scopes", ((string)(null)), table56, "Given ");
+ testRunner.Given("I create the following api scopes", ((string)(null)), table36, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table57 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
                         "ResourceName",
                         "DisplayName",
                         "Secret",
                         "Scopes",
                         "UserClaims"});
-            table57.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "estateManagement",
                         "Estate Managememt REST",
                         "Secret1",
                         "estateManagement",
                         "merchantId, estateId, role"});
 #line 15
- testRunner.Given("the following api resources exist", ((string)(null)), table57, "Given ");
+ testRunner.Given("the following api resources exist", ((string)(null)), table37, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table58 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table38 = new TechTalk.SpecFlow.Table(new string[] {
                         "ClientId",
                         "ClientName",
                         "Secret",
                         "AllowedScopes",
                         "AllowedGrantTypes"});
-            table58.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "serviceClient",
                         "Service Client",
                         "Secret1",
                         "estateManagement",
                         "client_credentials"});
-            table58.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "estateClient",
                         "Estate Client",
                         "Secret1",
                         "estateManagement",
                         "password"});
 #line 19
- testRunner.Given("the following clients exist", ((string)(null)), table58, "Given ");
+ testRunner.Given("the following clients exist", ((string)(null)), table38, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table59 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table39 = new TechTalk.SpecFlow.Table(new string[] {
                         "ClientId"});
-            table59.AddRow(new string[] {
+            table39.AddRow(new string[] {
                         "serviceClient"});
 #line 24
- testRunner.Given("I have a token to access the estate management resource", ((string)(null)), table59, "Given ");
+ testRunner.Given("I have a token to access the estate management resource", ((string)(null)), table39, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table60 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table40 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName"});
-            table60.AddRow(new string[] {
+            table40.AddRow(new string[] {
                         "Test Estate 1"});
-            table60.AddRow(new string[] {
+            table40.AddRow(new string[] {
                         "Test Estate 2"});
 #line 28
- testRunner.Given("I have created the following estates", ((string)(null)), table60, "Given ");
+ testRunner.Given("I have created the following estates", ((string)(null)), table40, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table61 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table41 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName",
                         "OperatorName",
                         "RequireCustomMerchantNumber",
                         "RequireCustomTerminalNumber"});
-            table61.AddRow(new string[] {
+            table41.AddRow(new string[] {
                         "Test Estate 1",
                         "Test Operator 1",
                         "True",
                         "True"});
-            table61.AddRow(new string[] {
+            table41.AddRow(new string[] {
                         "Test Estate 2",
                         "Test Operator 1",
                         "True",
                         "True"});
 #line 33
- testRunner.Given("I have created the following operators", ((string)(null)), table61, "Given ");
+ testRunner.Given("I have created the following operators", ((string)(null)), table41, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table62 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table42 = new TechTalk.SpecFlow.Table(new string[] {
                         "EmailAddress",
                         "Password",
                         "GivenName",
                         "FamilyName",
                         "EstateName"});
-            table62.AddRow(new string[] {
+            table42.AddRow(new string[] {
                         "estateuser1@testestate1.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate 1"});
-            table62.AddRow(new string[] {
+            table42.AddRow(new string[] {
                         "estateuser1@testestate2.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate 2"});
 #line 38
- testRunner.Given("I have created the following security users", ((string)(null)), table62, "Given ");
+ testRunner.Given("I have created the following security users", ((string)(null)), table42, "Given ");
 #line hidden
         }
         
@@ -284,7 +284,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table63 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table43 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -294,7 +294,7 @@ this.FeatureBackground();
                             "EmailAddress",
                             "EstateName",
                             "SettlementSchedule"});
-                table63.AddRow(new string[] {
+                table43.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -305,7 +305,63 @@ this.FeatureBackground();
                             "Test Estate 1",
                             "Weekly"});
 #line 51
- testRunner.When("I create the following merchants", ((string)(null)), table63, "When ");
+ testRunner.When("I create the following merchants", ((string)(null)), table43, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table44 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OperatorName",
+                            "MerchantName",
+                            "MerchantNumber",
+                            "TerminalNumber",
+                            "EstateName"});
+                table44.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 1",
+                            "00000001",
+                            "10000001",
+                            "Test Estate 1"});
+#line 54
+ testRunner.When("I assign the following operator to the merchants", ((string)(null)), table44, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table45 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EmailAddress",
+                            "Password",
+                            "GivenName",
+                            "FamilyName",
+                            "MerchantName",
+                            "EstateName"});
+                table45.AddRow(new string[] {
+                            "merchantuser1@testmerchant1.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 57
+ testRunner.When("I create the following security users", ((string)(null)), table45, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table46 = new TechTalk.SpecFlow.Table(new string[] {
+                            "DeviceIdentifier",
+                            "MerchantName",
+                            "EstateName"});
+                table46.AddRow(new string[] {
+                            "TestDevice1",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 60
+ testRunner.When("I add the following devices to the merchant", ((string)(null)), table46, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table47 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OriginalDeviceIdentifier",
+                            "NewDeviceIdentifier",
+                            "MerchantName",
+                            "EstateName"});
+                table47.AddRow(new string[] {
+                            "TestDevice1",
+                            "TestDevice2",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 63
+ testRunner.When("I swap the merchant device the device is swapped", ((string)(null)), table47, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -319,7 +375,7 @@ this.FeatureBackground();
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Merchant - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 55
+#line 67
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -332,11 +388,11 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 56
+#line 68
  testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
                         "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table64 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table48 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -346,7 +402,7 @@ this.FeatureBackground();
                             "EmailAddress",
                             "EstateName",
                             "SettlementSchedule"});
-                table64.AddRow(new string[] {
+                table48.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -356,1282 +412,264 @@ this.FeatureBackground();
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1",
                             "Weekly"});
-#line 57
- testRunner.When("I create the following merchants", ((string)(null)), table64, "When ");
+#line 69
+ testRunner.When("I create the following merchants", ((string)(null)), table48, "When ");
 #line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Assign Operator To Merchant - System Login")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Assign Operator To Merchant - System Login")]
-        public void AssignOperatorToMerchant_SystemLogin()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Assign Operator To Merchant - System Login", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 61
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table65 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table65.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 62
- testRunner.Given("I create the following merchants", ((string)(null)), table65, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table66 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table49 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName",
                             "MerchantName",
                             "MerchantNumber",
                             "TerminalNumber",
                             "EstateName"});
-                table66.AddRow(new string[] {
+                table49.AddRow(new string[] {
                             "Test Operator 1",
                             "Test Merchant 1",
                             "00000001",
                             "10000001",
                             "Test Estate 1"});
-#line 66
- testRunner.When("I assign the following operator to the merchants", ((string)(null)), table66, "When ");
+#line 72
+ testRunner.When("I assign the following operator to the merchants", ((string)(null)), table49, "When ");
 #line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Assign Operator To Merchant - Estate User")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Assign Operator To Merchant - Estate User")]
-        public void AssignOperatorToMerchant_EstateUser()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Assign Operator To Merchant - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 70
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 71
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table67 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
+                TechTalk.SpecFlow.Table table50 = new TechTalk.SpecFlow.Table(new string[] {
                             "EmailAddress",
-                            "EstateName"});
-                table67.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 73
- testRunner.Given("I create the following merchants", ((string)(null)), table67, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table68 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OperatorName",
+                            "Password",
+                            "GivenName",
+                            "FamilyName",
                             "MerchantName",
-                            "MerchantNumber",
-                            "TerminalNumber",
                             "EstateName"});
-                table68.AddRow(new string[] {
-                            "Test Operator 1",
+                table50.AddRow(new string[] {
+                            "merchantuser1@testmerchant1.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
                             "Test Merchant 1",
-                            "00000001",
-                            "10000001",
                             "Test Estate 1"});
-#line 77
- testRunner.When("I assign the following operator to the merchants", ((string)(null)), table68, "When ");
+#line 75
+ testRunner.When("I create the following security users", ((string)(null)), table50, "When ");
 #line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Create Security User - System Login")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Create Security User - System Login")]
-        public void CreateSecurityUser_SystemLogin()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User - System Login", null, tagsOfScenario, argumentsOfScenario, featureTags);
+                TechTalk.SpecFlow.Table table51 = new TechTalk.SpecFlow.Table(new string[] {
+                            "DeviceIdentifier",
+                            "MerchantName",
+                            "EstateName"});
+                table51.AddRow(new string[] {
+                            "TestDevice1",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 78
+ testRunner.When("I add the following devices to the merchant", ((string)(null)), table51, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table52 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OriginalDeviceIdentifier",
+                            "NewDeviceIdentifier",
+                            "MerchantName",
+                            "EstateName"});
+                table52.AddRow(new string[] {
+                            "TestDevice1",
+                            "TestDevice2",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
 #line 81
-this.ScenarioInitialize(scenarioInfo);
+ testRunner.When("I swap the merchant device the device is swapped", ((string)(null)), table52, "When ");
 #line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table69 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table69.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 82
- testRunner.Given("I create the following merchants", ((string)(null)), table69, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table70 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EmailAddress",
-                            "Password",
-                            "GivenName",
-                            "FamilyName",
-                            "MerchantName",
-                            "EstateName"});
-                table70.AddRow(new string[] {
-                            "merchantuser1@testmerchant1.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 86
- testRunner.When("I create the following security users", ((string)(null)), table70, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Create Security User - Estate User")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Create Security User - Estate User")]
-        public void CreateSecurityUser_EstateUser()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create Security User - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 90
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 91
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table71 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table71.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 93
- testRunner.Given("I create the following merchants", ((string)(null)), table71, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table72 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EmailAddress",
-                            "Password",
-                            "GivenName",
-                            "FamilyName",
-                            "MerchantName",
-                            "EstateName"});
-                table72.AddRow(new string[] {
-                            "merchantuser1@testmerchant1.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 97
- testRunner.When("I create the following security users", ((string)(null)), table72, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Add Device To Merchant - Estate User")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Add Device To Merchant - Estate User")]
-        public void AddDeviceToMerchant_EstateUser()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add Device To Merchant - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 101
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 102
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table73 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table73.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 104
- testRunner.Given("I create the following merchants", ((string)(null)), table73, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table74 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table74.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 108
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table74, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Add Device To Merchant - System Login")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Add Device To Merchant - System Login")]
-        public void AddDeviceToMerchant_SystemLogin()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add Device To Merchant - System Login", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 112
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table75 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table75.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 113
- testRunner.Given("I create the following merchants", ((string)(null)), table75, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table76 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table76.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 117
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table76, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Swap Device For Merchant - Estate User")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Swap Device For Merchant - Estate User")]
-        public void SwapDeviceForMerchant_EstateUser()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Swap Device For Merchant - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 121
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 122
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table77 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table77.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 124
- testRunner.Given("I create the following merchants", ((string)(null)), table77, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table78 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table78.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 128
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table78, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table79 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OriginalDeviceIdentifier",
-                            "NewDeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table79.AddRow(new string[] {
-                            "TestDevice1",
-                            "TestDevice2",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 132
- testRunner.When("I swap the merchant device the device is swapped", ((string)(null)), table79, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Swap Device For Merchant - System Login")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Swap Device For Merchant - System Login")]
-        public void SwapDeviceForMerchant_SystemLogin()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Swap Device For Merchant - System Login", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 136
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table80 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table80.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 137
- testRunner.Given("I create the following merchants", ((string)(null)), table80, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table81 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table81.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 141
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table81, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table82 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OriginalDeviceIdentifier",
-                            "NewDeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table82.AddRow(new string[] {
-                            "TestDevice1",
-                            "TestDevice2",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 145
- testRunner.When("I swap the merchant device the device is swapped", ((string)(null)), table82, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Make Manual Merchant Deposit - Estate User")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Make Manual Merchant Deposit - Estate User")]
-        public void MakeManualMerchantDeposit_EstateUser()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Manual Merchant Deposit - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 149
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 150
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table83 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table83.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 152
- testRunner.Given("I create the following merchants", ((string)(null)), table83, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table84 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table53 = new TechTalk.SpecFlow.Table(new string[] {
                             "Reference",
                             "Amount",
                             "DateTime",
                             "MerchantName",
                             "EstateName"});
-                table84.AddRow(new string[] {
+                table53.AddRow(new string[] {
                             "Deposit1",
                             "500.00",
                             "LastMonth",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table84.AddRow(new string[] {
+                table53.AddRow(new string[] {
                             "Deposit2",
                             "1000.00",
                             "LastWeek",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table84.AddRow(new string[] {
+                table53.AddRow(new string[] {
                             "Deposit3",
                             "1000.00",
                             "Yesterday",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table84.AddRow(new string[] {
+                table53.AddRow(new string[] {
                             "Deposit4",
                             "400.00",
                             "Today",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 156
- testRunner.When("I make the following manual merchant deposits", ((string)(null)), table84, "When ");
+#line 84
+ testRunner.When("I make the following manual merchant deposits", ((string)(null)), table53, "When ");
 #line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Make Merchant Withdrawal - Estate User")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Make Merchant Withdrawal - Estate User")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
-        public void MakeMerchantWithdrawal_EstateUser()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Merchant Withdrawal - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 164
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 165
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table85 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table85.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 167
- testRunner.Given("I create the following merchants", ((string)(null)), table85, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table86 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Reference",
+                TechTalk.SpecFlow.Table table54 = new TechTalk.SpecFlow.Table(new string[] {
                             "Amount",
                             "DateTime",
                             "MerchantName",
                             "EstateName"});
-                table86.AddRow(new string[] {
-                            "Deposit1",
-                            "500.00",
-                            "LastMonth",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 171
- testRunner.When("I make the following manual merchant deposits", ((string)(null)), table86, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table87 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Amount",
-                            "DateTime",
-                            "MerchantName",
-                            "EstateName"});
-                table87.AddRow(new string[] {
+                table54.AddRow(new string[] {
                             "400.00",
                             "LastMonth",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 175
- testRunner.When("I make the following merchant withdrawals", ((string)(null)), table87, "When ");
+#line 91
+ testRunner.When("I make the following merchant withdrawals", ((string)(null)), table54, "When ");
 #line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Get Merchants for Estate - System Login")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Get Merchants for Estate - System Login")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
-        public void GetMerchantsForEstate_SystemLogin()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Merchants for Estate - System Login", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 180
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table88 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table88.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-                table88.AddRow(new string[] {
-                            "Test Merchant 2",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant2.co.uk",
-                            "Test Estate 1"});
-                table88.AddRow(new string[] {
-                            "Test Merchant 3",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant3.co.uk",
-                            "Test Estate 1"});
-                table88.AddRow(new string[] {
-                            "Test Merchant 4",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant4.co.uk",
-                            "Test Estate 2"});
-                table88.AddRow(new string[] {
-                            "Test Merchant 5",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant5.co.uk",
-                            "Test Estate 2"});
-#line 181
- testRunner.Given("I create the following merchants", ((string)(null)), table88, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table89 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OperatorName",
-                            "MerchantName",
-                            "MerchantNumber",
-                            "TerminalNumber",
-                            "EstateName"});
-                table89.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 1",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 1"});
-                table89.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 2",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 1"});
-                table89.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 3",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 1"});
-                table89.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 4",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 2"});
-                table89.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 5",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 2"});
-#line 189
- testRunner.When("I assign the following operator to the merchants", ((string)(null)), table89, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table90 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table90.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-                table90.AddRow(new string[] {
-                            "TestDevice2",
-                            "Test Merchant 2",
-                            "Test Estate 1"});
-                table90.AddRow(new string[] {
-                            "TestDevice3",
-                            "Test Merchant 3",
-                            "Test Estate 1"});
-                table90.AddRow(new string[] {
-                            "TestDevice4",
-                            "Test Merchant 4",
-                            "Test Estate 2"});
-                table90.AddRow(new string[] {
-                            "TestDevice5",
-                            "Test Merchant 5",
-                            "Test Estate 2"});
-#line 197
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table90, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table91 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EmailAddress",
-                            "Password",
-                            "GivenName",
-                            "FamilyName",
-                            "MerchantName",
-                            "EstateName"});
-                table91.AddRow(new string[] {
-                            "merchantuser1@testmerchant1.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-                table91.AddRow(new string[] {
-                            "merchantuser1@testmerchant2.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 2",
-                            "Test Estate 1"});
-                table91.AddRow(new string[] {
-                            "merchantuser1@testmerchant3.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 3",
-                            "Test Estate 1"});
-                table91.AddRow(new string[] {
-                            "merchantuser1@testmerchant4.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 4",
-                            "Test Estate 2"});
-                table91.AddRow(new string[] {
-                            "merchantuser1@testmerchant5.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 5",
-                            "Test Estate 2"});
-#line 205
- testRunner.When("I create the following security users", ((string)(null)), table91, "When ");
-#line hidden
-#line 213
- testRunner.When("I get the merchants for \'Test Estate 1\' then 3 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 215
- testRunner.When("I get the merchants for \'Test Estate 2\' then 2 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Get Merchants for Estate - Estate Login")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Get Merchants for Estate - Estate Login")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
-        public void GetMerchantsForEstate_EstateLogin()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Merchants for Estate - Estate Login", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 218
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table92 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName",
-                            "SettlementSchedule"});
-                table92.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1",
-                            "Weekly"});
-                table92.AddRow(new string[] {
-                            "Test Merchant 2",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant2.co.uk",
-                            "Test Estate 1",
-                            "Monthly"});
-                table92.AddRow(new string[] {
-                            "Test Merchant 3",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant3.co.uk",
-                            "Test Estate 1",
-                            "Immediate"});
-                table92.AddRow(new string[] {
-                            "Test Merchant 4",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant4.co.uk",
-                            "Test Estate 2",
-                            "Weekly"});
-                table92.AddRow(new string[] {
-                            "Test Merchant 5",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant5.co.uk",
-                            "Test Estate 2",
-                            "Monthly"});
-#line 219
- testRunner.Given("I create the following merchants", ((string)(null)), table92, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table93 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OperatorName",
-                            "MerchantName",
-                            "MerchantNumber",
-                            "TerminalNumber",
-                            "EstateName"});
-                table93.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 1",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 1"});
-                table93.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 2",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 1"});
-                table93.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 3",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 1"});
-                table93.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 4",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 2"});
-                table93.AddRow(new string[] {
-                            "Test Operator 1",
-                            "Test Merchant 5",
-                            "00000001",
-                            "10000001",
-                            "Test Estate 2"});
-#line 227
- testRunner.When("I assign the following operator to the merchants", ((string)(null)), table93, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table94 = new TechTalk.SpecFlow.Table(new string[] {
-                            "DeviceIdentifier",
-                            "MerchantName",
-                            "EstateName"});
-                table94.AddRow(new string[] {
-                            "TestDevice1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-                table94.AddRow(new string[] {
-                            "TestDevice2",
-                            "Test Merchant 2",
-                            "Test Estate 1"});
-                table94.AddRow(new string[] {
-                            "TestDevice3",
-                            "Test Merchant 3",
-                            "Test Estate 1"});
-                table94.AddRow(new string[] {
-                            "TestDevice4",
-                            "Test Merchant 4",
-                            "Test Estate 2"});
-                table94.AddRow(new string[] {
-                            "TestDevice5",
-                            "Test Merchant 5",
-                            "Test Estate 2"});
-#line 235
- testRunner.When("I add the following devices to the merchant", ((string)(null)), table94, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table95 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EmailAddress",
-                            "Password",
-                            "GivenName",
-                            "FamilyName",
-                            "MerchantName",
-                            "EstateName"});
-                table95.AddRow(new string[] {
-                            "merchantuser1@testmerchant1.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-                table95.AddRow(new string[] {
-                            "merchantuser1@testmerchant2.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 2",
-                            "Test Estate 1"});
-                table95.AddRow(new string[] {
-                            "merchantuser1@testmerchant3.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 3",
-                            "Test Estate 1"});
-                table95.AddRow(new string[] {
-                            "merchantuser1@testmerchant4.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 4",
-                            "Test Estate 2"});
-                table95.AddRow(new string[] {
-                            "merchantuser1@testmerchant5.co.uk",
-                            "123456",
-                            "TestMerchant",
-                            "User1",
-                            "Test Merchant 5",
-                            "Test Estate 2"});
-#line 243
- testRunner.When("I create the following security users", ((string)(null)), table95, "When ");
-#line hidden
-#line 251
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 253
- testRunner.When("I get the merchants for \'Test Estate 1\' then 3 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 255
- testRunner.Given("I am logged in as \"estateuser1@testestate2.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 2\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 257
- testRunner.When("I get the merchants for \'Test Estate 2\' then 2 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Set Merchant Settlement Schedule - Estate User")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Set Merchant Settlement Schedule - Estate User")]
-        public void SetMerchantSettlementSchedule_EstateUser()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Set Merchant Settlement Schedule - Estate User", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 259
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 260
- testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
-                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table96 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table96.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-                table96.AddRow(new string[] {
-                            "Test Merchant 2",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-                table96.AddRow(new string[] {
-                            "Test Merchant 3",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 262
- testRunner.Given("I create the following merchants", ((string)(null)), table96, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table97 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "EstateName",
-                            "SettlementSchedule"});
-                table97.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Test Estate 1",
-                            "Immediate"});
-                table97.AddRow(new string[] {
-                            "Test Merchant 2",
-                            "Test Estate 1",
-                            "Weekly"});
-                table97.AddRow(new string[] {
-                            "Test Merchant 3",
-                            "Test Estate 1",
-                            "Monthly"});
-#line 268
- testRunner.When("I set the merchants settlement schedule", ((string)(null)), table97, "When ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Make Automatic Merchant Deposits")]
-        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Make Automatic Merchant Deposits")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
-        public void MakeAutomaticMerchantDeposits()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Automatic Merchant Deposits", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 275
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-                TechTalk.SpecFlow.Table table98 = new TechTalk.SpecFlow.Table(new string[] {
-                            "MerchantName",
-                            "AddressLine1",
-                            "Town",
-                            "Region",
-                            "Country",
-                            "ContactName",
-                            "EmailAddress",
-                            "EstateName"});
-                table98.AddRow(new string[] {
-                            "Test Merchant 1",
-                            "Address Line 1",
-                            "TestTown",
-                            "Test Region",
-                            "United Kingdom",
-                            "Test Contact 1",
-                            "testcontact1@merchant1.co.uk",
-                            "Test Estate 1"});
-#line 277
- testRunner.Given("I create the following merchants", ((string)(null)), table98, "Given ");
-#line hidden
-                TechTalk.SpecFlow.Table table99 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table55 = new TechTalk.SpecFlow.Table(new string[] {
                             "Amount",
                             "DateTime",
                             "MerchantName",
                             "EstateName"});
-                table99.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "500.00",
                             "LastMonth",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table99.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "1000.00",
                             "LastWeek",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table99.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "1000.00",
                             "Yesterday",
                             "Test Merchant 1",
                             "Test Estate 1"});
-                table99.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "400.00",
                             "Today",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 281
- testRunner.When("I make the following automatic merchant deposits", ((string)(null)), table99, "When ");
+#line 95
+ testRunner.When("I make the following automatic merchant deposits", ((string)(null)), table55, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table56 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table56.AddRow(new string[] {
+                            "0",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 102
+ testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table56, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table57 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table57.AddRow(new string[] {
+                            "-100",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 106
+ testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table57, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table58 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table58.AddRow(new string[] {
+                            "0",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 110
+ testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table58, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table59 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Amount",
+                            "DateTime",
+                            "MerchantName",
+                            "EstateName"});
+                table59.AddRow(new string[] {
+                            "-100",
+                            "LastMonth",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 114
+ testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table59, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table60 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "AddressLine1",
+                            "Town",
+                            "Region",
+                            "Country",
+                            "ContactName",
+                            "EmailAddress",
+                            "EstateName"});
+                table60.AddRow(new string[] {
+                            "Test Merchant 2",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant1.co.uk",
+                            "Test Estate 1"});
+                table60.AddRow(new string[] {
+                            "Test Merchant 3",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant1.co.uk",
+                            "Test Estate 1"});
+                table60.AddRow(new string[] {
+                            "Test Merchant 4",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant1.co.uk",
+                            "Test Estate 1"});
+#line 118
+ testRunner.Given("I create the following merchants", ((string)(null)), table60, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table61 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "EstateName",
+                            "SettlementSchedule"});
+                table61.AddRow(new string[] {
+                            "Test Merchant 2",
+                            "Test Estate 1",
+                            "Immediate"});
+                table61.AddRow(new string[] {
+                            "Test Merchant 3",
+                            "Test Estate 1",
+                            "Weekly"});
+                table61.AddRow(new string[] {
+                            "Test Merchant 4",
+                            "Test Estate 1",
+                            "Monthly"});
+#line 124
+ testRunner.When("I set the merchants settlement schedule", ((string)(null)), table61, "When ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Non Positive Merchant Deposits Are Rejected")]
+        [Xunit.SkippableFactAttribute(DisplayName="Get Merchants for Estate")]
         [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
-        [Xunit.TraitAttribute("Description", "Non Positive Merchant Deposits Are Rejected")]
-        public void NonPositiveMerchantDepositsAreRejected()
+        [Xunit.TraitAttribute("Description", "Get Merchants for Estate")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
+        public void GetMerchantsForEstate()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non Positive Merchant Deposits Are Rejected", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 288
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Merchants for Estate", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 131
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -1644,7 +682,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table100 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table62 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -1653,7 +691,7 @@ this.FeatureBackground();
                             "ContactName",
                             "EmailAddress",
                             "EstateName"});
-                table100.AddRow(new string[] {
+                table62.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -1662,60 +700,175 @@ this.FeatureBackground();
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
-#line 290
- testRunner.Given("I create the following merchants", ((string)(null)), table100, "Given ");
+                table62.AddRow(new string[] {
+                            "Test Merchant 2",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant2.co.uk",
+                            "Test Estate 1"});
+                table62.AddRow(new string[] {
+                            "Test Merchant 3",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant3.co.uk",
+                            "Test Estate 1"});
+                table62.AddRow(new string[] {
+                            "Test Merchant 4",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant4.co.uk",
+                            "Test Estate 2"});
+                table62.AddRow(new string[] {
+                            "Test Merchant 5",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant5.co.uk",
+                            "Test Estate 2"});
+#line 132
+ testRunner.Given("I create the following merchants", ((string)(null)), table62, "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table101 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Amount",
-                            "DateTime",
+                TechTalk.SpecFlow.Table table63 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OperatorName",
+                            "MerchantName",
+                            "MerchantNumber",
+                            "TerminalNumber",
+                            "EstateName"});
+                table63.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 1",
+                            "00000001",
+                            "10000001",
+                            "Test Estate 1"});
+                table63.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 2",
+                            "00000001",
+                            "10000001",
+                            "Test Estate 1"});
+                table63.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 3",
+                            "00000001",
+                            "10000001",
+                            "Test Estate 1"});
+                table63.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 4",
+                            "00000001",
+                            "10000001",
+                            "Test Estate 2"});
+                table63.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 5",
+                            "00000001",
+                            "10000001",
+                            "Test Estate 2"});
+#line 140
+ testRunner.When("I assign the following operator to the merchants", ((string)(null)), table63, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table64 = new TechTalk.SpecFlow.Table(new string[] {
+                            "DeviceIdentifier",
                             "MerchantName",
                             "EstateName"});
-                table101.AddRow(new string[] {
-                            "0",
-                            "LastMonth",
+                table64.AddRow(new string[] {
+                            "TestDevice1",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 294
- testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table101, "When ");
+                table64.AddRow(new string[] {
+                            "TestDevice2",
+                            "Test Merchant 2",
+                            "Test Estate 1"});
+                table64.AddRow(new string[] {
+                            "TestDevice3",
+                            "Test Merchant 3",
+                            "Test Estate 1"});
+                table64.AddRow(new string[] {
+                            "TestDevice4",
+                            "Test Merchant 4",
+                            "Test Estate 2"});
+                table64.AddRow(new string[] {
+                            "TestDevice5",
+                            "Test Merchant 5",
+                            "Test Estate 2"});
+#line 148
+ testRunner.When("I add the following devices to the merchant", ((string)(null)), table64, "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table102 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Amount",
-                            "DateTime",
+                TechTalk.SpecFlow.Table table65 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EmailAddress",
+                            "Password",
+                            "GivenName",
+                            "FamilyName",
                             "MerchantName",
                             "EstateName"});
-                table102.AddRow(new string[] {
-                            "-100",
-                            "LastMonth",
+                table65.AddRow(new string[] {
+                            "merchantuser1@testmerchant1.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 298
- testRunner.When("I make the following manual merchant deposits the deposit is rejected", ((string)(null)), table102, "When ");
+                table65.AddRow(new string[] {
+                            "merchantuser1@testmerchant2.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
+                            "Test Merchant 2",
+                            "Test Estate 1"});
+                table65.AddRow(new string[] {
+                            "merchantuser1@testmerchant3.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
+                            "Test Merchant 3",
+                            "Test Estate 1"});
+                table65.AddRow(new string[] {
+                            "merchantuser1@testmerchant4.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
+                            "Test Merchant 4",
+                            "Test Estate 2"});
+                table65.AddRow(new string[] {
+                            "merchantuser1@testmerchant5.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
+                            "Test Merchant 5",
+                            "Test Estate 2"});
+#line 156
+ testRunner.When("I create the following security users", ((string)(null)), table65, "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table103 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Amount",
-                            "DateTime",
-                            "MerchantName",
-                            "EstateName"});
-                table103.AddRow(new string[] {
-                            "0",
-                            "LastMonth",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 302
- testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table103, "When ");
+#line 164
+ testRunner.When("I get the merchants for \'Test Estate 1\' then 3 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table104 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Amount",
-                            "DateTime",
-                            "MerchantName",
-                            "EstateName"});
-                table104.AddRow(new string[] {
-                            "-100",
-                            "LastMonth",
-                            "Test Merchant 1",
-                            "Test Estate 1"});
-#line 306
- testRunner.When("I make the following automatic merchant deposits the deposit is rejected", ((string)(null)), table104, "When ");
+#line 166
+ testRunner.When("I get the merchants for \'Test Estate 2\' then 2 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 168
+ testRunner.Given("I am logged in as \"estateuser1@testestate1.co.uk\" with password \"123456\" for Esta" +
+                        "te \"Test Estate 1\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 170
+ testRunner.When("I get the merchants for \'Test Estate 1\' then 3 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 172
+ testRunner.Given("I am logged in as \"estateuser1@testestate2.co.uk\" with password \"123456\" for Esta" +
+                        "te \"Test Estate 2\" with client \"estateClient\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 174
+ testRunner.When("I get the merchants for \'Test Estate 2\' then 2 merchants will be returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             }
             this.ScenarioCleanup();
