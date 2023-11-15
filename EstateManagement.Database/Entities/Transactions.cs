@@ -24,7 +24,7 @@
         
         public Int32 MerchantReportingId { get; set; }
 
-        public String? OperatorIdentifier { get; set; }
+        public Int32 EstateOperatorReportingId { get; set; }
         
         public Int32 ContractProductReportingId { get; set; }
         

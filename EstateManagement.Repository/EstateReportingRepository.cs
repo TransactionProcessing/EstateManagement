@@ -567,7 +567,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         transaction.ContractReportingId = contract.ContractReportingId;
         transaction.ContractProductReportingId = contractProduct.ContractProductReportingId;
-        transaction.OperatorIdentifier = estateOperator.Name;
+        transaction.EstateOperatorReportingId = estateOperator.EstateOperatorReportingId;
 
         await context.SaveChangesAsync(cancellationToken);
     }
@@ -584,14 +584,14 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         // Find the corresponding transaction
         Transaction transaction = await this.LoadTransaction(context, domainEvent, cancellationToken);
-
+        EstateOperator estateOperator = await context.EstateOperators.SingleAsync(eo => eo.EstateOperatorReportingId == transaction.EstateOperatorReportingId, cancellationToken:cancellationToken);
         StatementHeader statementHeader = await this.LoadStatementHeader(context, domainEvent, cancellationToken);
 
         StatementLine line = new StatementLine{
                                                   StatementReportingId = statementHeader.StatementReportingId,
                                                   ActivityDateTime = domainEvent.SettledDateTime,
                                                   ActivityDate = domainEvent.SettledDateTime.Date,
-                                                  ActivityDescription = $"{transaction.OperatorIdentifier} Transaction Fee",
+                                                  ActivityDescription = $"{estateOperator.Name} Transaction Fee",
                                                   ActivityType = 2, // Transaction Fee
                                                   TransactionReportingId = transaction.TransactionReportingId,
                                                   InAmount = domainEvent.SettledValue
@@ -658,14 +658,14 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         // Find the corresponding transaction
         Transaction transaction = await this.LoadTransaction(context, domainEvent, cancellationToken);
-
+        EstateOperator estateOperator = await context.EstateOperators.SingleAsync(eo => eo.EstateOperatorReportingId == transaction.EstateOperatorReportingId, cancellationToken:cancellationToken);
         StatementHeader statementHeader = await this.LoadStatementHeader(context, domainEvent, cancellationToken);
 
         StatementLine line = new StatementLine{
                                                   StatementReportingId = statementHeader.StatementReportingId,
                                                   ActivityDateTime = domainEvent.TransactionDateTime,
                                                   ActivityDate = domainEvent.TransactionDateTime.Date,
-                                                  ActivityDescription = $"{transaction.OperatorIdentifier} Transaction",
+                                                  ActivityDescription = $"{estateOperator.Name} Transaction",
                                                   ActivityType = 1, // Transaction
                                                   TransactionReportingId = transaction.TransactionReportingId,
                                                   OutAmount = domainEvent.TransactionValue

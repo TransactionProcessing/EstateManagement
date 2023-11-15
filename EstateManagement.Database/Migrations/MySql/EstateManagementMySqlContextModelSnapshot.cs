@@ -188,6 +188,10 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<Guid>("OperatorId")
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("EstateOperatorReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -755,6 +759,9 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<string>("DeviceIdentifier")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("EstateOperatorReportingId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsAuthorised")
                         .HasColumnType("tinyint(1)");
 
@@ -763,9 +770,6 @@ namespace EstateManagement.Database.Migrations.MySql
 
                     b.Property<int>("MerchantReportingId")
                         .HasColumnType("int");
-
-                    b.Property<string>("OperatorIdentifier")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("ResponseCode")
                         .HasColumnType("longtext");
