@@ -16,10 +16,7 @@ SELECT
 	m.MerchantId,
 	m.Name as MerchantName,
 	cptf.Description as FeeDescription,
-	CASE t.OperatorIdentifier
-		WHEN 'Voucher' THEN REPLACE(c.Description, ' Contract', '')
-		ELSE COALESCE(t.OperatorIdentifier, '')
-	END as OperatorIdentifier,
+	estateoperator.Name as OperatorIdentifier,
 	CAST(ISNULL(tar.Amount,0) as decimal) as Amount,
 	f.IsSettled
 from settlement s 
@@ -30,3 +27,4 @@ inner join [estate] e on e.EstateReportingId = m.EstateReportingId
 left outer join contractproducttransactionfee cptf on f.TransactionFeeReportingId = cptf.TransactionFeeReportingId
 left outer join transactionadditionalrequestdata tar on tar.TransactionReportingId = t.TransactionReportingId
 inner join contract c on c.ContractReportingId = t.ContractReportingId
+inner join estateoperator on estateoperator.OperatorId = c.operatorid
