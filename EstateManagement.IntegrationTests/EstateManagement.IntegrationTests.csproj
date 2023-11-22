@@ -10,7 +10,7 @@
     <PackageReference Include="CallbackHandler.DataTransferObjects" Version="2023.6.1" />
     <PackageReference Include="EventStoreProjections" Version="2023.10.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.7" />
-    <PackageReference Include="ClientProxyBase" Version="2023.11.1" />
+    <PackageReference Include="ClientProxyBase" Version="2023.11.3" />
     <PackageReference Include="Ductus.FluentDocker" Version="2.10.59" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
@@ -18,8 +18,8 @@
     <PackageReference Include="NLog" Version="5.2.0" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.0" />
     <PackageReference Include="SecurityService.Client" Version="2023.6.1" />
-    <PackageReference Include="Shared" Version="2023.11.1" />
-    <PackageReference Include="Shared.IntegrationTesting" Version="2023.11.1" />
+    <PackageReference Include="Shared" Version="2023.11.3" />
+    <PackageReference Include="Shared.IntegrationTesting" Version="2023.11.3" />
     <PackageReference Include="Shouldly" Version="4.2.1" />
     <PackageReference Include="SpecFlow" Version="3.9.74" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
@@ -34,12 +34,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="SecurityService.IntegrationTesting.Helpers" Version="2023.11.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EstateManagement.Client\EstateManagement.Client.csproj" />
     <ProjectReference Include="..\EstateManagement.Database\EstateManagement.Database.csproj" />
     <ProjectReference Include="..\EstateManagement.DataTransferObjects\EstateManagement.DataTransferObjects.csproj" />
+    <ProjectReference Include="..\EstateManagement.IntegrationTesting.Helpers\EstateManagement.IntegrationTesting.Helpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

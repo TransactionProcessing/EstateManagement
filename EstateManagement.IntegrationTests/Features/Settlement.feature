@@ -9,12 +9,12 @@ Background:
 	| transactionProcessor | Transaction Processor REST  Scope | A scope for Transaction Processor REST |
 
 	Given the following api resources exist
-	| ResourceName     | DisplayName            | Secret  | Scopes           | UserClaims                 |
+	| Name     | DisplayName            | Secret  | Scopes           | UserClaims                 |
 	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | MerchantId, EstateId, role |
 	| transactionProcessor | Transaction Processor REST | Secret1 | transactionProcessor |  |
 
 	Given the following clients exist
-	| ClientId      | ClientName     | Secret  | AllowedScopes    | AllowedGrantTypes  |
+	| ClientId      | ClientName     | Secret  | Scopes    | GrantTypes  |
 	| serviceClient | Service Client | Secret1 | estateManagement,transactionProcessor | client_credentials |
 
 	Given I have a token to access the estate management and transaction processor resources
@@ -71,22 +71,22 @@ Background:
 	| Deposit1  | 50000.00 | Today    | Test Merchant 3 | Test Estate2 |
 
 	When I perform the following transactions
-	| DateTime | TransactionNumber | TransactionType | MerchantName    | DeviceIdentifier | EstateName    | OperatorName | TransactionAmount | CustomerAccountNumber | CustomerEmailAddress | ContractDescription | ProductName    |
-	| 2022-01-06 | 1                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 100.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 2                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 5.00              | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 3                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 25.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 4                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 150.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 5                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 3.00              | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 6                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 40.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 7                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 60.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 8                 | Sale            | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 101.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| DateTime   | TransactionNumber | TransactionType | TransactionSource | MerchantName    | DeviceIdentifier | EstateName   | OperatorName | TransactionAmount | CustomerAccountNumber | CustomerEmailAddress | ContractDescription | ProductName    |
+	| 2022-01-06 | 1                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 100.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 2                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 5.00              | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 3                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 25.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 4                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 150.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 5                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 3.00              | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 6                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 40.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 7                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 60.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 8                 | Sale            | 1                 | Test Merchant 1 | 123456780        | Test Estate1 | Safaricom    | 101.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
 		
-	| 2022-01-06 | 1                 | Sale            | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 100.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 2                 | Sale            | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 5.00              | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 3                 | Sale            | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 25.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
-	| 2022-01-06 | 4                 | Sale            | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 15.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 1                 | Sale            | 1                 | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 100.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 2                 | Sale            | 1                 | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 5.00              | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 3                 | Sale            | 1                 | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 25.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 4                 | Sale            | 1                 | Test Merchant 2 | 123456781        | Test Estate1 | Safaricom    | 15.00             | 123456789             |                      | Safaricom Contract  | Variable Topup |
 	
-	| 2022-01-06 | 1                 | Sale            | Test Merchant 3 | 123456782        | Test Estate2 | Safaricom    | 100.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
+	| 2022-01-06 | 1                 | Sale            | 1                 | Test Merchant 3 | 123456782        | Test Estate2 | Safaricom    | 100.00            | 123456789             |                      | Safaricom Contract  | Variable Topup |
 
 	Then transaction response should contain the following information
 	| EstateName    | MerchantName    | TransactionNumber | ResponseCode | ResponseMessage |

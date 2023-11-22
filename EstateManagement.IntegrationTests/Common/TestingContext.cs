@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using global::Shared.IntegrationTesting;
     using global::Shared.Logger;
+    using IntegrationTesting.Helpers;
     using Shouldly;
     using TechTalk.SpecFlow;
 
@@ -25,7 +27,7 @@
 
         private List<ClientDetails> Clients;
 
-        private List<EstateDetails> Estates;
+        public List<EstateDetails> Estates;
 
         public String AccessToken { get; set; }
 
@@ -46,6 +48,15 @@
         public EstateDetails GetEstateDetails(String estateName)
         {
             EstateDetails estateDetails = this.Estates.SingleOrDefault(e => e.EstateName == estateName);
+
+            return estateDetails;
+        }
+
+        public EstateDetails GetEstateDetails(Guid estateId)
+        {
+            EstateDetails estateDetails = this.Estates.SingleOrDefault(e => e.EstateId == estateId);
+
+            estateDetails.ShouldNotBeNull();
 
             return estateDetails;
         }

@@ -3,7 +3,7 @@ Feature: Estate
 
 Background: 
 	Given the following security roles exist
-	| RoleName |
+	| Role Name |
 	| Estate   |
 
 	Given I create the following api scopes
@@ -11,11 +11,11 @@ Background:
 	| estateManagement | Estate Managememt REST Scope | A scope for Estate Managememt REST |
 
 	Given the following api resources exist
-	| ResourceName     | DisplayName            | Secret  | Scopes           | UserClaims                 |
+	| Name     | DisplayName            | Secret  | Scopes           | UserClaims                 |
 	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | merchantId, estateId, role |
 
 	Given the following clients exist
-	| ClientId      | ClientName     | Secret  | AllowedScopes    | AllowedGrantTypes  |
+	| ClientId      | ClientName     | Secret  | Scopes    | GrantTypes  |
 	| serviceClient | Service Client | Secret1 | estateManagement | client_credentials |
 	| estateClient  | Estate Client  | Secret1 | estateManagement | password           |
 
