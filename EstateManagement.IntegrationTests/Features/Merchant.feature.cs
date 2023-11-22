@@ -84,7 +84,7 @@ namespace EstateManagement.IntegrationTests.Features
 #line 4
 #line hidden
             TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
-                        "RoleName"});
+                        "Role Name"});
             table35.AddRow(new string[] {
                         "Estate"});
             table35.AddRow(new string[] {
@@ -104,7 +104,7 @@ namespace EstateManagement.IntegrationTests.Features
  testRunner.Given("I create the following api scopes", ((string)(null)), table36, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
-                        "ResourceName",
+                        "Name",
                         "DisplayName",
                         "Secret",
                         "Scopes",
@@ -122,8 +122,8 @@ namespace EstateManagement.IntegrationTests.Features
                         "ClientId",
                         "ClientName",
                         "Secret",
-                        "AllowedScopes",
-                        "AllowedGrantTypes"});
+                        "Scopes",
+                        "GrantTypes"});
             table38.AddRow(new string[] {
                         "serviceClient",
                         "Service Client",
