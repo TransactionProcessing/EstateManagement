@@ -18,8 +18,10 @@ namespace EstateManagement.IntegrationTests.Shared
     using Shouldly;
     using TechTalk.SpecFlow;
     using TransactionProcessor.DataTransferObjects;
+    using TransactionProcessor.IntegrationTesting.Helpers;
     using ClientDetails = Common.ClientDetails;
     using DockerHelper = Common.DockerHelper;
+    using SpecflowExtensions = TransactionProcessor.IntegrationTesting.Helpers.SpecflowExtensions;
     using Table = TechTalk.SpecFlow.Table;
 
     [Binding]
