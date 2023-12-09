@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shared" Version="2023.11.1" />
-    <PackageReference Include="Shared.EventStore" Version="2023.11.1" />
+    <PackageReference Include="Shared" Version="2023.12.2" />
+    <PackageReference Include="Shared.EventStore" Version="2023.12.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.7" />
   </ItemGroup>
 

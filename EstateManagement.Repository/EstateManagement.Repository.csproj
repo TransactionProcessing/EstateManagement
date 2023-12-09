@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.7" />
-    <PackageReference Include="Shared" Version="2023.11.1" />
+    <PackageReference Include="Shared" Version="2023.12.2" />
     <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="2023.8.2-build66" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="2023.8.2-build66" />
     <PackageReference Include="TransactionProcessor.Reconciliation.DomainEvents" Version="2023.8.2-build66" />

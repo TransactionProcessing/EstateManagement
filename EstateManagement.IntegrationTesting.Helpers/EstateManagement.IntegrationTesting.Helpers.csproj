@@ -7,14 +7,14 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Shared.IntegrationTesting" Version="2023.11.3" />
+		<PackageReference Include="Shared.IntegrationTesting" Version="2023.12.2" />
 		<PackageReference Include="Shouldly" Version="4.2.1" />
 		<PackageReference Include="SpecFlow" Version="3.9.74" />
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EstateManagement.Client\EstateManagement.Client.csproj"  PrivateAssets="All"/>
-    <ProjectReference Include="..\EstateManagement.DataTransferObjects\EstateManagement.DataTransferObjects.csproj"  PrivateAssets="All" />
+    <ProjectReference Include="..\EstateManagement.Client\EstateManagement.Client.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\EstateManagement.DataTransferObjects\EstateManagement.DataTransferObjects.csproj" PrivateAssets="All" />
   </ItemGroup>
 
 	<Target Name="IncludeP2PAssets">
