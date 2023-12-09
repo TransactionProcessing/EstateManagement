@@ -59,7 +59,7 @@
                                             Guid estateId,
                                             Guid merchantId)
         {
-            if (aggregate.GetHistoricalEventCount() == 0)
+            if (aggregate.IsCreated == false)
             {
                 Guard.ThrowIfInvalidGuid(statementId, nameof(statementId));
                 Guard.ThrowIfInvalidGuid(estateId, nameof(estateId));
@@ -316,11 +316,7 @@
         {
             return null;
         }
-
-        public Int64 GetHistoricalEventCount(){
-            return this.NumberOfHistoricalEvents;
-        }
-
+        
         #endregion
     }
 }

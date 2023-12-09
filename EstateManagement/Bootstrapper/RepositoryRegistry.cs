@@ -20,6 +20,7 @@
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.EventStore.Extensions;
+    using Shared.EventStore.SubscriptionWorker;
     using Shared.General;
     using Shared.Repositories;
 
@@ -65,7 +66,7 @@
                                                                                            }
                                                                           };
 
-                this.AddEventStoreProjectionManagerClient(Startup.ConfigureEventStoreSettings);
+                this.AddEventStoreProjectionManagementClient(Startup.ConfigureEventStoreSettings);
                 this.AddEventStorePersistentSubscriptionsClient(Startup.ConfigureEventStoreSettings);
 
                 if (insecureES) {
@@ -75,9 +76,6 @@
                     this.AddEventStoreClient(Startup.EventStoreClientSettings.ConnectivitySettings.Address, CreateHttpMessageHandler);
                 }
                 
-
-                
-
                 
                 this.AddSingleton<IConnectionStringConfigurationRepository, ConfigurationReaderConnectionStringRepository>();
             }
@@ -112,6 +110,10 @@
                 AggregateRepository<MerchantStatementAggregate, DomainEvent>>();
             this.AddSingleton<IAggregateRepository<MerchantDepositListAggregate, DomainEvent>,
                 AggregateRepository<MerchantDepositListAggregate, DomainEvent>>();
+
+            this.AddSingleton<Func<String, Int32, ISubscriptionRepository>>(cont => (esConnString, cacheDuration) => {
+                                                                                        return SubscriptionRepository.Create(esConnString, cacheDuration);
+                                                                                    });
         }
 
         #endregion
