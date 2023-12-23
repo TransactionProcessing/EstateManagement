@@ -144,6 +144,7 @@
 
             Merchant merchantModel = new Merchant();
 
+            merchantModel.EstateId = aggregate.EstateId;
             merchantModel.MerchantId = aggregate.AggregateId;
             merchantModel.MerchantName = aggregate.Name;
             merchantModel.Reference = aggregate.MerchantReference;
