@@ -12,13 +12,6 @@
     using DataTransferObjects.Responses;
     using Newtonsoft.Json;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="ClientProxyBase.ClientProxyBase" />
-    /// <seealso cref="EstateManagement.Client.IEstateClient" />
-    /// <seealso cref="ClientProxyBase" />
-    /// <seealso cref="IEstateClient" />
     public class EstateClient : ClientProxyBase, IEstateClient
     {
         #region Fields
@@ -37,11 +30,6 @@
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EstateClient" /> class.
-        /// </summary>
-        /// <param name="baseAddressResolver">The base address resolver.</param>
-        /// <param name="httpClient">The HTTP client.</param>
         public EstateClient(Func<String, String> baseAddressResolver,
                             HttpClient httpClient) : base(httpClient)
         {
@@ -55,15 +43,6 @@
 
         #region Methods
 
-        /// <summary>
-        /// Adds the device to merchant.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="addMerchantDeviceRequest">The add merchant device request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<AddMerchantDeviceResponse> AddDeviceToMerchant(String accessToken,
                                                                          Guid estateId,
                                                                          Guid merchantId,
@@ -142,15 +121,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Adds the product to contract.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="addProductToContractRequest">The add product to contract request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<AddProductToContractResponse> AddProductToContract(String accessToken,
                                                                              Guid estateId,
                                                                              Guid contractId,
@@ -191,16 +161,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Adds the transaction fee for product to contract.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="addTransactionFeeForProductToContractRequest">The add transaction fee for product to contract request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<AddTransactionFeeForProductToContractResponse> AddTransactionFeeForProductToContract(String accessToken,
                                                                                                                Guid estateId,
                                                                                                                Guid contractId,
@@ -245,15 +205,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Assigns the operator to merchant.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="assignOperatorRequest">The assign operator request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<AssignOperatorResponse> AssignOperatorToMerchant(String accessToken,
                                                                            Guid estateId,
                                                                            Guid merchantId,
@@ -294,14 +245,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Creates the contract.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="createContractRequest">The create contract request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<CreateContractResponse> CreateContract(String accessToken,
                                                                  Guid estateId,
                                                                  CreateContractRequest createContractRequest,
@@ -340,13 +283,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Creates the estate.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="createEstateRequest">The create estate request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<CreateEstateResponse> CreateEstate(String accessToken,
                                                              CreateEstateRequest createEstateRequest,
                                                              CancellationToken cancellationToken)
@@ -384,14 +320,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Creates the estate user.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="createEstateUserRequest">The create estate user request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<CreateEstateUserResponse> CreateEstateUser(String accessToken,
                                                                      Guid estateId,
                                                                      CreateEstateUserRequest createEstateUserRequest,
@@ -430,14 +358,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Creates the merchant.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="createMerchantRequest">The create merchant request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<CreateMerchantResponse> CreateMerchant(String accessToken,
                                                                  Guid estateId,
                                                                  CreateMerchantRequest createMerchantRequest,
@@ -476,15 +396,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Creates the merchant user.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="createMerchantUserRequest">The create merchant user request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<CreateMerchantUserResponse> CreateMerchantUser(String accessToken,
                                                                          Guid estateId,
                                                                          Guid merchantId,
@@ -525,14 +436,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Adds the operator.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="createOperatorRequest">The create operator request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<CreateOperatorResponse> CreateOperator(String accessToken,
                                                                  Guid estateId,
                                                                  CreateOperatorRequest createOperatorRequest,
@@ -571,15 +474,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Disables the transaction fee for product.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="transactionFeeId">The transaction fee identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task DisableTransactionFeeForProduct(String accessToken,
                                                           Guid estateId,
                                                           Guid contractId,
@@ -615,13 +509,6 @@
             }
         }
 
-        /// <summary>
-        /// Gets the contracts.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<List<ContractResponse>> GetContracts(String accessToken,
                                                                Guid estateId,
                                                                CancellationToken cancellationToken)
@@ -655,26 +542,14 @@
             return response;
         }
 
-        /// <summary>
-        /// Gets the contracts.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="includeProducts"></param>
-        /// <param name="includeProductsWithFees"></param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<ContractResponse> GetContract(String accessToken,
                                                                Guid estateId,
                                                                Guid contractId,
-                                                               Boolean includeProducts,
-                                                               Boolean includeProductsWithFees,
                                                                CancellationToken cancellationToken)
         {
             ContractResponse response = null;
 
-            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}?includeProducts={includeProducts}&includeProductsWithFees={includeProductsWithFees}");
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}");
 
             try
             {
@@ -701,13 +576,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Gets the estate.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<EstateResponse> GetEstate(String accessToken,
                                                     Guid estateId,
                                                     CancellationToken cancellationToken)
@@ -741,14 +609,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Gets the merchant.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<MerchantResponse> GetMerchant(String accessToken,
                                                         Guid estateId,
                                                         Guid merchantId,
@@ -783,14 +643,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Gets the merchant contracts.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<List<ContractResponse>> GetMerchantContracts(String accessToken,
                                                                        Guid estateId,
                                                                        Guid merchantId,
@@ -825,13 +677,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Gets the merchants.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<List<MerchantResponse>> GetMerchants(String accessToken,
                                                                Guid estateId,
                                                                CancellationToken cancellationToken)
@@ -865,16 +710,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Gets the transaction fees for product.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="productId">The product identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<List<ContractProductTransactionFee>> GetTransactionFeesForProduct(String accessToken,
                                                                                             Guid estateId,
                                                                                             Guid merchantId,
@@ -912,15 +747,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Makes the merchant deposit.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="makeMerchantDepositRequest">The make merchant deposit request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<MakeMerchantDepositResponse> MakeMerchantDeposit(String accessToken,
                                                                            Guid estateId,
                                                                            Guid merchantId,
@@ -1014,14 +840,11 @@
 
                 StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
 
-                // Add the access token to the client headers
-                //this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
                 // Make the Http Call here
                 HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Patch, requestUri);
                 requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 requestMessage.Content = httpContent;
-                //HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
+
                 HttpResponseMessage httpResponse = await this.HttpClient.SendAsync(requestMessage, cancellationToken);
 
                 // Process the response

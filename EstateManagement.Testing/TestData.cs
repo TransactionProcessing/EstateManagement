@@ -268,6 +268,22 @@
             return merchantAggregate;
         }
 
+        public static MerchantAggregate MerchantAggregateWithEverything(SettlementSchedule settlementSchedule)
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
+                                         TestData.MerchantContactEmailAddress);
+            merchantAggregate.AddAddress(TestData.MerchantAddressId, TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+                                         TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
+                                         TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+            merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+            merchantAggregate.SetSettlementSchedule(settlementSchedule);
+            merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+            return merchantAggregate;
+        }
+
         public static MerchantAggregate MerchantAggregateWithContact()
         {
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);

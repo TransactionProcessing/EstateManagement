@@ -59,12 +59,6 @@
 
         #region Methods
 
-        /// <summary>
-        /// Gets the contracts.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<List<Contract>> GetContracts(Guid estateId,
                                                        CancellationToken cancellationToken)
         {
@@ -73,36 +67,18 @@
             return contracts;
         }
 
-        /// <summary>
-        /// Gets the contract.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="includeProducts">if set to <c>true</c> [include products].</param>
-        /// <param name="includeProductsWithFees">if set to <c>true</c> [include products with fees].</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<Contract> GetContract(Guid estateId,
                                                 Guid contractId,
-                                                Boolean includeProducts,
-                                                Boolean includeProductsWithFees,
                                                 CancellationToken cancellationToken){
-            ContractAggregate contractAgggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
-            if (contractAgggregate.IsCreated == false){
+            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+            if (contractAggregate.IsCreated == false){
                 throw new NotFoundException($"No contract found with Id [{estateId}]");
             }
-            Contract contractModel = await this.EstateManagementRepository.GetContract(estateId, contractId, includeProducts, includeProductsWithFees, cancellationToken);
+            Contract contractModel = contractAggregate.GetContract();
 
             return contractModel;
         }
 
-        /// <summary>
-        /// Gets the estate.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        /// <exception cref="NotFoundException">No estate found with Id [{estateId}]</exception>
         public async Task<Estate> GetEstate(Guid estateId,
                                             CancellationToken cancellationToken){
 
@@ -111,18 +87,11 @@
                 throw new NotFoundException($"No estate found with Id [{estateId}]");
             }
 
-            Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
+            Estate estateModel = estateAggregate.GetEstate();
             
             return estateModel;
         }
 
-        /// <summary>
-        /// Gets the merchant.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<Merchant> GetMerchant(Guid estateId,
                                                 Guid merchantId,
                                                 CancellationToken cancellationToken)
@@ -133,18 +102,11 @@
                 throw new NotFoundException($"No merchant found with Id [{merchantId}]");
             }
 
-            Merchant merchantModel = await this.EstateManagementRepository.GetMerchant(estateId, merchantId, cancellationToken);
+            Merchant merchantModel = merchantAggregate.GetMerchant();
 
             return merchantModel;
         }
         
-        /// <summary>
-        /// Gets the merchant contracts.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<List<Contract>> GetMerchantContracts(Guid estateId,
                                                                Guid merchantId,
                                                                CancellationToken cancellationToken)
@@ -154,12 +116,6 @@
             return contractModels;
         }
 
-        /// <summary>
-        /// Gets the merchants.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         public async Task<List<Merchant>> GetMerchants(Guid estateId,
                                                        CancellationToken cancellationToken)
         {
