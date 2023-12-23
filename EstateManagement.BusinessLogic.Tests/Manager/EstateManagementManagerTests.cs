@@ -92,7 +92,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.MerchantReportingId.ShouldBe(expectedModel.MerchantReportingId);
             merchantModel.EstateId.ShouldBe(expectedModel.EstateId);
             merchantModel.EstateReportingId.ShouldBe(expectedModel.EstateReportingId);
-            //merchantModel.NextSettlementDueDate.ShouldBe(expectedModel.NextSettlementDueDate);
             merchantModel.NextStatementDate.ShouldBe(expectedModel.NextStatementDate);
             merchantModel.MerchantId.ShouldBe(expectedModel.MerchantId);
             merchantModel.MerchantName.ShouldBe(expectedModel.MerchantName);

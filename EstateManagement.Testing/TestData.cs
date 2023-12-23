@@ -307,6 +307,7 @@
 
         public static Merchant MerchantModelWithAddressesContactsDevicesAndOperators(SettlementSchedule settlementSchedule = SettlementSchedule.Immediate) => new Merchant
                                                                        {
+                                                                           EstateId = TestData.EstateId,
                                                                            MerchantId = TestData.MerchantId,
                                                                            MerchantName = TestData.MerchantName,
                                                                            SettlementSchedule = settlementSchedule,
