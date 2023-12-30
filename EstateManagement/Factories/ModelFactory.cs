@@ -175,6 +175,16 @@
                                                                                                            }));
             }
 
+            if (merchant.Contracts != null && merchant.Contracts.Any()){
+                merchantResponse.Contracts = new List<MerchantContractResponse>();
+                merchant.Contracts.ForEach(mc => {
+                                               merchantResponse.Contracts.Add(new MerchantContractResponse(){
+                                                                                                                ContractId = mc.ContractId,
+                                                                                                                ContractProducts = mc.ContractProducts,
+                                                                                                            });
+                                           });
+            }
+
             return merchantResponse;
         }
 

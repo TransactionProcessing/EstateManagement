@@ -107,6 +107,9 @@
         [JsonProperty("settlement_schedule")]
         public SettlementSchedule SettlementSchedule { get; set; }
 
+        [JsonProperty("contracts")]
+        public List<MerchantContractResponse> Contracts { get; set; }
+
         #endregion
     }
 }
