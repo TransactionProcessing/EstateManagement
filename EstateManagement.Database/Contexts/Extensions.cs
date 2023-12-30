@@ -363,6 +363,15 @@ public static class Extensions{
         
         return modelBuilder;
     }
-    
+
+    public static ModelBuilder SetupMerchantContract(this ModelBuilder modelBuilder){
+        modelBuilder.Entity<MerchantContract>().HasKey(mc => new{
+                                                                    mc.MerchantReportingId,
+                                                                    mc.ContractReportingId
+                                                                });
+
+        return modelBuilder;
+    }
+
     #endregion
 }

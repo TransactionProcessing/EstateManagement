@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.MerchantAggregate
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// 
@@ -84,5 +85,19 @@
         }
 
         #endregion
+    }
+
+    internal class Contract{
+        internal Guid ContractId{ get; private set; }
+        internal List<Guid> ContractProducts { get; private set; }
+
+        public Contract(Guid contractId){
+            this.ContractId = contractId;
+            this.ContractProducts = new List<Guid>();
+        }
+
+        public void AddContractProduct(Guid contractProductId){
+            this.ContractProducts.Add(contractProductId);
+        }
     }
 }

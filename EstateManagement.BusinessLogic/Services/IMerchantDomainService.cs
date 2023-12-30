@@ -80,6 +80,11 @@
                                            Models.SettlementSchedule settlementSchedule,
                                            CancellationToken cancellationToken);
 
+        Task AddContractToMerchant(Guid estateId,
+                                   Guid merchantId,
+                                   Guid contractId,
+                                   CancellationToken cancellationToken);
+
         #endregion
     }
 }

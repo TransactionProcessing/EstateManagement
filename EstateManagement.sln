@@ -57,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.MerchantDe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.Database", "EstateManagement.Database\EstateManagement.Database.csproj", "{3B1651AF-C296-49A4-8635-417EA667A2C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateManagement.IntegrationTesting.Helpers", "EstateManagement.IntegrationTesting.Helpers\EstateManagement.IntegrationTesting.Helpers.csproj", "{609877E8-413A-43DD-BE64-E0C24515ACBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateManagement.IntegrationTesting.Helpers", "EstateManagement.IntegrationTesting.Helpers\EstateManagement.IntegrationTesting.Helpers.csproj", "{609877E8-413A-43DD-BE64-E0C24515ACBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

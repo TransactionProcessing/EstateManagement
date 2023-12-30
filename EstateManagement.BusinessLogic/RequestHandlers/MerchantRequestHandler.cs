@@ -14,8 +14,8 @@
                                           IRequestHandler<MakeMerchantDepositRequest, Guid>,
                                           IRequestHandler<SetMerchantSettlementScheduleRequest>,
                                           IRequestHandler<SwapMerchantDeviceRequest>,
-                                          IRequestHandler<MakeMerchantWithdrawalRequest, Guid>
-    {
+                                          IRequestHandler<MakeMerchantWithdrawalRequest, Guid>,
+                                          IRequestHandler<AddMerchantContractRequest>{
         #region Fields
 
         private readonly IMerchantDomainService MerchantDomainService;
@@ -124,5 +124,9 @@
         }
 
         #endregion
+
+        public async Task Handle(AddMerchantContractRequest request, CancellationToken cancellationToken){
+            await this.MerchantDomainService.AddContractToMerchant(request.EstateId, request.MerchantId, request.ContractId, cancellationToken);
+        }
     }
 }

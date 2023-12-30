@@ -45,6 +45,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.MakeMerchantWithdrawalRequest);
             this.Requests.Add(TestData.SetMerchantSettlementScheduleRequest);
             this.Requests.Add(TestData.SwapMerchantDeviceRequest);
+            this.Requests.Add(TestData.AddMerchantContractRequest);
 
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(he => he.EnvironmentName).Returns("Development");

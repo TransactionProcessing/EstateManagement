@@ -333,6 +333,17 @@
             emailMerchantStatementRequest.MerchantStatementId.ShouldBe(TestData.MerchantStatementId);
         }
 
+        [Fact]
+        public void AddContractToMerchantRequest_CanBeCreated_IsCreated(){
+            AddMerchantContractRequest addMerchantContractRequest = AddMerchantContractRequest.Create(TestData.EstateId,
+                                                                                                      TestData.MerchantId,
+                                                                                                      TestData.ContactId);
+            addMerchantContractRequest.ShouldNotBeNull();
+            addMerchantContractRequest.EstateId.ShouldBe(TestData.EstateId);
+            addMerchantContractRequest.MerchantId.ShouldBe(TestData.MerchantId);
+            addMerchantContractRequest.ContractId.ShouldBe(TestData.ContactId);
+        }
+
         #endregion
     }
 }

@@ -19,6 +19,7 @@
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
     using Shared.Exceptions;
+    using Contract = Models.Contract.Contract;
 
     /// <summary>
     /// 

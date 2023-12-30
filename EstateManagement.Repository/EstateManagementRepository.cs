@@ -162,6 +162,7 @@
                            join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
                            join m in context.Merchants on c.EstateReportingId equals m.EstateReportingId
                            join e in context.Estates on c.EstateReportingId equals e.EstateReportingId
+                           join mc in context.MerchantContracts on new {c.ContractReportingId, m.MerchantReportingId} equals new {mc.ContractReportingId, mc.MerchantReportingId}
                            where m.MerchantId == merchantId && e.EstateId == estateId
                            select new{
                                          Contract = c,
@@ -275,9 +276,9 @@
                                                         CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
-            var statement = await context.StatementHeaders.Where(sl => sl.StatementId == merchantStatementId).SingleOrDefaultAsync(cancellationToken);
+            Database.Entities.StatementHeader statement = await context.StatementHeaders.Where(sl => sl.StatementId == merchantStatementId).SingleOrDefaultAsync(cancellationToken);
 
-            var statementLines = await context.StatementLines.Where(sl => sl.StatementReportingId == statement.StatementReportingId).ToListAsync(cancellationToken);
+            List<Database.Entities.StatementLine> statementLines = await context.StatementLines.Where(sl => sl.StatementReportingId == statement.StatementReportingId).ToListAsync(cancellationToken);
 
             var lines = statementLines.GroupBy(g => new{
                                                            g.ActivityDateTime.Date,

@@ -121,6 +121,33 @@
             return response;
         }
 
+        public async Task AddContractToMerchant(String accessToken, Guid estateId, Guid merchantId, AddMerchantContractRequest addMerchantContractRequest, CancellationToken cancellationToken){
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contracts");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(addMerchantContractRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                await this.HandleResponse(httpResponse, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error adding contract {addMerchantContractRequest.ContractId} to merchant Id {merchantId} in estate {estateId}.", ex);
+
+                throw exception;
+            }
+        }
+
         public async Task<AddProductToContractResponse> AddProductToContract(String accessToken,
                                                                              Guid estateId,
                                                                              Guid contractId,

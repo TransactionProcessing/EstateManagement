@@ -234,6 +234,13 @@
             return merchantAggregate;
         }
 
+        public static MerchantAggregate EmptyMerchantAggregate()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            return merchantAggregate;
+        }
+
         public static MerchantDepositListAggregate CreatedMerchantDepositListAggregate()
         {
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
@@ -1837,6 +1844,8 @@
 
         public static SettlementScheduleChangedEvent SettlementScheduleChangedEvent =>
             new SettlementScheduleChangedEvent(TestData.MerchantId, TestData.EstateId, (Int32)TestData.SettlementSchedule, TestData.NextSettlementDate);
+
+        public static AddMerchantContractRequest AddMerchantContractRequest => AddMerchantContractRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.ContactId);
     }
 
 

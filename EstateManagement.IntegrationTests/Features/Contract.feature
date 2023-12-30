@@ -65,6 +65,11 @@ Scenario: Get Merchant Contracts
 	| Test Estate 2 | Test Operator 1 | Operator 1 Contract Estate 2 | 200 KES Topup    | Percentage      | Merchant Commission | 0.25  | Merchant |
 	| Test Estate 2 | Test Operator 1 | Operator 1 Contract Estate 2 | Variable Topup 2 | Percentage      | Merchant Commission | 2.25  | Merchant |
 
+	When I add the following contracts to the following merchants
+	| EstateName    | MerchantName    | ContractDescription          |
+	| Test Estate 1 | Test Merchant 1 | Operator 1 Contract Estate 1 |
+	| Test Estate 2 | Test Merchant 2 | Operator 1 Contract Estate 2 |
+
 	Then I get the Contracts for 'Test Estate 1' the following contract details are returned
 	| ContractDescription          | ProductName      |
 	| Operator 1 Contract Estate 1 | 100 KES Topup    |

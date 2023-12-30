@@ -37,6 +37,7 @@
             this.AddSingleton<IRequestHandler<MakeMerchantWithdrawalRequest, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<AddMerchantContractRequest>, MerchantRequestHandler>();
 
             this.AddSingleton<IRequestHandler<CreateContractRequest>, ContractRequestHandler>();
             this.AddSingleton<IRequestHandler<AddProductToContractRequest>, ContractRequestHandler>();

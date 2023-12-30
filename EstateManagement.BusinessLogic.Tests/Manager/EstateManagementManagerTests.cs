@@ -26,6 +26,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Shouldly;
     using Testing;
     using Xunit;
+    using Contract = Models.Contract.Contract;
 
     public class EstateManagementManagerTests
     {
@@ -201,6 +202,16 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             contractModel.Products.First().ProductId.ShouldBe(TestData.ProductId);
             contractModel.Products.First().TransactionFees.ShouldNotBeNull();
             contractModel.Products.First().TransactionFees.First().TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetContract_ContractNotCreated_ErrorIsThrown()
+        {
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                        Contract contractModel = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, CancellationToken.None);
+                                                    });
         }
 
         [Fact]

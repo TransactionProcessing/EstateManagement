@@ -146,6 +146,12 @@
                                                                SwapMerchantDeviceRequest request,
                                                                CancellationToken cancellationToken);
 
+        Task AddContractToMerchant(String accessToken,
+                                   Guid estateId,
+                                   Guid merchantId,
+                                   AddMerchantContractRequest request,
+                                   CancellationToken cancellationToken);
+
         #endregion
     }
 }

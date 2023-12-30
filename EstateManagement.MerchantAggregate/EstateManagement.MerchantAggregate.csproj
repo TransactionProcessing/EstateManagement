@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EstateManagement.ContractAggregate\EstateManagement.ContractAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.Merchant.DomainEvents\EstateManagement.Merchant.DomainEvents.csproj" />
     <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />
   </ItemGroup>

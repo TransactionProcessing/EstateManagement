@@ -86,4 +86,8 @@ public class DummyMerchantDomainService : IMerchantDomainService
                                                     SettlementSchedule settlementSchedule,
                                                     CancellationToken cancellationToken) {
     }
+
+    public async Task AddContractToMerchant(Guid estateId, Guid merchantId, Guid contractId, CancellationToken cancellationToken){
+        
+    }
 }

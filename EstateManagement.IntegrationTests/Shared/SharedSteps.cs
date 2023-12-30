@@ -4,14 +4,17 @@ using System.Collections.Generic;
 namespace EstateManagement.IntegrationTests.Shared
 {
     using System.Linq;
+    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
+    using Azure.Core;
     using Common;
     using DataTransferObjects;
     using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
     using global::Shared.IntegrationTesting;
     using IntegrationTesting.Helpers;
+    using Newtonsoft.Json.Linq;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
     using SecurityService.IntegrationTesting.Helpers;
@@ -37,7 +40,7 @@ namespace EstateManagement.IntegrationTests.Shared
         private readonly EstateManagementSteps EstateManagementSteps;
 
         private readonly TransactionProcessorSteps TransactionProcessorSteps;
-
+        
         public SharedSteps(ScenarioContext scenarioContext,
                            TestingContext testingContext) {
             this.ScenarioContext = scenarioContext;
@@ -128,24 +131,29 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [Given(@"I make the following manual merchant deposits")]
         [When(@"I make the following manual merchant deposits")]
-        public async Task WhenIMakeTheFollowingManualMerchantDeposits(Table table) {
+        public async Task WhenIMakeTheFollowingManualMerchantDeposits(Table table){
             List<(EstateDetails, Guid, MakeMerchantDepositRequest)> requests = table.Rows.ToMakeMerchantDepositRequest(this.TestingContext.Estates);
 
-            foreach ((EstateDetails, Guid, MakeMerchantDepositRequest) request in requests)
-            {
-                MerchantBalanceResponse previousMerchantBalance = await this.TestingContext.DockerHelper.TransactionProcessorClient.GetMerchantBalance(this.TestingContext.AccessToken,
-                                                                                                                                                       request.Item1.EstateId, request.Item2, CancellationToken.None);
+            foreach ((EstateDetails, Guid, MakeMerchantDepositRequest) request in requests){
+                Decimal previousMerchantBalance = await this.GetMerchantBalance(request.Item2);
 
                 await this.EstateManagementSteps.GivenIMakeTheFollowingManualMerchantDeposits(this.TestingContext.AccessToken, request);
 
-                await Retry.For(async () =>
-                {
-                    MerchantBalanceResponse currentMerchantBalance = await this.TestingContext.DockerHelper.TransactionProcessorClient.GetMerchantBalance(this.TestingContext.AccessToken, request.Item1.EstateId, request.Item2, CancellationToken.None);
-                    currentMerchantBalance.AvailableBalance.ShouldBe(previousMerchantBalance.AvailableBalance + request.Item3.Amount);
+                await Retry.For(async () => {
+                                    Decimal currentMerchantBalance = await this.GetMerchantBalance(request.Item2);
 
-                    this.TestingContext.Logger.LogInformation($"Deposit Reference {request.Item3.Reference} made for Merchant Id {request.Item2}");
-                });
+                                    currentMerchantBalance.ShouldBe(previousMerchantBalance + request.Item3.Amount);
+
+                                    this.TestingContext.Logger.LogInformation($"Deposit Reference {request.Item3.Reference} made for Merchant Id {request.Item2}");
+                                });
             }
+        }
+
+        private async Task<Decimal> GetMerchantBalance(Guid merchantId){
+            JsonElement jsonElement = (JsonElement)await this.TestingContext.DockerHelper.ProjectionManagementClient.GetStateAsync<dynamic>("MerchantBalanceProjection", $"MerchantBalance-{merchantId:N}");
+            JObject jsonObject = JObject.Parse(jsonElement.GetRawText());
+            decimal balanceValue = jsonObject.SelectToken("merchant.balance").Value<decimal>();
+            return balanceValue;
         }
 
         [When(@"I make the following merchant withdrawals")]
@@ -275,6 +283,13 @@ namespace EstateManagement.IntegrationTests.Shared
             await this.EstateManagementSteps.WhenIAddTheFollowingTransactionFees(this.TestingContext.AccessToken, requests);
         }
 
+        [When(@"I add the following contracts to the following merchants")]
+        public async Task WhenIAddTheFollowingContractsToTheFollowingMerchants(Table table)
+        {
+            List<(EstateDetails, Guid, Guid)> requests = table.Rows.ToAddContractToMerchantRequests(this.TestingContext.Estates);
+            await this.EstateManagementSteps.WhenIAddTheFollowingContractsToTheFollowingMerchants(this.TestingContext.AccessToken, requests);
+        }
+        
         [Then(@"I get the Contracts for '(.*)' the following contract details are returned")]
         public async Task ThenIGetTheContractsForTheFollowingContractDetailsAreReturned(String estateName,
                                                                                         Table table){

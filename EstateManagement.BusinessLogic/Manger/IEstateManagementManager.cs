@@ -9,6 +9,7 @@
     using Models.Estate;
     using Models.File;
     using Models.Merchant;
+    using Contract = Models.Contract.Contract;
 
     public interface IEstateManagementManager
     {

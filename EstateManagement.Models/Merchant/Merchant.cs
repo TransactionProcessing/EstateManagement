@@ -12,7 +12,9 @@
         public List<Address> Addresses { get; set; }
 
         public List<Contact> Contacts { get; set; }
-        
+
+        public List<Contract> Contracts { get; set; }
+
         public Dictionary<Guid, String> Devices { get; set; }
 
         public Guid EstateId { get; set; }

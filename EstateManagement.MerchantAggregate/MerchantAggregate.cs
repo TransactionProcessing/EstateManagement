@@ -6,8 +6,10 @@
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
+    using ContractAggregate;
     using Merchant.DomainEvents;
     using Models;
+    using Models.Contract;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
@@ -58,6 +60,23 @@
             MerchantReferenceAllocatedEvent merchantReferenceAllocatedEvent = new MerchantReferenceAllocatedEvent(aggregate.AggregateId, aggregate.EstateId, reference);
 
             aggregate.ApplyAndAppend(merchantReferenceAllocatedEvent);
+        }
+
+        public static void AddContract(this MerchantAggregate aggregate, ContractAggregate contractAggregate){
+            aggregate.EnsureMerchantHasBeenCreated();
+            aggregate.EnsureContractHasNotAlreadyBeenAdded(contractAggregate.AggregateId);
+
+            ContractAddedToMerchantEvent contractAddedToMerchantEvent = new ContractAddedToMerchantEvent(aggregate.AggregateId, aggregate.EstateId, contractAggregate.AggregateId);
+
+            aggregate.ApplyAndAppend(contractAddedToMerchantEvent);
+
+            foreach (Product product in contractAggregate.GetProducts()){
+                ContractProductAddedToMerchantEvent contractProductAddedToMerchantEvent = new ContractProductAddedToMerchantEvent(aggregate.AggregateId,
+                                                                                                                                  aggregate.EstateId,
+                                                                                                                                  contractAggregate.AggregateId,
+                                                                                                                                  product.ProductId);
+                aggregate.ApplyAndAppend(contractProductAddedToMerchantEvent);
+            }
         }
 
         public static void AddContact(this MerchantAggregate aggregate, 
@@ -119,7 +138,7 @@
 
             aggregate.ApplyAndAppend(securityUserAddedEvent);
         }
-
+        
         public static void AssignOperator(this MerchantAggregate aggregate, 
                                           Guid operatorId,
                                           String operatorName,
@@ -208,6 +227,16 @@
                 foreach ((Guid key, String value) in aggregate.Devices)
                 {
                     merchantModel.Devices.Add(key, value);
+                }
+            }
+
+            if (aggregate.Contracts.Any()){
+                merchantModel.Contracts = new List<Models.Merchant.Contract>();
+                foreach (Contract aggregateContract in aggregate.Contracts){
+                    Models.Merchant.Contract contract = new Models.Merchant.Contract();
+                    contract.ContractId = aggregateContract.ContractId;
+                    aggregateContract.ContractProducts.ForEach(cp => contract.ContractProducts.Add(cp));
+                    merchantModel.Contracts.Add(contract);
                 }
             }
 
@@ -305,6 +334,14 @@
             }
         }
 
+        private static void EnsureContractHasNotAlreadyBeenAdded(this MerchantAggregate aggregate, Guid contractId)
+        {
+            if (aggregate.Contracts.Any(o => o.ContractId == contractId))
+            {
+                throw new InvalidOperationException($"Contract {contractId} has already been assigned to merchant");
+            }
+        }
+
         public static void PlayEvent(this MerchantAggregate aggregate, MerchantCreatedEvent merchantCreatedEvent)
         {
             aggregate.IsCreated = true;
@@ -363,9 +400,18 @@
             aggregate.NextSettlementDueDate = domainEvent.NextSettlementDate;
         }
 
+        public static void PlayEvent(this MerchantAggregate aggregate, ContractAddedToMerchantEvent domainEvent){
+            aggregate.Contracts.Add(new Contract(domainEvent.ContractId));
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, ContractProductAddedToMerchantEvent domainEvent){
+            Contract contract = aggregate.Contracts.Single(c => c.ContractId == domainEvent.ContractId);
+            contract.AddContractProduct(domainEvent.ContractProductId);
+        }
+
         public static void PlayEvent(this MerchantAggregate aggregate, DeviceSwappedForMerchantEvent domainEvent)
         {
-            var device = aggregate.Devices.Where(d => d.Value == domainEvent.OriginalDeviceIdentifier).Single();
+            KeyValuePair<Guid, String> device = aggregate.Devices.Single(d => d.Value == domainEvent.OriginalDeviceIdentifier);
             aggregate.Devices.Remove(device.Key);
 
             aggregate.Devices.Add(domainEvent.DeviceId, domainEvent.NewDeviceIdentifier);
@@ -391,6 +437,8 @@
 
         internal readonly List<SecurityUser> SecurityUsers;
 
+        internal readonly List<Contract> Contracts;
+
         #endregion
 
         #region Constructors
@@ -407,6 +455,7 @@
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();
+            this.Contracts = new List<Contract>();
         }
 
         /// <summary>
@@ -423,6 +472,7 @@
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();
+            this.Contracts = new List<Contract>();
         }
 
         #endregion

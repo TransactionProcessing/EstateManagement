@@ -10,6 +10,7 @@
     using Models.File;
     using Models.Merchant;
     using CalculationType = DataTransferObjects.CalculationType;
+    using Contract = Models.Contract.Contract;
     using FeeType = DataTransferObjects.FeeType;
     using SettlementSchedule = DataTransferObjects.SettlementSchedule;
     using ProductType = DataTransferObjects.ProductType;

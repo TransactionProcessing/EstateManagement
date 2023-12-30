@@ -312,6 +312,16 @@ public class EstateManagementSteps{
         }
     }
 
+    public async Task WhenIAddTheFollowingContractsToTheFollowingMerchants(String accessToken, List<(EstateDetails, Guid, Guid)> requests)
+    {
+        foreach ((EstateDetails, Guid, Guid) request in requests){
+            AddMerchantContractRequest addMerchantContractRequest = new AddMerchantContractRequest{
+                                                                                                      ContractId = request.Item3
+                                                                                                  };
+            await this.EstateClient.AddContractToMerchant(accessToken, request.Item1.EstateId, request.Item2, addMerchantContractRequest, CancellationToken.None);
+        }
+    }
+
     public async Task WhenIAddTheFollowingTransactionFees(String accessToken, List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest)> requests){
         List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest, AddTransactionFeeForProductToContractResponse)> estateContractProductsFees = new();
         foreach ((EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest) request in requests){
