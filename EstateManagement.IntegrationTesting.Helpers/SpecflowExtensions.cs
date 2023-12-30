@@ -7,6 +7,7 @@ using Shared.Extensions;
 using Shared.General;
 using Shared.IntegrationTesting;
 using Shouldly;
+using System.Collections.Generic;
 using TechTalk.SpecFlow;
 
 public static class SpecflowExtensions
@@ -502,6 +503,25 @@ public static class SpecflowExtensions
             }
 
             result.Add((estateDetails, contract, addProductToContractRequest));
+        }
+
+        return result;
+    }
+
+    public static List<(EstateDetails, Guid, Guid)> ToAddContractToMerchantRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList){
+        List<(EstateDetails, Guid, Guid)> result = new List<(EstateDetails, Guid, Guid)>();
+
+        foreach (TableRow tableRow in tableRows){
+            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
+
+            String? merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+            String contractName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            Contract contract = estateDetails.GetContract(contractName);
+            result.Add((estateDetails, merchantId, contract.ContractId));
         }
 
         return result;

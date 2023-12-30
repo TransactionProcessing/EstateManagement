@@ -366,75 +366,71 @@ this.FeatureBackground();
  testRunner.When("I add the following Transaction Fees", ((string)(null)), table12, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
-                            "ContractDescription",
-                            "ProductName"});
+                            "EstateName",
+                            "MerchantName",
+                            "ContractDescription"});
                 table13.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "100 KES Topup"});
+                            "Test Estate 1",
+                            "Test Merchant 1",
+                            "Operator 1 Contract Estate 1"});
                 table13.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "Variable Topup 1"});
+                            "Test Estate 2",
+                            "Test Merchant 2",
+                            "Operator 1 Contract Estate 2"});
 #line 68
- testRunner.Then("I get the Contracts for \'Test Estate 1\' the following contract details are return" +
-                        "ed", ((string)(null)), table13, "Then ");
+ testRunner.When("I add the following contracts to the following merchants", ((string)(null)), table13, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "ContractDescription",
                             "ProductName"});
                 table14.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "200 KES Topup"});
+                            "Operator 1 Contract Estate 1",
+                            "100 KES Topup"});
                 table14.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "Variable Topup 2"});
+                            "Operator 1 Contract Estate 1",
+                            "Variable Topup 1"});
 #line 73
- testRunner.Then("I get the Contracts for \'Test Estate 2\' the following contract details are return" +
+ testRunner.Then("I get the Contracts for \'Test Estate 1\' the following contract details are return" +
                         "ed", ((string)(null)), table14, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "ContractDescription",
                             "ProductName"});
                 table15.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "100 KES Topup"});
+                            "Operator 1 Contract Estate 2",
+                            "200 KES Topup"});
                 table15.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "Variable Topup 1"});
+                            "Operator 1 Contract Estate 2",
+                            "Variable Topup 2"});
 #line 78
- testRunner.Then("I get the Merchant Contracts for \'Test Merchant 1\' for \'Test Estate 1\' the follow" +
-                        "ing contract details are returned", ((string)(null)), table15, "Then ");
+ testRunner.Then("I get the Contracts for \'Test Estate 2\' the following contract details are return" +
+                        "ed", ((string)(null)), table15, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "ContractDescription",
                             "ProductName"});
                 table16.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "200 KES Topup"});
+                            "Operator 1 Contract Estate 1",
+                            "100 KES Topup"});
                 table16.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "Variable Topup 2"});
+                            "Operator 1 Contract Estate 1",
+                            "Variable Topup 1"});
 #line 83
- testRunner.Then("I get the Merchant Contracts for \'Test Merchant 2\' for \'Test Estate 2\' the follow" +
+ testRunner.Then("I get the Merchant Contracts for \'Test Merchant 1\' for \'Test Estate 1\' the follow" +
                         "ing contract details are returned", ((string)(null)), table16, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
-                            "CalculationType",
-                            "FeeDescription",
-                            "Value",
-                            "FeeType"});
+                            "ContractDescription",
+                            "ProductName"});
                 table17.AddRow(new string[] {
-                            "Fixed",
-                            "Merchant Commission",
-                            "1.00",
-                            "Merchant"});
+                            "Operator 1 Contract Estate 2",
+                            "200 KES Topup"});
                 table17.AddRow(new string[] {
-                            "Percentage",
-                            "Merchant Commission",
-                            "0.015",
-                            "Merchant"});
+                            "Operator 1 Contract Estate 2",
+                            "Variable Topup 2"});
 #line 88
- testRunner.Then("I get the Transaction Fees for \'100 KES Topup\' on the \'Operator 1 Contract Estate" +
-                        " 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table17, "Then ");
+ testRunner.Then("I get the Merchant Contracts for \'Test Merchant 2\' for \'Test Estate 2\' the follow" +
+                        "ing contract details are returned", ((string)(null)), table17, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "CalculationType",
@@ -444,11 +440,16 @@ this.FeatureBackground();
                 table18.AddRow(new string[] {
                             "Fixed",
                             "Merchant Commission",
-                            "1.50",
+                            "1.00",
+                            "Merchant"});
+                table18.AddRow(new string[] {
+                            "Percentage",
+                            "Merchant Commission",
+                            "0.015",
                             "Merchant"});
 #line 93
- testRunner.Then("I get the Transaction Fees for \'Variable Topup 1\' on the \'Operator 1 Contract Est" +
-                        "ate 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table18, "Then ");
+ testRunner.Then("I get the Transaction Fees for \'100 KES Topup\' on the \'Operator 1 Contract Estate" +
+                        " 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table18, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                             "CalculationType",
@@ -456,13 +457,13 @@ this.FeatureBackground();
                             "Value",
                             "FeeType"});
                 table19.AddRow(new string[] {
-                            "Percentage",
+                            "Fixed",
                             "Merchant Commission",
-                            "0.25",
+                            "1.50",
                             "Merchant"});
-#line 97
- testRunner.Then("I get the Transaction Fees for \'200 KES Topup\' on the \'Operator 1 Contract Estate" +
-                        " 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table19, "Then ");
+#line 98
+ testRunner.Then("I get the Transaction Fees for \'Variable Topup 1\' on the \'Operator 1 Contract Est" +
+                        "ate 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table19, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
                             "CalculationType",
@@ -472,11 +473,25 @@ this.FeatureBackground();
                 table20.AddRow(new string[] {
                             "Percentage",
                             "Merchant Commission",
+                            "0.25",
+                            "Merchant"});
+#line 102
+ testRunner.Then("I get the Transaction Fees for \'200 KES Topup\' on the \'Operator 1 Contract Estate" +
+                        " 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table20, "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                            "CalculationType",
+                            "FeeDescription",
+                            "Value",
+                            "FeeType"});
+                table21.AddRow(new string[] {
+                            "Percentage",
+                            "Merchant Commission",
                             "2.25",
                             "Merchant"});
-#line 101
+#line 106
  testRunner.Then("I get the Transaction Fees for \'Variable Topup 2\' on the \'Operator 1 Contract Est" +
-                        "ate 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table20, "Then ");
+                        "ate 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table21, "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

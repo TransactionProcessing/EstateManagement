@@ -470,6 +470,19 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.ToTable("merchantcontact");
                 });
 
+            modelBuilder.Entity("EstateManagement.Database.Entities.MerchantContract", b =>
+                {
+                    b.Property<int>("MerchantReportingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ContractReportingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MerchantReportingId", "ContractReportingId");
+
+                    b.ToTable("MerchantContracts");
+                });
+
             modelBuilder.Entity("EstateManagement.Database.Entities.MerchantDevice", b =>
                 {
                     b.Property<int>("MerchantReportingId")

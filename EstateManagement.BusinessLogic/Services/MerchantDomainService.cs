@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using ContractAggregate;
     using EstateAggregate;
     using MerchantAggregate;
     using Models;
@@ -37,6 +38,8 @@
 
         private readonly IAggregateRepository<MerchantDepositListAggregate, DomainEvent> MerchantDepositListAggregateRepository;
 
+        private readonly IAggregateRepository<ContractAggregate, DomainEvent> ContractAggregateRepository;
+
         private readonly ISecurityServiceClient SecurityServiceClient;
 
         private readonly ITransactionProcessorClient TransactionProcessorClient;
@@ -48,11 +51,13 @@
         public MerchantDomainService(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
                                      IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
                                      IAggregateRepository<MerchantDepositListAggregate, DomainEvent> merchantDepositListAggregateRepository,
+                                     IAggregateRepository<ContractAggregate, DomainEvent> contractAggregateRepository,
                                      ISecurityServiceClient securityServiceClient,
                                      ITransactionProcessorClient transactionProcessorClient) {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.MerchantAggregateRepository = merchantAggregateRepository;
             this.MerchantDepositListAggregateRepository = merchantDepositListAggregateRepository;
+            this.ContractAggregateRepository = contractAggregateRepository;
             this.SecurityServiceClient = securityServiceClient;
             this.TransactionProcessorClient = transactionProcessorClient;
         }
@@ -376,6 +381,33 @@
             }
 
             merchantAggregate.SetSettlementSchedule(settlementSchedule);
+
+            await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+        }
+
+        public async Task AddContractToMerchant(Guid estateId, Guid merchantId, Guid contractId, CancellationToken cancellationToken){
+            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+            if (contractAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Contract Id {contractId} has not been created");
+            }
+
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+
+            // Check merchant has been created
+            if (merchantAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+            }
+
+            // Estate Id is a valid estate
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            }
+
+            merchantAggregate.AddContract(contractAggregate);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }

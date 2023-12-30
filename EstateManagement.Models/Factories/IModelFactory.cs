@@ -70,7 +70,7 @@ namespace EstateManagement.Models.Factories
         /// <param name="productTransactionFees">The product transaction fees.</param>
         /// <returns></returns>
         List<TransactionFeeModel> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees);
-        
+
         #endregion
     }
 }

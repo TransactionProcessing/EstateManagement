@@ -232,6 +232,9 @@
         Task UpdateVoucherRedemptionDetails(VoucherFullyRedeemedEvent domainEvent,
                                             CancellationToken cancellationToken);
 
+        Task AddContractToMerchant(ContractAddedToMerchantEvent domainEvent,
+                            CancellationToken cancellationToken);
+
         #endregion
     }
 

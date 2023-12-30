@@ -10,6 +10,7 @@
     using Models.File;
     using Models.Merchant;
     using CalculationType = DataTransferObjects.CalculationType;
+    using Contract = Models.Contract.Contract;
     using FeeType = DataTransferObjects.FeeType;
     using SettlementSchedule = DataTransferObjects.SettlementSchedule;
     using ProductType = DataTransferObjects.ProductType;
@@ -172,6 +173,16 @@
                                                                                                                OperatorId = a.OperatorId,
                                                                                                                TerminalNumber = a.TerminalNumber
                                                                                                            }));
+            }
+
+            if (merchant.Contracts != null && merchant.Contracts.Any()){
+                merchantResponse.Contracts = new List<MerchantContractResponse>();
+                merchant.Contracts.ForEach(mc => {
+                                               merchantResponse.Contracts.Add(new MerchantContractResponse(){
+                                                                                                                ContractId = mc.ContractId,
+                                                                                                                ContractProducts = mc.ContractProducts,
+                                                                                                            });
+                                           });
             }
 
             return merchantResponse;

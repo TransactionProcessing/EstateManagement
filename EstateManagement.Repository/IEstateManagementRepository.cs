@@ -9,6 +9,7 @@
     using Models.File;
     using Models.Merchant;
     using Models.MerchantStatement;
+    using Contract = Models.Contract.Contract;
 
     /// <summary>
     /// 

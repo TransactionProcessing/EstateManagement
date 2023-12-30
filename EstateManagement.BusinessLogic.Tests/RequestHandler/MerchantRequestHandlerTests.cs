@@ -129,5 +129,20 @@
                             });
 
         }
+
+        [Fact]
+        public void MerchantRequestHandler_AddMerchantContractRequest_IsHandled()
+        {
+            Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
+            MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
+
+            AddMerchantContractRequest request = TestData.AddMerchantContractRequest;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+
+        }
     }
 }

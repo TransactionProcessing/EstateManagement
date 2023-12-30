@@ -66,6 +66,8 @@
 
         public ITransactionProcessorClient TransactionProcessorClient;
 
+        public EventStoreProjectionManagementClient ProjectionManagementClient;
+
         #endregion
 
         #region Constructors
@@ -150,6 +152,8 @@
             String callbackUrl = $"http://{this.CallbackHandlerContainerName}:{DockerPorts.CallbackHandlerDockerPort}/api/callbacks";
             await this.ConfigureTestBank(DockerHelper.TestBankSortCode, DockerHelper.TestBankAccountNumber, callbackUrl);
             this.Trace("Test Bank Configured");
+
+            this.ProjectionManagementClient = new EventStoreProjectionManagementClient(ConfigureEventStoreSettings());
         }
         
         /// <summary>

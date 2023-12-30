@@ -91,6 +91,8 @@ public abstract class EstateManagementGenericContext : DbContext
 
     public DbSet<Voucher> Vouchers { get; set; }
 
+    public DbSet<MerchantContract> MerchantContracts { get; set; }
+
     #endregion
 
     #region Methods
@@ -195,7 +197,8 @@ public abstract class EstateManagementGenericContext : DbContext
                     .SetupStatementHeader()
                     .SetupStatementLine()
                     .SetupReconciliation()
-                    .SetupVoucher();
+                    .SetupVoucher()
+                    .SetupMerchantContract();
 
 
         modelBuilder.SetupViewEntities();

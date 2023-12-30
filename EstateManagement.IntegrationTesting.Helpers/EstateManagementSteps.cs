@@ -273,7 +273,7 @@ public class EstateManagementSteps{
         foreach ((EstateDetails, Guid) estateContract in estateContracts){
 
             await Retry.For(async () => {
-                                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContract.Item1.EstateId, estateContract.Item2, false, false, CancellationToken.None).ConfigureAwait(false);
+                                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContract.Item1.EstateId, estateContract.Item2, CancellationToken.None).ConfigureAwait(false);
                                 contract.ShouldNotBeNull();
                                 result.Add(contract);
                                 estateContract.Item1.AddContract(contract.ContractId, contract.Description, contract.OperatorId);
@@ -298,7 +298,7 @@ public class EstateManagementSteps{
         foreach ((EstateDetails, Contract, AddProductToContractRequest, AddProductToContractResponse) estateContractProduct in estateContractProducts){
 
             await Retry.For(async () => {
-                                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContractProduct.Item1.EstateId, estateContractProduct.Item2.ContractId, true, false, CancellationToken.None).ConfigureAwait(false);
+                                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContractProduct.Item1.EstateId, estateContractProduct.Item2.ContractId, CancellationToken.None).ConfigureAwait(false);
                                 contract.ShouldNotBeNull();
 
                                 ContractProduct product = contract.Products.SingleOrDefault(c => c.ProductId == estateContractProduct.Item4.ProductId);
@@ -309,6 +309,16 @@ public class EstateManagementSteps{
                                                                        estateContractProduct.Item3.DisplayText,
                                                                        estateContractProduct.Item3.Value);
                             });
+        }
+    }
+
+    public async Task WhenIAddTheFollowingContractsToTheFollowingMerchants(String accessToken, List<(EstateDetails, Guid, Guid)> requests)
+    {
+        foreach ((EstateDetails, Guid, Guid) request in requests){
+            AddMerchantContractRequest addMerchantContractRequest = new AddMerchantContractRequest{
+                                                                                                      ContractId = request.Item3
+                                                                                                  };
+            await this.EstateClient.AddContractToMerchant(accessToken, request.Item1.EstateId, request.Item2, addMerchantContractRequest, CancellationToken.None);
         }
     }
 
@@ -326,7 +336,7 @@ public class EstateManagementSteps{
 
         foreach ((EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest, AddTransactionFeeForProductToContractResponse) estateContractProductsFee in estateContractProductsFees){
             await Retry.For(async () => {
-                                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContractProductsFee.Item1.EstateId, estateContractProductsFee.Item2.ContractId, true, true, CancellationToken.None).ConfigureAwait(false);
+                                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContractProductsFee.Item1.EstateId, estateContractProductsFee.Item2.ContractId, CancellationToken.None).ConfigureAwait(false);
                                 contract.ShouldNotBeNull();
 
                                 ContractProduct product = contract.Products.SingleOrDefault(c => c.ProductId == estateContractProductsFee.Item3.ProductId);

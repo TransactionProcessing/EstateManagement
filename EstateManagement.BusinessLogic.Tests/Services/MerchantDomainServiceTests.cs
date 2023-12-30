@@ -7,10 +7,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Services;
+    using ContractAggregate;
     using EstateAggregate;
     using MerchantAggregate;
     using Microsoft.Extensions.Configuration;
     using Models;
+    using Models.Contract;
     using Moq;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
@@ -36,6 +38,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
         private readonly Mock<ITransactionProcessorClient> TransactionProcessorClient;
 
+        private readonly Mock<IAggregateRepository<ContractAggregate, DomainEvent>> ContractAggregateRepository;
+
         private readonly MerchantDomainService DomainService;
         
         public MerchantDomainServiceTests()
@@ -50,8 +54,10 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             this.SecurityServiceClient = new Mock<ISecurityServiceClient>();
             this.TransactionProcessorClient = new Mock<ITransactionProcessorClient>();
+            this.ContractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             this.DomainService = new MerchantDomainService(EstateAggregateRepository.Object, MerchantAggregateRepository.Object,
                                                            MerchantDepositListAggregateRepository.Object,
+                                                           this.ContractAggregateRepository.Object,
                                                            SecurityServiceClient.Object,
                                                            this.TransactionProcessorClient.Object);
         }
@@ -755,6 +761,70 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                                 TestData.WithdrawalAmount.Value,
                                                                 CancellationToken.None);
             });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_AddContractToMerchant_ContractAdded(){
+
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed, FeeType.Merchant));
+
+            await this.DomainService.AddContractToMerchant(TestData.EstateId,
+                                                     TestData.MerchantId,
+                                                     TestData.ContactId,
+                                                     CancellationToken.None);
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_AddContractToMerchant_ContractNotCreated_ErrorThrown(){
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
+
+            Should.Throw<InvalidOperationException>(async () => {
+                                                        await this.DomainService.AddContractToMerchant(TestData.EstateId,
+                                                                                                       TestData.MerchantId,
+                                                                                                       TestData.ContactId,
+                                                                                                       CancellationToken.None);
+                                                    });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_AddContractToMerchant_MerchantNotCreated_ErrorThrown(){
+
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyMerchantAggregate);
+
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed, FeeType.Merchant));
+
+            Should.Throw<InvalidOperationException>(async () => {
+                                                        await this.DomainService.AddContractToMerchant(TestData.EstateId,
+                                                                                                       TestData.MerchantId,
+                                                                                                       TestData.ContactId,
+                                                                                                       CancellationToken.None);
+                                                    });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_AddContractToMerchant_EstateNotCreated_ErrorThrown(){
+
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed, FeeType.Merchant));
+            Should.Throw<InvalidOperationException>(async () => {
+                                                        await this.DomainService.AddContractToMerchant(TestData.EstateId,
+                                                                                                       TestData.MerchantId,
+                                                                                                       TestData.ContactId,
+                                                                                                       CancellationToken.None);
+                                                    });
         }
     }
 }

@@ -15,6 +15,7 @@ namespace EstateManagement.Tests.Factories{
     using Shouldly;
     using Testing;
     using Xunit;
+    using Contract = Models.Contract.Contract;
 
     public class ModelFactoryTests{
         [Fact]

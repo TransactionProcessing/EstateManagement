@@ -24,6 +24,7 @@
     using Shared.General;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
+    using AddMerchantContractRequest = BusinessLogic.Requests.AddMerchantContractRequest;
     using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
     using CreateMerchantRequestDTO = DataTransferObjects.Requests.CreateMerchantRequest;
     using AssignOperatorRequestDTO = DataTransferObjects.Requests.AssignOperatorRequest;
@@ -40,6 +41,8 @@
     using MerchantDepositSource = Models.MerchantDepositSource;
     using SwapMerchantDeviceRequest = BusinessLogic.Requests.SwapMerchantDeviceRequest;
     using GenerateMerchantStatementRequestDTO = DataTransferObjects.Requests.GenerateMerchantStatementRequest;
+    using AddMerchantContractRequestDTO = DataTransferObjects.Requests.AddMerchantContractRequest;
+    using Contract = Models.Contract.Contract;
 
     /// <summary>
     /// 
@@ -83,6 +86,34 @@
         #endregion
 
         #region Methods
+        [HttpPost]
+        [Route("{merchantId}/contracts")]
+        public async Task<IActionResult> AddContract([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromBody] AddMerchantContractRequestDTO addMerchantContractRequest,
+                                                     CancellationToken cancellationToken){
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            AddMerchantContractRequest command = AddMerchantContractRequest.Create(estateId, merchantId, addMerchantContractRequest.ContractId);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
+        }
 
         /// <summary>
         /// Adds the device.

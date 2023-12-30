@@ -1363,6 +1363,21 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task AddContractToMerchant(ContractAddedToMerchantEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Merchant merchant = await this.LoadMerchant(context, domainEvent, cancellationToken);
+        Contract contract = await this.LoadContract(context, domainEvent, cancellationToken);
+
+        MerchantContract merchantContract = new MerchantContract{
+                                                                    MerchantReportingId = merchant.MerchantReportingId,
+                                                                    ContractReportingId = contract.ContractReportingId
+                                                                };
+
+        await context.MerchantContracts.AddAsync(merchantContract, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
     private async Task<EstateManagementGenericContext> GetContextFromDomainEvent(IDomainEvent domainEvent, CancellationToken cancellationToken){
         Guid estateId = DomainEventHelper.GetEstateId(domainEvent);
         if (estateId == Guid.Empty){

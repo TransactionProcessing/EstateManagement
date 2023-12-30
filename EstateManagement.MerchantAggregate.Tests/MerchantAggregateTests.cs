@@ -8,6 +8,7 @@ namespace EstateManagement.MerchantAggregate.Tests
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
+    using ContractAggregate;
     using EstateManagement.Models;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
@@ -305,13 +306,13 @@ namespace EstateManagement.MerchantAggregate.Tests
             aggregate.SetSettlementSchedule(newSettlementSchedule);
             
             Type type = aggregate.GetType();
-            var property = type.GetProperty("PendingEvents", BindingFlags.Instance | BindingFlags.NonPublic);
-            var value = property.GetValue(aggregate);
+            PropertyInfo property = type.GetProperty("PendingEvents", BindingFlags.Instance | BindingFlags.NonPublic);
+            Object value = property.GetValue(aggregate);
             value.ShouldNotBeNull();
-            var eventHistory = (List<IDomainEvent>)value;
+            List<IDomainEvent> eventHistory = (List<IDomainEvent>)value;
             eventHistory.Count.ShouldBe(2);
 
-            var merchant = aggregate.GetMerchant();
+            Merchant merchant = aggregate.GetMerchant();
             merchant.SettlementSchedule.ShouldBe(originalSettlementSchedule);
         }
 
@@ -324,7 +325,7 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             aggregate.SwapDevice(TestData.DeviceId,TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
 
-            var merchant = aggregate.GetMerchant();
+            Merchant merchant = aggregate.GetMerchant();
             merchant.Devices.Count.ShouldBe(1);
             merchant.Devices.ContainsValue(TestData.DeviceIdentifier).ShouldBeFalse();
             merchant.Devices.ContainsValue(TestData.NewDeviceIdentifier).ShouldBeTrue();
@@ -388,6 +389,42 @@ namespace EstateManagement.MerchantAggregate.Tests
             {
                 aggregate.SwapDevice(TestData.DeviceId, TestData.NewDeviceIdentifier, TestData.NewDeviceIdentifier);
             });
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddContract_ContractAndProductsAddedToMerchant(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            ContractAggregate contractAggregate = TestData.CreatedContractAggregateWithAProduct();
+
+            merchantAggregate.AddContract(contractAggregate);
+
+            Merchant merchant = merchantAggregate.GetMerchant();
+            merchant.Contracts.Count.ShouldBe(1);
+            Contract contract = merchant.Contracts.SingleOrDefault();
+            contract.ShouldNotBeNull();
+            contract.ContractProducts.Count.ShouldBe(contractAggregate.GetProducts().Count);
+
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddContract_MerchantNotCreated_ErrorThrown(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            ContractAggregate contractAggregate = TestData.CreatedContractAggregateWithAProduct();
+            Should.Throw<InvalidOperationException>(() => { merchantAggregate.AddContract(contractAggregate); });
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddContract_ContractAlreadyAdded_ErrorThrown(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            ContractAggregate contractAggregate = TestData.CreatedContractAggregateWithAProduct();
+            merchantAggregate.AddContract(contractAggregate);
+
+            Should.Throw<InvalidOperationException>(() => { merchantAggregate.AddContract(contractAggregate); });
         }
     }
 }

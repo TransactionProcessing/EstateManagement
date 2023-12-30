@@ -77,8 +77,6 @@
         [SwaggerResponseExample(200, typeof(ContractResponseExample))]
         public async Task<IActionResult> GetContract([FromRoute] Guid estateId, 
                                                      [FromRoute] Guid contractId,
-                                                     [FromQuery] Boolean includeProducts,
-                                                     [FromQuery] Boolean includeProductsWithFees,
                                                      CancellationToken cancellationToken)
         {
             // Get the Estate Id claim from the user
@@ -95,7 +93,7 @@
                 return this.Forbid();
             }
 
-            Contract contract = await this.EstateManagementManager.GetContract(estateId, contractId, includeProducts, includeProductsWithFees, cancellationToken);
+            Contract contract = await this.EstateManagementManager.GetContract(estateId, contractId, cancellationToken);
 
             if (contract == null)
             {

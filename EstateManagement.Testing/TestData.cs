@@ -234,6 +234,13 @@
             return merchantAggregate;
         }
 
+        public static MerchantAggregate EmptyMerchantAggregate()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            return merchantAggregate;
+        }
+
         public static MerchantDepositListAggregate CreatedMerchantDepositListAggregate()
         {
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
@@ -268,6 +275,22 @@
             return merchantAggregate;
         }
 
+        public static MerchantAggregate MerchantAggregateWithEverything(SettlementSchedule settlementSchedule)
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
+                                         TestData.MerchantContactEmailAddress);
+            merchantAggregate.AddAddress(TestData.MerchantAddressId, TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+                                         TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
+                                         TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+            merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+            merchantAggregate.SetSettlementSchedule(settlementSchedule);
+            merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+            return merchantAggregate;
+        }
+
         public static MerchantAggregate MerchantAggregateWithContact()
         {
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
@@ -291,6 +314,7 @@
 
         public static Merchant MerchantModelWithAddressesContactsDevicesAndOperators(SettlementSchedule settlementSchedule = SettlementSchedule.Immediate) => new Merchant
                                                                        {
+                                                                           EstateId = TestData.EstateId,
                                                                            MerchantId = TestData.MerchantId,
                                                                            MerchantName = TestData.MerchantName,
                                                                            SettlementSchedule = settlementSchedule,
@@ -1820,6 +1844,8 @@
 
         public static SettlementScheduleChangedEvent SettlementScheduleChangedEvent =>
             new SettlementScheduleChangedEvent(TestData.MerchantId, TestData.EstateId, (Int32)TestData.SettlementSchedule, TestData.NextSettlementDate);
+
+        public static AddMerchantContractRequest AddMerchantContractRequest => AddMerchantContractRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.ContactId);
     }
 
 
