@@ -138,7 +138,7 @@ Scenario: Get Settlements - Merchant Filter
 	| SettlementDate | NumberOfFeesSettled | ValueOfFeesSettled | IsCompleted |
 	| 2022-01-13     | 3                   | 0.71              | True        |
 
-	When I get the Estate Settlement Report for Estate 'Test Estate2' for Merchant 'Test Merchant 3' with the Start Date '2022-01-13' and the End Date '2022-02-06' the following data is returned
+	When I get the Estate Settlement Report for Estate 'Test Estate 2' for Merchant 'Test Merchant 3' with the Start Date '2022-01-13' and the End Date '2022-02-06' the following data is returned
 	| SettlementDate | NumberOfFeesSettled | ValueOfFeesSettled | IsCompleted |
 	| 2022-02-06     | 1                   | 0.85               | True        |
 	
