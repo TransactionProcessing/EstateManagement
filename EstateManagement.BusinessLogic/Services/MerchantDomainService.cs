@@ -4,14 +4,17 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using ContractAggregate;
     using EstateAggregate;
+    using EventStore.Client;
     using MerchantAggregate;
     using Models;
     using Models.Estate;
     using Models.Merchant;
+    using Newtonsoft.Json.Linq;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Responses;
@@ -44,6 +47,8 @@
 
         private readonly ITransactionProcessorClient TransactionProcessorClient;
 
+        private readonly EventStoreProjectionManagementClient ProjectionManagementClient;
+
         #endregion
 
         #region Constructors
@@ -53,13 +58,15 @@
                                      IAggregateRepository<MerchantDepositListAggregate, DomainEvent> merchantDepositListAggregateRepository,
                                      IAggregateRepository<ContractAggregate, DomainEvent> contractAggregateRepository,
                                      ISecurityServiceClient securityServiceClient,
-                                     ITransactionProcessorClient transactionProcessorClient) {
+                                     ITransactionProcessorClient transactionProcessorClient,
+                                     EventStoreProjectionManagementClient projectionManagementClient) {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.MerchantAggregateRepository = merchantAggregateRepository;
             this.MerchantDepositListAggregateRepository = merchantDepositListAggregateRepository;
             this.ContractAggregateRepository = contractAggregateRepository;
             this.SecurityServiceClient = securityServiceClient;
             this.TransactionProcessorClient = transactionProcessorClient;
+            this.ProjectionManagementClient = projectionManagementClient;
         }
 
         #endregion
@@ -305,10 +312,11 @@
 
             // Now we need to check the merchants balance to ensure they have funds to withdraw
             this.TokenResponse = await this.GetToken(cancellationToken);
-            MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(this.TokenResponse.AccessToken, estateId, merchantId, cancellationToken);
+            //MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(this.TokenResponse.AccessToken, estateId, merchantId, cancellationToken);
+            Decimal merchantBalance = await this.GetMerchantBalance(merchantId);
 
-            if (withdrawalAmount > merchantBalance.AvailableBalance) {
-                throw new InvalidOperationException($"Not enough credit available for withdrawal of [{withdrawalAmount}]");
+            if (withdrawalAmount > merchantBalance) {
+                throw new InvalidOperationException($"Not enough credit available for withdrawal of [{withdrawalAmount}]. Balance is {merchantBalance}");
             }
 
             // If we are here we have enough credit to withdraw
@@ -434,6 +442,14 @@
             merchantAggregate.SwapDevice(deviceId, originalDeviceIdentifier, newDeviceIdentifier);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+        }
+
+        private async Task<Decimal> GetMerchantBalance(Guid merchantId)
+        {
+            JsonElement jsonElement = (JsonElement)await this.ProjectionManagementClient.GetStateAsync<dynamic>("MerchantBalanceProjection", $"MerchantBalance-{merchantId:N}");
+            JObject jsonObject = JObject.Parse(jsonElement.GetRawText());
+            decimal balanceValue = jsonObject.SelectToken("merchant.balance").Value<decimal>();
+            return balanceValue;
         }
 
         #endregion

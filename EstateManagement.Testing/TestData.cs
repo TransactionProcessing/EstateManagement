@@ -1485,26 +1485,27 @@
 
         public static Int32 LineNumber = 1;
 
-        public static FileLineAddedEvent FileLineAddedEvent = new FileLineAddedEvent(TestData.FileId, TestData.EstateId, TestData.LineNumber, TestData.FileLine);
+        public static FileLineAddedEvent FileLineAddedEvent = new FileLineAddedEvent(TestData.FileId, TestData.EstateId, TestData.MerchantId, TestData.LineNumber, TestData.FileLine);
 
         public static FileLineProcessingFailedEvent FileLineProcessingFailedEvent =
             new FileLineProcessingFailedEvent(TestData.FileId,
                                               TestData.EstateId,
+                                              TestData.MerchantId,
                                               TestData.LineNumber,
                                               TestData.TransactionId,
                                               TestData.ResponseCode,
                                               TestData.ResponseMessage);
 
         public static FileLineProcessingIgnoredEvent FileLineProcessingIgnoredEvent =
-            new FileLineProcessingIgnoredEvent(TestData.FileId, TestData.EstateId, TestData.LineNumber);
+            new FileLineProcessingIgnoredEvent(TestData.FileId, TestData.EstateId, TestData.MerchantId, TestData.LineNumber);
 
         public static FileLineProcessingSuccessfulEvent FileLineProcessingSuccessfulEvent =
-            new FileLineProcessingSuccessfulEvent(TestData.FileId, TestData.EstateId, TestData.LineNumber, TestData.TransactionId);
+            new FileLineProcessingSuccessfulEvent(TestData.FileId, TestData.EstateId, TestData.MerchantId, TestData.LineNumber, TestData.TransactionId);
 
         public static DateTime ProcessingCompletedDateTime = new DateTime(2021, 5, 7);
 
         public static FileProcessingCompletedEvent FileProcessingCompletedEvent =
-            new FileProcessingCompletedEvent(TestData.FileId, TestData.EstateId, TestData.ProcessingCompletedDateTime);
+            new FileProcessingCompletedEvent(TestData.FileId, TestData.EstateId, TestData.MerchantId, TestData.ProcessingCompletedDateTime);
 
         public static FixedValueProductAddedToContractEvent FixedValueProductAddedToContractEvent = new FixedValueProductAddedToContractEvent(TestData.ContractId,
             TestData.EstateId,
@@ -1788,7 +1789,7 @@
         public static MerchantReferenceAllocatedEvent MerchantReferenceAllocatedEvent =>
             new MerchantReferenceAllocatedEvent(TestData.MerchantId, TestData.EstateId, TestData.MerchantReference);
 
-        public static SettlementCompletedEvent SettlementCompletedEvent => new SettlementCompletedEvent(TestData.SettlementId, TestData.EstateId);
+        public static SettlementCompletedEvent SettlementCompletedEvent => new SettlementCompletedEvent(TestData.SettlementId, TestData.EstateId, TestData.MerchantId);
 
         public static SettlementCreatedForDateEvent SettlementCreatedForDateEvent =>
             new SettlementCreatedForDateEvent(TestData.SettlementId, TestData.EstateId, TestData.MerchantId, TestData.SettlementDate);
