@@ -62,8 +62,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                            this.MerchantDepositListAggregateRepository.Object,
                                                            this.ContractAggregateRepository.Object,
                                                            this.SecurityServiceClient.Object,
-                                                           this.TransactionProcessorClient.Object, 
-                                                           null);
+                                                           this.TransactionProcessorClient.Object);
         }
 
         [Fact]
@@ -632,7 +631,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             });
         }
 
-        [Fact(Skip = "Reintroduce when txn processor returning live balance")]
+        [Fact]
         public async Task MerchantDomainService_MakeMerchantWithdrawal_WithdrawalIsMade()
         {
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
@@ -646,7 +645,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
 
-            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>(), true))
                 .ReturnsAsync(TestData.MerchantBalance);
             
             Should.NotThrow(async () =>
@@ -673,7 +672,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
 
-            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>(),true))
                 .ReturnsAsync(TestData.MerchantBalance);
 
             Should.Throw<InvalidOperationException>(async () =>
@@ -700,7 +699,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
 
-            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>(), true))
                 .ReturnsAsync(TestData.MerchantBalance);
 
             Should.Throw<InvalidOperationException>(async () =>
@@ -727,7 +726,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
 
-            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>(), true))
                 .ReturnsAsync(TestData.MerchantBalance);
 
             Should.Throw<InvalidOperationException>(async () =>
@@ -740,7 +739,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                     });
         }
 
-        [Fact(Skip = "Reintroduce when txn processor returning live balance")]
+        [Fact]
         public async Task MerchantDomainService_MakeMerchantWithdrawal_NotEnoughFundsToWithdraw_ErrorThrown()
         {
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
@@ -754,7 +753,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.SecurityServiceClient.Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.TokenResponse);
 
-            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            this.TransactionProcessorClient.Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>(),true))
                 .ReturnsAsync(TestData.MerchantBalanceNoAvailableBalance);
 
             Should.Throw<InvalidOperationException>(async () =>
