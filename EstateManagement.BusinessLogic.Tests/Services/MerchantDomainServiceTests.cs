@@ -62,8 +62,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                            this.MerchantDepositListAggregateRepository.Object,
                                                            this.ContractAggregateRepository.Object,
                                                            this.SecurityServiceClient.Object,
-                                                           this.TransactionProcessorClient.Object, 
-                                                           null);
+                                                           this.TransactionProcessorClient.Object);
         }
 
         [Fact]

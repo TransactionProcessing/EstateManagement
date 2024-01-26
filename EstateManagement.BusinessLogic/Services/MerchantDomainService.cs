@@ -46,9 +46,7 @@
         private readonly ISecurityServiceClient SecurityServiceClient;
 
         private readonly ITransactionProcessorClient TransactionProcessorClient;
-
-        private readonly EventStoreProjectionManagementClient ProjectionManagementClient;
-
+        
         #endregion
 
         #region Constructors
@@ -58,15 +56,13 @@
                                      IAggregateRepository<MerchantDepositListAggregate, DomainEvent> merchantDepositListAggregateRepository,
                                      IAggregateRepository<ContractAggregate, DomainEvent> contractAggregateRepository,
                                      ISecurityServiceClient securityServiceClient,
-                                     ITransactionProcessorClient transactionProcessorClient,
-                                     EventStoreProjectionManagementClient projectionManagementClient) {
+                                     ITransactionProcessorClient transactionProcessorClient) {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.MerchantAggregateRepository = merchantAggregateRepository;
             this.MerchantDepositListAggregateRepository = merchantDepositListAggregateRepository;
             this.ContractAggregateRepository = contractAggregateRepository;
             this.SecurityServiceClient = securityServiceClient;
             this.TransactionProcessorClient = transactionProcessorClient;
-            this.ProjectionManagementClient = projectionManagementClient;
         }
 
         #endregion
@@ -444,15 +440,7 @@
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
-
-        //private async Task<Decimal> GetMerchantBalance(Guid merchantId)
-        //{
-        //    JsonElement jsonElement = (JsonElement)await this.ProjectionManagementClient.GetStateAsync<dynamic>("MerchantBalanceProjection", $"MerchantBalance-{merchantId:N}");
-        //    JObject jsonObject = JObject.Parse(jsonElement.GetRawText());
-        //    decimal balanceValue = jsonObject.SelectToken("merchant.balance").Value<decimal>();
-        //    return balanceValue;
-        //}
-
+        
         #endregion
     }
 }
