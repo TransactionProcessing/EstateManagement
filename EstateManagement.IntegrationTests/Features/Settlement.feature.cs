@@ -781,9 +781,9 @@ this.FeatureBackground();
                             "0.85",
                             "True"});
 #line 141
- testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate2\' for Merchant \'Test M" +
-                        "erchant 3\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the fo" +
-                        "llowing data is returned", ((string)(null)), table87, "When ");
+ testRunner.When("I get the Estate Settlement Report for Estate \'Test Estate 2\' for Merchant \'Test " +
+                        "Merchant 3\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the f" +
+                        "ollowing data is returned", ((string)(null)), table87, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table88 = new TechTalk.SpecFlow.Table(new string[] {
                             "FeeDescription",

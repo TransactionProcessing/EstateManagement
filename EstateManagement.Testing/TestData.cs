@@ -1743,7 +1743,7 @@
             {
                 MerchantId = TestData.MerchantId,
                 AvailableBalance = 0,
-                Balance = TestData.Balance,
+                Balance = 0,
                 EstateId = TestData.EstateId,
             };
 
