@@ -349,7 +349,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
                                           CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
 
-        Transaction transaction = await this.LoadTransaction(context, domainEvent, cancellationToken);
+        Transaction transaction = await this.LoadTransactionWithDefault(context, domainEvent, cancellationToken);
 
         Voucher voucher = new Voucher{
                                          ExpiryDateTime = domainEvent.ExpiryDateTime,
@@ -997,24 +997,35 @@ public class EstateReportingRepository : IEstateReportingRepository{
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
 
         Merchant merchant = await this.LoadMerchant(context, domainEvent, cancellationToken);
+        Transaction t = null;
+        try
+        {
+            // We have found a transaction lets now update it
+            t = await this.LoadTransaction(context, domainEvent, cancellationToken);
+            context.Entry(t).State = EntityState.Modified;
 
-        Transaction transaction = new Transaction{
-                                                     MerchantReportingId = merchant.MerchantReportingId,
-                                                     TransactionDate = domainEvent.TransactionDateTime.Date,
-                                                     TransactionDateTime = domainEvent.TransactionDateTime,
-                                                     TransactionTime = domainEvent.TransactionDateTime.TimeOfDay,
-                                                     TransactionId = domainEvent.TransactionId,
-                                                     TransactionNumber = domainEvent.TransactionNumber,
-                                                     TransactionReference = domainEvent.TransactionReference,
-                                                     TransactionType = domainEvent.TransactionType,
-                                                     DeviceIdentifier = domainEvent.DeviceIdentifier,
-                                                 };
+        }
+        catch(NotFoundException n){
 
-        if (domainEvent.TransactionAmount.HasValue){
-            transaction.TransactionAmount = domainEvent.TransactionAmount.Value;
+            t = new Transaction();
+
+            await context.Transactions.AddAsync(t, cancellationToken);
         }
 
-        await context.Transactions.AddAsync(transaction, cancellationToken);
+        t.MerchantReportingId = merchant.MerchantReportingId;
+        t.TransactionDate = domainEvent.TransactionDateTime.Date;
+        t.TransactionDateTime = domainEvent.TransactionDateTime;
+        t.TransactionTime = domainEvent.TransactionDateTime.TimeOfDay;
+        t.TransactionId = domainEvent.TransactionId;
+        t.TransactionNumber = domainEvent.TransactionNumber;
+        t.TransactionReference = domainEvent.TransactionReference;
+        t.TransactionType = domainEvent.TransactionType;
+        t.DeviceIdentifier = domainEvent.DeviceIdentifier;
+
+        if (domainEvent.TransactionAmount.HasValue)
+        {
+            t.TransactionAmount = domainEvent.TransactionAmount.Value;
+        }
 
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
@@ -1505,6 +1516,34 @@ public class EstateReportingRepository : IEstateReportingRepository{
         Transaction transaction = await context.Transactions.SingleOrDefaultAsync(e => e.TransactionId == transactionId, cancellationToken:cancellationToken);
         if (transaction == null){
             throw new NotFoundException($"Transaction not found with Id {transactionId}");
+        }
+
+        return transaction;
+    }
+
+    private async Task<Transaction> LoadTransactionWithDefault(EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid transactionId = DomainEventHelper.GetTransactionId(domainEvent);
+        Transaction transaction = await context.Transactions.SingleOrDefaultAsync(e => e.TransactionId == transactionId, cancellationToken: cancellationToken);
+        if (transaction == null)
+        {
+            // We can create a default
+            Transaction defaultTransaction = new Transaction{
+                                                               TransactionId = transactionId,
+                                                               IsAuthorised = false,
+                                                               IsCompleted = false,
+                                                               TransactionDate = DateTime.MinValue.Date,
+                                                               TransactionDateTime = DateTime.MinValue,
+                                                               TransactionTime = DateTime.MinValue.TimeOfDay,
+                                                               TransactionSource = 0,
+                                                               ContractProductReportingId = 0,
+                                                               ContractReportingId = 0,
+                                                               TransactionAmount = 0,
+                                                               EstateOperatorReportingId = 0
+                                                           };
+            await context.Transactions.AddAsync(defaultTransaction, cancellationToken);
+            await context.SaveChangesWithDuplicateHandling(cancellationToken);
+            return defaultTransaction;
         }
 
         return transaction;
