@@ -373,5 +373,35 @@ public static class Extensions{
         return modelBuilder;
     }
 
+    public static ModelBuilder SetupFloat(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Float>().HasKey(t => new {
+                                                           t.FloatId
+                                                       }).IsClustered(false);
+
+        modelBuilder.Entity<Float>().HasIndex(t => new {
+                                                           t.CreatedDate
+                                                       }).IsClustered(true);
+        
+        modelBuilder.Entity<Float>(e => { e.Property(p => p.CreatedDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupFloatActivity(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<FloatActivity>().HasKey(t => new {
+                                                         t.EventId
+                                                     }).IsClustered(false);
+
+        modelBuilder.Entity<FloatActivity>().HasIndex(t => new {
+                                                                   t.ActivityDate
+                                                               }).IsClustered(true);
+
+        modelBuilder.Entity<FloatActivity>(e => { e.Property(p => p.ActivityDate).IsDateOnly(); });
+
+        return modelBuilder;
+    }
+
     #endregion
 }

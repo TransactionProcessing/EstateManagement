@@ -361,6 +361,70 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.ToTable("fileline");
                 });
 
+            modelBuilder.Entity("EstateManagement.Database.Entities.Float", b =>
+                {
+                    b.Property<Guid>("FloatId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ContractId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("EstateId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("FloatId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("CreatedDate")
+                        .HasAnnotation("SqlServer:Clustered", true);
+
+                    b.ToTable("Floats");
+                });
+
+            modelBuilder.Entity("EstateManagement.Database.Entities.FloatActivity", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ActivityDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("ActivityDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("CostPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("CreditOrDebit")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("FloatId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("EventId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("ActivityDate")
+                        .HasAnnotation("SqlServer:Clustered", true);
+
+                    b.ToTable("FloatActivity");
+                });
+
             modelBuilder.Entity("EstateManagement.Database.Entities.Merchant", b =>
                 {
                     b.Property<int>("EstateReportingId")
