@@ -24,8 +24,8 @@
     <PackageReference Include="SpecFlow" Version="3.9.74" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
     <PackageReference Include="SpecFlow.xUnit" Version="3.9.74" />
-    <PackageReference Include="TransactionProcessor.Client" Version="2023.12.3-build81" />
-    <PackageReference Include="TransactionProcessor.IntegrationTesting.Helpers" Version="2023.12.2" />
+    <PackageReference Include="TransactionProcessor.Client" Version="2024.2.2-build87" />
+    <PackageReference Include="TransactionProcessor.IntegrationTesting.Helpers" Version="2024.2.2-build87" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
