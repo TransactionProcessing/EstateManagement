@@ -13,11 +13,11 @@ namespace EstateManagement.BusinessLogic.EventHandling
     using TransactionProcessor.Float.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
 
-    public class FloatEventHandler : IDomainEventHandler
+    public class FloatDomainEventHandler : IDomainEventHandler
     {
         private readonly IEstateReportingRepository EstateReportingRepository;
 
-        public FloatEventHandler(IEstateReportingRepository estateReportingRepository){
+        public FloatDomainEventHandler(IEstateReportingRepository estateReportingRepository){
             this.EstateReportingRepository = estateReportingRepository;
         }
 
