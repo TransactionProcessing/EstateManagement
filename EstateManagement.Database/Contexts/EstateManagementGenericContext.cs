@@ -56,7 +56,9 @@ public abstract class EstateManagementGenericContext : DbContext
     public virtual DbSet<FileLine> FileLines { get; set; }
 
     public virtual DbSet<File> Files { get; set; }
-    
+    public DbSet<Float> Floats { get; set; }
+    public DbSet<FloatActivity> FloatActivity { get; set; }
+
     public DbSet<MerchantAddress> MerchantAddresses { get; set; }
 
     public DbSet<MerchantContact> MerchantContacts { get; set; }
@@ -198,9 +200,10 @@ public abstract class EstateManagementGenericContext : DbContext
                     .SetupStatementLine()
                     .SetupReconciliation()
                     .SetupVoucher()
-                    .SetupMerchantContract();
-
-
+                    .SetupMerchantContract()
+                    .SetupFloat()
+                    .SetupFloatActivity();
+        
         modelBuilder.SetupViewEntities();
 
         base.OnModelCreating(modelBuilder);

@@ -11,6 +11,7 @@
     using Merchant.DomainEvents;
     using MerchantStatement.DomainEvents;
     using Shared.DomainDrivenDesign.EventSourcing;
+    using TransactionProcessor.Float.DomainEvents;
     using TransactionProcessor.Reconciliation.DomainEvents;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
@@ -19,66 +20,27 @@
     public interface IEstateReportingRepository{
         #region Methods
 
-        /// <summary>
-        /// Adds the contract.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddContract(ContractCreatedEvent domainEvent,
                          CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the contract product.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddContractProduct(VariableValueProductAddedToContractEvent domainEvent,
                                 CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the contract product.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddContractProduct(FixedValueProductAddedToContractEvent domainEvent,
                                 CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the contract product transaction fee.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddContractProductTransactionFee(TransactionFeeForProductAddedToContractEvent domainEvent,
                                               CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the estate.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        Task AddContractToMerchant(ContractAddedToMerchantEvent domainEvent,
+                                   CancellationToken cancellationToken);
+
         Task AddEstate(EstateCreatedEvent domainEvent,
                        CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the estate operator.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddEstateOperator(OperatorAddedToEstateEvent domainEvent,
                                CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Adds the estate security user.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task AddEstateSecurityUser(SecurityUserAddedToEstateEvent domainEvent,
                                    CancellationToken cancellationToken);
 
@@ -123,7 +85,7 @@
 
         Task AddSettledFeeToStatement(SettledFeeAddedToStatementEvent domainEvent,
                                       CancellationToken cancellationToken);
-        
+
         Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                CancellationToken cancellationToken);
 
@@ -138,6 +100,10 @@
 
         Task CompleteTransaction(TransactionHasBeenCompletedEvent domainEvent,
                                  CancellationToken cancellationToken);
+
+        Task CreateFloat(FloatCreatedForContractProductEvent domainEvent, CancellationToken cancellationToken);
+        Task CreateFloatActivity(FloatCreditPurchasedEvent domainEvent, CancellationToken cancellationToken);
+        Task CreateFloatActivity(FloatDecreasedByTransactionEvent domainEvent, CancellationToken cancellationToken);
 
         Task CreateReadModel(EstateCreatedEvent domainEvent,
                              CancellationToken cancellationToken);
@@ -231,9 +197,6 @@
 
         Task UpdateVoucherRedemptionDetails(VoucherFullyRedeemedEvent domainEvent,
                                             CancellationToken cancellationToken);
-
-        Task AddContractToMerchant(ContractAddedToMerchantEvent domainEvent,
-                            CancellationToken cancellationToken);
 
         #endregion
     }

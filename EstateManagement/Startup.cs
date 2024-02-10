@@ -25,6 +25,7 @@ namespace EstateManagement
     using Shared.Extensions;
     using Shared.General;
     using Shared.Logger;
+    using TransactionProcessor.Float.DomainEvents;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
     using TransactionProcessor.Voucher.DomainEvents;
@@ -135,6 +136,7 @@ namespace EstateManagement
                                                                 String.Empty);
             ImportLogCreatedEvent i = new ImportLogCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
             FileCreatedEvent file = new FileCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), String.Empty, DateTime.Now);
+            FloatCreatedForContractProductEvent fl = new FloatCreatedForContractProductEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
 
             TypeProvider.LoadDomainEventsTypeDynamically();
         }

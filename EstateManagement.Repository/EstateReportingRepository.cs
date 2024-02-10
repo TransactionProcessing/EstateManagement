@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Contract.DomainEvents;
@@ -18,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.DomainDrivenDesign.EventSourcing;
 using Shared.Exceptions;
 using Shared.Logger;
+using TransactionProcessor.Float.DomainEvents;
 using TransactionProcessor.Reconciliation.DomainEvents;
 using TransactionProcessor.Settlement.DomainEvents;
 using TransactionProcessor.Transaction.DomainEvents;
@@ -60,11 +62,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
     #region Methods
 
-    /// <summary>
-    /// Adds the contract.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddContract(ContractCreatedEvent domainEvent,
                                   CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -83,11 +80,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the contract product.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddContractProduct(VariableValueProductAddedToContractEvent domainEvent,
                                          CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -108,11 +100,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the contract product.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddContractProduct(FixedValueProductAddedToContractEvent domainEvent,
                                          CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -133,11 +120,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the contract product transaction fee.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddContractProductTransactionFee(TransactionFeeForProductAddedToContractEvent domainEvent,
                                                        CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -159,11 +141,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the estate.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddEstate(EstateCreatedEvent domainEvent,
                                 CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -179,11 +156,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the estate operator.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddEstateOperator(OperatorAddedToEstateEvent domainEvent,
                                         CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -203,11 +175,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the estate security user.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddEstateSecurityUser(SecurityUserAddedToEstateEvent domainEvent,
                                             CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -226,11 +193,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the file.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddFile(FileCreatedEvent domainEvent,
                               CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -258,11 +220,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the file import log.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddFileImportLog(ImportLogCreatedEvent domainEvent,
                                        CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -281,13 +238,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the file line to file.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">File with Id {domainEvent.FileId} not found for estate Id {estateId}</exception>
-    /// <exception cref="NotFoundException">File with Id {domainEvent.FileId} not found for estate Id {estateId}</exception>
     public async Task AddFileLineToFile(FileLineAddedEvent domainEvent,
                                         CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -306,13 +256,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the file to import log.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Import log with Id {domainEvent.FileImportLogId} not found for estate Id {estateId}</exception>
-    /// <exception cref="NotFoundException">Import log with Id {domainEvent.FileImportLogId} not found for estate Id {estateId}</exception>
     public async Task AddFileToImportLog(FileAddedToImportLogEvent domainEvent,
                                          CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -340,11 +283,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the generated voucher.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddGeneratedVoucher(VoucherGeneratedEvent domainEvent,
                                           CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -370,11 +308,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the merchant.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddMerchant(MerchantCreatedEvent domainEvent,
                                   CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -395,11 +328,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the merchant address.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddMerchantAddress(AddressAddedEvent domainEvent,
                                          CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -424,11 +352,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the merchant contact.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddMerchantContact(ContactAddedEvent domainEvent,
                                          CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -448,11 +371,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the merchant device.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddMerchantDevice(DeviceAddedToMerchantEvent domainEvent,
                                         CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -470,11 +388,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the merchant operator.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddMerchantOperator(OperatorAssignedToMerchantEvent domainEvent,
                                           CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -494,11 +407,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the merchant security user.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddMerchantSecurityUser(SecurityUserAddedToMerchantEvent domainEvent,
                                               CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -516,11 +424,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the pending merchant fee to settlement.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddPendingMerchantFeeToSettlement(MerchantFeeAddedPendingSettlementEvent domainEvent,
                                                         CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -549,13 +452,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the product details to transaction.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task AddProductDetailsToTransaction(ProductDetailsAddedToTransactionEvent domainEvent,
                                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -572,12 +468,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the settled fee to statement.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id {domainEvent.TransactionId} not found for estate Id {estateId}</exception>
     public async Task AddSettledFeeToStatement(SettledFeeAddedToStatementEvent domainEvent,
                                                CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -602,12 +492,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the settled merchant fee to settlement.
-    /// </summary>
-    /// <param name="settlementId">The settlement identifier.</param>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
                                                         CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -646,12 +530,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Adds the transaction to statement.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id {domainEvent.TransactionId} not found for estate Id {estateId}</exception>
     public async Task AddTransactionToStatement(TransactionAddedToStatementEvent domainEvent,
                                                 CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -676,13 +554,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Completes the reconciliation.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task CompleteReconciliation(ReconciliationHasCompletedEvent domainEvent,
                                              CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -694,13 +565,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Completes the transaction.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task CompleteTransaction(TransactionHasBeenCompletedEvent domainEvent,
                                           CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -712,11 +576,57 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Creates the read model.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task CreateFloat(FloatCreatedForContractProductEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Float floatRecord = new Float{
+                                         CreatedDate = domainEvent.CreatedDateTime.Date,
+                                         CreatedDateTime = domainEvent.CreatedDateTime,
+                                         ContractId = domainEvent.ContractId,
+                                         EstateId = domainEvent.EstateId,
+                                         FloatId = domainEvent.FloatId,
+                                         ProductId = domainEvent.ProductId
+                                     };
+        await context.Floats.AddAsync(floatRecord, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task CreateFloatActivity(FloatCreditPurchasedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        FloatActivity floatActivity = new FloatActivity{
+                                                           ActivityDate = domainEvent.CreditPurchasedDateTime.Date,
+                                                           ActivityDateTime = domainEvent.CreditPurchasedDateTime,
+                                                           Amount = domainEvent.Amount,
+                                                           CostPrice = domainEvent.CostPrice,
+                                                           CreditOrDebit = "C",
+                                                           EventId = domainEvent.EventId,
+                                                           FloatId = domainEvent.FloatId
+                                                       };
+        await context.FloatActivity.AddAsync(floatActivity, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+
+    }
+
+    public async Task CreateFloatActivity(FloatDecreasedByTransactionEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Transaction transaction = await this.LoadTransaction(context, domainEvent, cancellationToken);
+
+        FloatActivity floatActivity = new FloatActivity
+                                      {
+                                          ActivityDate = transaction.TransactionDate,
+                                          ActivityDateTime = transaction.TransactionDateTime,
+                                          Amount = domainEvent.Amount,
+                                          CostPrice = 0,
+                                          CreditOrDebit = "D",
+                                          EventId = domainEvent.EventId,
+                                          FloatId = domainEvent.FloatId
+                                      };
+        await context.FloatActivity.AddAsync(floatActivity, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task CreateReadModel(EstateCreatedEvent domainEvent,
                                       CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -729,11 +639,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         Logger.LogInformation($"Read Model database for estate [{domainEvent.EstateId}] migrated to latest version");
     }
 
-    /// <summary>
-    /// Creates the settlement.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task CreateSettlement(SettlementCreatedForDateEvent domainEvent,
                                        CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -753,11 +658,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Creates the statement.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task CreateStatement(StatementCreatedEvent domainEvent,
                                       CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -776,13 +676,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Disables the contract product transaction fee.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction Fee with Id [{domainEvent.TransactionFeeId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Transaction Fee with Id [{domainEvent.TransactionFeeId}] not found in the Read Model</exception>
     public async Task DisableContractProductTransactionFee(TransactionFeeForProductDisabledEvent domainEvent,
                                                            CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -794,12 +687,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Marks the merchant fee as settled.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Merchant Fee not found to update as settled</exception>
     public async Task MarkMerchantFeeAsSettled(MerchantFeeSettledEvent domainEvent,
                                                CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -825,12 +712,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Marks the settlement as completed.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">No settlement with Id {domainEvent.SettlementId} found to mark as completed</exception>
     public async Task MarkSettlementAsCompleted(SettlementCompletedEvent domainEvent,
                                                 CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -851,12 +732,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Marks the statement as generated.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">No statement with Id {domainEvent.MerchantStatementId} found to mark as generated</exception>
     public async Task MarkStatementAsGenerated(StatementGeneratedEvent domainEvent,
                                                CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -910,11 +785,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Records the transaction additional response data.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task RecordTransactionAdditionalResponseData(AdditionalResponseDataRecordedEvent domainEvent,
                                                               CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -963,11 +833,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Starts the reconciliation.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task StartReconciliation(ReconciliationHasStartedEvent domainEvent,
                                           CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -987,11 +852,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Starts the transaction.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task StartTransaction(TransactionHasStartedEvent domainEvent,
                                        CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1030,12 +890,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the estate.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Estate not found with Id {domainEvent.EstateId}</exception>
     public async Task UpdateEstate(EstateReferenceAllocatedEvent domainEvent,
                                    CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1047,12 +901,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the file as complete.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">File Id {domainEvent.FileId} not found for estate Id {domainEvent.EstateId}</exception>
     public async Task UpdateFileAsComplete(FileProcessingCompletedEvent domainEvent,
                                            CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1064,11 +912,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the file line.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task UpdateFileLine(FileLineProcessingSuccessfulEvent domainEvent,
                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1085,11 +928,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
                                         cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the file line.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task UpdateFileLine(FileLineProcessingFailedEvent domainEvent,
                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1106,11 +944,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
                                         cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the file line.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task UpdateFileLine(FileLineProcessingIgnoredEvent domainEvent,
                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1125,12 +958,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
                                         cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the merchant.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Merchant not found with Id {domainEvent.MerchantId}</exception>
     public async Task UpdateMerchant(StatementGeneratedEvent domainEvent,
                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1144,12 +971,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the merchant.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Merchant not found with Id {domainEvent.MerchantId}</exception>
     public async Task UpdateMerchant(SettlementScheduleChangedEvent domainEvent,
                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1173,12 +994,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the merchant.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Merchant not found with Id {domainEvent.MerchantId}</exception>
     public async Task UpdateMerchant(MerchantReferenceAllocatedEvent domainEvent,
                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1189,13 +1004,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the reconciliation overall totals.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task UpdateReconciliationOverallTotals(OverallTotalsRecordedEvent domainEvent,
                                                         CancellationToken cancellationToken){
         Guid estateId = domainEvent.EstateId;
@@ -1210,13 +1018,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the reconciliation status.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task UpdateReconciliationStatus(ReconciliationHasBeenLocallyAuthorisedEvent domainEvent,
                                                  CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1230,13 +1031,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the reconciliation status.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Reconciliation with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task UpdateReconciliationStatus(ReconciliationHasBeenLocallyDeclinedEvent domainEvent,
                                                  CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1250,13 +1044,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the transaction authorisation.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task UpdateTransactionAuthorisation(TransactionHasBeenLocallyAuthorisedEvent domainEvent,
                                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1271,13 +1058,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the transaction authorisation.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task UpdateTransactionAuthorisation(TransactionHasBeenLocallyDeclinedEvent domainEvent,
                                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1291,13 +1071,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the transaction authorisation.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task UpdateTransactionAuthorisation(TransactionAuthorisedByOperatorEvent domainEvent,
                                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1312,13 +1085,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the transaction authorisation.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Transaction with Id [{domainEvent.TransactionId}] not found in the Read Model</exception>
     public async Task UpdateTransactionAuthorisation(TransactionDeclinedByOperatorEvent domainEvent,
                                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1332,13 +1098,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the voucher issue details.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Voucher with Id [{domainEvent.VoucherId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Voucher with Id [{domainEvent.VoucherId}] not found in the Read Model</exception>
     public async Task UpdateVoucherIssueDetails(VoucherIssuedEvent domainEvent,
                                                 CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1354,13 +1113,6 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Updates the voucher redemption details.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="Shared.Exceptions.NotFoundException">Voucher with Id [{domainEvent.VoucherId}] not found in the Read Model</exception>
-    /// <exception cref="NotFoundException">Voucher with Id [{domainEvent.VoucherId}] not found in the Read Model</exception>
     public async Task UpdateVoucherRedemptionDetails(VoucherFullyRedeemedEvent domainEvent,
                                                      CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
