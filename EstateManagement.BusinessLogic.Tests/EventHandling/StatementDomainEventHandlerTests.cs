@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using BusinessLogic.EventHandling;
     using EstateManagement.Repository;
-    using MediatR;
     using Moq;
     using Shared.Logger;
     using Shouldly;
