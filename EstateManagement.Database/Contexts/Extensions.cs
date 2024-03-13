@@ -280,7 +280,7 @@ public static class Extensions{
         modelBuilder.Entity<StatementHeader>().HasIndex(s => new {
                                                                      s.MerchantReportingId,
                                                                      s.StatementGeneratedDate,
-                                                                 }).IsClustered().IsUnique();
+                                                                 }).IsClustered();
 
         modelBuilder.Entity<StatementHeader>(e => { e.Property(p => p.StatementGeneratedDate).IsDateOnly(); });
         modelBuilder.Entity<StatementHeader>(e => { e.Property(p => p.StatementCreatedDate).IsDateOnly(); });

@@ -819,8 +819,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("MerchantReportingId", "StatementId"), false);
 
-                    b.HasIndex("MerchantReportingId", "StatementGeneratedDate")
-                        .IsUnique();
+                    b.HasIndex("MerchantReportingId", "StatementGeneratedDate");
 
                     SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("MerchantReportingId", "StatementGeneratedDate"));
 
