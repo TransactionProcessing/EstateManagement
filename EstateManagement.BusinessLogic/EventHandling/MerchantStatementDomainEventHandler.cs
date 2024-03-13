@@ -61,7 +61,7 @@
             await this.Mediator.Send(emailMerchantStatementRequest, cancellationToken);
         }
 
-        private async Task HandlesSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
+        private async Task HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
                                                       CancellationToken cancellationToken) {
             AddTransactionToMerchantStatementRequest addTransactionToMerchantStatementRequest = AddTransactionToMerchantStatementRequest.Create(domainEvent.EstateId,
                 domainEvent.MerchantId,
