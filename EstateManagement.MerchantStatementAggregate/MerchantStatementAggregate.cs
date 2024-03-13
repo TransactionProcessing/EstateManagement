@@ -34,24 +34,26 @@
             aggregate.ApplyAndAppend(settledFeeAddedToStatementEvent);
         }
 
-        public static void AddTransactionToStatement(this MerchantStatementAggregate aggregate, 
+        public static void AddTransactionToStatement(this MerchantStatementAggregate aggregate,
                                                      Guid statementId,
                                                      Guid eventId,
                                                      DateTime createdDate,
                                                      Guid estateId,
                                                      Guid merchantId,
-                                                     Transaction transaction)
-            {
-                TransactionAddedToStatementEvent transactionAddedToStatementEvent = new TransactionAddedToStatementEvent(aggregate.AggregateId,
-                                                                                                                         eventId,
-                                                                                                                         aggregate.EstateId,
-                                                                                                                         aggregate.MerchantId,
-                                                                                                                         transaction.TransactionId,
-                                                                                                                         transaction.DateTime,
-                                                                                                                         transaction.Amount);
+                                                     Transaction transaction){
+            // Create statement id required
+            aggregate.CreateStatement(statementId, createdDate, estateId, merchantId);
 
-                aggregate.ApplyAndAppend(transactionAddedToStatementEvent);
-            }
+            TransactionAddedToStatementEvent transactionAddedToStatementEvent = new TransactionAddedToStatementEvent(aggregate.AggregateId,
+                                                                                                                     eventId,
+                                                                                                                     aggregate.EstateId,
+                                                                                                                     aggregate.MerchantId,
+                                                                                                                     transaction.TransactionId,
+                                                                                                                     transaction.DateTime,
+                                                                                                                     transaction.Amount);
+
+            aggregate.ApplyAndAppend(transactionAddedToStatementEvent);
+        }
 
         private static void CreateStatement(this MerchantStatementAggregate aggregate, 
                                             Guid statementId,
