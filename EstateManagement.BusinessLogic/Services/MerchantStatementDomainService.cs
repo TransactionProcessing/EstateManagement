@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.IO.Abstractions;
     using System.Linq;
@@ -93,6 +94,22 @@
 
         #region Methods
 
+        private async Task<MerchantStatementAggregate> GetLatestVersion(Guid statementId, CancellationToken cancellationToken){
+            Stopwatch sw = Stopwatch.StartNew();
+            
+            MerchantStatementAggregate merchantStatementAggregate =
+                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
+
+            sw.Stop();
+            var elapsedTime = sw.ElapsedMilliseconds;
+
+            if (elapsedTime > 1000){
+                Logger.LogWarning($"Rehydration of MerchantStatementAggregate Id [{statementId}] took {elapsedTime} ms");
+            }
+
+            return merchantStatementAggregate;
+        }
+
         /// <summary>
         /// Adds the settled fee to statement.
         /// </summary>
@@ -117,7 +134,7 @@
             Guid statementId = GuidCalculator.Combine(merchantId, nextStatementDate.ToGuid());
             Guid settlementFeeId = GuidCalculator.Combine(transactionId, settledFeeId);
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
+                await GetLatestVersion(statementId, cancellationToken);
             
             // Add settled fee to statement
             SettledFee settledFee = new SettledFee
@@ -167,7 +184,7 @@
         {
             Guid statementId = GuidCalculator.Combine(merchantId, statementDate.ToGuid());
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
+                await GetLatestVersion(statementId, cancellationToken);
 
             merchantStatementAggregate.GenerateStatement(DateTime.Now);
 
@@ -178,10 +195,10 @@
 
         public async Task EmailStatement(Guid estateId,
                                          Guid merchantId,
-                                         Guid merchantStatementId,
+                                         Guid statementId,
                                          CancellationToken cancellationToken)
         {
-            StatementHeader statementHeader = await this.EstateManagementRepository.GetStatement(estateId, merchantStatementId, cancellationToken);
+            StatementHeader statementHeader = await this.EstateManagementRepository.GetStatement(estateId, statementId, cancellationToken);
             
             String html = await this.StatementBuilder.GetStatementHtml(statementHeader, cancellationToken);
 
@@ -194,7 +211,7 @@
                 FromAddress = "golfhandicapping@btinternet.com", // TODO: lookup from config
                 IsHtml = true,
                 Subject = $"Merchant Statement for {statementHeader.StatementDate}",
-                MessageId = merchantStatementId,
+                MessageId = statementId,
                 ToAddresses = new List<String>
                               {
                                   statementHeader.MerchantEmail
@@ -216,7 +233,7 @@
 
             // record email getting sent in statement aggregate
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersion(merchantStatementId, cancellationToken);
+                await GetLatestVersion(statementId, cancellationToken);
 
             merchantStatementAggregate.EmailStatement(DateTime.Now, sendEmailResponse.MessageId);
 
@@ -290,8 +307,8 @@
             Guid statementId = GuidCalculator.Combine(merchantId, nextStatementDate.ToGuid());
 
             MerchantStatementAggregate merchantStatementAggregate =
-                await this.MerchantStatementAggregateRepository.GetLatestVersionFromLastEvent(statementId, cancellationToken);
-            
+                await GetLatestVersion(statementId, cancellationToken);
+
             // Add transaction to statement
             Transaction transaction = new Transaction
             {
