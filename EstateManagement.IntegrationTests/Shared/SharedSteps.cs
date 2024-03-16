@@ -15,17 +15,17 @@ namespace EstateManagement.IntegrationTests.Shared
     using global::Shared.IntegrationTesting;
     using IntegrationTesting.Helpers;
     using Newtonsoft.Json.Linq;
+    using Reqnroll;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
     using SecurityService.IntegrationTesting.Helpers;
     using Shouldly;
-    using TechTalk.SpecFlow;
     using TransactionProcessor.DataTransferObjects;
     using TransactionProcessor.IntegrationTesting.Helpers;
     using ClientDetails = Common.ClientDetails;
     using DockerHelper = Common.DockerHelper;
-    using SpecflowExtensions = TransactionProcessor.IntegrationTesting.Helpers.SpecflowExtensions;
-    using Table = TechTalk.SpecFlow.Table;
+    using ReqnrollExtensions = IntegrationTesting.Helpers.ReqnrollExtensions;
+    using ReqnrollTableHelper = global::Shared.IntegrationTesting.ReqnrollTableHelper;
 
     [Binding]
     [Scope(Tag = "shared")]
@@ -54,19 +54,7 @@ namespace EstateManagement.IntegrationTests.Shared
         [When(@"I create the following estates")]
         public async Task WhenICreateTheFollowingEstates(Table table) {
             List<CreateEstateRequest> requests = table.Rows.ToCreateEstateRequests();
-
-            foreach (CreateEstateRequest request in requests)
-            {
-                // Setup the subscriptions for the estate
-                await Retry.For(async () => {
-                                    await this.TestingContext.DockerHelper
-                                              .CreateEstateSubscriptions(request.EstateName)
-                                              .ConfigureAwait(false);
-                                },
-                                retryFor: TimeSpan.FromMinutes(2),
-                                retryInterval: TimeSpan.FromSeconds(30));
-            }
-
+            
             List<EstateResponse> verifiedEstates = await this.EstateManagementSteps.WhenICreateTheFollowingEstates(this.TestingContext.AccessToken, requests);
 
             foreach (EstateResponse verifiedEstate in verifiedEstates){
@@ -193,8 +181,8 @@ namespace EstateManagement.IntegrationTests.Shared
         [Given(@"I have a token to access the estate management resource")]
         [Given(@"I have a token to access the estate management and transaction processor resources")]
         public async Task GivenIHaveATokenToAccessTheEstateManagementResource(Table table) {
-            TableRow firstRow = table.Rows.First();
-            String clientId = SpecflowTableHelper.GetStringRowValue(firstRow, "ClientId");
+            DataTableRow firstRow = table.Rows.First();
+            String clientId = ReqnrollTableHelper.GetStringRowValue(firstRow, "ClientId");
             ClientDetails clientDetails = this.TestingContext.GetClientDetails(clientId);
 
             this.TestingContext.AccessToken = await this.SecurityServiceSteps.GetClientToken(clientDetails.ClientId,clientDetails.ClientSecret, CancellationToken.None);
@@ -351,21 +339,21 @@ namespace EstateManagement.IntegrationTests.Shared
         }
 
         [When(@"I perform the following transactions")]
-        public async Task WhenIPerformTheFollowingTransactions(Table table) {
-            List<(EstateDetails, Guid, String, SerialisedMessage)> serialisedMessages = table.Rows.ToSerialisedMessages(this.TestingContext.Estates);
+        public async Task WhenIPerformTheFollowingTransactions(DataTable table) {
+            List<(EstateDetails, Guid, String, SerialisedMessage)> serialisedMessages = TransactionProcessor.IntegrationTesting.Helpers.ReqnrollExtensions.ToSerialisedMessages(table.Rows, this.TestingContext.Estates);
 
             await this.TransactionProcessorSteps.WhenIPerformTheFollowingTransactions(this.TestingContext.AccessToken, serialisedMessages);
         }
 
         [Then(@"transaction response should contain the following information")]
-        public void ThenTransactionResponseShouldContainTheFollowingInformation(Table table) {
-            List<(SerialisedMessage, String, String, String)> transactions = table.Rows.GetTransactionDetails(this.TestingContext.Estates);
+        public void ThenTransactionResponseShouldContainTheFollowingInformation(DataTable table) {
+            List<(SerialisedMessage, String, String, String)> transactions = TransactionProcessor.IntegrationTesting.Helpers.ReqnrollExtensions.GetTransactionDetails(table.Rows,this.TestingContext.Estates);
             this.TransactionProcessorSteps.ValidateTransactions(transactions);
         }
         
         [When(@"I get the pending settlements the following information should be returned")]
-        public async Task WhenIGetThePendingSettlementsTheFollowingInformationShouldBeReturned(Table table) {
-            List<(EstateDetails, Guid, DateTime, Int32)> requests = table.Rows.ToPendingSettlementRequests(this.TestingContext.Estates);
+        public async Task WhenIGetThePendingSettlementsTheFollowingInformationShouldBeReturned(DataTable table) {
+            List<(EstateDetails, Guid, DateTime, Int32)> requests = TransactionProcessor.IntegrationTesting.Helpers.ReqnrollExtensions.ToPendingSettlementRequests(table.Rows, this.TestingContext.Estates);
             await this.TransactionProcessorSteps.WhenIGetThePendingSettlementsTheFollowingInformationShouldBeReturned(this.TestingContext.AccessToken, requests);
         }
 
@@ -374,7 +362,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                                                                String estateName,
                                                                                                                                String merchantName,
                                                                                                                                Int32 numberOfFeesSettled){
-            SpecflowExtensions.ProcessSettlementRequest processSettlementRequest = SpecflowExtensions.ToProcessSettlementRequest(dateString, estateName, merchantName, this.TestingContext.Estates);
+            SpecflowExtensions.ProcessSettlementRequest processSettlementRequest = TransactionProcessor.IntegrationTesting.Helpers.ReqnrollExtensions.ToProcessSettlementRequest(dateString, estateName, merchantName, this.TestingContext.Estates);
             await this.TransactionProcessorSteps.WhenIProcessTheSettlementForOnEstateThenFeesAreMarkedAsSettledAndTheSettlementIsCompleted(this.TestingContext.AccessToken, processSettlementRequest, numberOfFeesSettled);
 
         }
@@ -384,10 +372,10 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                                                             string startDateString,
                                                                                                                             string endDateString,
                                                                                                                             Table table){
-            DateTime stateDate = SpecflowTableHelper.GetDateForDateString(startDateString, DateTime.UtcNow.Date);
-            DateTime endDate = SpecflowTableHelper.GetDateForDateString(endDateString, DateTime.UtcNow.Date);
+            DateTime stateDate = ReqnrollTableHelper.GetDateForDateString(startDateString, DateTime.UtcNow.Date);
+            DateTime endDate = ReqnrollTableHelper.GetDateForDateString(endDateString, DateTime.UtcNow.Date);
 
-            var settlementDetails = table.Rows.ToSettlementDetails(estateName, this.TestingContext.Estates);
+            ReqnrollExtensions.SettlementDetails settlementDetails = table.Rows.ToSettlementDetails(estateName, this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(this.TestingContext.AccessToken, stateDate, endDate, settlementDetails);
         }
 
@@ -398,9 +386,9 @@ namespace EstateManagement.IntegrationTests.Shared
             string endDateString,
             Table table){
 
-            DateTime stateDate = SpecflowTableHelper.GetDateForDateString(startDateString, DateTime.UtcNow.Date);
-            DateTime endDate = SpecflowTableHelper.GetDateForDateString(endDateString, DateTime.UtcNow.Date);
-            IntegrationTesting.Helpers.SpecflowExtensions.SettlementDetails settlementDetails = table.Rows.ToSettlementDetails(estateName, merchantName, this.TestingContext.Estates);
+            DateTime stateDate = ReqnrollTableHelper.GetDateForDateString(startDateString, DateTime.UtcNow.Date);
+            DateTime endDate = ReqnrollTableHelper.GetDateForDateString(endDateString, DateTime.UtcNow.Date);
+            ReqnrollExtensions.SettlementDetails settlementDetails = table.Rows.ToSettlementDetails(estateName, merchantName, this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(this.TestingContext.AccessToken,
                                                                                                                                                           stateDate, endDate,
                                                                                                                                                           settlementDetails);
@@ -412,7 +400,7 @@ namespace EstateManagement.IntegrationTests.Shared
             string settlementDateString,
             Table table){
 
-            var settlementFeeDetailsList = table.Rows.ToSettlementFeeDetails(estateName, merchantName, settlementDateString, this.TestingContext.Estates);
+            List<ReqnrollExtensions.SettlementFeeDetails> settlementFeeDetailsList = table.Rows.ToSettlementFeeDetails(estateName, merchantName, settlementDateString, this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(this.TestingContext.AccessToken, settlementFeeDetailsList);
         }
     }
