@@ -350,7 +350,16 @@ public class EstateManagementSteps{
                                                                                   estateContractProductsFee.Item4.FeeType,
                                                                                   estateContractProductsFee.Item4.Description,
                                                                                   estateContractProductsFee.Item4.Value);
-                            });
+
+                                List<ContractProductTransactionFee>? fees = await this.EstateClient.GetTransactionFeesForProduct(accessToken,
+                                                                                                                                 estateContractProductsFee.Item1.EstateId,
+                                                                                                                                 estateContractProductsFee.Item1.GetMerchants().First().MerchantId,
+                                                                                                                                 contract.ContractId,
+                                                                                                                                 product.ProductId,
+                                                                                                                                 CancellationToken.None);
+                                var fee = fees.SingleOrDefault(f => f.TransactionFeeId == estateContractProductsFee.Item5.TransactionFeeId);
+                                fee.ShouldNotBeNull();
+            });
         }
     }
 
