@@ -630,7 +630,7 @@ public class EstateManagementSteps{
         }
     }
 
-    public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(String accessToken, DateTime stateDate, DateTime endDate, SpecflowExtensions.SettlementDetails expectedSettlementDetails){
+    public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(String accessToken, DateTime stateDate, DateTime endDate, ReqnrollExtensions.SettlementDetails expectedSettlementDetails){
         await Retry.For(async () => {
                             List<DataTransferObjects.Responses.SettlementResponse> settlementList =
                                 await this.EstateClient.GetSettlements(accessToken,
@@ -653,7 +653,7 @@ public class EstateManagementSteps{
                         TimeSpan.FromMinutes(2));
     }
 
-    public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(String accessToken, List<SpecflowExtensions.SettlementFeeDetails> settlementFeeDetailsList){
+    public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(String accessToken, List<ReqnrollExtensions.SettlementFeeDetails> settlementFeeDetailsList){
         var settlements = settlementFeeDetailsList.DistinctBy(d => new{
                                                                           d.EstateId,
                                                                           d.MerchantId,
@@ -682,7 +682,7 @@ public class EstateManagementSteps{
                                                                                          s.MerchantId == settlementFeeDetails.MerchantId &&
                                                                                          s.SettlementId == settlementFeeDetails.SettlementId).ToList();
 
-                                foreach (SpecflowExtensions.SettlementFeeDetails feeDetails in settlementFees){
+                                foreach (ReqnrollExtensions.SettlementFeeDetails feeDetails in settlementFees){
                                     SettlementFeeResponse settlementFee =
                                         settlement.SettlementFees.SingleOrDefault(sf => sf.FeeDescription == feeDetails.FeeDescription && sf.IsSettled == feeDetails.IsSettled &&
                                                                                         sf.OperatorIdentifier == feeDetails.Operator &&

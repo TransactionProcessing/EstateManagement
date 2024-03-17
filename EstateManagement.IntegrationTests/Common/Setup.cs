@@ -6,8 +6,10 @@ namespace EstateManagement.IntegrationTests.Common
     using Ductus.FluentDocker.Services.Extensions;
     using global::Shared.Logger;
     using NLog;
+    using Reqnroll;
     using Shouldly;
-    using TechTalk.SpecFlow;
+    using System.Threading.Tasks;
+    using global::Shared.IntegrationTesting;
 
     [Binding]
     public class Setup
@@ -16,23 +18,18 @@ namespace EstateManagement.IntegrationTests.Common
         public static INetworkService DatabaseServerNetwork;
         public static (String usename, String password) SqlCredentials = ("sa", "thisisalongpassword123!");
         public static (String url, String username, String password) DockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
-        [BeforeTestRun]
-        protected static void GlobalSetup()
+
+        public static async Task GlobalSetup(DockerHelper dockerHelper)
         {
             ShouldlyConfiguration.DefaultTaskTimeout = TimeSpan.FromMinutes(1);
-
-            DockerHelper dockerHelper = new DockerHelper();
-
-            NlogLogger logger = new NlogLogger();
-            logger.Initialise(LogManager.GetLogger("Specflow"), "Specflow");
-            LogManager.AddHiddenAssembly(typeof(NlogLogger).Assembly);
-            dockerHelper.Logger = logger;
             dockerHelper.SqlCredentials = Setup.SqlCredentials;
             dockerHelper.DockerCredentials = Setup.DockerCredentials;
             dockerHelper.SqlServerContainerName = "sharedsqlserver";
 
-            Setup.DatabaseServerNetwork = dockerHelper.SetupTestNetwork("sharednetwork", true);
-            Setup.DatabaseServerContainer = dockerHelper.SetupSqlServerContainer(Setup.DatabaseServerNetwork);
+            await Retry.For(async () => {
+                                Setup.DatabaseServerNetwork = dockerHelper.SetupTestNetwork("sharednetwork", true);
+                                Setup.DatabaseServerContainer = await dockerHelper.SetupSqlServerContainer(Setup.DatabaseServerNetwork);
+                            }, TimeSpan.FromSeconds(60));
         }
 
         public static String GetConnectionString(String databaseName)

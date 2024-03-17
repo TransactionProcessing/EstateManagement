@@ -6,8 +6,8 @@
     using global::Shared.IntegrationTesting;
     using global::Shared.Logger;
     using IntegrationTesting.Helpers;
+    using Reqnroll;
     using Shouldly;
-    using TechTalk.SpecFlow;
 
     public class TestingContext
     {
@@ -31,9 +31,9 @@
 
         public String AccessToken { get; set; }
 
-        public EstateDetails GetEstateDetails(TableRow tableRow)
+        public EstateDetails GetEstateDetails(DataTableRow tableRow)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
 
             EstateDetails estateDetails = this.GetEstateDetails(estateName);
 

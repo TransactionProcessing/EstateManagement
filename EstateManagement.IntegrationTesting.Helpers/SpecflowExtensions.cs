@@ -8,9 +8,9 @@ using Shared.General;
 using Shared.IntegrationTesting;
 using Shouldly;
 using System.Collections.Generic;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
-public static class SpecflowExtensions
+public static class ReqnrollExtensions
 {
     public class SettlementDetails
     {
@@ -32,10 +32,10 @@ public static class SpecflowExtensions
         public String Operator { get; set; }
         public Decimal CalculatedValue { get; set; }
     }
-    public static T GetEnumValue<T>(TableRow row,
+    public static T GetEnumValue<T>(DataTableRow row,
                                     String key) where T : struct
     {
-        String field = SpecflowTableHelper.GetStringRowValue(row, key);
+        String field = ReqnrollTableHelper.GetStringRowValue(row, key);
 
         return Enum.Parse<T>(field, true);
     }
@@ -48,7 +48,7 @@ public static class SpecflowExtensions
         return aggregateId;
     }
 
-    public static List<SettlementFeeDetails> ToSettlementFeeDetails(this TableRows tableRows, string estateName,
+    public static List<SettlementFeeDetails> ToSettlementFeeDetails(this DataTableRows tableRows, string estateName,
                                                                     string merchantName,
                                                                     String settlementDateString,
                                                                     List<EstateDetails> estateDetailsList){
@@ -56,22 +56,22 @@ public static class SpecflowExtensions
         EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
         estateDetails.ShouldNotBeNull();
 
-        foreach (TableRow tableRow in tableRows){
+        foreach (DataTableRow tableRow in tableRows){
             SettlementFeeDetails settlementFeeDetails = new SettlementFeeDetails();
-            DateTime settlementDate = SpecflowTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
-            Guid settlementId = SpecflowExtensions.CalculateSettlementAggregateId(settlementDate, estateDetails.GetMerchant(merchantName).MerchantId, estateDetails.EstateId);
+            DateTime settlementDate = ReqnrollTableHelper.GetDateForDateString(settlementDateString, DateTime.UtcNow.Date);
+            Guid settlementId = ReqnrollExtensions.CalculateSettlementAggregateId(settlementDate, estateDetails.GetMerchant(merchantName).MerchantId, estateDetails.EstateId);
             settlementFeeDetails.SettlementId = settlementId;
             settlementFeeDetails.EstateId = estateDetails.EstateId;
             settlementFeeDetails.MerchantId = estateDetails.GetMerchant(merchantName).MerchantId;
-            settlementFeeDetails.FeeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
-            settlementFeeDetails.IsSettled = SpecflowTableHelper.GetBooleanValue(tableRow, "IsSettled");
-            settlementFeeDetails.Operator = SpecflowTableHelper.GetStringRowValue(tableRow, "Operator");
-            settlementFeeDetails.CalculatedValue = SpecflowTableHelper.GetDecimalValue(tableRow, "CalculatedValue");
+            settlementFeeDetails.FeeDescription = ReqnrollTableHelper.GetStringRowValue(tableRow, "FeeDescription");
+            settlementFeeDetails.IsSettled = ReqnrollTableHelper.GetBooleanValue(tableRow, "IsSettled");
+            settlementFeeDetails.Operator = ReqnrollTableHelper.GetStringRowValue(tableRow, "Operator");
+            settlementFeeDetails.CalculatedValue = ReqnrollTableHelper.GetDecimalValue(tableRow, "CalculatedValue");
         }
         return settlementFeeDetailsList;
     }
 
-    public static SettlementDetails ToSettlementDetails(this TableRows tableRows, string estateName, List<EstateDetails> estateDetailsList)
+    public static SettlementDetails ToSettlementDetails(this DataTableRows tableRows, string estateName, List<EstateDetails> estateDetailsList)
     {
         SettlementDetails result = new SettlementDetails();
 
@@ -79,18 +79,18 @@ public static class SpecflowExtensions
         estateDetails.ShouldNotBeNull();
         result.EstateId = estateDetails.EstateId;
             
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            result.SettlementDate = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementDate"), DateTime.UtcNow.Date);
-            result.NumberOfFeesSettled = SpecflowTableHelper.GetIntValue(tableRow, "NumberOfFeesSettled");
-            result.ValueOfFeesSettled = SpecflowTableHelper.GetDecimalValue(tableRow, "ValueOfFeesSettled");
-            result.IsCompleted = SpecflowTableHelper.GetBooleanValue(tableRow, "IsCompleted");
+            result.SettlementDate = ReqnrollTableHelper.GetDateForDateString(ReqnrollTableHelper.GetStringRowValue(tableRow, "SettlementDate"), DateTime.UtcNow.Date);
+            result.NumberOfFeesSettled = ReqnrollTableHelper.GetIntValue(tableRow, "NumberOfFeesSettled");
+            result.ValueOfFeesSettled = ReqnrollTableHelper.GetDecimalValue(tableRow, "ValueOfFeesSettled");
+            result.IsCompleted = ReqnrollTableHelper.GetBooleanValue(tableRow, "IsCompleted");
         }
 
         return result;
     }
 
-    public static SettlementDetails ToSettlementDetails(this TableRows tableRows, string estateName,
+    public static SettlementDetails ToSettlementDetails(this DataTableRows tableRows, string estateName,
                                                         string merchantName, List<EstateDetails> estateDetailsList)
     {
         SettlementDetails result = new SettlementDetails();
@@ -101,31 +101,31 @@ public static class SpecflowExtensions
         // Lookup the merchant id
         result.MerchantId = estateDetails.GetMerchant(merchantName).MerchantId;
              
-        foreach (TableRow tableRow in tableRows){
-            result.SettlementDate = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementDate"), DateTime.UtcNow.Date);
-            result.NumberOfFeesSettled = SpecflowTableHelper.GetIntValue(tableRow, "NumberOfFeesSettled");
-            result.ValueOfFeesSettled = SpecflowTableHelper.GetDecimalValue(tableRow, "ValueOfFeesSettled");
-            result.IsCompleted = SpecflowTableHelper.GetBooleanValue(tableRow, "IsCompleted");
+        foreach (DataTableRow tableRow in tableRows){
+            result.SettlementDate = ReqnrollTableHelper.GetDateForDateString(ReqnrollTableHelper.GetStringRowValue(tableRow, "SettlementDate"), DateTime.UtcNow.Date);
+            result.NumberOfFeesSettled = ReqnrollTableHelper.GetIntValue(tableRow, "NumberOfFeesSettled");
+            result.ValueOfFeesSettled = ReqnrollTableHelper.GetDecimalValue(tableRow, "ValueOfFeesSettled");
+            result.IsCompleted = ReqnrollTableHelper.GetBooleanValue(tableRow, "IsCompleted");
         }
 
         return result;
     }
 
-    public static List<(EstateDetails, Guid, SetSettlementScheduleRequest)> ToSetSettlementScheduleRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Guid, SetSettlementScheduleRequest)> ToSetSettlementScheduleRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
 
         List<(EstateDetails, Guid, SetSettlementScheduleRequest)> requests = new List<(EstateDetails, Guid, SetSettlementScheduleRequest)>();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
             // Lookup the merchant id
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
             Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
-            SettlementSchedule schedule = Enum.Parse<SettlementSchedule>(SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule"));
+            SettlementSchedule schedule = Enum.Parse<SettlementSchedule>(ReqnrollTableHelper.GetStringRowValue(tableRow, "SettlementSchedule"));
 
             SetSettlementScheduleRequest setSettlementScheduleRequest = new SetSettlementScheduleRequest
                                                                         {
@@ -137,20 +137,20 @@ public static class SpecflowExtensions
         return requests;
     }
 
-    public static List<(EstateDetails, Guid, SwapMerchantDeviceRequest)> ToSwapMerchantDeviceRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList){
+    public static List<(EstateDetails, Guid, SwapMerchantDeviceRequest)> ToSwapMerchantDeviceRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList){
 
         List<(EstateDetails, Guid, SwapMerchantDeviceRequest)> requests = new List<(EstateDetails, Guid, SwapMerchantDeviceRequest)>();
-        foreach (TableRow tableRow in tableRows){
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+        foreach (DataTableRow tableRow in tableRows){
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
             // Lookup the merchant id
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
             Guid merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
 
-            String originalDeviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "OriginalDeviceIdentifier");
-            String newDeviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "NewDeviceIdentifier");
+            String originalDeviceIdentifier = ReqnrollTableHelper.GetStringRowValue(tableRow, "OriginalDeviceIdentifier");
+            String newDeviceIdentifier = ReqnrollTableHelper.GetStringRowValue(tableRow, "NewDeviceIdentifier");
 
             SwapMerchantDeviceRequest swapMerchantDeviceRequest = new SwapMerchantDeviceRequest{
                                                                                                    OriginalDeviceIdentifier = originalDeviceIdentifier,
@@ -162,13 +162,13 @@ public static class SpecflowExtensions
         return requests;
     }
 
-    public static List<String> ToAutomaticDepositRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList, String testBankSortCode, String testBankAccountNumber){
+    public static List<String> ToAutomaticDepositRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList, String testBankSortCode, String testBankAccountNumber){
         List<String> requests = new List<String>();
-        foreach (TableRow tableRow in tableRows){
-            Decimal amount = SpecflowTableHelper.GetDecimalValue(tableRow, "Amount");
-            DateTime depositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.UtcNow);
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+        foreach (DataTableRow tableRow in tableRows){
+            Decimal amount = ReqnrollTableHelper.GetDecimalValue(tableRow, "Amount");
+            DateTime depositDateTime = ReqnrollTableHelper.GetDateForDateString(ReqnrollTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.UtcNow);
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
 
             Guid estateId = Guid.NewGuid();
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
@@ -194,36 +194,36 @@ public static class SpecflowExtensions
 
         return requests;
     }
-    public static List<(CalculationType, String, Decimal?, FeeType)> ToContractTransactionFeeDetails(this TableRows tableRows){
+    public static List<(CalculationType, String, Decimal?, FeeType)> ToContractTransactionFeeDetails(this DataTableRows tableRows){
         var transactionFees = new List<(CalculationType, String, Decimal?, FeeType)>();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            CalculationType calculationType = SpecflowExtensions.GetEnumValue<CalculationType>(tableRow, "CalculationType");
-            FeeType feeType = SpecflowExtensions.GetEnumValue<FeeType>(tableRow, "FeeType");
-            String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "FeeDescription");
-            Decimal feeValue = SpecflowTableHelper.GetDecimalValue(tableRow, "Value");
+            CalculationType calculationType = ReqnrollTableHelper.GetEnumValue<CalculationType>(tableRow, "CalculationType");
+            FeeType feeType = ReqnrollTableHelper.GetEnumValue<FeeType>(tableRow, "FeeType");
+            String feeDescription = ReqnrollTableHelper.GetStringRowValue(tableRow, "FeeDescription");
+            Decimal feeValue = ReqnrollTableHelper.GetDecimalValue(tableRow, "Value");
         }
 
         return transactionFees;
     }
 
-    public static List<(String,String)> ToContractDetails(this TableRows tableRows){
+    public static List<(String,String)> ToContractDetails(this DataTableRows tableRows){
         List<(String, String)> contracts = new List<(String, String)>();
-        foreach (TableRow tableRow in tableRows){
-            String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
-            String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
+        foreach (DataTableRow tableRow in tableRows){
+            String contractDescription = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            String productName = ReqnrollTableHelper.GetStringRowValue(tableRow, "ProductName");
             contracts.Add((contractDescription,productName));
         }
 
         return contracts;
     }
 
-    public static List<String> ToSecurityUsersDetails(this TableRows tableRows)
+    public static List<String> ToSecurityUsersDetails(this DataTableRows tableRows)
     {
         List<String> results = new List<String>();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String emailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress");
+            String emailAddress = ReqnrollTableHelper.GetStringRowValue(tableRow, "EmailAddress");
             results.Add(emailAddress);
         }
 
@@ -231,60 +231,60 @@ public static class SpecflowExtensions
     }
 
 
-    public static List<String> ToOperatorDetails(this TableRows tableRows)
+    public static List<String> ToOperatorDetails(this DataTableRows tableRows)
     {
         List<String> results = new List<String>();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
             results.Add(operatorName);
         }
 
         return results;
     }
 
-    public static List<String> ToEstateDetails(this TableRows tableRows)
+    public static List<String> ToEstateDetails(this DataTableRows tableRows)
     {
         List<String> results = new List<String>();
-        foreach (TableRow tableRow in tableRows){
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+        foreach (DataTableRow tableRow in tableRows){
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             results.Add(estateName);
         }
 
         return results;
     }
 
-    public static List<CreateNewUserRequest> ToCreateNewUserRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<CreateNewUserRequest> ToCreateNewUserRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<CreateNewUserRequest> createUserRequests = new List<CreateNewUserRequest>();
-        foreach (TableRow tableRow in tableRows){
+        foreach (DataTableRow tableRow in tableRows){
             Int32 userType = tableRow.ContainsKey("MerchantName") switch{
                 true => 2,
                 _ => 1
             };
 
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
             String merchantName = null;
             Guid? merchantId = null;
             if (userType == 2){
-                merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
                 merchantId = estateDetails.GetMerchant(merchantName).MerchantId;
             }
 
             CreateNewUserRequest createUserRequest = new CreateNewUserRequest
                                                      {
                                                          EmailAddress =
-                                                             SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
+                                                             ReqnrollTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
                                                          FamilyName =
-                                                             SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
+                                                             ReqnrollTableHelper.GetStringRowValue(tableRow, "FamilyName"),
                                                          GivenName =
-                                                             SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
+                                                             ReqnrollTableHelper.GetStringRowValue(tableRow, "GivenName"),
                                                          MiddleName =
-                                                             SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
+                                                             ReqnrollTableHelper.GetStringRowValue(tableRow, "MiddleName"),
                                                          Password =
-                                                             SpecflowTableHelper.GetStringRowValue(tableRow, "Password"),
+                                                             ReqnrollTableHelper.GetStringRowValue(tableRow, "Password"),
                                                          UserType = userType,
                                                          EstateId = estateDetails.EstateId,
                                                          MerchantId = merchantId,
@@ -295,15 +295,15 @@ public static class SpecflowExtensions
         return createUserRequests;
     }
 
-    public static List<CreateEstateRequest> ToCreateEstateRequests(this TableRows tableRows)
+    public static List<CreateEstateRequest> ToCreateEstateRequests(this DataTableRows tableRows)
     {
         List<CreateEstateRequest> requests = new List<CreateEstateRequest>();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
             CreateEstateRequest createEstateRequest = new CreateEstateRequest
                                                       {
                                                           EstateId = Guid.NewGuid(),
-                                                          EstateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName")
+                                                          EstateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName")
                                                       };
             requests.Add(createEstateRequest);
         }
@@ -311,20 +311,20 @@ public static class SpecflowExtensions
         return requests;
     }
 
-    public static List<(EstateDetails estate, CreateOperatorRequest request)> ToCreateOperatorRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails estate, CreateOperatorRequest request)> ToCreateOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails estate, CreateOperatorRequest request)> requests = new();
 
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
 
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
-            Boolean requireCustomMerchantNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
-            Boolean requireCustomTerminalNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            Boolean requireCustomMerchantNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
+            Boolean requireCustomTerminalNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
 
             CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
                                                           {
@@ -338,15 +338,15 @@ public static class SpecflowExtensions
         return requests;
     }
 
-    public static List<(EstateDetails estate, CreateMerchantRequest)> ToCreateMerchantRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails estate, CreateMerchantRequest)> ToCreateMerchantRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails estate, CreateMerchantRequest)> requests = new();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
-            String settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
+            String settlementSchedule = ReqnrollTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
 
             SettlementSchedule schedule = SettlementSchedule.Immediate;
             if (String.IsNullOrEmpty(settlementSchedule) == false)
@@ -356,28 +356,28 @@ public static class SpecflowExtensions
 
             CreateMerchantRequest createMerchantRequest = new CreateMerchantRequest
                                                           {
-                                                              Name = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName"),
+                                                              Name = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName"),
                                                               Contact = new Contact
                                                                         {
                                                                             ContactName =
-                                                                                SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                                ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                       "ContactName"),
                                                                             EmailAddress =
-                                                                                SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                                ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                       "EmailAddress")
                                                                         },
                                                               Address = new Address
                                                                         {
                                                                             AddressLine1 =
-                                                                                SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                                ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                       "AddressLine1"),
                                                                             Town =
-                                                                                SpecflowTableHelper.GetStringRowValue(tableRow, "Town"),
+                                                                                ReqnrollTableHelper.GetStringRowValue(tableRow, "Town"),
                                                                             Region =
-                                                                                SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                                ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                       "Region"),
                                                                             Country =
-                                                                                SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                                ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                       "Country")
                                                                         },
                                                               SettlementSchedule = schedule
@@ -388,29 +388,29 @@ public static class SpecflowExtensions
         return requests;
     }
 
-    public static List<(EstateDetails, Guid, AssignOperatorRequest)> ToAssignOperatorRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Guid, AssignOperatorRequest)> ToAssignOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Guid, AssignOperatorRequest)> requests = new();
 
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
             // Lookup the merchant id
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
             Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
             Guid operatorId = estateDetails.GetOperatorId(operatorName);
             AssignOperatorRequest assignOperatorRequest = new AssignOperatorRequest
                                                           {
                                                               OperatorId = operatorId,
                                                               MerchantNumber =
-                                                                  SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
+                                                                  ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
                                                               TerminalNumber =
-                                                                  SpecflowTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
+                                                                  ReqnrollTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
                                                           };
 
             requests.Add((estateDetails, merchantId, assignOperatorRequest));
@@ -419,20 +419,20 @@ public static class SpecflowExtensions
         return requests;
     }
 
-    public static List<(EstateDetails, Guid, AddMerchantDeviceRequest)> ToAddMerchantDeviceRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Guid, AddMerchantDeviceRequest)> ToAddMerchantDeviceRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Guid, AddMerchantDeviceRequest)> result = new List<(EstateDetails, Guid, AddMerchantDeviceRequest)>();
 
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
             Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
-            String deviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "DeviceIdentifier");
+            String deviceIdentifier = ReqnrollTableHelper.GetStringRowValue(tableRow, "DeviceIdentifier");
 
             AddMerchantDeviceRequest addMerchantDeviceRequest = new AddMerchantDeviceRequest
                                                                 {
@@ -445,23 +445,23 @@ public static class SpecflowExtensions
         return result;
     }
 
-    public static List<(EstateDetails, CreateContractRequest)> ToCreateContractRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, CreateContractRequest)> ToCreateContractRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, CreateContractRequest)> result = new();
 
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
             Guid operatorId = estateDetails.GetOperatorId(operatorName);
 
             CreateContractRequest createContractRequest = new CreateContractRequest
                                                           {
                                                               OperatorId = operatorId,
-                                                              Description = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription")
+                                                              Description = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContractDescription")
                                                           };
             result.Add((estateDetails, createContractRequest));
         }
@@ -469,29 +469,29 @@ public static class SpecflowExtensions
         return result;
     }
 
-    public static List<(EstateDetails, Contract, AddProductToContractRequest)> ToAddProductToContractRequest(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Contract, AddProductToContractRequest)> ToAddProductToContractRequest(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Contract, AddProductToContractRequest)> result = new List<(EstateDetails, Contract, AddProductToContractRequest)>();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String contractName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            String contractName = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContractDescription");
             Contract contract = estateDetails.GetContract(contractName);
 
-            String productValue = SpecflowTableHelper.GetStringRowValue(tableRow, "Value");
+            String productValue = ReqnrollTableHelper.GetStringRowValue(tableRow, "Value");
 
-            var productTypeString = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductType");
+            var productTypeString = ReqnrollTableHelper.GetStringRowValue(tableRow, "ProductType");
             var productType = Enum.Parse<ProductType>(productTypeString, true);
             AddProductToContractRequest addProductToContractRequest = new AddProductToContractRequest
                                                                       {
                                                                           ProductName =
-                                                                              SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                              ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                     "ProductName"),
                                                                           DisplayText =
-                                                                              SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                              ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                     "DisplayText"),
                                                                           Value = null,
                                                                           ProductType = productType
@@ -508,18 +508,18 @@ public static class SpecflowExtensions
         return result;
     }
 
-    public static List<(EstateDetails, Guid, Guid)> ToAddContractToMerchantRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList){
+    public static List<(EstateDetails, Guid, Guid)> ToAddContractToMerchantRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList){
         List<(EstateDetails, Guid, Guid)> result = new List<(EstateDetails, Guid, Guid)>();
 
-        foreach (TableRow tableRow in tableRows){
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+        foreach (DataTableRow tableRow in tableRows){
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String? merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String? merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
             Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
-            String contractName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            String contractName = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContractDescription");
             Contract contract = estateDetails.GetContract(contractName);
             result.Add((estateDetails, merchantId, contract.ContractId));
         }
@@ -527,30 +527,30 @@ public static class SpecflowExtensions
         return result;
     }
 
-    public static List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest)> ToAddTransactionFeeForProductToContractRequests(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest)> ToAddTransactionFeeForProductToContractRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest)> result = new();
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String contractName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            String contractName = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContractDescription");
             Contract contract = estateDetails.GetContract(contractName);
 
-            String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
+            String productName = ReqnrollTableHelper.GetStringRowValue(tableRow, "ProductName");
             Product product = contract.GetProduct(productName);
 
-            var calculationTypeString = SpecflowTableHelper.GetStringRowValue(tableRow, "CalculationType");
+            var calculationTypeString = ReqnrollTableHelper.GetStringRowValue(tableRow, "CalculationType");
             var calculationType = Enum.Parse<CalculationType>(calculationTypeString, true);
             AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest = new AddTransactionFeeForProductToContractRequest
                                                                                                         {
                                                                                                             Value =
-                                                                                                                SpecflowTableHelper.GetDecimalValue(tableRow,
+                                                                                                                ReqnrollTableHelper.GetDecimalValue(tableRow,
                                                                                                                                                     "Value"),
                                                                                                             Description =
-                                                                                                                SpecflowTableHelper.GetStringRowValue(tableRow,
+                                                                                                                ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                                                       "FeeDescription"),
                                                                                                             CalculationType = calculationType
                                                                                                         };
@@ -560,24 +560,24 @@ public static class SpecflowExtensions
         return result;
     }
 
-    public static List<(EstateDetails, Guid, MakeMerchantDepositRequest)> ToMakeMerchantDepositRequest(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Guid, MakeMerchantDepositRequest)> ToMakeMerchantDepositRequest(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Guid, MakeMerchantDepositRequest)> result = new List<(EstateDetails, Guid, MakeMerchantDepositRequest)>();
 
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
             Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
             MakeMerchantDepositRequest makeMerchantDepositRequest = new MakeMerchantDepositRequest
                                                                     {
-                                                                        DepositDateTime = SpecflowTableHelper.GetDateForDateString(SpecflowTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.UtcNow),
-                                                                        Reference = SpecflowTableHelper.GetStringRowValue(tableRow, "Reference"),
-                                                                        Amount = SpecflowTableHelper.GetDecimalValue(tableRow, "Amount")
+                                                                        DepositDateTime = ReqnrollTableHelper.GetDateForDateString(ReqnrollTableHelper.GetStringRowValue(tableRow, "DateTime"), DateTime.UtcNow),
+                                                                        Reference = ReqnrollTableHelper.GetStringRowValue(tableRow, "Reference"),
+                                                                        Amount = ReqnrollTableHelper.GetDecimalValue(tableRow, "Amount")
                                                                     };
 
             result.Add((estateDetails, merchantId, makeMerchantDepositRequest));
@@ -586,28 +586,28 @@ public static class SpecflowExtensions
         return result;
     }
 
-    public static List<(EstateDetails, Guid, MakeMerchantWithdrawalRequest)> ToMakeMerchantWithdrawalRequest(this TableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Guid, MakeMerchantWithdrawalRequest)> ToMakeMerchantWithdrawalRequest(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Guid, MakeMerchantWithdrawalRequest)> result = new List<(EstateDetails, Guid, MakeMerchantWithdrawalRequest)>();
 
-        foreach (TableRow tableRow in tableRows)
+        foreach (DataTableRow tableRow in tableRows)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName");
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
             Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
             MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest = new MakeMerchantWithdrawalRequest
                                                                           {
                                                                               WithdrawalDateTime =
-                                                                                  SpecflowExtensions.GetDateTimeForDateString(SpecflowTableHelper
-                                                                                                                                  .GetStringRowValue(tableRow,
-                                                                                                                                                     "DateTime"),
-                                                                                                                              DateTime.Now),
+                                                                                  ReqnrollTableHelper.GetDateForDateString(ReqnrollTableHelper
+                                                                                                                                   .GetStringRowValue(tableRow,
+                                                                                                                                                      "DateTime"),
+                                                                                                                               DateTime.Now),
                                                                               Amount =
-                                                                                  SpecflowTableHelper.GetDecimalValue(tableRow,
+                                                                                  ReqnrollTableHelper.GetDecimalValue(tableRow,
                                                                                                                       "Amount")
                                                                           };
 
@@ -615,27 +615,5 @@ public static class SpecflowExtensions
         }
 
         return result;
-    }
-
-    public static DateTime GetDateTimeForDateString(String dateString,
-                                                    DateTime today)
-    {
-        switch (dateString.ToUpper())
-        {
-            case "TODAY":
-                return today;
-            case "YESTERDAY":
-                return today.AddDays(-1);
-            case "LASTWEEK":
-                return today.AddDays(-7);
-            case "LASTMONTH":
-                return today.AddMonths(-1);
-            case "LASTYEAR":
-                return today.AddYears(-1);
-            case "TOMORROW":
-                return today.AddDays(1);
-            default:
-                return DateTime.Parse(dateString);
-        }
     }
 }

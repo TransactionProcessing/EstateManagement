@@ -116,6 +116,28 @@
             this.Trace($"HostTraceFolder is [{this.HostTraceFolder}]");
         }
 
+        public override async Task CreateSubscriptions(){
+            List<(String streamName, String groupName, Int32 maxRetries)> subscriptions = new();
+            subscriptions.AddRange(MessagingService.IntegrationTesting.Helpers.SubscriptionsHelper.GetSubscriptions());
+            subscriptions.AddRange(EstateManagement.IntegrationTesting.Helpers.SubscriptionsHelper.GetSubscriptions());
+
+            // TODO: get from the transacition processor nuget
+            subscriptions.Add(("$ce-EstateAggregate","Transaction Processor - Ordered",2));
+            subscriptions.Add(("$ce-MerchantAggregate", "Transaction Processor - Ordered", 2));
+            subscriptions.Add(("$ce-MerchantDepositListAggregate", "Transaction Processor - Ordered", 2));
+            subscriptions.Add(("$ce-SettlementAggregate", "Transaction Processor", 0));
+            subscriptions.Add(("$ce-TransactionAggregate", "Transaction Processor", 0));
+            subscriptions.Add(("$ce-TransactionAggregate", "Transaction Processor - Ordered", 2));
+            subscriptions.Add(("$ce-VoucherAggregate", "Transaction Processor", 0));
+            subscriptions.Add(("$ce-VoucherAggregate", "Transaction Processor - Ordered", 2));
+
+            foreach ((String streamName, String groupName, Int32 maxRetries) subscription in subscriptions){
+                var x = subscription;
+                x.maxRetries = 2;
+                await this.CreatePersistentSubscription(x);
+            }
+        }
+
         public override async Task StartContainersForScenarioRun(String scenarioName, DockerServices dockerServices) {
 
             await base.StartContainersForScenarioRun(scenarioName, dockerServices);
@@ -159,11 +181,11 @@
         /// <summary>
         /// Stops the containers for scenario run.
         /// </summary>
-        public override async Task StopContainersForScenarioRun()
+        public override async Task StopContainersForScenarioRun(DockerServices sharedDockerServices)
         {
             await this.RemoveEstateReadModel().ConfigureAwait(false);
 
-            await base.StopContainersForScenarioRun();
+            await base.StopContainersForScenarioRun(sharedDockerServices);
         }
         
         /// <summary>
