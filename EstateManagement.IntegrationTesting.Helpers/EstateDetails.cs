@@ -101,6 +101,11 @@
             return this.Merchants.SingleOrDefault(m => m.MerchantName == merchantName);
         }
 
+        public List<MerchantResponse> GetMerchants()
+        {
+            return this.Merchants;
+        }
+
         public Guid GetOperatorId(String operatorName)
         {
             return this.Operators.Single(o => o.Key == operatorName).Value;
