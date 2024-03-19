@@ -44,6 +44,7 @@
     using SecurityUser = Models.SecurityUser;
     using TransactionFeeModel = Models.Contract.TransactionFee;
     using Transaction = Models.MerchantStatement.Transaction;
+    using TransactionProcessor.Float.DomainEvents;
 
     public class TestData
     {
@@ -312,7 +313,7 @@
             return merchantAggregate;
         }
 
-        public static Merchant MerchantModelWithAddressesContactsDevicesAndOperators(SettlementSchedule settlementSchedule = SettlementSchedule.Immediate) => new Merchant
+        public static Merchant MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts(SettlementSchedule settlementSchedule = SettlementSchedule.Immediate) => new Merchant
                                                                        {
                                                                            EstateId = TestData.EstateId,
                                                                            MerchantId = TestData.MerchantId,
@@ -356,7 +357,15 @@
                                                                                                MerchantNumber = TestData.OperatorMerchantNumber,
                                                                                                OperatorId = TestData.OperatorId
                                                                                            }
-                                                                                       }
+                                                                                       },
+                                                                           Contracts = new List<Models.Merchant.Contract>(){
+                                                                                                                               new Models.Merchant.Contract{
+                                                                                                                                                               ContractId = TestData.ContractId,
+                                                                                                                                                               ContractProducts = new List<Guid>{
+                                                                                                                                                                                                    Guid.Parse("8EF716B9-422D-4FC6-B5A7-22FC4BABDD97")
+                                                                                                                                                                                                }
+                                                                                                                                                           }
+                                                                                                                           }
                                                                        };
 
         public static Merchant MerchantModelWithNullAddresses = new Merchant
@@ -1730,6 +1739,9 @@
 
         public static DateTime FileReceivedDateTime = new DateTime(2021, 12, 16, 1,2,3);
 
+        public static DateTime FloatCreatedDateTime = new DateTime(2024,3,19);
+        public static DateTime FloatCreditPurchsedDateTime = new DateTime(2024, 3, 19);
+
         public static MerchantBalanceResponse MerchantBalance =>
             new MerchantBalanceResponse() {
                                               MerchantId = TestData.MerchantId,
@@ -1847,6 +1859,50 @@
             new SettlementScheduleChangedEvent(TestData.MerchantId, TestData.EstateId, (Int32)TestData.SettlementSchedule, TestData.NextSettlementDate);
 
         public static AddMerchantContractRequest AddMerchantContractRequest => AddMerchantContractRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.ContactId);
+
+        public static FloatCreatedForContractProductEvent FloatCreatedForContractProductEvent => new FloatCreatedForContractProductEvent(TestData.FloatId, TestData.EstateId, TestData.ContractId, TestData.ProductId, TestData.FloatCreatedDateTime);
+
+        public static Guid FloatId = Guid.Parse("470EC52A-7522-4D5C-A942-FC8C65C1E0B2");
+
+        public static Decimal FloatCreditAmount = 100m;
+
+        public static Decimal FloatCreditCostPrice = 90m;
+
+        public static DateTime ProcessingStartedDateTime = new DateTime(2024, 3, 19);
+
+        public static ContractAddedToMerchantEvent ContractAddedToMerchantEvent = new ContractAddedToMerchantEvent(TestData.MerchantId,
+                                                                                                                   TestData.EstateId,
+                                                                                                                   TestData.ContractId);
+
+        public static FloatCreditPurchasedEvent FloatCreditPurchasedEvent => new FloatCreditPurchasedEvent(TestData.FloatId, TestData.EstateId, TestData.FloatCreditPurchsedDateTime, TestData.FloatCreditAmount, TestData.FloatCreditCostPrice);
+
+        public static FloatDecreasedByTransactionEvent FloatDecreasedByTransactionEvent => new FloatDecreasedByTransactionEvent(TestData.FloatId, TestData.EstateId, TestData.TransactionId, TestData.TransactionAmount.GetValueOrDefault());
+
+        public static StatementCreatedEvent StatementCreatedEvent => new StatementCreatedEvent(TestData.MerchantStatementId, TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
+
+        public static TransactionAddedToStatementEvent TransactionAddedToStatementEvent => new TransactionAddedToStatementEvent(TestData.MerchantStatementId,
+                                                                                                                               Guid.NewGuid(),
+                                                                                                                               TestData.EstateId,
+                                                                                                                               TestData.MerchantId,
+                                                                                                                               TestData.TransactionId,
+                                                                                                                               TestData.TransactionDateTime,
+                                                                                                                               TestData.TransactionAmount.GetValueOrDefault());
+
+        public static SettledFeeAddedToStatementEvent SettledFeeAddedToStatementEvent => new SettledFeeAddedToStatementEvent(TestData.MerchantStatementId,
+                                                                                                                            Guid.NewGuid(),
+                                                                                                                            TestData.EstateId,
+                                                                                                                            TestData.MerchantId,
+                                                                                                                            TestData.TransactionFeeId,
+                                                                                                                            TestData.TransactionId,
+                                                                                                                            TestData.SettledFeeDateTime1,
+                                                                                                                            TestData.SettledFeeAmount1);
+
+        public static SettlementProcessingStartedEvent SettlementProcessingStartedEvent => new SettlementProcessingStartedEvent(TestData.SettlementId,
+                                                                                                                                TestData.EstateId,
+                                                                                                                                TestData.MerchantId,
+                                                                                                                                TestData.ProcessingStartedDateTime);
+
+        
     }
 
 

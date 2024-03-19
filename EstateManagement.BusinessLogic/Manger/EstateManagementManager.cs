@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using ContractAggregate;
@@ -129,7 +130,24 @@
                                                                              Guid productId,
                                                                              CancellationToken cancellationToken)
         {
-            return await this.EstateManagementRepository.GetTransactionFeesForProduct(estateId, merchantId, contractId, productId, cancellationToken);
+            // TODO: this will need updated to handle merchant specific fees when that is available
+
+            ContractAggregate contract = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+
+            if (contract.IsCreated == false){
+                throw new NotFoundException($"No contract found with Id [{contractId}]");
+            }
+
+            List<Product> products = contract.GetProducts();
+
+            Product product = products.SingleOrDefault(p => p.ProductId == productId);
+
+            if (product == null){
+                throw new NotFoundException($"No product found with Id [{productId}] on contract Id [{contractId}]");
+            }
+
+            return product.TransactionFees;
+
         }
 
         public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){

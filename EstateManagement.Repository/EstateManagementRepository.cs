@@ -384,28 +384,7 @@
 
             return result;
         }
-
-        public async Task<List<TransactionFeeModel>> GetTransactionFeesForProduct(Guid estateId,
-                                                                                  Guid merchantId,
-                                                                                  Guid contractId,
-                                                                                  Guid productId,
-                                                                                  CancellationToken cancellationToken){
-            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
-
-            Contract contract = await context.Contracts.SingleOrDefaultAsync(c => c.ContractId == contractId, cancellationToken);
-            ContractProduct contractProduct = await context.ContractProducts.Where(c => c.ContractReportingId == contract.ContractReportingId &&
-                                                                                        c.ProductId == productId).SingleOrDefaultAsync(cancellationToken);
-            List<ContractProductTransactionFee> transactionFees = await context
-                                                                        .ContractProductTransactionFees
-                                                                        .Where(c => c.ContractProductReportingId == contractProduct.ContractProductReportingId
-                                                                                    && c.IsEnabled == true)
-                                                                        .ToListAsync(cancellationToken);
-
-            List<TransactionFeeModel> transactionFeeModels = this.ModelFactory.ConvertFrom(transactionFees);
-
-            return transactionFeeModels;
-        }
-
+        
         #endregion
 
         #region Others
