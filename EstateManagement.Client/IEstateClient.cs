@@ -88,6 +88,10 @@
                                        Guid estateId,
                                        CancellationToken cancellationToken);
 
+        Task<List<EstateResponse>> GetEstates(String accessToken,
+                                       Guid estateId,
+                                       CancellationToken cancellationToken);
+
         Task<MerchantResponse> GetMerchant(String accessToken,
                                            Guid estateId,
                                            Guid merchantId,

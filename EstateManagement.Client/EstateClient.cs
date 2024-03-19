@@ -636,6 +636,39 @@
             return response;
         }
 
+        public async Task<List<EstateResponse>> GetEstates(String accessToken,
+                                                    Guid estateId,
+                                                    CancellationToken cancellationToken)
+        {
+            List<EstateResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/all");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<EstateResponse>>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting all estates for estate Id {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         public async Task<MerchantResponse> GetMerchant(String accessToken,
                                                         Guid estateId,
                                                         Guid merchantId,

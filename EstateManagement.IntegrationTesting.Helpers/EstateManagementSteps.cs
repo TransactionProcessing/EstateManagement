@@ -125,9 +125,11 @@ public class EstateManagementSteps{
         foreach (CreateEstateRequest createEstateRequest in requests){
             EstateResponse estate = null;
             await Retry.For(async () => {
-                                estate = await this.EstateClient
-                                                   .GetEstate(accessToken, createEstateRequest.EstateId, CancellationToken.None).ConfigureAwait(false);
-                                estate.ShouldNotBeNull();
+                                List<EstateResponse>? estates = await this.EstateClient
+                                                                          .GetEstates(accessToken, createEstateRequest.EstateId, CancellationToken.None).ConfigureAwait(false);
+                                estates.ShouldNotBeNull();
+                                estates.Count.ShouldBe(1);
+                                estate = estates.Single();
                             },
                             retryFor:TimeSpan.FromSeconds(180)).ConfigureAwait(false);
 

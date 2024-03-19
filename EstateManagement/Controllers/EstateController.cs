@@ -1,7 +1,9 @@
 ﻿namespace EstateManagement.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
@@ -131,6 +133,40 @@
             }
 
             return this.Ok(ModelFactory.ConvertFrom(estate));
+        }
+
+        [HttpGet]
+        [Route("{estateId}/all")]
+        [SwaggerResponse(200, "OK", typeof(List<EstateResponse>))]
+        [SwaggerResponseExample(200, typeof(EstatesResponseExample))]
+        public async Task<IActionResult> GetEstates([FromRoute] Guid estateId,
+                                                   CancellationToken cancellationToken)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+
+            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return this.Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return this.Forbid();
+            }
+
+            List<Estate> estates = await this.EstateManagementManager.GetEstates(estateId, cancellationToken);
+
+            if (estates.Any() == false)
+            {
+                throw new NotFoundException($"Estate not found with estate Id {estateId}");
+            }
+
+            var estate = estates.Single();
+
+            EstateResponse estateReponse = ModelFactory.ConvertFrom(estate);
+            return this.Ok(new List<EstateResponse>() {estateReponse});
         }
 
         /// <summary>
