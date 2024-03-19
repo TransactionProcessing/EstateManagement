@@ -90,8 +90,17 @@
             }
 
             Estate estateModel = estateAggregate.GetEstate();
-            
+
             return estateModel;
+        }
+
+        public async Task<List<Estate>> GetEstates(Guid estateId,
+                                                   CancellationToken cancellationToken){
+            Estate estateModel = await this.EstateManagementRepository.GetEstate(estateId, cancellationToken);
+
+            return new List<Estate>(){
+                                         estateModel
+                                     };
         }
 
         public async Task<Merchant> GetMerchant(Guid estateId,
