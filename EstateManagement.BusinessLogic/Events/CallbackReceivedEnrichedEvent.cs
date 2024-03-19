@@ -1,10 +1,12 @@
 ﻿namespace EstateManagement.BusinessLogic.Events
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Google.Protobuf.WellKnownTypes;
     using Newtonsoft.Json;
     using Shared.DomainDrivenDesign.EventSourcing;
 
+    [ExcludeFromCodeCoverage]
     public record CallbackReceivedEnrichedEvent : DomainEvent
     {
         #region Constructors

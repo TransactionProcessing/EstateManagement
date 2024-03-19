@@ -2,6 +2,7 @@
 
 using System.Threading;
 using BusinessLogic.EventHandling;
+using EstateManagement.Merchant.DomainEvents;
 using MediatR;
 using Moq;
 using Repository;
@@ -61,6 +62,14 @@ public class SettlementDomainEventHandlerTests
     {
         SettlementCompletedEvent domainEvent = TestData.SettlementCompletedEvent;
             
+        Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+    }
+
+    [Fact]
+    public void SettlementDomainEventHandler_SettlementProcessingStartedEvent_EventIsHandled()
+    {
+        SettlementProcessingStartedEvent domainEvent = TestData.SettlementProcessingStartedEvent;
+
         Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
     }
 }

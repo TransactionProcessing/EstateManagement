@@ -20,6 +20,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
     using Shared.Logger;
     using Shouldly;
     using Testing;
+    using TransactionProcessor.Transaction.DomainEvents;
     using Xunit;
 
     public class MerchantDomainEventHandlerTests
@@ -49,7 +50,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
         public async Task MerchantDomainEventHandler_Handle_CallbackReceivedEnrichedEvent_EventIsHandled()
         {
             EstateManagementRepository.Setup(e => e.GetMerchantFromReference(It.IsAny<Guid>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
-                                      .ReturnsAsync(TestData.MerchantModelWithAddressesContactsDevicesAndOperators());
+                                      .ReturnsAsync(TestData.MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts());
             
             CallbackReceivedEnrichedEvent domainEvent = TestData.CallbackReceivedEnrichedEvent;
 
@@ -135,6 +136,22 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
             StatementGeneratedEvent statementGeneratedEvent = TestData.StatementGeneratedEvent;
 
             Should.NotThrow(async () => { await this.DomainEventHandler.Handle(statementGeneratedEvent, CancellationToken.None); });
+        }
+
+        [Fact]
+        public void SettlementDomainEventHandler_TransactionHasBeenCompletedEvent_EventIsHandled()
+        {
+            TransactionHasBeenCompletedEvent domainEvent = TestData.TransactionHasBeenCompletedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+
+        [Fact]
+        public void SettlementDomainEventHandler_ContractAddedToMerchantEvent_EventIsHandled()
+        {
+            ContractAddedToMerchantEvent domainEvent = TestData.ContractAddedToMerchantEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
         }
 
         #endregion

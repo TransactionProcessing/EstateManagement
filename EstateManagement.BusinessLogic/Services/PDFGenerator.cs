@@ -1,6 +1,7 @@
 ﻿namespace EstateManagement.BusinessLogic.Services
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.IO.Abstractions;
     using System.Reflection;
@@ -15,6 +16,7 @@
     /// 
     /// </summary>
     /// <seealso cref="EstateManagement.BusinessLogic.Services.IPDFGenerator" />
+    [ExcludeFromCodeCoverage]
     public class PDFGenerator : IPDFGenerator
     {
         #region Fields

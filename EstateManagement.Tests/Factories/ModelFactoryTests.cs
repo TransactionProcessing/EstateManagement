@@ -87,7 +87,7 @@ namespace EstateManagement.Tests.Factories{
         [InlineData(SettlementSchedule.Weekly)]
         [InlineData(SettlementSchedule.Monthly)]
         public void ModelFactory_Merchant_IsConverted(SettlementSchedule settlementSchedule){
-            Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators(settlementSchedule);
+            Merchant merchantModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts(settlementSchedule);
 
             MerchantResponse merchantResponse = ModelFactory.ConvertFrom(merchantModel);
 
@@ -272,7 +272,7 @@ namespace EstateManagement.Tests.Factories{
         [Fact]
         public void ModelFactory_MerchantList_IsConverted(){
             List<Merchant> merchantModelList = new List<Merchant>{
-                                                                     TestData.MerchantModelWithAddressesContactsDevicesAndOperators()
+                                                                     TestData.MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts()
                                                                  };
 
             List<MerchantResponse> merchantResponseList = ModelFactory.ConvertFrom(merchantModelList);

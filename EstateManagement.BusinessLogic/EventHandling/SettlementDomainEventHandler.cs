@@ -93,16 +93,7 @@
         {
             await this.EstateReportingRepository.MarkSettlementAsCompleted(domainEvent, cancellationToken);
         }
-        
-        public static Guid GetSettlementId(DateTime dt)
-        {
-            Byte[] bytes = BitConverter.GetBytes(dt.Ticks);
-
-            Array.Resize(ref bytes, 16);
-
-            return new Guid(bytes);
-        }
-
+       
         #endregion
     }
 }

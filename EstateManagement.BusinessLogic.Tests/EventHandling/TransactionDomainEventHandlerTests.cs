@@ -186,5 +186,13 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
 
             Should.NotThrow(async () => { await this.DomainEventHandler.Handle(voucherIssuedEvent, CancellationToken.None); });
         }
+
+        [Fact]
+        public void TransactionDomainEventHandler_TransactionSourceAddedToTransactionEvent_EventIsHandled()
+        {
+            TransactionSourceAddedToTransactionEvent transactionSourceAddedToTransactionEvent = TestData.TransactionSourceAddedToTransactionEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(transactionSourceAddedToTransactionEvent, CancellationToken.None); });
+        }
     }
 }

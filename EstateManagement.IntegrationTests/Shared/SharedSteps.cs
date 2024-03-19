@@ -52,7 +52,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [Given(@"I have created the following estates")]
         [When(@"I create the following estates")]
-        public async Task WhenICreateTheFollowingEstates(Table table) {
+        public async Task WhenICreateTheFollowingEstates(DataTable table) {
             List<CreateEstateRequest> requests = table.Rows.ToCreateEstateRequests();
             
             List<EstateResponse> verifiedEstates = await this.EstateManagementSteps.WhenICreateTheFollowingEstates(this.TestingContext.AccessToken, requests);
@@ -65,7 +65,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [Given(@"I have created the following operators")]
         [When(@"I create the following operators")]
-        public async Task WhenICreateTheFollowingOperators(Table table) {
+        public async Task WhenICreateTheFollowingOperators(DataTable table) {
             List<(EstateDetails estate, CreateOperatorRequest request)> requests = table.Rows.ToCreateOperatorRequests(this.TestingContext.Estates);
 
             List<(Guid, EstateOperatorResponse)> results = await this.EstateManagementSteps.WhenICreateTheFollowingOperators(this.TestingContext.AccessToken, requests);
@@ -78,7 +78,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [Given("I create the following merchants")]
         [When(@"I create the following merchants")]
-        public async Task WhenICreateTheFollowingMerchants(Table table) {
+        public async Task WhenICreateTheFollowingMerchants(DataTable table) {
             List<(EstateDetails estate, CreateMerchantRequest)> requests = table.Rows.ToCreateMerchantRequests(this.TestingContext.Estates);
 
             List<MerchantResponse> verifiedMerchants = await this.EstateManagementSteps.WhenICreateTheFollowingMerchants(this.TestingContext.AccessToken, requests);
@@ -93,7 +93,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [Given(@"I have assigned the following operator to the merchants")]
         [When(@"I assign the following operator to the merchants")]
-        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(Table table) {
+        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(DataTable table) {
             List<(EstateDetails, Guid, AssignOperatorRequest)> requests = table.Rows.ToAssignOperatorRequests(this.TestingContext.Estates);
 
             List<(EstateDetails, MerchantOperatorResponse)> results = await this.EstateManagementSteps.WhenIAssignTheFollowingOperatorToTheMerchants(this.TestingContext.AccessToken, requests);
@@ -106,20 +106,20 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [When(@"I create the following security users")]
         [Given("I have created the following security users")]
-        public async Task WhenICreateTheFollowingSecurityUsers(Table table){
+        public async Task WhenICreateTheFollowingSecurityUsers(DataTable table){
             List<CreateNewUserRequest> createUserRequests = table.Rows.ToCreateNewUserRequests(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenICreateTheFollowingSecurityUsers(this.TestingContext.AccessToken, createUserRequests, this.TestingContext.Estates);
         }
 
         [Given(@"the following security roles exist")]
-        public async Task GivenTheFollowingSecurityRolesExist(Table table) {
+        public async Task GivenTheFollowingSecurityRolesExist(DataTable table) {
             List<CreateRoleRequest> requests = table.Rows.ToCreateRoleRequests();
             List<(String, Guid)> responses = await this.SecurityServiceSteps.GivenICreateTheFollowingRoles(requests, CancellationToken.None);
         }
 
         [Given(@"I make the following manual merchant deposits")]
         [When(@"I make the following manual merchant deposits")]
-        public async Task WhenIMakeTheFollowingManualMerchantDeposits(Table table){
+        public async Task WhenIMakeTheFollowingManualMerchantDeposits(DataTable table){
             List<(EstateDetails, Guid, MakeMerchantDepositRequest)> requests = table.Rows.ToMakeMerchantDepositRequest(this.TestingContext.Estates);
 
             foreach ((EstateDetails, Guid, MakeMerchantDepositRequest) request in requests){
@@ -145,31 +145,31 @@ namespace EstateManagement.IntegrationTests.Shared
         }
 
         [When(@"I make the following merchant withdrawals")]
-        public async Task WhenIMakeTheFollowingMerchantWithdrawals(Table table){
+        public async Task WhenIMakeTheFollowingMerchantWithdrawals(DataTable table){
             List<(EstateDetails, Guid, MakeMerchantWithdrawalRequest)> requests = table.Rows.ToMakeMerchantWithdrawalRequest(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIMakeTheFollowingMerchantWithdrawals(this.TestingContext.AccessToken, requests);
         }
 
         [Given(@"I create the following api scopes")]
-        public async Task GivenICreateTheFollowingApiScopes(Table table) {
+        public async Task GivenICreateTheFollowingApiScopes(DataTable table) {
             List<CreateApiScopeRequest> requests = table.Rows.ToCreateApiScopeRequests();
             await this.SecurityServiceSteps.GivenICreateTheFollowingApiScopes(requests);
         }
         
         [Given(@"the following api resources exist")]
-        public async Task GivenTheFollowingApiResourcesExist(Table table) {
+        public async Task GivenTheFollowingApiResourcesExist(DataTable table) {
             List<CreateApiResourceRequest> requests = table.Rows.ToCreateApiResourceRequests();
             await this.SecurityServiceSteps.GivenTheFollowingApiResourcesExist(requests);
         }
 
         [Given(@"I create the following identity resources")]
-        public async Task GivenICreateTheFollowingIdentityResources(Table table) {
+        public async Task GivenICreateTheFollowingIdentityResources(DataTable table) {
             List<CreateIdentityResourceRequest> requests = table.Rows.ToCreateIdentityResourceRequest();
             List<CreateIdentityResourceResponse> responses = await this.SecurityServiceSteps.GivenICreateTheFollowingIdentityResources(requests, CancellationToken.None);
         }
         
         [Given(@"the following clients exist")]
-        public async Task GivenTheFollowingClientsExist(Table table) {
+        public async Task GivenTheFollowingClientsExist(DataTable table) {
             List<CreateClientRequest> requests = table.Rows.ToCreateClientRequests();
             List<(String clientId, String secret, List<String> allowedGrantTypes)> clients = await this.SecurityServiceSteps.GivenTheFollowingClientsExist(requests);
             foreach ((String clientId, String secret, List<String> allowedGrantTypes) client in clients)
@@ -180,7 +180,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [Given(@"I have a token to access the estate management resource")]
         [Given(@"I have a token to access the estate management and transaction processor resources")]
-        public async Task GivenIHaveATokenToAccessTheEstateManagementResource(Table table) {
+        public async Task GivenIHaveATokenToAccessTheEstateManagementResource(DataTable table) {
             DataTableRow firstRow = table.Rows.First();
             String clientId = ReqnrollTableHelper.GetStringRowValue(firstRow, "ClientId");
             ClientDetails clientDetails = this.TestingContext.GetClientDetails(clientId);
@@ -205,7 +205,7 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [When(@"I get the estate ""(.*)"" the estate details are returned as follows")]
         public async Task WhenIGetTheEstateTheEstateDetailsAreReturnedAsFollows(String estateName,
-                                                                                Table table){
+                                                                                DataTable table){
             List<String> estateDetails = table.Rows.ToEstateDetails();
             
             await this.EstateManagementSteps.WhenIGetTheEstateTheEstateDetailsAreReturnedAsFollows(this.TestingContext.AccessToken, estateName, this.TestingContext.Estates, estateDetails);
@@ -213,14 +213,14 @@ namespace EstateManagement.IntegrationTests.Shared
 
         [When(@"I get the estate ""(.*)"" the estate operator details are returned as follows")]
         public async Task WhenIGetTheEstateTheEstateOperatorDetailsAreReturnedAsFollows(String estateName,
-                                                                                        Table table){
+                                                                                        DataTable table){
             List<String> operators = table.Rows.ToOperatorDetails();
             await this.EstateManagementSteps.WhenIGetTheEstateTheEstateOperatorDetailsAreReturnedAsFollows(this.TestingContext.AccessToken, estateName, this.TestingContext.Estates, operators);
         }
 
         [When(@"I get the estate ""(.*)"" the estate security user details are returned as follows")]
         public async Task WhenIGetTheEstateTheEstateSecurityUserDetailsAreReturnedAsFollows(String estateName,
-                                                                                            Table table) {
+                                                                                            DataTable table) {
 
             List<String> securityUsers = table.Rows.ToSecurityUsersDetails();
             await this.EstateManagementSteps.WhenIGetTheEstateTheEstateSecurityUserDetailsAreReturnedAsFollows(this.TestingContext.AccessToken, estateName, this.TestingContext.Estates, securityUsers);
@@ -228,7 +228,7 @@ namespace EstateManagement.IntegrationTests.Shared
         
         [Given(@"I have assigned the following devices to the merchants")]
         [When(@"I add the following devices to the merchant")]
-        public async Task WhenIAddTheFollowingDevicesToTheMerchant(Table table) {
+        public async Task WhenIAddTheFollowingDevicesToTheMerchant(DataTable table) {
             List<(EstateDetails, Guid, AddMerchantDeviceRequest)> requests = table.Rows.ToAddMerchantDeviceRequests(this.TestingContext.Estates);
 
             List<(EstateDetails, MerchantResponse, String)> results = await this.EstateManagementSteps.GivenIHaveAssignedTheFollowingDevicesToTheMerchants(this.TestingContext.AccessToken, requests);
@@ -239,7 +239,7 @@ namespace EstateManagement.IntegrationTests.Shared
         }
 
         [When(@"I swap the merchant device the device is swapped")]
-        public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(Table table) {
+        public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(DataTable table) {
             var requests = table.Rows.ToSwapMerchantDeviceRequests(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenISwapTheMerchantDeviceTheDeviceIsSwapped(this.TestingContext.AccessToken, requests);
         }
@@ -254,25 +254,25 @@ namespace EstateManagement.IntegrationTests.Shared
         }
 
         [Given(@"I create a contract with the following values")]
-        public async Task GivenICreateAContractWithTheFollowingValues(Table table) {
+        public async Task GivenICreateAContractWithTheFollowingValues(DataTable table) {
             List<(EstateDetails, CreateContractRequest)> requests = table.Rows.ToCreateContractRequests(this.TestingContext.Estates);
             List<ContractResponse> responses = await this.EstateManagementSteps.GivenICreateAContractWithTheFollowingValues(this.TestingContext.AccessToken, requests);
         }
 
         [When(@"I create the following Products")]
-        public async Task WhenICreateTheFollowingProducts(Table table) {
+        public async Task WhenICreateTheFollowingProducts(DataTable table) {
             List<(EstateDetails, Contract, AddProductToContractRequest)> requests = table.Rows.ToAddProductToContractRequest(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenICreateTheFollowingProducts(this.TestingContext.AccessToken, requests);
         }
 
         [When(@"I add the following Transaction Fees")]
-        public async Task WhenIAddTheFollowingTransactionFees(Table table) {
+        public async Task WhenIAddTheFollowingTransactionFees(DataTable table) {
             List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest)> requests = table.Rows.ToAddTransactionFeeForProductToContractRequests(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIAddTheFollowingTransactionFees(this.TestingContext.AccessToken, requests);
         }
 
         [When(@"I add the following contracts to the following merchants")]
-        public async Task WhenIAddTheFollowingContractsToTheFollowingMerchants(Table table)
+        public async Task WhenIAddTheFollowingContractsToTheFollowingMerchants(DataTable table)
         {
             List<(EstateDetails, Guid, Guid)> requests = table.Rows.ToAddContractToMerchantRequests(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIAddTheFollowingContractsToTheFollowingMerchants(this.TestingContext.AccessToken, requests);
@@ -280,7 +280,7 @@ namespace EstateManagement.IntegrationTests.Shared
         
         [Then(@"I get the Contracts for '(.*)' the following contract details are returned")]
         public async Task ThenIGetTheContractsForTheFollowingContractDetailsAreReturned(String estateName,
-                                                                                        Table table){
+                                                                                        DataTable table){
             List<(String, String)> contractDetails = table.Rows.ToContractDetails();
             await this.EstateManagementSteps.ThenIGetTheContractsForTheFollowingContractDetailsAreReturned(this.TestingContext.AccessToken, estateName, this.TestingContext.Estates, contractDetails);
         }
@@ -288,7 +288,7 @@ namespace EstateManagement.IntegrationTests.Shared
         [Then(@"I get the Merchant Contracts for '(.*)' for '(.*)' the following contract details are returned")]
         public async Task ThenIGetTheMerchantContractsForForTheFollowingContractDetailsAreReturned(String merchantName,
                                                                                                    String estateName,
-                                                                                                   Table table){
+                                                                                                   DataTable table){
             List<(String, String)> contractDetails = table.Rows.ToContractDetails();
             await this.EstateManagementSteps.ThenIGetTheMerchantContractsForForTheFollowingContractDetailsAreReturned(this.TestingContext.AccessToken, estateName, merchantName, this.TestingContext.Estates, contractDetails);
         }
@@ -297,7 +297,7 @@ namespace EstateManagement.IntegrationTests.Shared
         public async Task ThenIGetTheTransactionFeesForOnTheContractForTheFollowingFeesAreReturned(String productName,
                                                                                                    String contractName,
                                                                                                    String estateName,
-                                                                                                   Table table) {
+                                                                                                   DataTable table) {
            List<(CalculationType, String, Decimal?, FeeType)> transactionFees = table.Rows.ToContractTransactionFeeDetails();
            await this.EstateManagementSteps.ThenIGetTheTransactionFeesForOnTheContractForTheFollowingFeesAreReturned(this.TestingContext.AccessToken,
                                                                                                                      estateName,
@@ -320,20 +320,20 @@ namespace EstateManagement.IntegrationTests.Shared
         }
 
         [When(@"I set the merchants settlement schedule")]
-        public async Task WhenISetTheMerchantsSettlementSchedule(Table table){
+        public async Task WhenISetTheMerchantsSettlementSchedule(DataTable table){
             List<(EstateDetails, Guid, SetSettlementScheduleRequest)> requests = table.Rows.ToSetSettlementScheduleRequests(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenISetTheMerchantsSettlementSchedule(this.TestingContext.AccessToken, requests);
         }
 
         [When(@"I make the following automatic merchant deposits")]
-        public async Task WhenIMakeTheFollowingAutomaticMerchantDeposits(Table table){
+        public async Task WhenIMakeTheFollowingAutomaticMerchantDeposits(DataTable table){
             var results = table.Rows.ToAutomaticDepositRequests(this.TestingContext.Estates, DockerHelper.TestBankSortCode, DockerHelper.TestBankAccountNumber);
             await this.EstateManagementSteps.WhenIMakeTheFollowingAutomaticMerchantDeposits(results);
         }
         
         [When(@"I make the following manual merchant deposits the deposit is rejected")]
         [When(@"I make the following automatic merchant deposits the deposit is rejected")]
-        public async Task WhenIMakeTheFollowingMerchantDepositsTheDepositIsRejected(Table table) {
+        public async Task WhenIMakeTheFollowingMerchantDepositsTheDepositIsRejected(DataTable table) {
             List<(EstateDetails, Guid, MakeMerchantDepositRequest)> requests = table.Rows.ToMakeMerchantDepositRequest(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIMakeTheFollowingMerchantDepositsTheDepositIsRejected(this.TestingContext.AccessToken, requests);
         }
@@ -362,7 +362,7 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                                                                String estateName,
                                                                                                                                String merchantName,
                                                                                                                                Int32 numberOfFeesSettled){
-            SpecflowExtensions.ProcessSettlementRequest processSettlementRequest = TransactionProcessor.IntegrationTesting.Helpers.ReqnrollExtensions.ToProcessSettlementRequest(dateString, estateName, merchantName, this.TestingContext.Estates);
+            TransactionProcessor.IntegrationTesting.Helpers.ReqnrollExtensions.ProcessSettlementRequest processSettlementRequest = TransactionProcessor.IntegrationTesting.Helpers.ReqnrollExtensions.ToProcessSettlementRequest(dateString, estateName, merchantName, this.TestingContext.Estates);
             await this.TransactionProcessorSteps.WhenIProcessTheSettlementForOnEstateThenFeesAreMarkedAsSettledAndTheSettlementIsCompleted(this.TestingContext.AccessToken, processSettlementRequest, numberOfFeesSettled);
 
         }

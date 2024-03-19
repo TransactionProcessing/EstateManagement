@@ -85,7 +85,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         public async Task EstateManagementManager_GetMerchant_MerchantIsReturned(){
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithEverything(SettlementSchedule.Monthly));
             
-            Merchant expectedModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperators(SettlementSchedule.Monthly);
+            Merchant expectedModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts(SettlementSchedule.Monthly);
 
             Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
 
@@ -171,14 +171,24 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.Addresses.ShouldBeNull();
             merchantModel.Contacts.ShouldHaveSingleItem();
         }
-        
+
+        [Fact]
+        public async Task EstateManagementManager_GetMerchant_MerchantNotCreated_ErrorThrown()
+        {
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyMerchantAggregate);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+                                            });
+        }
+
         [Fact]
         public async Task EstateManagementManager_GetMerchants_MerchantListIsReturned()
         {
             this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Merchant>
                                                                                                                                      {
                                                                                                                                          TestData
-                                                                                                                                             .MerchantModelWithAddressesContactsDevicesAndOperators()
+                                                                                                                                             .MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts()
                                                                                                                                      });
 
             List<Merchant> merchantList = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
@@ -228,13 +238,33 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetTransactionFeesForProduct_TransactionFeesAreReturned()
         {
-            this.EstateManagementRepository.Setup(e => e.GetTransactionFeesForProduct(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.ProductTransactionFees);
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed, FeeType.Merchant));
 
             List<TransactionFee> transactionFees = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId,TestData.ProductId, CancellationToken.None);
 
             transactionFees.ShouldNotBeNull();
             transactionFees.ShouldHaveSingleItem();
             transactionFees.First().TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetTransactionFeesForProduct_ContractNotFound_ErrorThrown()
+        {
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ProductId, CancellationToken.None);
+                                            });
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetTransactionFeesForProduct_ProductNotFound_ErrorThrown()
+        {
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ProductId, CancellationToken.None);
+                                            });
         }
 
         [Fact]
