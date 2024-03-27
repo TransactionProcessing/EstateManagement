@@ -1,7 +1,6 @@
 ﻿namespace EstateManagement.Common.Examples
 {
     using DataTransferObjects.Responses;
-    using Microsoft.Rest;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
 

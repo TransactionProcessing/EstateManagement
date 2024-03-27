@@ -32,19 +32,18 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="MiddlewareRegistry"/> class.
         /// </summary>
-        public MiddlewareRegistry()
-        {
+        public MiddlewareRegistry(){
             this.AddHealthChecks()
                 .AddSqlServer(connectionString:ConfigurationReader.GetConnectionString("HealthCheck"),
                               healthQuery:"SELECT 1;",
                               name:"Read Model Server",
                               failureStatus:HealthStatus.Degraded,
-                              tags:new[] {"db", "sql", "sqlserver"})
-                .AddEventStore(Startup.EventStoreClientSettings,
-                               userCredentials:Startup.EventStoreClientSettings.DefaultCredentials,
-                               name:"Eventstore",
-                               failureStatus:HealthStatus.Unhealthy,
-                               tags:new[] {"db", "eventstore"}).AddSecurityService(ApiEndpointHttpHandler).AddMessagingService();
+                              tags:new[]{ "db", "sql", "sqlserver" });
+                //.AddEventStore(Startup.EventStoreClientSettings,
+                //               userCredentials:Startup.EventStoreClientSettings.DefaultCredentials,
+                //               name:"Eventstore",
+                //               failureStatus:HealthStatus.Unhealthy,
+                //               tags:new[] {"db", "eventstore"}).AddSecurityService(ApiEndpointHttpHandler).AddMessagingService();
 
             this.AddSwaggerGen(c =>
                                {

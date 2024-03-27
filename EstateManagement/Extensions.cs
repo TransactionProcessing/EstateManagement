@@ -10,6 +10,7 @@ using EventStore.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.EventStore.Aggregate;
 using Shared.EventStore.EventHandling;
 using Shared.EventStore.Extensions;
 using Shared.EventStore.SubscriptionWorker;
@@ -59,7 +60,7 @@ public static class Extensions
 
     public static void PreWarm(this IApplicationBuilder applicationBuilder)
     {
-        Startup.LoadTypes();
+        TypeProvider.LoadDomainEventsTypeDynamically();
 
         IConfigurationSection subscriptionConfigSection = Startup.Configuration.GetSection("AppSettings:SubscriptionConfiguration");
         SubscriptionWorkersRoot subscriptionWorkersRoot = new SubscriptionWorkersRoot();
@@ -79,7 +80,7 @@ public static class Extensions
 
         applicationBuilder.ConfigureSubscriptionService(subscriptionWorkersRoot,
                                                         eventStoreConnectionString,
-                                                        Startup.EventStoreClientSettings,
+                                                        EventStoreClientSettings.Create(eventStoreConnectionString),
                                                         eventHandlerResolvers,
                                                         Extensions.log,
                                                         subscriptionRepositoryResolver,

@@ -1,8 +1,11 @@
 namespace EstateManagement
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Linq;
+    using System.Reflection;
     using Bootstrapper;
     using BusinessLogic.Events;
     using Contract.DomainEvents;
@@ -21,6 +24,7 @@ namespace EstateManagement
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using NLog.Extensions.Logging;
+    using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.Extensions;
     using Shared.General;
@@ -69,23 +73,9 @@ namespace EstateManagement
         /// The web host environment.
         /// </value>
         public static IWebHostEnvironment WebHostEnvironment { get; set; }
-
-        public static EventStoreClientSettings EventStoreClientSettings;
-
+        
         public static IServiceProvider ServiceProvider { get; set; }
-
-        public static void ConfigureEventStoreSettings(EventStoreClientSettings settings)
-        {
-            settings.ConnectivitySettings = EventStoreClientConnectivitySettings.Default;
-            settings.ConnectivitySettings.Address = new Uri(Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString"));
-            settings.ConnectivitySettings.Insecure = Startup.Configuration.GetValue<Boolean>("EventStoreSettings:Insecure");
-
-
-            settings.DefaultCredentials = new UserCredentials(Startup.Configuration.GetValue<String>("EventStoreSettings:UserName"),
-                                                              Startup.Configuration.GetValue<String>("EventStoreSettings:Password"));
-            Startup.EventStoreClientSettings = settings;
-        }
-
+        
         public static Container Container;
 
         public void ConfigureContainer(ServiceRegistry services)
@@ -100,47 +90,11 @@ namespace EstateManagement
             services.IncludeRegistry<MiscRegistry>();
             services.IncludeRegistry<EventHandlerRegistry>();
 
-            Startup.LoadTypes();
+            TypeProvider.LoadDomainEventsTypeDynamically();
 
             Startup.Container = new Container(services);
         }
        
-
-        public static void LoadTypes()
-        {
-            ContractCreatedEvent c = new ContractCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "");
-            MerchantCreatedEvent m = new MerchantCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), "", DateTime.Now);
-            EstateCreatedEvent e = new EstateCreatedEvent(Guid.NewGuid(), "");
-            CallbackReceivedEnrichedEvent ce = new CallbackReceivedEnrichedEvent(Guid.NewGuid());
-            TransactionHasBeenCompletedEvent t =
-                new TransactionHasBeenCompletedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "", "", true, DateTime.MinValue, null);
-            MerchantFeeSettledEvent f = new MerchantFeeSettledEvent(Guid.NewGuid(),
-                                                                    Guid.NewGuid(),
-                                                                    Guid.NewGuid(),
-                                                                    Guid.NewGuid(),
-                                                                    0,
-                                                                    0,
-                                                                    Guid.NewGuid(),
-                                                                    0,
-                                                                    DateTime.MinValue,
-                                                                    DateTime.MinValue);
-            StatementCreatedEvent s = new StatementCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.MinValue);
-            VoucherGeneratedEvent g = new VoucherGeneratedEvent(Guid.NewGuid(),
-                                                                Guid.NewGuid(),
-                                                                Guid.NewGuid(),
-                                                                DateTime.Now,
-                                                                String.Empty,
-                                                                0,
-                                                                String.Empty,
-                                                                DateTime.Now,
-                                                                String.Empty);
-            ImportLogCreatedEvent i = new ImportLogCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
-            FileCreatedEvent file = new FileCreatedEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), String.Empty, DateTime.Now);
-            FloatCreatedForContractProductEvent fl = new FloatCreatedForContractProductEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
-
-            TypeProvider.LoadDomainEventsTypeDynamically();
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// <summary>
         /// Configures the specified application.
