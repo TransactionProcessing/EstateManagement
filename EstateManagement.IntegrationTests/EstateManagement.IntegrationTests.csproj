@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net7.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
 	  <DebugType>Full</DebugType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -10,32 +10,32 @@
     <PackageReference Include="CallbackHandler.DataTransferObjects" Version="2024.2.1" />
     <PackageReference Include="EventStoreProjections" Version="2023.12.3" />
     <PackageReference Include="MessagingService.IntegrationTesting.Helpers" Version="2023.11.2-build53" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.7" />
-    <PackageReference Include="ClientProxyBase" Version="2024.3.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.3" />
+    <PackageReference Include="ClientProxyBase" Version="2024.4.2" />
     <PackageReference Include="Ductus.FluentDocker" Version="2.10.59" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageReference Include="NLog" Version="5.2.0" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.0" />
-    <PackageReference Include="SecurityService.Client" Version="2023.12.2-build58" />
-    <PackageReference Include="Shared" Version="2024.3.3" />
-    <PackageReference Include="Shared.IntegrationTesting" Version="2024.3.3" />
+    <PackageReference Include="NLog" Version="5.2.8" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
+    <PackageReference Include="SecurityService.Client" Version="2024.3.1" />
+    <PackageReference Include="Shared" Version="2024.4.2" />
+    <PackageReference Include="Shared.IntegrationTesting" Version="2024.4.2" />
     <PackageReference Include="Shouldly" Version="4.2.1" />
-    <PackageReference Include="TransactionProcessor.Client" Version="2024.3.3-build94" />
-    <PackageReference Include="TransactionProcessor.IntegrationTesting.Helpers" Version="2024.3.3-build95" />
-    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="TransactionProcessor.Client" Version="2024.3.3" />
+    <PackageReference Include="TransactionProcessor.IntegrationTesting.Helpers" Version="2024.3.3" />
+    <PackageReference Include="xunit" Version="2.7.0" />
     <PackageReference Include="Reqnroll.Tools.MsBuild.Generation" Version="1.0.1" />
     <PackageReference Include="Reqnroll.xUnit" Version="1.0.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="6.0.0">
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SecurityService.IntegrationTesting.Helpers" Version="2023.12.2-build58" />
+    <PackageReference Include="SecurityService.IntegrationTesting.Helpers" Version="2024.3.1" />
   </ItemGroup>
 
   <ItemGroup>

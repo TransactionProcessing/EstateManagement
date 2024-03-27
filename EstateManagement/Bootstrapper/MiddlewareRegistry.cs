@@ -6,8 +6,10 @@
     using System.Net.Http;
     using System.Reflection;
     using Common;
+    using EventStore.Client;
     using Lamar;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.IdentityModel.Logging;
@@ -32,19 +34,21 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="MiddlewareRegistry"/> class.
         /// </summary>
-        public MiddlewareRegistry()
-        {
+        public MiddlewareRegistry(){
+            String connectionString = Startup.Configuration.GetValue<String>("EventStoreSettings:ConnectionString");
+            EventStoreClientSettings eventStoreSettings = EventStoreClientSettings.Create(connectionString);
+
             this.AddHealthChecks()
                 .AddSqlServer(connectionString:ConfigurationReader.GetConnectionString("HealthCheck"),
                               healthQuery:"SELECT 1;",
                               name:"Read Model Server",
                               failureStatus:HealthStatus.Degraded,
-                              tags:new[] {"db", "sql", "sqlserver"})
-                .AddEventStore(Startup.EventStoreClientSettings,
-                               userCredentials:Startup.EventStoreClientSettings.DefaultCredentials,
-                               name:"Eventstore",
-                               failureStatus:HealthStatus.Unhealthy,
-                               tags:new[] {"db", "eventstore"}).AddSecurityService(ApiEndpointHttpHandler).AddMessagingService();
+                              tags:new[]{ "db", "sql", "sqlserver" })
+                .AddEventStore(eventStoreSettings,
+                               userCredentials: eventStoreSettings.DefaultCredentials,
+                               name: "Eventstore",
+                               failureStatus: HealthStatus.Unhealthy,
+                               tags: new[] { "db", "eventstore" }).AddSecurityService(ApiEndpointHttpHandler).AddMessagingService();
 
             this.AddSwaggerGen(c =>
                                {
