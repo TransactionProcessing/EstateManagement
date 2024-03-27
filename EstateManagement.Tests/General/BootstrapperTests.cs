@@ -44,7 +44,7 @@
 
             configuration.Add("ConnectionStrings:HealthCheck", "HeathCheckConnString");
             configuration.Add("SecurityConfiguration:Authority", "https://127.0.0.1");
-            configuration.Add("EventStoreSettings:ConnectionString", "https://127.0.0.1:2113");
+            configuration.Add("EventStoreSettings:ConnectionString", "esdb://127.0.0.1:2113");
             configuration.Add("EventStoreSettings:ConnectionName", "UnitTestConnection");
             configuration.Add("EventStoreSettings:UserName", "admin");
             configuration.Add("EventStoreSettings:Password", "changeit");
