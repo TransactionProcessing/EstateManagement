@@ -18,7 +18,10 @@ namespace EstateManagement.Tests.Factories{
     using Shouldly;
     using Testing;
     using Xunit;
+    using AddressResponse = DataTransferObjects.Responses.Merchant.AddressResponse;
     using Contract = Models.Contract.Contract;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
     using ProductType = DataTransferObjects.Responses.Contract.ProductType;
     using SettlementSchedule = Models.SettlementSchedule;
 

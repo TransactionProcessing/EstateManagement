@@ -13,9 +13,13 @@
     using Models.Estate;
     using Models.File;
     using Models.Merchant;
+    using AddressResponse = DataTransferObjects.Responses.Merchant.AddressResponse;
     using CalculationType = DataTransferObjects.Responses.Contract.CalculationType;
     using Contract = Models.Contract.Contract;
     using FeeType = DataTransferObjects.Responses.Contract.FeeType;
+    using MerchantContractResponse = DataTransferObjects.Responses.Merchant.MerchantContractResponse;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
     using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
     using ProductType = DataTransferObjects.Responses.Contract.ProductType;
     

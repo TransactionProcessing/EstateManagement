@@ -29,6 +29,8 @@ namespace EstateManagement.IntegrationTests.Shared
     using TransactionProcessor.IntegrationTesting.Helpers;
     using ClientDetails = Common.ClientDetails;
     using DockerHelper = Common.DockerHelper;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
     using ReqnrollExtensions = IntegrationTesting.Helpers.ReqnrollExtensions;
     using ReqnrollTableHelper = global::Shared.IntegrationTesting.ReqnrollTableHelper;
 

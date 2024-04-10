@@ -13,6 +13,7 @@
     using DataTransferObjects.Responses.Merchant;
     using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
     /// <summary>
     /// 

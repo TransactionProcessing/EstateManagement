@@ -7,6 +7,7 @@
     using DataTransferObjects.Responses.Merchant;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
     //using TransactionProcessor.DataTransferObjects;
 

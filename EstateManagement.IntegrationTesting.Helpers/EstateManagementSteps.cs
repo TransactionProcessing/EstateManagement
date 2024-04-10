@@ -15,6 +15,8 @@ using DataTransferObjects.Responses.Operator;
 using DataTransferObjects.Responses.Settlement;
 using Shared.IntegrationTesting;
 using Shouldly;
+using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
 public class EstateManagementSteps{
     private readonly IEstateClient EstateClient;

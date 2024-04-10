@@ -19,6 +19,7 @@
     using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
     using Newtonsoft.Json;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
     public class EstateClient : ClientProxyBase, IEstateClient
     {
