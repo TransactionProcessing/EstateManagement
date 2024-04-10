@@ -10,6 +10,7 @@
     using EstateAggregate;
     using EstateManagement.DataTransferObjects.Requests.Merchant;
     using MerchantAggregate;
+    using Microsoft.IdentityModel.Tokens;
     using Models;
     using Models.Merchant;
     using Requests;
@@ -93,49 +94,45 @@
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
-        public async Task AssignOperatorToMerchant(Guid estateId,
-                                                   Guid merchantId,
-                                                   Guid operatorId,
-                                                   String merchantNumber,
-                                                   String terminalNumber,
+        public async Task AssignOperatorToMerchant(AssignOperatorToMerchantCommand command,
                                                    CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
             // Is the operator valid for this estate
             Estate estate = estateAggregate.GetEstate();
-            Operator @operator = estate.Operators?.SingleOrDefault(o => o.OperatorId == operatorId);
+            Operator @operator = estate.Operators?.SingleOrDefault(o => o.OperatorId == command.RequestDto.OperatorId);
             if (@operator == null) {
-                throw new InvalidOperationException($"Operator Id {operatorId} is not supported on Estate [{estate.Name}]");
+                throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} is not supported on Estate [{estate.Name}]");
             }
 
             // Operator has been validated, now check the rules of the operator against the passed in data
             if (@operator.RequireCustomMerchantNumber) {
                 // requested addition must have a merchant number supplied
-                if (String.IsNullOrEmpty(merchantNumber)) {
-                    throw new InvalidOperationException($"Operator Id {operatorId} requires that a merchant number is provided");
+                if (String.IsNullOrEmpty(command.RequestDto.MerchantNumber)) {
+                    throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a merchant number is provided");
                 }
             }
 
             if (@operator.RequireCustomTerminalNumber) {
                 // requested addition must have a terminal number supplied
-                if (String.IsNullOrEmpty(terminalNumber)) {
-                    throw new InvalidOperationException($"Operator Id {operatorId} requires that a terminal number is provided");
+                if (String.IsNullOrEmpty(command.RequestDto.TerminalNumber)) {
+                    throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a terminal number is provided");
                 }
             }
 
             // Assign the operator
-            merchantAggregate.AssignOperator(operatorId, @operator.Name, merchantNumber, terminalNumber);
+            merchantAggregate.AssignOperator(command.RequestDto.OperatorId, @operator.Name, command.RequestDto.MerchantNumber, command.RequestDto.TerminalNumber);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }

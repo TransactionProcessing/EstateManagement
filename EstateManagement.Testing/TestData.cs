@@ -552,11 +552,15 @@
 
         public static String OperatorTerminalNumber = "00000001";
 
-        public static AssignOperatorToMerchantRequest AssignOperatorToMerchantRequest = AssignOperatorToMerchantRequest.Create(TestData.EstateId,
-                                                                                                                               TestData.MerchantId,
-                                                                                                                               TestData.MerchantId,
-                                                                                                                               TestData.OperatorMerchantNumber,
-                                                                                                                               TestData.OperatorTerminalNumber);
+        public static AssignOperatorRequest AssignOperatorRequest = new AssignOperatorRequest{
+                                                                                                 MerchantNumber = TestData.OperatorMerchantNumber,
+                                                                                                 OperatorId = TestData.OperatorId,
+                                                                                                 TerminalNumber = TestData.OperatorTerminalNumber
+                                                                                             };
+
+        public static AssignOperatorToMerchantCommand AssignOperatorToMerchantCommand = new AssignOperatorToMerchantCommand(TestData.EstateId,
+                                                                                                                            TestData.MerchantId,
+                                                                                                                            TestData.AssignOperatorRequest);
 
         public static String EstateUserEmailAddress = "testestateuser@estate1.co.uk";
 

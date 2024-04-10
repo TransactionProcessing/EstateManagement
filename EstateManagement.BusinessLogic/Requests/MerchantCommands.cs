@@ -6,5 +6,8 @@
     using MediatR;
     
     [ExcludeFromCodeCoverage]
-    public record CreateMerchantCommand(Guid EstateId, CreateMerchantRequest RequestDto) : IRequest<Guid>{}
+    public record CreateMerchantCommand(Guid EstateId, CreateMerchantRequest RequestDto) : IRequest<Guid>;
+
+    [ExcludeFromCodeCoverage]
+    public record AssignOperatorToMerchantCommand(Guid EstateId, Guid MerchantId, AssignOperatorRequest RequestDto) : IRequest;
 }

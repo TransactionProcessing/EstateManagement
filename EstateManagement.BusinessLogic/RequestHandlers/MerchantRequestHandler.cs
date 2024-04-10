@@ -8,15 +8,16 @@
     using Requests;
     using Services;
 
-    public class MerchantRequestHandler : IRequestHandler<AssignOperatorToMerchantRequest>,
-                                          IRequestHandler<CreateMerchantUserRequest, Guid>,
+    public class MerchantRequestHandler : IRequestHandler<CreateMerchantUserRequest, Guid>,
                                           IRequestHandler<AddMerchantDeviceRequest>,
                                           IRequestHandler<MakeMerchantDepositRequest, Guid>,
                                           IRequestHandler<SetMerchantSettlementScheduleRequest>,
                                           IRequestHandler<SwapMerchantDeviceRequest>,
                                           IRequestHandler<MakeMerchantWithdrawalRequest, Guid>,
                                           IRequestHandler<AddMerchantContractRequest>,
-                                          IRequestHandler<CreateMerchantCommand,Guid>{
+                                          IRequestHandler<CreateMerchantCommand,Guid>,
+                                          IRequestHandler<AssignOperatorToMerchantCommand>
+    {
         #region Fields
 
         private readonly IMerchantDomainService MerchantDomainService;
@@ -33,14 +34,14 @@
 
         #region Methods
         
-        public async Task Handle(AssignOperatorToMerchantRequest request,
-                                       CancellationToken cancellationToken) {
-            await this.MerchantDomainService.AssignOperatorToMerchant(request.EstateId,
-                                                                      request.MerchantId,
-                                                                      request.OperatorId,
-                                                                      request.MerchantNumber,
-                                                                      request.TerminalNumber,
-                                                                      cancellationToken);
+        public async Task Handle(AssignOperatorToMerchantCommand request,
+                                 CancellationToken cancellationToken) {
+            //await this.MerchantDomainService.AssignOperatorToMerchant(request.EstateId,
+            //                                                          request.MerchantId,
+            //                                                          request.OperatorId,
+            //                                                          request.MerchantNumber,
+            //                                                          request.TerminalNumber,
+            //                                                          cancellationToken);
         }
 
         public async Task<Guid> Handle(CreateMerchantUserRequest request,

@@ -13,12 +13,7 @@
         #region Methods
         Task<Guid> CreateMerchant(CreateMerchantCommand command, CancellationToken cancellationToken);
         
-        Task AssignOperatorToMerchant(Guid estateId,
-                                      Guid merchantId,
-                                      Guid operatorId,
-                                      String merchantNumber,
-                                      String terminalNumber,
-                                      CancellationToken cancellationToken);
+        Task AssignOperatorToMerchant(AssignOperatorToMerchantCommand command, CancellationToken cancellationToken);
 
         Task<Guid> CreateMerchantUser(Guid estateId,
                                       Guid merchantId,

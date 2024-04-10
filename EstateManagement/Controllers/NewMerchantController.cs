@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
-using CreateMerchantRequestDTO = EstateManagement.DataTransferObjects.Requests.Merchant.CreateMerchantRequest;
 
 namespace EstateManagement.Controllers
 {
@@ -20,6 +19,7 @@ namespace EstateManagement.Controllers
     using DataTransferObjects.Responses.Merchant;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
 
     public partial class MerchantController : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace EstateManagement.Controllers
         [SwaggerResponse(201, "Created", typeof(CreateMerchantResponse))]
         [SwaggerResponseExample(201, typeof(CreateMerchantResponseExample))]
         public async Task<IActionResult> CreateMerchant([FromRoute] Guid estateId,
-                                                        [FromBody] CreateMerchantRequestDTO createMerchantRequest,
+                                                        [FromBody] CreateMerchantRequest createMerchantRequest,
                                                         CancellationToken cancellationToken){
             Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
             if (isRequestAllowed == false){
@@ -49,6 +49,38 @@ namespace EstateManagement.Controllers
                                 });
 
         }
+
+        [HttpPost]
+        [Route("{merchantId}/operators")]
+        [ProducesResponseType(typeof(AssignOperatorResponse), 201)]
+        [SwaggerResponse(201, "Created", typeof(AssignOperatorResponse))]
+        [SwaggerResponseExample(201, typeof(AssignOperatorResponseExample))]
+        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        AssignOperatorRequest assignOperatorRequest,
+                                                        CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            AssignOperatorToMerchantCommand command = new (estateId, merchantId, assignOperatorRequest);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new AssignOperatorResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    OperatorId = assignOperatorRequest.OperatorId
+                                });
+        }
+
+
 
         private Boolean PerformStandardChecks(Guid estateId)
         {

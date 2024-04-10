@@ -139,23 +139,7 @@
             addTransactionToMerchantStatementRequest.EstateId.ShouldBe(TestData.EstateId);
             addTransactionToMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
         }
-
-        [Fact]
-        public void AssignOperatorToMerchantRequest_CanBeCreated_IsCreated() {
-            AssignOperatorToMerchantRequest assignOperatorToMerchantRequest = AssignOperatorToMerchantRequest.Create(TestData.EstateId,
-                TestData.MerchantId,
-                TestData.OperatorId,
-                TestData.OperatorMerchantNumber,
-                TestData.OperatorTerminalNumber);
-
-            assignOperatorToMerchantRequest.ShouldNotBeNull();
-            assignOperatorToMerchantRequest.EstateId.ShouldBe(TestData.EstateId);
-            assignOperatorToMerchantRequest.MerchantId.ShouldBe(TestData.MerchantId);
-            assignOperatorToMerchantRequest.OperatorId.ShouldBe(TestData.OperatorId);
-            assignOperatorToMerchantRequest.MerchantNumber.ShouldBe(TestData.OperatorMerchantNumber);
-            assignOperatorToMerchantRequest.TerminalNumber.ShouldBe(TestData.OperatorTerminalNumber);
-        }
-
+        
         [Fact]
         public void CreateContractRequest_CanBeCreated_IsCreated() {
             CreateContractRequest createContractRequest =

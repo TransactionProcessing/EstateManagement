@@ -30,7 +30,7 @@
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
 
-            AssignOperatorToMerchantRequest request = TestData.AssignOperatorToMerchantRequest;
+            AssignOperatorToMerchantCommand request = TestData.AssignOperatorToMerchantCommand;
 
             Should.NotThrow(async () =>
                             {

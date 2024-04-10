@@ -163,57 +163,6 @@
         }
 
         /// <summary>
-        /// Assigns the operator.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="assignOperatorRequest">The assign operator request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("{merchantId}/operators")]
-        [ProducesResponseType(typeof(AssignOperatorResponse), 201)]
-        [SwaggerResponse(201, "Created", typeof(AssignOperatorResponse))]
-        [SwaggerResponseExample(201, typeof(AssignOperatorResponseExample))]
-        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
-                                                        [FromRoute] Guid merchantId,
-                                                        AssignOperatorRequestDTO assignOperatorRequest,
-                                                        CancellationToken cancellationToken)
-        {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] {string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName}) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            AssignOperatorToMerchantRequest command = AssignOperatorToMerchantRequest.Create(estateId,
-                                                                                             merchantId,
-                                                                                             assignOperatorRequest.OperatorId,
-                                                                                             assignOperatorRequest.MerchantNumber,
-                                                                                             assignOperatorRequest.TerminalNumber);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new AssignOperatorResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    OperatorId = assignOperatorRequest.OperatorId
-                                });
-        }
-        
-        /// <summary>
         /// Creates the merchant user.
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>

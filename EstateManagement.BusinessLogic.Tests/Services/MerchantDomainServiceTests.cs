@@ -113,12 +113,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue));
             
-            await this.DomainService.AssignOperatorToMerchant(TestData.EstateId,
-                                                              TestData.MerchantId,
-                                                              TestData.OperatorId,
-                                                              TestData.OperatorMerchantNumber,
-                                                              TestData.OperatorTerminalNumber,
-                                                              CancellationToken.None);
+            await this.DomainService.AssignOperatorToMerchant(TestData.AssignOperatorToMerchantCommand, CancellationToken.None);
         }
 
         [Fact]
@@ -131,12 +126,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
-                                                        await this.DomainService.AssignOperatorToMerchant(TestData.EstateId,
-                                                                                                          TestData.MerchantId,
-                                                                                                          TestData.OperatorId,
-                                                                                                          TestData.OperatorMerchantNumber,
-                                                                                                          TestData.OperatorTerminalNumber,
-                                                                                                          CancellationToken.None);
+                                                        await this.DomainService.AssignOperatorToMerchant(TestData.AssignOperatorToMerchantCommand, CancellationToken.None);
                                                     });
         }
 
@@ -150,12 +140,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.Throw<InvalidOperationException>(async () =>
             {
-                await this.DomainService.AssignOperatorToMerchant(TestData.EstateId,
-                                                                  TestData.MerchantId,
-                                                                  TestData.OperatorId,
-                                                                  TestData.OperatorMerchantNumber,
-                                                                  TestData.OperatorTerminalNumber,
-                                                                  CancellationToken.None);
+                await this.DomainService.AssignOperatorToMerchant(TestData.AssignOperatorToMerchantCommand, CancellationToken.None);
             });
         }
 
@@ -169,12 +154,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             
             Should.Throw<InvalidOperationException>(async () =>
             {
-                await this.DomainService.AssignOperatorToMerchant(TestData.EstateId,
-                                                                  TestData.MerchantId,
-                                                                  TestData.OperatorId,
-                                                                  TestData.OperatorMerchantNumber,
-                                                                  TestData.OperatorTerminalNumber,
-                                                                  CancellationToken.None);
+                await this.DomainService.AssignOperatorToMerchant(TestData.AssignOperatorToMerchantCommand, CancellationToken.None);
             });
         }
         
@@ -187,15 +167,19 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberFalse));
-            
+
+            AssignOperatorToMerchantCommand command = new AssignOperatorToMerchantCommand(TestData.EstateId,
+                                                                                          TestData.MerchantId,
+                                                                                          new AssignOperatorRequest()
+                                                                                          {
+                                                                                              MerchantNumber = merchantNumber,
+                                                                                              OperatorId = TestData.OperatorId,
+                                                                                              TerminalNumber = TestData.TerminalNumber
+                                                                                          });
+
             Should.Throw<InvalidOperationException>(async () =>
             {
-                await this.DomainService.AssignOperatorToMerchant(TestData.EstateId,
-                                                                  TestData.MerchantId,
-                                                                  TestData.OperatorId,
-                                                                  merchantNumber,
-                                                                  TestData.OperatorTerminalNumber,
-                                                                  CancellationToken.None);
+                await this.DomainService.AssignOperatorToMerchant(command, CancellationToken.None);
             });
         }
 
@@ -209,14 +193,17 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue));
 
+            AssignOperatorToMerchantCommand command = new AssignOperatorToMerchantCommand(TestData.EstateId,
+                                                                                          TestData.MerchantId,
+                                                                                          new AssignOperatorRequest(){
+                                                                                                                         MerchantNumber = TestData.MerchantNumber,
+                                                                                                                         OperatorId = TestData.OperatorId,
+                                                                                                                         TerminalNumber = terminalNumber
+                                                                                                                     });
+
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
-                                                        await this.DomainService.AssignOperatorToMerchant(TestData.EstateId,
-                                                                                                          TestData.MerchantId,
-                                                                                                          TestData.OperatorId,
-                                                                                                          TestData.OperatorMerchantNumber,
-                                                                                                          terminalNumber,
-                                                                                                          CancellationToken.None);
+                                                        await this.DomainService.AssignOperatorToMerchant(command, CancellationToken.None);
                                                     });
         }
 

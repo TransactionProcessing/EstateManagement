@@ -13,6 +13,10 @@ public class DummyMerchantDomainService : IMerchantDomainService
         return Guid.NewGuid();
     }
 
+    public async Task AssignOperatorToMerchant(AssignOperatorToMerchantCommand command, CancellationToken cancellationToken){
+        
+    }
+
     public async Task CreateMerchant(Guid estateId,
                                      Guid merchantId,
                                      String name,
@@ -33,15 +37,7 @@ public class DummyMerchantDomainService : IMerchantDomainService
                                      DateTime createDateTime,
                                      CancellationToken cancellationToken) {
     }
-
-    public async Task AssignOperatorToMerchant(Guid estateId,
-                                               Guid merchantId,
-                                               Guid operatorId,
-                                               String merchantNumber,
-                                               String terminalNumber,
-                                               CancellationToken cancellationToken) {
-    }
-
+    
     public async Task<Guid> CreateMerchantUser(Guid estateId,
                                                Guid merchantId,
                                                String emailAddress,
