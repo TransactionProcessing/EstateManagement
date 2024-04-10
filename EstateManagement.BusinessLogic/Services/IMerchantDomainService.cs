@@ -11,24 +11,13 @@
     public interface IMerchantDomainService
     {
         #region Methods
-        Task<Guid> CreateMerchant(CreateMerchantCommand command, CancellationToken cancellationToken);
+        Task<Guid> CreateMerchant(MerchantCommands.CreateMerchantCommand command, CancellationToken cancellationToken);
         
-        Task AssignOperatorToMerchant(AssignOperatorToMerchantCommand command, CancellationToken cancellationToken);
+        Task<Guid> AssignOperatorToMerchant(MerchantCommands.AssignOperatorToMerchantCommand command, CancellationToken cancellationToken);
 
-        Task<Guid> CreateMerchantUser(Guid estateId,
-                                      Guid merchantId,
-                                      String emailAddress,
-                                      String password,
-                                      String givenName,
-                                      String middleName,
-                                      String familyName,
-                                      CancellationToken cancellationToken);
+        Task<Guid> CreateMerchantUser(MerchantCommands.CreateMerchantUserCommand command, CancellationToken cancellationToken);
 
-        Task AddDeviceToMerchant(Guid estateId,
-                                         Guid merchantId,
-                                         Guid deviceId,
-                                         String deviceIdentifier,
-                                         CancellationToken cancellationToken);
+        Task<Guid> AddDeviceToMerchant(MerchantCommands.AddMerchantDeviceCommand command, CancellationToken cancellationToken);
 
         Task SwapMerchantDevice(Guid estateId,
             Guid merchantId,
@@ -37,29 +26,16 @@
             String newDeviceIdentifier,
             CancellationToken cancellationToken);
         
-        Task<Guid> MakeMerchantDeposit(Guid estateId,
-                                 Guid merchantId,
-                                 Models.MerchantDepositSource source,
-                                 String reference,
-                                 DateTime depositDateTime,
-                                 Decimal amount,
-                                 CancellationToken cancellationToken);
+        Task<Guid> MakeMerchantDeposit(MerchantCommands.MakeMerchantDepositCommand command, CancellationToken cancellationToken);
 
-        Task<Guid> MakeMerchantWithdrawal(Guid estateId,
-                                       Guid merchantId,
-                                       DateTime withdrawalDateTime,
-                                       Decimal amount,
-                                       CancellationToken cancellationToken);
+        Task<Guid> MakeMerchantWithdrawal(MerchantCommands.MakeMerchantWithdrawalCommand command, CancellationToken cancellationToken);
 
         Task SetMerchantSettlementSchedule(Guid estateId,
                                            Guid merchantId,
                                            Models.SettlementSchedule settlementSchedule,
                                            CancellationToken cancellationToken);
 
-        Task AddContractToMerchant(Guid estateId,
-                                   Guid merchantId,
-                                   Guid contractId,
-                                   CancellationToken cancellationToken);
+        Task AddContractToMerchant(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken);
 
         #endregion
     }

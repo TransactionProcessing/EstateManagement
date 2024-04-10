@@ -23,16 +23,7 @@
     using Shared.General;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
-    using AddMerchantContractRequest = BusinessLogic.Requests.AddMerchantContractRequest;
-    using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
-    using CreateMerchantRequestDTO = DataTransferObjects.Requests.Merchant.CreateMerchantRequest;
-    using AssignOperatorRequestDTO = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
-    using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.Merchant.CreateMerchantUserRequest;
-    using AddMerchantDeviceRequestDTO = DataTransferObjects.Requests.Merchant.AddMerchantDeviceRequest;
-    using CreateMerchantUserRequest = BusinessLogic.Requests.CreateMerchantUserRequest;
     using GenerateMerchantStatementRequest = BusinessLogic.Requests.GenerateMerchantStatementRequest;
-    using MakeMerchantDepositRequest = BusinessLogic.Requests.MakeMerchantDepositRequest;
-    using MakeMerchantWithdrawalRequest = BusinessLogic.Requests.MakeMerchantWithdrawalRequest;
     using SwapMerchantDeviceRequestDTO = DataTransferObjects.Requests.Merchant.SwapMerchantDeviceRequest;
     using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.Merchant.MakeMerchantDepositRequest;
     using MakeMerchantWithdrawalRequestDTO = DataTransferObjects.Requests.Merchant.MakeMerchantWithdrawalRequest;
@@ -85,136 +76,7 @@
         #endregion
 
         #region Methods
-        [HttpPost]
-        [Route("{merchantId}/contracts")]
-        public async Task<IActionResult> AddContract([FromRoute] Guid estateId,
-                                                     [FromRoute] Guid merchantId,
-                                                     [FromBody] AddMerchantContractRequestDTO addMerchantContractRequest,
-                                                     CancellationToken cancellationToken){
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            AddMerchantContractRequest command = AddMerchantContractRequest.Create(estateId, merchantId, addMerchantContractRequest.ContractId);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
-        }
-
-        /// <summary>
-        /// Adds the device.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="addMerchantDeviceRequest">The add merchant device request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("{merchantId}/devices")]
-        [SwaggerResponse(201, "Created", typeof(AddMerchantDeviceResponse))]
-        [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
-        public async Task<IActionResult> AddDevice([FromRoute] Guid estateId,
-                                                   [FromRoute] Guid merchantId,
-                                                   [FromBody] AddMerchantDeviceRequestDTO addMerchantDeviceRequest,
-                                                   CancellationToken cancellationToken)
-        {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] {string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName}) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            Guid deviceId = Guid.NewGuid();
-
-            AddMerchantDeviceRequest command = AddMerchantDeviceRequest.Create(estateId, merchantId, deviceId, addMerchantDeviceRequest.DeviceIdentifier);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new AddMerchantDeviceResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    DeviceId = deviceId
-                                });
-        }
-
-        /// <summary>
-        /// Creates the merchant user.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="createMerchantUserRequest">The create merchant user request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("{merchantId}/users")]
-        [SwaggerResponse(201, "Created", typeof(CreateMerchantUserResponse))]
-        [SwaggerResponseExample(201, typeof(CreateMerchantUserResponseExample))]
-        public async Task<IActionResult> CreateMerchantUser([FromRoute] Guid estateId,
-                                                            [FromRoute] Guid merchantId,
-                                                            [FromBody] CreateMerchantUserRequestDTO createMerchantUserRequest,
-                                                            CancellationToken cancellationToken)
-        {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] {string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName}) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            // Create the command
-            CreateMerchantUserRequest request = CreateMerchantUserRequest.Create(estateId,
-                                                                                 merchantId,
-                                                                                 createMerchantUserRequest.EmailAddress,
-                                                                                 createMerchantUserRequest.Password,
-                                                                                 createMerchantUserRequest.GivenName,
-                                                                                 createMerchantUserRequest.MiddleName,
-                                                                                 createMerchantUserRequest.FamilyName);
-
-            // Route the command
-            Guid userId = await this.Mediator.Send(request, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}/users/{userId}",
-                                new CreateMerchantUserResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    UserId = userId
-                                });
-        }
-
+        
         /// <summary>
         /// Generates the merchant statement.
         /// </summary>
@@ -493,99 +355,47 @@
 
             return this.Ok(ModelFactory.ConvertFrom(transactionFees));
         }
+        
+        //[HttpPost]
+        //[Route("{merchantId}/withdrawals")]
+        ////[SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
+        ////[SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
+        //public async Task<IActionResult> MakeWithdrawal([FromRoute] Guid estateId,
+        //                                             [FromRoute] Guid merchantId,
+        //                                             [FromBody] MakeMerchantWithdrawalRequestDTO makeMerchantWithdrawalRequest,
+        //                                             CancellationToken cancellationToken)
+        //{
+        //    // Get the Estate Id claim from the user
+        //    Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
 
-        /// <summary>
-        /// Makes the deposit.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="makeMerchantDepositRequest">The make merchant deposit request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("{merchantId}/deposits")]
-        [SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
-        [SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
-        public async Task<IActionResult> MakeDeposit([FromRoute] Guid estateId,
-                                                     [FromRoute] Guid merchantId,
-                                                     [FromBody] MakeMerchantDepositRequestDTO makeMerchantDepositRequest,
-                                                     CancellationToken cancellationToken)
-        {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+        //    String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+        //    if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+        //    {
+        //        return this.Forbid();
+        //    }
 
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] {string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName}) == false)
-            {
-                return this.Forbid();
-            }
+        //    if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+        //    {
+        //        return this.Forbid();
+        //    }
 
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
+        //    MakeMerchantWithdrawalRequest command = MakeMerchantWithdrawalRequest.Create(estateId,
+        //                                                                           merchantId,
+        //                                                                           makeMerchantWithdrawalRequest.WithdrawalDateTime,
+        //                                                                           makeMerchantWithdrawalRequest.Amount);
 
-            MakeMerchantDepositRequest command = MakeMerchantDepositRequest.Create(estateId,
-                                                                                   merchantId,
-                                                                                   MerchantDepositSource.Manual,
-                                                                                   makeMerchantDepositRequest.Reference,
-                                                                                   makeMerchantDepositRequest.DepositDateTime,
-                                                                                   makeMerchantDepositRequest.Amount);
+        //    // Route the command
+        //    Guid withdrawalId = await this.Mediator.Send(command, cancellationToken);
 
-            // Route the command
-            Guid depositId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new MakeMerchantDepositResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    DepositId = depositId
-                                });
-        }
-
-
-        [HttpPost]
-        [Route("{merchantId}/withdrawals")]
-        //[SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
-        //[SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
-        public async Task<IActionResult> MakeWithdrawal([FromRoute] Guid estateId,
-                                                     [FromRoute] Guid merchantId,
-                                                     [FromBody] MakeMerchantWithdrawalRequestDTO makeMerchantWithdrawalRequest,
-                                                     CancellationToken cancellationToken)
-        {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            MakeMerchantWithdrawalRequest command = MakeMerchantWithdrawalRequest.Create(estateId,
-                                                                                   merchantId,
-                                                                                   makeMerchantWithdrawalRequest.WithdrawalDateTime,
-                                                                                   makeMerchantWithdrawalRequest.Amount);
-
-            // Route the command
-            Guid withdrawalId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new MakeMerchantWithdrawalResponse()
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    WithdrawalId = withdrawalId
-                                });
-        }
+        //    // return the result
+        //    return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+        //                        new MakeMerchantWithdrawalResponse()
+        //                        {
+        //                            EstateId = estateId,
+        //                            MerchantId = merchantId,
+        //                            WithdrawalId = withdrawalId
+        //                        });
+        //}
 
         /// <summary>
         /// Creates the merchant.

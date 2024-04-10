@@ -3,12 +3,12 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using DataTransferObjects.Requests.Merchant;
     using Events;
     using MediatR;
     using Merchant.DomainEvents;
     using MerchantAggregate;
     using MerchantStatement.DomainEvents;
-    using Models;
     using Models.Merchant;
     using Newtonsoft.Json;
     using Repository;
@@ -18,6 +18,7 @@
     using Shared.EventStore.EventHandling;
     using TransactionProcessor.Transaction.DomainEvents;
     using Deposit = CallbackHandler.DataTransferObjects.Deposit;
+    using MerchantDepositSource = Models.MerchantDepositSource;
 
     public class MerchantDomainEventHandler : IDomainEventHandler
     {
@@ -68,15 +69,15 @@
                 // We now need to deserialise the message from the callback
                 Deposit callbackMessage = JsonConvert.DeserializeObject<Deposit>(domainEvent.CallbackMessage);
 
-                MakeMerchantDepositRequest makeMerchantDepositRequest =
-                    MakeMerchantDepositRequest.Create(domainEvent.EstateId,
-                                                      merchant.MerchantId,
-                                                      MerchantDepositSource.Automatic,
-                                                      callbackMessage.DepositId.ToString(),
-                                                      callbackMessage.DateTime,
-                                                      callbackMessage.Amount);
-
-                await this.Mediator.Send(makeMerchantDepositRequest, cancellationToken);
+                MerchantCommands.MakeMerchantDepositCommand command = new(domainEvent.EstateId,
+                                                                          merchant.MerchantId,
+                                                                          MerchantDepositSource.Automatic,
+                                                                          new MakeMerchantDepositRequest{
+                                                                                                            DepositDateTime = callbackMessage.DateTime,
+                                                                                                            Reference = callbackMessage.Reference,
+                                                                                                            Amount = callbackMessage.Amount,
+                                                                                                        });
+                await this.Mediator.Send(command, cancellationToken);
             }
         }
         /// <summary>

@@ -30,7 +30,7 @@
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
 
-            AssignOperatorToMerchantCommand request = TestData.AssignOperatorToMerchantCommand;
+            MerchantCommands.AssignOperatorToMerchantCommand request = TestData.AssignOperatorToMerchantCommand;
 
             Should.NotThrow(async () =>
                             {
@@ -45,7 +45,7 @@
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
 
-            CreateMerchantUserRequest request = TestData.CreateMerchantUserRequest;
+            MerchantCommands.CreateMerchantUserCommand request = TestData.CreateMerchantUserCommand;
 
             Should.NotThrow(async () =>
                             {
@@ -60,11 +60,11 @@
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
 
-            AddMerchantDeviceRequest request = TestData.AddMerchantDeviceRequest;
+            MerchantCommands.AddMerchantDeviceCommand command = TestData.AddMerchantDeviceCommand;
 
             Should.NotThrow(async () =>
                             {
-                                await handler.Handle(request, CancellationToken.None);
+                                await handler.Handle(command, CancellationToken.None);
                             });
 
         }
@@ -75,7 +75,7 @@
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
 
-            MakeMerchantDepositRequest request = TestData.MakeMerchantDepositRequest;
+            MerchantCommands.MakeMerchantDepositCommand request = TestData.MakeMerchantDepositCommand;
 
             Should.NotThrow(async () =>
                             {
@@ -90,7 +90,7 @@
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
 
-            MakeMerchantWithdrawalRequest request = TestData.MakeMerchantWithdrawalRequest;
+            MerchantCommands.MakeMerchantWithdrawalCommand request = TestData.MakeMerchantWithdrawalCommand;
 
             Should.NotThrow(async () =>
                             {
@@ -134,7 +134,7 @@
             Mock<IMerchantDomainService> merchantDomainService = new Mock<IMerchantDomainService>();
             MerchantRequestHandler handler = new MerchantRequestHandler(merchantDomainService.Object);
 
-            AddMerchantContractRequest request = TestData.AddMerchantContractRequest;
+            MerchantCommands.AddMerchantContractCommand request = TestData.AddMerchantContractCommand;
 
             Should.NotThrow(async () =>
                             {

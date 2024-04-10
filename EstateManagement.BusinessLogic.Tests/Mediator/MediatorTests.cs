@@ -26,26 +26,25 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
         private IMediator mediator;
 
         public MediatorTests() {
-            this.Requests.Add(TestData.AddMerchantDeviceRequest);
-            //this.Requests.Add(TestData.AddOperatorToEstateRequest);
+            this.Requests.Add(TestData.AddMerchantDeviceCommand);
+            this.Requests.Add(TestData.CreateMerchantCommand);
+            this.Requests.Add(TestData.AssignOperatorToMerchantCommand);
+            this.Requests.Add(TestData.AddMerchantContractCommand);
+            this.Requests.Add(TestData.CreateMerchantUserCommand);
+            this.Requests.Add(TestData.MakeMerchantDepositCommand);
+            this.Requests.Add(TestData.MakeMerchantWithdrawalCommand);
             //this.Requests.Add(TestData.AddProductToContractRequest);
             //this.Requests.Add(TestData.AddSettledFeeToMerchantStatementRequest);
             //this.Requests.Add(TestData.AddTransactionFeeForProductToContractRequest);
             //this.Requests.Add(TestData.AddTransactionToMerchantStatementRequest);
-            //this.Requests.Add(TestData.AssignOperatorToMerchantRequest);
             //this.Requests.Add(TestData.CreateContractRequest);
             //this.Requests.Add(TestData.CreateEstateRequest);
             //this.Requests.Add(TestData.CreateEstateUserRequest);
-            //this.Requests.Add(TestData.CreateMerchantRequest);
-            //this.Requests.Add(TestData.CreateMerchantUserRequest);
             //this.Requests.Add(TestData.DisableTransactionFeeForProductRequest);
             //this.Requests.Add(TestData.EmailMerchantStatementRequest);
             //this.Requests.Add(TestData.GenerateMerchantStatementRequest);
-            //this.Requests.Add(TestData.MakeMerchantDepositRequest);
-            //this.Requests.Add(TestData.MakeMerchantWithdrawalRequest);
             //this.Requests.Add(TestData.SetMerchantSettlementScheduleRequest);
             //this.Requests.Add(TestData.SwapMerchantDeviceRequest);
-            //this.Requests.Add(TestData.AddMerchantContractRequest);
 
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(he => he.EnvironmentName).Returns("Development");

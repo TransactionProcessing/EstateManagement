@@ -29,15 +29,15 @@
             this.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<AddOperatorToEstateRequest>, EstateRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<CreateMerchantCommand,Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AssignOperatorToMerchantCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddMerchantDeviceRequest>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MakeMerchantDepositRequest, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MakeMerchantWithdrawalRequest, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantUserCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantDepositCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddMerchantContractRequest>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContractCommand>, MerchantRequestHandler>();
 
             this.AddSingleton<IRequestHandler<CreateContractRequest>, ContractRequestHandler>();
             this.AddSingleton<IRequestHandler<AddProductToContractRequest>, ContractRequestHandler>();

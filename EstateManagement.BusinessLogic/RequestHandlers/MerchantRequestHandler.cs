@@ -4,20 +4,21 @@
     using System.Threading;
     using System.Threading.Tasks;
     using DataTransferObjects.Responses.Merchant;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
     using MediatR;
     using Requests;
     using Services;
+    using SwapMerchantDeviceRequest = Requests.SwapMerchantDeviceRequest;
 
-    public class MerchantRequestHandler : IRequestHandler<CreateMerchantUserRequest, Guid>,
-                                          IRequestHandler<AddMerchantDeviceRequest>,
-                                          IRequestHandler<MakeMerchantDepositRequest, Guid>,
-                                          IRequestHandler<SetMerchantSettlementScheduleRequest>,
+    public class MerchantRequestHandler : IRequestHandler<SetMerchantSettlementScheduleRequest>,
                                           IRequestHandler<SwapMerchantDeviceRequest>,
-                                          IRequestHandler<MakeMerchantWithdrawalRequest, Guid>,
-                                          IRequestHandler<AddMerchantContractRequest>,
-                                          IRequestHandler<CreateMerchantCommand,Guid>,
-                                          IRequestHandler<AssignOperatorToMerchantCommand>
-    {
+                                          IRequestHandler<MerchantCommands.AddMerchantContractCommand>,
+                                          IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>,
+                                          IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>,
+                                          IRequestHandler<MerchantCommands.AddMerchantDeviceCommand, Guid>,
+                                          IRequestHandler<MerchantCommands.CreateMerchantUserCommand, Guid>,
+                                          IRequestHandler<MerchantCommands.MakeMerchantDepositCommand, Guid>, 
+                                          IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Guid>{
         #region Fields
 
         private readonly IMerchantDomainService MerchantDomainService;
@@ -34,44 +35,29 @@
 
         #region Methods
         
-        public async Task Handle(AssignOperatorToMerchantCommand request,
-                                 CancellationToken cancellationToken) {
-            //await this.MerchantDomainService.AssignOperatorToMerchant(request.EstateId,
-            //                                                          request.MerchantId,
-            //                                                          request.OperatorId,
-            //                                                          request.MerchantNumber,
-            //                                                          request.TerminalNumber,
-            //                                                          cancellationToken);
+        public async Task<Guid> Handle(MerchantCommands.AssignOperatorToMerchantCommand command,
+                                       CancellationToken cancellationToken) {
+            Guid result = await this.MerchantDomainService.AssignOperatorToMerchant(command, cancellationToken);
+            return result;
         }
 
-        public async Task<Guid> Handle(CreateMerchantUserRequest request,
+        public async Task<Guid> Handle(MerchantCommands.CreateMerchantUserCommand command,
                                        CancellationToken cancellationToken) {
-            Guid userId = await this.MerchantDomainService.CreateMerchantUser(request.EstateId,
-                                                                              request.MerchantId,
-                                                                              request.EmailAddress,
-                                                                              request.Password,
-                                                                              request.GivenName,
-                                                                              request.MiddleName,
-                                                                              request.FamilyName,
-                                                                              cancellationToken);
+            Guid userId = await this.MerchantDomainService.CreateMerchantUser(command, cancellationToken);
 
             return userId;
         }
 
-        public async Task Handle(AddMerchantDeviceRequest request,
-                                       CancellationToken cancellationToken) {
-            await this.MerchantDomainService.AddDeviceToMerchant(request.EstateId, request.MerchantId, request.DeviceId, request.DeviceIdentifier, cancellationToken);
+        public async Task<Guid> Handle(MerchantCommands.AddMerchantDeviceCommand command,
+                                       CancellationToken cancellationToken)
+        {
+            Guid result = await this.MerchantDomainService.AddDeviceToMerchant(command, cancellationToken);
+            return result;
         }
 
-        public async Task<Guid> Handle(MakeMerchantDepositRequest request,
+        public async Task<Guid> Handle(MerchantCommands.MakeMerchantDepositCommand command,
                                        CancellationToken cancellationToken) {
-            Guid depositId = await this.MerchantDomainService.MakeMerchantDeposit(request.EstateId,
-                                                                                  request.MerchantId,
-                                                                                  request.Source,
-                                                                                  request.Reference,
-                                                                                  request.DepositDateTime,
-                                                                                  request.Amount,
-                                                                                  cancellationToken);
+            Guid depositId = await this.MerchantDomainService.MakeMerchantDeposit(command, cancellationToken);
 
             return depositId;
         }
@@ -91,25 +77,21 @@
                                                                 cancellationToken);
         }
 
-        public async Task<Guid> Handle(MakeMerchantWithdrawalRequest request,
+        public async Task<Guid> Handle(MerchantCommands.MakeMerchantWithdrawalCommand command,
                                        CancellationToken cancellationToken) {
-            Guid withdrawalId = await this.MerchantDomainService.MakeMerchantWithdrawal(request.EstateId,
-                                                                                        request.MerchantId,
-                                                                                        request.WithdrawalDateTime,
-                                                                                        request.Amount,
-                                                                                        cancellationToken);
+            Guid withdrawalId = await this.MerchantDomainService.MakeMerchantWithdrawal(command, cancellationToken);
 
             return withdrawalId;
         }
 
         #endregion
 
-        public async Task Handle(AddMerchantContractRequest request, CancellationToken cancellationToken){
-            await this.MerchantDomainService.AddContractToMerchant(request.EstateId, request.MerchantId, request.ContractId, cancellationToken);
+        public async Task Handle(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.AddContractToMerchant(command, cancellationToken);
         }
 
-        public async Task<Guid> Handle(CreateMerchantCommand request, CancellationToken cancellationToken){
-            var result = await this.MerchantDomainService.CreateMerchant(request, cancellationToken);
+        public async Task<Guid> Handle(MerchantCommands.CreateMerchantCommand command, CancellationToken cancellationToken){
+            Guid result = await this.MerchantDomainService.CreateMerchant(command, cancellationToken);
             return result;
         }
     }

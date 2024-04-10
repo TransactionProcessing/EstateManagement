@@ -20,6 +20,7 @@ namespace EstateManagement.Controllers
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
     using EstateManagement.DataTransferObjects.Requests.Merchant;
+    using NuGet.Packaging.Signing;
 
     public partial class MerchantController : ControllerBase
     {
@@ -35,10 +36,10 @@ namespace EstateManagement.Controllers
                 return this.Forbid();
             }
 
-            CreateMerchantCommand command = new (estateId, createMerchantRequest);
+            MerchantCommands.CreateMerchantCommand command = new (estateId, createMerchantRequest);
 
             // Route the command
-            var merchantId = await this.Mediator.Send(command, cancellationToken);
+            Guid merchantId = await this.Mediator.Send(command, cancellationToken);
 
             // return the result
             return this.Created($"{MerchantController.ControllerRoute}/{command.RequestDto}",
@@ -65,10 +66,10 @@ namespace EstateManagement.Controllers
                 return this.Forbid();
             }
 
-            AssignOperatorToMerchantCommand command = new (estateId, merchantId, assignOperatorRequest);
+            MerchantCommands.AssignOperatorToMerchantCommand command = new (estateId, merchantId, assignOperatorRequest);
 
             // Route the command
-            await this.Mediator.Send(command, cancellationToken);
+            Guid operatorId = await this.Mediator.Send(command, cancellationToken);
 
             // return the result
             return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
@@ -76,11 +77,140 @@ namespace EstateManagement.Controllers
                                 {
                                     EstateId = estateId,
                                     MerchantId = merchantId,
-                                    OperatorId = assignOperatorRequest.OperatorId
+                                    OperatorId = operatorId
                                 });
         }
 
+        [HttpPost]
+        [Route("{merchantId}/devices")]
+        [SwaggerResponse(201, "Created", typeof(AddMerchantDeviceResponse))]
+        [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
+        public async Task<IActionResult> AddDevice([FromRoute] Guid estateId,
+                                                   [FromRoute] Guid merchantId,
+                                                   [FromBody] AddMerchantDeviceRequest addMerchantDeviceRequest,
+                                                   CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
 
+            MerchantCommands.AddMerchantDeviceCommand command = new (estateId, merchantId,addMerchantDeviceRequest);
+
+            // Route the command
+            Guid deviceId = await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new AddMerchantDeviceResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    DeviceId = deviceId
+                                });
+        }
+
+        [HttpPost]
+        [Route("{merchantId}/contracts")]
+        public async Task<IActionResult> AddContract([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromBody] AddMerchantContractRequest addMerchantContractRequest,
+                                                     CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+            MerchantCommands.AddMerchantContractCommand command = new (estateId, merchantId, addMerchantContractRequest);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
+        }
+
+        [HttpPost]
+        [Route("{merchantId}/users")]
+        [SwaggerResponse(201, "Created", typeof(CreateMerchantUserResponse))]
+        [SwaggerResponseExample(201, typeof(CreateMerchantUserResponseExample))]
+        public async Task<IActionResult> CreateMerchantUser([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromBody] CreateMerchantUserRequest createMerchantUserRequest,
+                                                            CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.CreateMerchantUserCommand command = new (estateId, merchantId, createMerchantUserRequest);
+
+            // Route the command
+            Guid userId = await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}/users/{userId}",
+                                new CreateMerchantUserResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    UserId = userId
+                                });
+        }
+
+        [HttpPost]
+        [Route("{merchantId}/deposits")]
+        [SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
+        [SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
+        public async Task<IActionResult> MakeDeposit([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromBody] MakeMerchantDepositRequest makeMerchantDepositRequest,
+                                                     CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            // This will always be a manual deposit as auto ones come in via another route
+            MerchantCommands.MakeMerchantDepositCommand command = new (estateId, merchantId, Models.MerchantDepositSource.Manual, makeMerchantDepositRequest);
+
+            Guid depositId  = await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new MakeMerchantDepositResponse
+                                {
+                                    EstateId = estateId,
+                                    MerchantId = merchantId,
+                                    DepositId = depositId
+                                });
+        }
+
+        public async Task<IActionResult> MakeWithdrawal([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        [FromBody] MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
+                                                        CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false){
+                return this.Forbid();
+            }
+
+            MerchantCommands.MakeMerchantWithdrawalCommand command = new(estateId, merchantId, makeMerchantWithdrawalRequest);
+
+            // Route the command
+            Guid withdrawalId = await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
+                                new MakeMerchantWithdrawalResponse(){
+                                                                        EstateId = estateId,
+                                                                        MerchantId = merchantId,
+                                                                        WithdrawalId = withdrawalId
+                                                                    });
+
+        }
 
         private Boolean PerformStandardChecks(Guid estateId)
         {
