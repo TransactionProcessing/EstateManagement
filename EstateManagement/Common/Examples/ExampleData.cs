@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EstateManagement.Common.Examples
 {
-    using DataTransferObjects.Requests;
-    using DataTransferObjects.Responses;
-    using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Requests.Merchant;
 
     [ExcludeFromCodeCoverage]
 

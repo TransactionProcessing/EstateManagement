@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.EventHandling
@@ -10,7 +8,6 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
     using BusinessLogic.Events;
     using EstateManagement.Merchant.DomainEvents;
     using EstateManagement.MerchantStatement.DomainEvents;
-    using Events;
     using MediatR;
     using MerchantAggregate;
     using Moq;

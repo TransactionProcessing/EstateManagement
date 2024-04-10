@@ -1,9 +1,9 @@
 ﻿namespace EstateManagement.Common.Examples
 {
     using System.Collections.Generic;
-    using DataTransferObjects.Requests;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Requests.Merchant;
 
     [ExcludeFromCodeCoverage]
     public class MakeMerchantDepositRequestExample : IMultipleExamplesProvider<MakeMerchantDepositRequest>

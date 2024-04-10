@@ -5,7 +5,6 @@
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.IO.Abstractions;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
@@ -14,7 +13,6 @@
     using MerchantStatementAggregate;
     using MessagingService.Client;
     using MessagingService.DataTransferObjects;
-    using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
     using Models.MerchantStatement;
     using Repository;
     using SecurityService.Client;

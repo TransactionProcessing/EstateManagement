@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateManagement.BusinessLogic.Tests.RequestHandler
+﻿namespace EstateManagement.BusinessLogic.Tests.RequestHandler
 {
     using System.Threading;
     using BusinessLogic.Services;

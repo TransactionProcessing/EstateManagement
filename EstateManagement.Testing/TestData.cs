@@ -5,7 +5,6 @@
     using System.Linq;
     using BusinessLogic.Events;
     using BusinessLogic.Requests;
-    using CallbackHandler.DataTransferObjects;
     using Contract.DomainEvents;
     using ContractAggregate;
     using Database.Entities;
@@ -20,10 +19,8 @@
     using Models;
     using Models.Contract;
     using Models.File;
-    using Models.Merchant;
     using Models.MerchantStatement;
     using Newtonsoft.Json;
-    using Repository;
     using SecurityService.DataTransferObjects.Responses;
     using Shared.ValueObjects;
     using TransactionProcessor.DataTransferObjects;
@@ -35,16 +32,24 @@
     using Contact = Models.Merchant.Contact;
     using Contract = Models.Contract.Contract;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
-    using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
-    using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
+    using CreateEstateRequestDTO = DataTransferObjects.Requests.Estate.CreateEstateRequest;
     using Estate = Models.Estate;
     using File = Models.File.File;
     using Merchant = Models.Merchant.Merchant;
-    using Operator = Models.Estate.Operator;
     using SecurityUser = Models.SecurityUser;
     using TransactionFeeModel = Models.Contract.TransactionFee;
     using Transaction = Models.MerchantStatement.Transaction;
     using TransactionProcessor.Float.DomainEvents;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
+    using Azure.Core;
+    using AddMerchantContractRequest = BusinessLogic.Requests.AddMerchantContractRequest;
+    using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
+    using CreateMerchantUserRequest = BusinessLogic.Requests.CreateMerchantUserRequest;
+    using GenerateMerchantStatementRequest = BusinessLogic.Requests.GenerateMerchantStatementRequest;
+    using MakeMerchantDepositRequest = BusinessLogic.Requests.MakeMerchantDepositRequest;
+    using MakeMerchantWithdrawalRequest = BusinessLogic.Requests.MakeMerchantWithdrawalRequest;
+    using MerchantDepositSource = Models.MerchantDepositSource;
+    using SwapMerchantDeviceRequest = BusinessLogic.Requests.SwapMerchantDeviceRequest;
 
     public class TestData
     {
@@ -95,24 +100,7 @@
         public static String MerchantRegion = "Test Region";
 
         public static String MerchantTown = "Test Town";
-
-        public static CreateMerchantRequest CreateMerchantRequest = CreateMerchantRequest.Create(TestData.EstateId,
-                                                                                                 TestData.MerchantId,
-                                                                                                 TestData.MerchantName,
-                                                                                                 TestData.MerchantAddressLine1,
-                                                                                                 TestData.MerchantAddressLine2,
-                                                                                                 TestData.MerchantAddressLine3,
-                                                                                                 TestData.MerchantAddressLine4,
-                                                                                                 TestData.MerchantTown,
-                                                                                                 TestData.MerchantRegion,
-                                                                                                 TestData.MerchantPostalCode,
-                                                                                                 TestData.MerchantCountry,
-                                                                                                 TestData.MerchantContactName,
-                                                                                                 TestData.MerchantContactPhoneNumber,
-                                                                                                 TestData.MerchantContactEmailAddress,
-                                                                                                 TestData.SettlementSchedule,
-                                                                                                 TestData.DateMerchantCreated);
-
+        
         public static EstateAggregate EmptyEstateAggregate = EstateAggregate.Create(TestData.EstateId);
 
         public static Estate.Estate EstateModel = new Estate.Estate
@@ -992,6 +980,7 @@
         public static DateTime HistoryEndDate = new DateTime(2021,8,30);
 
         public static SettlementSchedule SettlementSchedule = SettlementSchedule.Immediate;
+        public static DataTransferObjects.Responses.Merchant.SettlementSchedule SettlementScheduleDTO  = DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly;
 
         public static DateTime NextSettlementDate = new DateTime(2021,8,30);
 
@@ -1902,7 +1891,32 @@
                                                                                                                                 TestData.MerchantId,
                                                                                                                                 TestData.ProcessingStartedDateTime);
 
-        
+        public static CreateMerchantRequest CreateMerchantRequest = new CreateMerchantRequest
+        {
+            Address = new EstateManagement.DataTransferObjects.Requests.Merchant.Address
+            {
+                AddressLine1 = TestData.MerchantAddressLine1,
+                AddressLine2 = TestData.MerchantAddressLine2,
+                AddressLine3 = TestData.MerchantAddressLine3,
+                AddressLine4 = TestData.MerchantAddressLine4,
+                Country = TestData.MerchantCountry,
+                PostalCode = TestData.MerchantPostalCode,
+                Region = TestData.MerchantRegion,
+                Town = TestData.MerchantTown
+            },
+            Contact = new EstateManagement.DataTransferObjects.Requests.Merchant.Contact
+            {
+                ContactName = TestData.MerchantContactName,
+                EmailAddress = TestData.MerchantContactEmailAddress,
+                PhoneNumber = TestData.MerchantContactPhoneNumber
+            },
+            CreatedDateTime = TestData.DateMerchantCreated,
+            MerchantId = TestData.MerchantId,
+            Name = TestData.MerchantName,
+            SettlementSchedule = TestData.SettlementScheduleDTO
+        };
+
+        public static CreateMerchantCommand CreateMerchantCommand => new CreateMerchantCommand(TestData.EstateId, TestData.CreateMerchantRequest);
     }
 
 

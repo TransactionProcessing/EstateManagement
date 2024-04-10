@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.EventHandling
 {
     using System.Threading;
     using BusinessLogic.EventHandling;
-    using BusinessLogic.Services;
     using MediatR;
     using Moq;
     using Repository;
-    using Requests;
-    using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.Logger;
     using Shouldly;
     using Testing;

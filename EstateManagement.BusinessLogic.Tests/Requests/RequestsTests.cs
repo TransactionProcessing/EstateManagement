@@ -194,45 +194,7 @@
             createEstateUserRequest.MiddleName.ShouldBe(TestData.EstateUserMiddleName);
             createEstateUserRequest.FamilyName.ShouldBe(TestData.EstateUserFamilyName);
         }
-
-        [Fact]
-        public void CreateMerchantRequest_CanBeCreated_IsCreated() {
-            CreateMerchantRequest createMerchantRequest = CreateMerchantRequest.Create(TestData.EstateId,
-                                                                                       TestData.MerchantId,
-                                                                                       TestData.MerchantName,
-                                                                                       TestData.MerchantAddressLine1,
-                                                                                       TestData.MerchantAddressLine2,
-                                                                                       TestData.MerchantAddressLine3,
-                                                                                       TestData.MerchantAddressLine4,
-                                                                                       TestData.MerchantTown,
-                                                                                       TestData.MerchantRegion,
-                                                                                       TestData.MerchantPostalCode,
-                                                                                       TestData.MerchantCountry,
-                                                                                       TestData.MerchantContactName,
-                                                                                       TestData.MerchantContactPhoneNumber,
-                                                                                       TestData.MerchantContactEmailAddress,
-                                                                                       TestData.SettlementSchedule,
-                                                                                       TestData.DateMerchantCreated);
-
-            createMerchantRequest.ShouldNotBeNull();
-            createMerchantRequest.EstateId.ShouldBe(TestData.EstateId);
-            createMerchantRequest.MerchantId.ShouldBe(TestData.MerchantId);
-            createMerchantRequest.Name.ShouldBe(TestData.MerchantName);
-            createMerchantRequest.AddressLine1.ShouldBe(TestData.MerchantAddressLine1);
-            createMerchantRequest.AddressLine2.ShouldBe(TestData.MerchantAddressLine2);
-            createMerchantRequest.AddressLine3.ShouldBe(TestData.MerchantAddressLine3);
-            createMerchantRequest.AddressLine4.ShouldBe(TestData.MerchantAddressLine4);
-            createMerchantRequest.Town.ShouldBe(TestData.MerchantTown);
-            createMerchantRequest.Region.ShouldBe(TestData.MerchantRegion);
-            createMerchantRequest.PostalCode.ShouldBe(TestData.MerchantPostalCode);
-            createMerchantRequest.Country.ShouldBe(TestData.MerchantCountry);
-            createMerchantRequest.ContactName.ShouldBe(TestData.MerchantContactName);
-            createMerchantRequest.ContactPhoneNumber.ShouldBe(TestData.MerchantContactPhoneNumber);
-            createMerchantRequest.ContactEmailAddress.ShouldBe(TestData.MerchantContactEmailAddress);
-            createMerchantRequest.SettlementSchedule.ShouldBe(TestData.SettlementSchedule);
-            createMerchantRequest.CreateDateTime.ShouldBe(TestData.DateMerchantCreated);
-        }
-
+        
         [Fact]
         public void CreateMerchantUserRequest_CanBeCreated_IsCreated() {
             CreateMerchantUserRequest createMerchantUserRequest = CreateMerchantUserRequest.Create(TestData.EstateId,

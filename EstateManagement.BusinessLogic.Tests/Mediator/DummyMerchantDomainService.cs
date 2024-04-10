@@ -5,9 +5,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using BusinessLogic.Services;
 using Models;
+using Requests;
 
 public class DummyMerchantDomainService : IMerchantDomainService
 {
+    public async Task<Guid> CreateMerchant(CreateMerchantCommand command, CancellationToken cancellationToken){
+        return Guid.NewGuid();
+    }
+
     public async Task CreateMerchant(Guid estateId,
                                      Guid merchantId,
                                      String name,

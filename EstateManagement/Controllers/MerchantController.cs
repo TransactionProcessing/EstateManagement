@@ -9,15 +9,14 @@
     using System.Threading.Tasks;
     using BusinessLogic.Manger;
     using BusinessLogic.Requests;
-    using Common;
     using Common.Examples;
-    using DataTransferObjects.Requests;
-    using DataTransferObjects.Responses;
+    using DataTransferObjects.Requests.Merchant;
+    using DataTransferObjects.Responses.Contract;
+    using DataTransferObjects.Responses.Merchant;
     using Factories;
     using MediatR;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Models;
     using Models.Contract;
     using Models.Merchant;
     using Shared.Exceptions;
@@ -26,23 +25,23 @@
     using Swashbuckle.AspNetCore.Filters;
     using AddMerchantContractRequest = BusinessLogic.Requests.AddMerchantContractRequest;
     using AddMerchantDeviceRequest = BusinessLogic.Requests.AddMerchantDeviceRequest;
-    using CreateMerchantRequestDTO = DataTransferObjects.Requests.CreateMerchantRequest;
-    using AssignOperatorRequestDTO = DataTransferObjects.Requests.AssignOperatorRequest;
-    using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.CreateMerchantUserRequest;
-    using AddMerchantDeviceRequestDTO = DataTransferObjects.Requests.AddMerchantDeviceRequest;
-    using CreateMerchantRequest = BusinessLogic.Requests.CreateMerchantRequest;
+    using CreateMerchantRequestDTO = DataTransferObjects.Requests.Merchant.CreateMerchantRequest;
+    using AssignOperatorRequestDTO = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
+    using CreateMerchantUserRequestDTO = DataTransferObjects.Requests.Merchant.CreateMerchantUserRequest;
+    using AddMerchantDeviceRequestDTO = DataTransferObjects.Requests.Merchant.AddMerchantDeviceRequest;
     using CreateMerchantUserRequest = BusinessLogic.Requests.CreateMerchantUserRequest;
     using GenerateMerchantStatementRequest = BusinessLogic.Requests.GenerateMerchantStatementRequest;
     using MakeMerchantDepositRequest = BusinessLogic.Requests.MakeMerchantDepositRequest;
     using MakeMerchantWithdrawalRequest = BusinessLogic.Requests.MakeMerchantWithdrawalRequest;
-    using SwapMerchantDeviceRequestDTO = DataTransferObjects.Requests.SwapMerchantDeviceRequest;
-    using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.MakeMerchantDepositRequest;
-    using MakeMerchantWithdrawalRequestDTO = DataTransferObjects.Requests.MakeMerchantWithdrawalRequest;
+    using SwapMerchantDeviceRequestDTO = DataTransferObjects.Requests.Merchant.SwapMerchantDeviceRequest;
+    using MakeMerchantDepositRequestDTO = DataTransferObjects.Requests.Merchant.MakeMerchantDepositRequest;
+    using MakeMerchantWithdrawalRequestDTO = DataTransferObjects.Requests.Merchant.MakeMerchantWithdrawalRequest;
     using MerchantDepositSource = Models.MerchantDepositSource;
     using SwapMerchantDeviceRequest = BusinessLogic.Requests.SwapMerchantDeviceRequest;
-    using GenerateMerchantStatementRequestDTO = DataTransferObjects.Requests.GenerateMerchantStatementRequest;
-    using AddMerchantContractRequestDTO = DataTransferObjects.Requests.AddMerchantContractRequest;
+    using GenerateMerchantStatementRequestDTO = DataTransferObjects.Requests.Merchant.GenerateMerchantStatementRequest;
+    using AddMerchantContractRequestDTO = DataTransferObjects.Requests.Merchant.AddMerchantContractRequest;
     using Contract = Models.Contract.Contract;
+    using SettlementSchedule = Models.SettlementSchedule;
 
     /// <summary>
     /// 
@@ -52,7 +51,7 @@
     [Route(MerchantController.ControllerRoute)]
     [ApiController]
     [Authorize]
-    public class MerchantController : ControllerBase
+    public partial class MerchantController : ControllerBase
     {
         #region Fields
 
@@ -213,88 +212,7 @@
                                     OperatorId = assignOperatorRequest.OperatorId
                                 });
         }
-
-        /// <summary>
-        /// Creates the merchant.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="createMerchantRequest">The create merchant request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("")]
-        [SwaggerResponse(201, "Created", typeof(CreateMerchantResponse))]
-        [SwaggerResponseExample(201, typeof(CreateMerchantResponseExample))]
-        public async Task<IActionResult> CreateMerchant([FromRoute] Guid estateId,
-                                                        [FromBody] CreateMerchantRequestDTO createMerchantRequest,
-                                                        CancellationToken cancellationToken)
-        {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] {string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName}) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            // Convert the schedule
-            SettlementSchedule settlementScheduleModel = SettlementSchedule.NotSet;
-            switch(createMerchantRequest.SettlementSchedule)
-            {
-                case DataTransferObjects.SettlementSchedule.Immediate:
-                    settlementScheduleModel = SettlementSchedule.Immediate;
-                    break;
-                case DataTransferObjects.SettlementSchedule.Weekly:
-                    settlementScheduleModel = SettlementSchedule.Weekly;
-                    break;
-                case DataTransferObjects.SettlementSchedule.Monthly:
-                    settlementScheduleModel = SettlementSchedule.Monthly;
-                    break;
-                default:
-                    settlementScheduleModel = SettlementSchedule.Immediate;
-                    break;
-            }
-
-            Guid merchantId = createMerchantRequest.MerchantId.HasValue ? createMerchantRequest.MerchantId.Value : Guid.NewGuid();
-
-            // Create the command
-            CreateMerchantRequest command = CreateMerchantRequest.Create(estateId,
-                                                                         merchantId,
-                                                                         createMerchantRequest.Name,
-                                                                         createMerchantRequest.Address.AddressLine1,
-                                                                         createMerchantRequest.Address.AddressLine2,
-                                                                         createMerchantRequest.Address.AddressLine3,
-                                                                         createMerchantRequest.Address.AddressLine4,
-                                                                         createMerchantRequest.Address.Town,
-                                                                         createMerchantRequest.Address.Region,
-                                                                         createMerchantRequest.Address.PostalCode,
-                                                                         createMerchantRequest.Address.Country,
-                                                                         createMerchantRequest.Contact.ContactName,
-                                                                         createMerchantRequest.Contact.PhoneNumber,
-                                                                         createMerchantRequest.Contact.EmailAddress,
-                                                                         settlementScheduleModel,
-                                                                         createMerchantRequest.CreatedDateTime);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new CreateMerchantResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    AddressId = command.AddressId,
-                                    ContactId = command.ContactId
-                                });
-        }
-
+        
         /// <summary>
         /// Creates the merchant user.
         /// </summary>
@@ -755,13 +673,13 @@
             SettlementSchedule settlementScheduleModel = SettlementSchedule.NotSet;
             switch(setSettlementScheduleRequest.SettlementSchedule)
             {
-                case DataTransferObjects.SettlementSchedule.Immediate:
+                case DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate:
                     settlementScheduleModel = SettlementSchedule.Immediate;
                     break;
-                case DataTransferObjects.SettlementSchedule.Weekly:
+                case DataTransferObjects.Responses.Merchant.SettlementSchedule.Weekly:
                     settlementScheduleModel = SettlementSchedule.Weekly;
                     break;
-                case DataTransferObjects.SettlementSchedule.Monthly:
+                case DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly:
                     settlementScheduleModel = SettlementSchedule.Monthly;
                     break;
                 default:
@@ -829,6 +747,21 @@
                                     DeviceId = deviceId
                                 });
         }
+
+        //[HttpPatch]
+        //[Route("{merchantId}")]
+        ////[SwaggerResponse(201, "Created", typeof(SwapMerchantDeviceResponse))]
+        ////[SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
+        //public async Task<ActionResult> UpdateMerchant([FromRoute] Guid estateId,
+        //                                               [FromRoute] Guid merchantId,
+        //                                               [FromBody] UpdateMerchantRequestDTO updateMerchantRequest,
+        //                                               CancellationToken cancellationToken){
+            
+
+
+        //    return this.NoContent();
+        //}
+
 
         #endregion
 

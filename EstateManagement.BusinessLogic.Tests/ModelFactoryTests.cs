@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using EstateModel = EstateManagement.Models.Estate.Estate;
 using EstateEntity = EstateManagement.Database.Entities.Estate;
 using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;
@@ -22,10 +20,7 @@ using MerchantSecurityUserEntity = EstateManagement.Database.Entities.MerchantSe
 namespace EstateManagement.BusinessLogic.Tests
 {
     using System.Linq;
-    using System.Runtime.InteropServices;
-    using EstateAggregate;
     using EstateManagement.Database.Entities;
-    using Models;
     using Models.Contract;
     using Models.Factories;
     using Shouldly;

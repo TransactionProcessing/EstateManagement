@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace EstateManagement.Controllers
@@ -9,8 +7,9 @@ namespace EstateManagement.Controllers
     using System.Threading;
     using BusinessLogic.Requests;
     using Common.Examples;
-    using DataTransferObjects.Requests;
+    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses;
+    using DataTransferObjects.Responses.Operator;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
     using Swashbuckle.AspNetCore.Annotations;

@@ -1,26 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
 {
-    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Services;
     using ContractAggregate;
+    using DataTransferObjects.Requests.Merchant;
     using EstateAggregate;
-    using EventStore.Client;
     using MerchantAggregate;
     using Microsoft.Extensions.Configuration;
     using Models;
     using Models.Contract;
     using Moq;
+    using Requests;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventStore;
     using Shared.General;
     using Shared.Logger;
     using Shouldly;
@@ -75,25 +72,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             
             Should.NotThrow( async () =>
                             {
-                                await this.DomainService.CreateMerchant(TestData.EstateId,
-                                                                   TestData.MerchantId,
-                                                                   TestData.MerchantName,
-                                                                   TestData.MerchantAddressId,
-                                                                   TestData.MerchantAddressLine1,
-                                                                   TestData.MerchantAddressLine2,
-                                                                   TestData.MerchantAddressLine3,
-                                                                   TestData.MerchantAddressLine4,
-                                                                   TestData.MerchantTown,
-                                                                   TestData.MerchantRegion,
-                                                                   TestData.MerchantPostalCode,
-                                                                   TestData.MerchantCountry,
-                                                                   TestData.MerchantContactId,
-                                                                   TestData.MerchantContactName,
-                                                                   TestData.MerchantContactPhoneNumber,
-                                                                   TestData.MerchantContactEmailAddress,
-                                                                   TestData.SettlementSchedule,
-                                                                   TestData.DateMerchantCreated,
-                                                                   CancellationToken.None);
+                                await this.DomainService.CreateMerchant(TestData.CreateMerchantCommand, CancellationToken.None);
                             });
         }
 
@@ -103,49 +82,13 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-
-            await this.DomainService.CreateMerchant(TestData.EstateId,
-                                               TestData.MerchantId,
-                                               TestData.MerchantName,
-                                               TestData.MerchantAddressId,
-                                               TestData.MerchantAddressLine1,
-                                               TestData.MerchantAddressLine2,
-                                               TestData.MerchantAddressLine3,
-                                               TestData.MerchantAddressLine4,
-                                               TestData.MerchantTown,
-                                               TestData.MerchantRegion,
-                                               TestData.MerchantPostalCode,
-                                               TestData.MerchantCountry,
-                                               TestData.MerchantContactId,
-                                               TestData.MerchantContactName,
-                                               TestData.MerchantContactPhoneNumber,
-                                               TestData.MerchantContactEmailAddress,
-                                               TestData.SettlementSchedule,
-                                               TestData.DateMerchantCreated,
-                                               CancellationToken.None);
+            
+            await this.DomainService.CreateMerchant(TestData.CreateMerchantCommand, CancellationToken.None); ;
 
             Should.NotThrow(async () =>
-            {
-                await this.DomainService.CreateMerchant(TestData.EstateId,
-                                                   TestData.MerchantId,
-                                                   TestData.MerchantName,
-                                                   TestData.MerchantAddressId,
-                                                   TestData.MerchantAddressLine1,
-                                                   TestData.MerchantAddressLine2,
-                                                   TestData.MerchantAddressLine3,
-                                                   TestData.MerchantAddressLine4,
-                                                   TestData.MerchantTown,
-                                                   TestData.MerchantRegion,
-                                                   TestData.MerchantPostalCode,
-                                                   TestData.MerchantCountry,
-                                                   TestData.MerchantContactId,
-                                                   TestData.MerchantContactName,
-                                                   TestData.MerchantContactPhoneNumber,
-                                                   TestData.MerchantContactEmailAddress,
-                                                   TestData.SettlementSchedule,
-                                                   TestData.DateMerchantCreated,
-                                                   CancellationToken.None);
-            });
+                            {
+                                await this.DomainService.CreateMerchant(TestData.CreateMerchantCommand, CancellationToken.None);
+                            });
         }
 
         [Fact]
@@ -158,25 +101,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.Throw<InvalidOperationException>(async () =>
             {
-                await this.DomainService.CreateMerchant(TestData.EstateId,
-                                                        TestData.MerchantId,
-                                                        TestData.MerchantName,
-                                                        TestData.MerchantAddressId,
-                                                        TestData.MerchantAddressLine1,
-                                                        TestData.MerchantAddressLine2,
-                                                        TestData.MerchantAddressLine3,
-                                                        TestData.MerchantAddressLine4,
-                                                        TestData.MerchantTown,
-                                                        TestData.MerchantRegion,
-                                                        TestData.MerchantPostalCode,
-                                                        TestData.MerchantCountry,
-                                                        TestData.MerchantContactId,
-                                                        TestData.MerchantContactName,
-                                                        TestData.MerchantContactPhoneNumber,
-                                                        TestData.MerchantContactEmailAddress,
-                                                        TestData.SettlementSchedule,
-                                                        TestData.DateMerchantCreated,
-                                                        CancellationToken.None);
+                await this.DomainService.CreateMerchant(TestData.CreateMerchantCommand, CancellationToken.None);
             });
         }
 

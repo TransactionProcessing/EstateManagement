@@ -3,19 +3,20 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using DataTransferObjects.Responses.Merchant;
     using MediatR;
     using Requests;
     using Services;
 
-    public class MerchantRequestHandler : IRequestHandler<CreateMerchantRequest>,
-                                          IRequestHandler<AssignOperatorToMerchantRequest>,
+    public class MerchantRequestHandler : IRequestHandler<AssignOperatorToMerchantRequest>,
                                           IRequestHandler<CreateMerchantUserRequest, Guid>,
                                           IRequestHandler<AddMerchantDeviceRequest>,
                                           IRequestHandler<MakeMerchantDepositRequest, Guid>,
                                           IRequestHandler<SetMerchantSettlementScheduleRequest>,
                                           IRequestHandler<SwapMerchantDeviceRequest>,
                                           IRequestHandler<MakeMerchantWithdrawalRequest, Guid>,
-                                          IRequestHandler<AddMerchantContractRequest>{
+                                          IRequestHandler<AddMerchantContractRequest>,
+                                          IRequestHandler<CreateMerchantCommand,Guid>{
         #region Fields
 
         private readonly IMerchantDomainService MerchantDomainService;
@@ -31,30 +32,7 @@
         #endregion
 
         #region Methods
-
-        public async Task Handle(CreateMerchantRequest request,
-                                       CancellationToken cancellationToken) {
-            await this.MerchantDomainService.CreateMerchant(request.EstateId,
-                                                            request.MerchantId,
-                                                            request.Name,
-                                                            request.AddressId,
-                                                            request.AddressLine1,
-                                                            request.AddressLine2,
-                                                            request.AddressLine3,
-                                                            request.AddressLine4,
-                                                            request.Town,
-                                                            request.Region,
-                                                            request.PostalCode,
-                                                            request.Country,
-                                                            request.ContactId,
-                                                            request.ContactName,
-                                                            request.ContactPhoneNumber,
-                                                            request.ContactEmailAddress,
-                                                            request.SettlementSchedule,
-                                                            request.CreateDateTime,
-                                                            cancellationToken);
-        }
-
+        
         public async Task Handle(AssignOperatorToMerchantRequest request,
                                        CancellationToken cancellationToken) {
             await this.MerchantDomainService.AssignOperatorToMerchant(request.EstateId,
@@ -127,6 +105,11 @@
 
         public async Task Handle(AddMerchantContractRequest request, CancellationToken cancellationToken){
             await this.MerchantDomainService.AddContractToMerchant(request.EstateId, request.MerchantId, request.ContractId, cancellationToken);
+        }
+
+        public async Task<Guid> Handle(CreateMerchantCommand request, CancellationToken cancellationToken){
+            var result = await this.MerchantDomainService.CreateMerchant(request, cancellationToken);
+            return result;
         }
     }
 }

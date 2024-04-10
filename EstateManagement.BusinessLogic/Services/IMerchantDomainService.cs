@@ -3,7 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+    using Requests;
 
     /// <summary>
     /// 
@@ -11,27 +11,8 @@
     public interface IMerchantDomainService
     {
         #region Methods
+        Task<Guid> CreateMerchant(CreateMerchantCommand command, CancellationToken cancellationToken);
         
-        Task CreateMerchant(Guid estateId,
-                            Guid merchantId,
-                            String name,
-                            Guid addressId,
-                            String addressLine1,
-                            String addressLine2,
-                            String addressLine3,
-                            String addressLine4,
-                            String town,
-                            String region,
-                            String postalCode,
-                            String country,
-                            Guid contactId,
-                            String contactName,
-                            String contactPhoneNumber,
-                            String contactEmailAddress,
-                            Models.SettlementSchedule settlementSchedule,
-                            DateTime createDateTime,
-                            CancellationToken cancellationToken);
-
         Task AssignOperatorToMerchant(Guid estateId,
                                       Guid merchantId,
                                       Guid operatorId,

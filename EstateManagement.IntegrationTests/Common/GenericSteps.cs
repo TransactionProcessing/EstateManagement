@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.IntegrationTests.Common
 {
     using System.Threading.Tasks;
-    using Ductus.FluentDocker.Executors;
-    using Ductus.FluentDocker.Extensions;
-    using Ductus.FluentDocker.Services;
-    using Ductus.FluentDocker.Services.Extensions;
-    using global::Shared.General;
     using global::Shared.IntegrationTesting;
     using global::Shared.Logger;
-    using Microsoft.Extensions.Logging;
     using NLog;
-    using NLog.Extensions.Logging;
     using Reqnroll;
-    using Logger = global::Shared.Logger.Logger;
+
     [Binding]
     [Scope(Tag = "base")]
     public class GenericSteps

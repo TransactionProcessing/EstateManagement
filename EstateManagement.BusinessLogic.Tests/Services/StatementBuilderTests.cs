@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
 {
     using System.IO;
-    using System.IO.Abstractions;
     using System.IO.Abstractions.TestingHelpers;
     using System.Reflection;
     using System.Threading;
     using BusinessLogic.Services;
     using Models.MerchantStatement;
-    using Moq;
     using Shouldly;
     using Xunit;
 

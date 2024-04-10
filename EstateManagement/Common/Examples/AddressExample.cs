@@ -1,7 +1,7 @@
 ﻿namespace EstateManagement.Common.Examples
 {
     using System.Diagnostics.CodeAnalysis;
-    using DataTransferObjects.Requests;
+    using DataTransferObjects.Requests.Merchant;
     using Swashbuckle.AspNetCore.Filters;
 
     [ExcludeFromCodeCoverage]

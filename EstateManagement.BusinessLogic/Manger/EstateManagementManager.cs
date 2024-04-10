@@ -13,12 +13,9 @@
     using Models.Factories;
     using Models.File;
     using Models.Merchant;
-    using Newtonsoft.Json.Linq;
-    using NLog;
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventStore;
     using Shared.Exceptions;
     using Contract = Models.Contract.Contract;
 

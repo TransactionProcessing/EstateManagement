@@ -3,8 +3,16 @@
 using System.Text;
 using Client;
 using DataTransferObjects;
-using DataTransferObjects.Requests;
+using DataTransferObjects.Requests.Contract;
+using DataTransferObjects.Requests.Estate;
+using DataTransferObjects.Requests.Merchant;
+using DataTransferObjects.Requests.Operator;
 using DataTransferObjects.Responses;
+using DataTransferObjects.Responses.Contract;
+using DataTransferObjects.Responses.Estate;
+using DataTransferObjects.Responses.Merchant;
+using DataTransferObjects.Responses.Operator;
+using DataTransferObjects.Responses.Settlement;
 using Shared.IntegrationTesting;
 using Shouldly;
 
@@ -643,7 +651,7 @@ public class EstateManagementSteps{
 
     public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(String accessToken, DateTime stateDate, DateTime endDate, ReqnrollExtensions.SettlementDetails expectedSettlementDetails){
         await Retry.For(async () => {
-                            List<DataTransferObjects.Responses.SettlementResponse> settlementList =
+                            List<SettlementResponse> settlementList =
                                 await this.EstateClient.GetSettlements(accessToken,
                                                                        expectedSettlementDetails.EstateId,
                                                                        expectedSettlementDetails.MerchantId,
@@ -654,7 +662,7 @@ public class EstateManagementSteps{
                             settlementList.ShouldNotBeNull();
                             settlementList.ShouldNotBeEmpty();
 
-                            DataTransferObjects.Responses.SettlementResponse settlement =
+                            SettlementResponse settlement =
                                 settlementList.SingleOrDefault(s => s.SettlementDate == expectedSettlementDetails.SettlementDate &&
                                                                     s.NumberOfFeesSettled == expectedSettlementDetails.NumberOfFeesSettled &&
                                                                     s.ValueOfFeesSettled == expectedSettlementDetails.ValueOfFeesSettled && s.IsCompleted == expectedSettlementDetails.IsCompleted);

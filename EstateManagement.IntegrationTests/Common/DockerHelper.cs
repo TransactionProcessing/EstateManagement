@@ -2,24 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.IO;
-    using System.Linq;
-    using System.Net;
     using System.Net.Http;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Client;
     using Database.Contexts;
-    using Ductus.FluentDocker.Builders;
-    using Ductus.FluentDocker.Common;
-    using Ductus.FluentDocker.Model.Builders;
-    using Ductus.FluentDocker.Services;
-    using Ductus.FluentDocker.Services.Extensions;
     using EventStore.Client;
     using global::Shared.IntegrationTesting;
-    using global::Shared.Logger;
     using Newtonsoft.Json;
     using SecurityService.Client;
     using Shouldly;

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.BusinessLogic.Tests.Manager
 {
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Castle.DynamicProxy.Generators;
     using ContractAggregate;
     using EstateAggregate;
     using Manger;
@@ -21,7 +19,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventStore;
     using Shared.Exceptions;
     using Shouldly;
     using Testing;

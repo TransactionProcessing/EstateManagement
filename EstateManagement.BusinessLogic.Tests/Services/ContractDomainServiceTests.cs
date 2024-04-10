@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
 {
@@ -13,7 +11,6 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using Moq;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventStore;
     using Shouldly;
     using Testing;
     using Xunit;

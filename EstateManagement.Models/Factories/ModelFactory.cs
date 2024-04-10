@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Contract;
-    using EstateManagement.Database.ViewEntities;
-    using Merchant;
     using EstateModel = Estate.Estate;
     using EstateEntity = EstateManagement.Database.Entities.Estate;
     using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;

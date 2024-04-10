@@ -4,17 +4,15 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using ContractAggregate;
     using EstateAggregate;
-    using EventStore.Client;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
     using MerchantAggregate;
     using Models;
-    using Models.Estate;
     using Models.Merchant;
-    using Newtonsoft.Json.Linq;
+    using Requests;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Responses;
@@ -25,7 +23,10 @@
     using Shared.ValueObjects;
     using TransactionProcessor.Client;
     using TransactionProcessor.DataTransferObjects;
+    using Estate = Models.Estate.Estate;
+    using MerchantDepositSource = Models.MerchantDepositSource;
     using Operator = Models.Estate.Operator;
+    using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
 
     /// <summary>
     /// 
@@ -139,57 +140,60 @@
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
-        public async Task CreateMerchant(Guid estateId,
-                                         Guid merchantId,
-                                         String name,
-                                         Guid addressId,
-                                         String addressLine1,
-                                         String addressLine2,
-                                         String addressLine3,
-                                         String addressLine4,
-                                         String town,
-                                         String region,
-                                         String postalCode,
-                                         String country,
-                                         Guid contactId,
-                                         String contactName,
-                                         String contactPhoneNumber,
-                                         String contactEmailAddress,
-                                         SettlementSchedule settlementSchedule,
-                                         DateTime createdDateTime,
-                                         CancellationToken cancellationToken) {
+        public async Task<Guid> CreateMerchant(CreateMerchantCommand command, CancellationToken cancellationToken){
+            // Convert the settlement schedule
+            Models.SettlementSchedule settlementScheduleModel = command.RequestDto.SettlementSchedule switch
+            {
+                SettlementSchedule.Immediate => Models.SettlementSchedule.Immediate,
+                SettlementSchedule.Monthly => Models.SettlementSchedule.Monthly,
+                SettlementSchedule.Weekly => Models.SettlementSchedule.Weekly,
+                _ => Models.SettlementSchedule.NotSet
+            };
+
+            // Check if we have been sent a merchant id to use
+            Guid merchantId = command.RequestDto.MerchantId ?? Guid.NewGuid();
+            
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-            if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
             // Reject Duplicate Merchant Names... is this needed ?
 
             // Create the merchant
-            if (merchantAggregate.IsCreated) {
-                merchantAggregate.Create(estateId, name, merchantAggregate.DateCreated);
+            if (merchantAggregate.IsCreated)
+            {
+                merchantAggregate.Create(command.EstateId, command.RequestDto.Name, merchantAggregate.DateCreated);
                 merchantAggregate.GenerateReference();
             }
-            else {
-                merchantAggregate.Create(estateId, name, createdDateTime);
+            else
+            {
+                merchantAggregate.Create(command.EstateId, command.RequestDto.Name, command.RequestDto.CreatedDateTime.GetValueOrDefault(DateTime.Now));
                 merchantAggregate.GenerateReference();
 
+                Guid addressId = Guid.NewGuid();
                 // Add the address 
-                merchantAggregate.AddAddress(addressId, addressLine1, addressLine2, addressLine3, addressLine4, town, region, postalCode, country);
+                merchantAggregate.AddAddress(addressId, command.RequestDto.Address.AddressLine1, command.RequestDto.Address.AddressLine2, command.RequestDto.Address.AddressLine3,
+                                             command.RequestDto.Address.AddressLine4, command.RequestDto.Address.Town, command.RequestDto.Address.Region,
+                                             command.RequestDto.Address.PostalCode, command.RequestDto.Address.Country);
 
                 // Add the contact
-                merchantAggregate.AddContact(contactId, contactName, contactPhoneNumber, contactEmailAddress);
+                Guid contactId = Guid.NewGuid();
+                merchantAggregate.AddContact(contactId, command.RequestDto.Contact.ContactName, command.RequestDto.Contact.PhoneNumber, command.RequestDto.Contact.EmailAddress);
 
                 // Set the settlement schedule
-                merchantAggregate.SetSettlementSchedule(settlementSchedule);
+                merchantAggregate.SetSettlementSchedule(settlementScheduleModel);
             }
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
-        }
 
+            return merchantId;
+        }
+        
         public async Task<Guid> CreateMerchantUser(Guid estateId,
                                                    Guid merchantId,
                                                    String emailAddress,
@@ -370,7 +374,7 @@
 
         public async Task SetMerchantSettlementSchedule(Guid estateId,
                                                         Guid merchantId,
-                                                        SettlementSchedule settlementSchedule,
+                                                        Models.SettlementSchedule settlementSchedule,
                                                         CancellationToken cancellationToken) {
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 

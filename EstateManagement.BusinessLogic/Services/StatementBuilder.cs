@@ -1,7 +1,6 @@
 ﻿namespace EstateManagement.BusinessLogic.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.IO.Abstractions;
     using System.Reflection;
     using System.Text;

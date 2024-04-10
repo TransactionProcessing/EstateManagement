@@ -2,11 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.Linq;
+    using DataTransferObjects.Responses.Contract;
+    using DataTransferObjects.Responses.Merchant;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
-    using Newtonsoft.Json;
 
     //using TransactionProcessor.DataTransferObjects;
 

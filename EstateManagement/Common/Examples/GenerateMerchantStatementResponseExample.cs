@@ -2,6 +2,7 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using DataTransferObjects.Responses;
+    using DataTransferObjects.Responses.Merchant;
     using Swashbuckle.AspNetCore.Filters;
 
     [ExcludeFromCodeCoverage]

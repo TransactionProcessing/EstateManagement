@@ -1,24 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EstateManagement.Controllers
 {
     using EstateManagement.BusinessLogic.Manger;
-    using MediatR;
     using System;
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
-    using Common.Examples;
-    using DataTransferObjects.Responses;
     using Factories;
     using Models.File;
-    using Shared.Exceptions;
     using Shared.General;
-    using Swashbuckle.AspNetCore.Annotations;
-    using Swashbuckle.AspNetCore.Filters;
 
     //[Route("api/[controller]")]
     //[ApiController]

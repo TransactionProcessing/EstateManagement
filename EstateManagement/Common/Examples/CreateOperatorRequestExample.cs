@@ -1,8 +1,8 @@
 ﻿namespace EstateManagement.Common.Examples
 {
-    using DataTransferObjects.Requests;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Requests.Operator;
 
     [ExcludeFromCodeCoverage]
     public class CreateOperatorRequestExample : IExamplesProvider<CreateOperatorRequest>

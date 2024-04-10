@@ -2,13 +2,10 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Net.Http;
-    using System.Net.Security;
     using BusinessLogic.Common;
     using ContractAggregate;
     using Database.Contexts;
     using EstateAggregate;
-    using EventStore.Client;
     using Lamar;
     using MerchantAggregate;
     using MerchantStatementAggregate;
@@ -20,11 +17,9 @@
     using Shared.EntityFramework.ConnectionStringConfiguration;
     using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventStore;
-    using Shared.EventStore.Extensions;
     using Shared.EventStore.SubscriptionWorker;
     using Shared.General;
     using Shared.Repositories;
-    using EventStorePersistentSubscriptionsClient = EventStore.Client.EventStorePersistentSubscriptionsClient;
 
     /// <summary>
     /// 
