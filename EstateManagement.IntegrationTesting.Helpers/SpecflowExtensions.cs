@@ -26,7 +26,7 @@ public static class ReqnrollExtensions
         public Decimal ValueOfFeesSettled { get; set; }
         public Boolean IsCompleted { get; set; }
     }
-
+    
     public class SettlementFeeDetails
     {
         public Guid EstateId { get; set; }
@@ -52,7 +52,7 @@ public static class ReqnrollExtensions
         Guid aggregateId = GuidCalculator.Combine(estateId, merchantId, settlementDate.ToGuid());
         return aggregateId;
     }
-
+    
     public static List<SettlementFeeDetails> ToSettlementFeeDetails(this DataTableRows tableRows, string estateName,
                                                                     string merchantName,
                                                                     String settlementDateString,
@@ -424,6 +424,38 @@ public static class ReqnrollExtensions
         return requests;
     }
 
+    public static List<(EstateDetails, Guid, UpdateMerchantRequest)> ToUpdateMerchantRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList){
+        List<(EstateDetails, Guid, UpdateMerchantRequest)> result = new List<(EstateDetails, Guid, UpdateMerchantRequest)>();
+
+        foreach (DataTableRow tableRow in tableRows){
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
+
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+            String updateMerchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "UpdateMerchantName");
+
+            String settlementSchedule = ReqnrollTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
+
+            SettlementSchedule schedule = SettlementSchedule.Immediate;
+            if (String.IsNullOrEmpty(settlementSchedule) == false)
+            {
+                schedule = Enum.Parse<SettlementSchedule>(settlementSchedule);
+            }
+
+            UpdateMerchantRequest updateMerchantRequest = new UpdateMerchantRequest{
+                                                                                       Name = updateMerchantName,
+                                                                                       SettlementSchedule = schedule
+                                                                                   };
+
+            result.Add((estateDetails, merchantId,updateMerchantRequest));
+        }
+
+        return result;
+    }
+    
     public static List<(EstateDetails, Guid, AddMerchantDeviceRequest)> ToAddMerchantDeviceRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Guid, AddMerchantDeviceRequest)> result = new List<(EstateDetails, Guid, AddMerchantDeviceRequest)>();

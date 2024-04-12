@@ -674,6 +674,8 @@ public class EstateManagementSteps{
                         TimeSpan.FromMinutes(2));
     }
 
+    
+
     public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(String accessToken, List<ReqnrollExtensions.SettlementFeeDetails> settlementFeeDetailsList){
         var settlements = settlementFeeDetailsList.DistinctBy(d => new{
                                                                           d.EstateId,
@@ -714,5 +716,27 @@ public class EstateManagementSteps{
                             },
                             TimeSpan.FromMinutes(3));
         }
+    }
+
+    public async Task<List<MerchantResponse>> WhenIUpdateTheFollowingMerchants(string accessToken, List<(EstateDetails estate, Guid merchantId, UpdateMerchantRequest request)> requests){
+        List<MerchantResponse> responses = new List<MerchantResponse>();
+
+        foreach ((EstateDetails estate, Guid merchantId, UpdateMerchantRequest request) request in requests){
+            await this.EstateClient.UpdateMerchant(accessToken, request.estate.EstateId, request.merchantId, request.request, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        foreach ((EstateDetails estate, Guid merchantId, UpdateMerchantRequest request) request in requests){
+            await Retry.For(async () => {
+                                MerchantResponse merchant = await this.EstateClient
+                                                                      .GetMerchant(accessToken, request.estate.EstateId, request.merchantId, CancellationToken.None)
+                                                                      .ConfigureAwait(false);
+                                
+                                merchant.MerchantName.ShouldBe(request.request.Name);
+                                merchant.SettlementSchedule.ShouldBe(request.request.SettlementSchedule);
+                                responses.Add(merchant);
+                            });
+        }
+
+        return responses;
     }
 }

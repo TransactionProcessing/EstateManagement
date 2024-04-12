@@ -39,6 +39,7 @@
             this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContractCommand>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantCommand>, MerchantRequestHandler>();
 
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantQuery, Merchant>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>, MerchantRequestHandler>();

@@ -327,6 +327,16 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
+    public async Task UpdateMerchant(MerchantNameUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Merchant merchant = await this.LoadMerchant(context, domainEvent, cancellationToken);
+
+        merchant.Name = domainEvent.MerchantName;
+
+        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+    }
+
     public async Task AddMerchantAddress(AddressAddedEvent domainEvent,
                                          CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);

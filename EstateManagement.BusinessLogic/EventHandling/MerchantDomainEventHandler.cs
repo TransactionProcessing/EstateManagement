@@ -91,6 +91,10 @@
             await this.EstateReportingRepository.AddMerchant(domainEvent, cancellationToken);
         }
 
+        private async Task HandleSpecificDomainEvent(MerchantNameUpdatedEvent domainEvent, CancellationToken cancellationToken){
+            await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);
+        }
+
         /// <summary>
         /// Handles the specific domain event.
         /// </summary>

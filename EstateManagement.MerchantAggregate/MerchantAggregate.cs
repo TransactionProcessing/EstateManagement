@@ -14,7 +14,20 @@
     using Shared.General;
 
     public static class MerchantAggregateExtensions{
-        
+
+        public static void UpdateMerchant(this MerchantAggregate aggregate, String name){
+            aggregate.EnsureMerchantHasBeenCreated();
+
+            if (String.Compare(name, aggregate.Name, StringComparison.InvariantCultureIgnoreCase) != 0 &&
+                String.IsNullOrEmpty(name) == false){
+                // Name has been updated to raise an event for this
+                MerchantNameUpdatedEvent merchantNameUpdatedEvent = new MerchantNameUpdatedEvent(aggregate.AggregateId,
+                                                                                                 aggregate.EstateId,
+                                                                                                 name);
+                aggregate.ApplyAndAppend(merchantNameUpdatedEvent);
+            }
+        }
+
         public static void AddAddress(this MerchantAggregate aggregate,
             Guid addressId,
                                String addressLine1,
@@ -346,6 +359,10 @@
             aggregate.AggregateId = merchantCreatedEvent.AggregateId;
             aggregate.DateCreated = merchantCreatedEvent.DateCreated;
             aggregate.MaximumDevices = 1;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantNameUpdatedEvent merchantNameUpdatedEvent){
+            aggregate.Name = merchantNameUpdatedEvent.MerchantName;
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, AddressAddedEvent addressAddedEvent)
