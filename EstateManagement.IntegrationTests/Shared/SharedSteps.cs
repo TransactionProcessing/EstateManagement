@@ -19,6 +19,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using DataTransferObjects.Responses.Merchant;
     using global::Shared.IntegrationTesting;
     using IntegrationTesting.Helpers;
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
     using Newtonsoft.Json.Linq;
     using Reqnroll;
     using SecurityService.DataTransferObjects.Requests;
@@ -245,6 +246,20 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When("I update the merchants with the following details")]
+        public async Task WhenIUpdateTheMerchantsWithTheFollowingDetails(DataTable table)
+        {
+            List<(EstateDetails, Guid, UpdateMerchantRequest)> requests = table.Rows.ToUpdateMerchantRequests(this.TestingContext.Estates);
+
+            List<MerchantResponse> verifiedMerchants = await this.EstateManagementSteps.WhenIUpdateTheFollowingMerchants(this.TestingContext.AccessToken, requests);
+
+            foreach (MerchantResponse verifiedMerchant in verifiedMerchants)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(verifiedMerchant.EstateId);
+                this.TestingContext.Logger.LogInformation($"Merchant {verifiedMerchant.MerchantName} created with Id {verifiedMerchant.MerchantId} for Estate {estateDetails.EstateName}");
+            }
+        }
+        
         [When(@"I swap the merchant device the device is swapped")]
         public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(DataTable table) {
             var requests = table.Rows.ToSwapMerchantDeviceRequests(this.TestingContext.Estates);
@@ -378,7 +393,7 @@ namespace EstateManagement.IntegrationTests.Shared
         public async Task WhenIGetTheEstateSettlementReportForEstateWithTheStartDateAndTheEndDateTheFollowingDataIsReturned(string estateName,
                                                                                                                             string startDateString,
                                                                                                                             string endDateString,
-                                                                                                                            Table table){
+                                                                                                                            DataTable table){
             DateTime stateDate = ReqnrollTableHelper.GetDateForDateString(startDateString, DateTime.UtcNow.Date);
             DateTime endDate = ReqnrollTableHelper.GetDateForDateString(endDateString, DateTime.UtcNow.Date);
 
@@ -391,7 +406,7 @@ namespace EstateManagement.IntegrationTests.Shared
             string merchantName,
             string startDateString,
             string endDateString,
-            Table table){
+            DataTable table){
 
             DateTime stateDate = ReqnrollTableHelper.GetDateForDateString(startDateString, DateTime.UtcNow.Date);
             DateTime endDate = ReqnrollTableHelper.GetDateForDateString(endDateString, DateTime.UtcNow.Date);
@@ -405,7 +420,7 @@ namespace EstateManagement.IntegrationTests.Shared
         public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(string estateName,
             string merchantName,
             string settlementDateString,
-            Table table){
+            DataTable table){
 
             List<ReqnrollExtensions.SettlementFeeDetails> settlementFeeDetailsList = table.Rows.ToSettlementFeeDetails(estateName, merchantName, settlementDateString, this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(this.TestingContext.AccessToken, settlementFeeDetailsList);

@@ -880,6 +880,110 @@ await this.FeatureBackgroundAsync();
             await this.ScenarioCleanupAsync();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Update Merchant")]
+        [Xunit.TraitAttribute("FeatureTitle", "Merchant")]
+        [Xunit.TraitAttribute("Description", "Update Merchant")]
+        public async System.Threading.Tasks.Task UpdateMerchant()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Update Merchant", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 176
+ this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 4
+await this.FeatureBackgroundAsync();
+#line hidden
+                Reqnroll.Table table67 = new Reqnroll.Table(new string[] {
+                            "MerchantName",
+                            "AddressLine1",
+                            "Town",
+                            "Region",
+                            "Country",
+                            "ContactName",
+                            "EmailAddress",
+                            "EstateName",
+                            "SettlementSchedule"});
+                table67.AddRow(new string[] {
+                            "Test Merchant 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "Test Region",
+                            "United Kingdom",
+                            "Test Contact 1",
+                            "testcontact1@merchant1.co.uk",
+                            "Test Estate 1",
+                            "Weekly"});
+#line 177
+ await testRunner.WhenAsync("I create the following merchants", ((string)(null)), table67, "When ");
+#line hidden
+                Reqnroll.Table table68 = new Reqnroll.Table(new string[] {
+                            "OperatorName",
+                            "MerchantName",
+                            "MerchantNumber",
+                            "TerminalNumber",
+                            "EstateName"});
+                table68.AddRow(new string[] {
+                            "Test Operator 1",
+                            "Test Merchant 1",
+                            "00000001",
+                            "10000001",
+                            "Test Estate 1"});
+#line 180
+ await testRunner.WhenAsync("I assign the following operator to the merchants", ((string)(null)), table68, "When ");
+#line hidden
+                Reqnroll.Table table69 = new Reqnroll.Table(new string[] {
+                            "EmailAddress",
+                            "Password",
+                            "GivenName",
+                            "FamilyName",
+                            "MerchantName",
+                            "EstateName"});
+                table69.AddRow(new string[] {
+                            "merchantuser1@testmerchant1.co.uk",
+                            "123456",
+                            "TestMerchant",
+                            "User1",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 183
+ await testRunner.WhenAsync("I create the following security users", ((string)(null)), table69, "When ");
+#line hidden
+                Reqnroll.Table table70 = new Reqnroll.Table(new string[] {
+                            "DeviceIdentifier",
+                            "MerchantName",
+                            "EstateName"});
+                table70.AddRow(new string[] {
+                            "TestDevice1",
+                            "Test Merchant 1",
+                            "Test Estate 1"});
+#line 186
+ await testRunner.WhenAsync("I add the following devices to the merchant", ((string)(null)), table70, "When ");
+#line hidden
+                Reqnroll.Table table71 = new Reqnroll.Table(new string[] {
+                            "UpdateMerchantName",
+                            "SettlementSchedule",
+                            "EstateName",
+                            "MerchantName"});
+                table71.AddRow(new string[] {
+                            "Update Merchant 1",
+                            "Monthly",
+                            "Test Estate 1",
+                            "Test Merchant 1"});
+#line 189
+ await testRunner.WhenAsync("I update the merchants with the following details", ((string)(null)), table71, "When ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "1.0.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : object, Xunit.IAsyncLifetime
