@@ -24,13 +24,10 @@
         Task<Guid> MakeMerchantDeposit(MerchantCommands.MakeMerchantDepositCommand command, CancellationToken cancellationToken);
 
         Task<Guid> MakeMerchantWithdrawal(MerchantCommands.MakeMerchantWithdrawalCommand command, CancellationToken cancellationToken);
-
-        Task SetMerchantSettlementSchedule(Guid estateId,
-                                           Guid merchantId,
-                                           Models.SettlementSchedule settlementSchedule,
-                                           CancellationToken cancellationToken);
-
+        
         Task AddContractToMerchant(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken);
+
+        Task UpdateMerchant(MerchantCommands.UpdateMerchantCommand command, CancellationToken cancellationToken);
 
         #endregion
     }

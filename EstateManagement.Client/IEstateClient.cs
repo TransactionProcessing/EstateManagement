@@ -165,6 +165,12 @@
                                    AddMerchantContractRequest request,
                                    CancellationToken cancellationToken);
 
+        Task UpdateMerchant(String accessToken,
+                            Guid estateId,
+                            Guid merchantId,
+                            UpdateMerchantRequest request,
+                            CancellationToken cancellationToken);
+
         #endregion
     }
 }

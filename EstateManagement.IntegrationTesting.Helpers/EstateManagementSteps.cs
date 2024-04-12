@@ -674,6 +674,8 @@ public class EstateManagementSteps{
                         TimeSpan.FromMinutes(2));
     }
 
+    
+
     public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(String accessToken, List<ReqnrollExtensions.SettlementFeeDetails> settlementFeeDetailsList){
         var settlements = settlementFeeDetailsList.DistinctBy(d => new{
                                                                           d.EstateId,

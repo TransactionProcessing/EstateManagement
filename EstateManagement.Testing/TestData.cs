@@ -88,6 +88,8 @@
 
         public static String MerchantName = "Test Merchant 1";
 
+        public static String MerchantNameUpdated = "Test Merchant 1 Updated";
+
         public static String MerchantPostalCode = "TE571NG";
 
         public static String MerchantRegion = "Test Region";
@@ -1936,14 +1938,32 @@
                                              OriginalDeviceIdentifier = TestData.DeviceIdentifier
                                          };
 
-        public static MerchantCommands.GenerateMerchantStatementCommand GenerateMerchantStatementCommand => new MerchantCommands.GenerateMerchantStatementCommand(TestData.EstateId, TestData.MerchantId, TestData.GenerateMerchantStatementRequest);
+        public static MerchantCommands.GenerateMerchantStatementCommand GenerateMerchantStatementCommand => new(TestData.EstateId, TestData.MerchantId, TestData.GenerateMerchantStatementRequest);
 
         public static GenerateMerchantStatementRequest GenerateMerchantStatementRequest =>
             new GenerateMerchantStatementRequest{
                                                     MerchantStatementDate = TestData.StatementCreateDate
                                                 };
+        public static UpdateMerchantRequest UpdateMerchantRequest =>
+            new UpdateMerchantRequest{
+                                         Name = TestData.MerchantNameUpdated,
+                                         SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule.NotSet
+                                     };
+
+        public static MerchantCommands.UpdateMerchantCommand UpdateMerchantCommand => new(TestData.EstateId, TestData.MerchantId, TestData.UpdateMerchantRequest);
+        
 
         public static MerchantDepositListAggregate EmptyMerchantDepositListAggregate = new MerchantDepositListAggregate();
+
+        public static MerchantQueries.GetMerchantsQuery GetMerchantsQuery => new MerchantQueries.GetMerchantsQuery(TestData.EstateId);
+        public static MerchantQueries.GetMerchantQuery GetMerchantQuery => new MerchantQueries.GetMerchantQuery(TestData.EstateId, TestData.MerchantId);
+        public static MerchantQueries.GetMerchantContractsQuery GetMerchantContractsQuery => new MerchantQueries.GetMerchantContractsQuery(TestData.EstateId, TestData.MerchantId);
+
+        public static MerchantQueries.GetTransactionFeesForProductQuery GetTransactionFeesForProductQuery =>
+            new MerchantQueries.GetTransactionFeesForProductQuery(TestData.EstateId,
+                                                                  TestData.MerchantId,
+                                                                  TestData.ContractId,
+                                                                  TestData.ProductId);
     }
 
 

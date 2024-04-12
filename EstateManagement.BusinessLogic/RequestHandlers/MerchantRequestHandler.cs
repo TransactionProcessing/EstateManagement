@@ -29,7 +29,8 @@
                                           IRequestHandler<MerchantQueries.GetMerchantQuery, Models.Merchant.Merchant>,
                                           IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>,
                                           IRequestHandler<MerchantQueries.GetMerchantsQuery, List<Models.Merchant.Merchant>>,
-                                          IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>{
+                                          IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>,
+                                          IRequestHandler<MerchantCommands.UpdateMerchantCommand>{
         #region Fields
 
         private readonly IMerchantDomainService MerchantDomainService;
@@ -130,6 +131,10 @@
                     await this.EstateManagementManager.GetTransactionFeesForProduct(query.EstateId, query.MerchantId, query.ContractId, query.ProductId, cancellationToken);
 
             return transactionFees;
+        }
+
+        public async Task Handle(MerchantCommands.UpdateMerchantCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.UpdateMerchant(command, cancellationToken);
         }
     }
 }

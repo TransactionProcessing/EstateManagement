@@ -26,7 +26,7 @@ public static class ReqnrollExtensions
         public Decimal ValueOfFeesSettled { get; set; }
         public Boolean IsCompleted { get; set; }
     }
-
+    
     public class SettlementFeeDetails
     {
         public Guid EstateId { get; set; }
@@ -52,6 +52,23 @@ public static class ReqnrollExtensions
         Guid aggregateId = GuidCalculator.Combine(estateId, merchantId, settlementDate.ToGuid());
         return aggregateId;
     }
+
+    public static List<UpdateMerchantRequest> ToUpdateMerchantRequests(this DataTableRows tableRows)
+    {
+        List<UpdateMerchantRequest> updateMerchantRequests = new List<UpdateMerchantRequest>();
+
+        foreach (DataTableRow tableRow in tableRows){
+            updateMerchantRequests.Add(new UpdateMerchantRequest{
+                                                                    Name = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName"),
+                                                                    SettlementSchedule = Enum.Parse<SettlementSchedule>(ReqnrollTableHelper.GetStringRowValue(tableRow, "SettlementSchedule"))
+                                                                });
+            
+        }
+
+        return updateMerchantRequests;
+    }
+
+
 
     public static List<SettlementFeeDetails> ToSettlementFeeDetails(this DataTableRows tableRows, string estateName,
                                                                     string merchantName,

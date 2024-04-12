@@ -62,6 +62,9 @@
         Task AddMerchant(MerchantCreatedEvent domainEvent,
                          CancellationToken cancellationToken);
 
+        Task UpdateMerchant(MerchantNameUpdatedEvent domainEvent,
+                         CancellationToken cancellationToken);
+
         Task AddMerchantAddress(AddressAddedEvent domainEvent,
                                 CancellationToken cancellationToken);
 

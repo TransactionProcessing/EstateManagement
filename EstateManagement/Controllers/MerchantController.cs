@@ -329,7 +329,7 @@
                 return this.Forbid();
             }
 
-            MerchantQueries.GetMerchantQuery query = new MerchantQueries.GetMerchantQuery(estateId, merchantId);
+            MerchantQueries.GetMerchantQuery query = new (estateId, merchantId);
 
             // Route the query
             Merchant merchant = await this.Mediator.Send(query, cancellationToken);
@@ -351,7 +351,7 @@
                 return this.Forbid();
             }
 
-            MerchantQueries.GetMerchantContractsQuery query = new MerchantQueries.GetMerchantContractsQuery(estateId, merchantId);
+            MerchantQueries.GetMerchantContractsQuery query = new (estateId, merchantId);
 
             List<Models.Contract.Contract> contracts = await this.Mediator.Send(query, cancellationToken);
 
@@ -371,7 +371,7 @@
                 return this.Forbid();
             }
 
-            MerchantQueries.GetMerchantsQuery query = new MerchantQueries.GetMerchantsQuery(estateId);
+            MerchantQueries.GetMerchantsQuery query = new (estateId);
 
             List<Merchant> merchants = await this.Mediator.Send(query, cancellationToken);
 
@@ -395,7 +395,7 @@
                 return this.Forbid();
             }
 
-            MerchantQueries.GetTransactionFeesForProductQuery query = new MerchantQueries.GetTransactionFeesForProductQuery(estateId, merchantId, contractId, productId);
+            MerchantQueries.GetTransactionFeesForProductQuery query = new (estateId, merchantId, contractId, productId);
 
             List<TransactionFee> transactionFees = await this.Mediator.Send(query, cancellationToken);
 
@@ -450,22 +450,26 @@
         }
 
 
-        //[HttpPatch]
-        //[Route("{merchantId}")]
-        ////[SwaggerResponse(201, "Created", typeof(SwapMerchantDeviceResponse))]
-        ////[SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
-        //public async Task<ActionResult> UpdateMerchant([FromRoute] Guid estateId,
-        //                                               [FromRoute] Guid merchantId,
-        //                                               [FromBody] UpdateMerchantRequestDTO updateMerchantRequest,
-        //                                               CancellationToken cancellationToken){
+        [HttpPatch]
+        [Route("{merchantId}")]
+        [SwaggerResponse(204, "No Content")]
+        public async Task<ActionResult> UpdateMerchant([FromRoute] Guid estateId,
+                                                       [FromRoute] Guid merchantId,
+                                                       [FromBody] UpdateMerchantRequest updateMerchantRequest,
+                                                       CancellationToken cancellationToken){
 
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
 
+            MerchantCommands.UpdateMerchantCommand command = new (estateId, merchantId, updateMerchantRequest);
+            
+            await this.Mediator.Send(command, cancellationToken);
 
-        //    return this.NoContent();
-        //}
-
-
-
+            return this.NoContent();
+        }
 
         #endregion
 

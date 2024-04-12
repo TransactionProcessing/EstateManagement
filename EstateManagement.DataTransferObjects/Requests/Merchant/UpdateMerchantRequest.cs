@@ -12,7 +12,7 @@
         [JsonProperty("name")]
         public String Name { get; set; }
         
-        [JsonProperty("settlment_schedule")]
+        [JsonProperty("settlement_schedule")]
         public SettlementSchedule SettlementSchedule { get; set; }
 
         #endregion

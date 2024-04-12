@@ -10,6 +10,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
     using System.IO.Abstractions.TestingHelpers;
     using BusinessLogic.Services;
     using Lamar;
+    using Manger;
     using MediatR;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -35,6 +36,12 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.MakeMerchantWithdrawalCommand);
             this.Requests.Add(TestData.SwapMerchantDeviceCommand);
             this.Requests.Add(TestData.GenerateMerchantStatementCommand);
+            this.Requests.Add(TestData.UpdateMerchantCommand);
+            this.Requests.Add(TestData.GetMerchantsQuery);
+            this.Requests.Add(TestData.GetMerchantQuery);
+            this.Requests.Add(TestData.GetMerchantContractsQuery);
+            this.Requests.Add(TestData.GetTransactionFeesForProductQuery);
+
             //this.Requests.Add(TestData.AddProductToContractRequest);
             //this.Requests.Add(TestData.AddSettledFeeToMerchantStatementRequest);
             //this.Requests.Add(TestData.AddTransactionFeeForProductToContractRequest);
@@ -74,7 +81,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
                     await mediator.Send(baseRequest);
                 }
                 catch(Exception ex) {
-                    errors.Add(ex.Message);
+                    errors.Add($"{ex.Message} Request type {baseRequest.GetType()}");
                 }
             }
 
@@ -123,6 +130,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
                                           s.AddSingleton<IEstateDomainService, DummyEstateDomainService>();
                                           s.AddSingleton<IContractDomainService, DummyContractDomainService>();
                                           s.AddSingleton<IMerchantStatementDomainService, DummyMerchantStatementDomainService>();
+                                          s.AddSingleton<IEstateManagementManager, DummyEstateManagementManager>();
                                       });
         }
     }

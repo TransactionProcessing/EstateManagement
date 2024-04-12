@@ -411,66 +411,6 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                             });
         }
 
-        [Theory]
-        [InlineData(SettlementSchedule.Immediate)]
-        [InlineData(SettlementSchedule.Weekly)]
-        [InlineData(SettlementSchedule.Monthly)]
-        public async Task MerchantDomainService_SetMerchantSettlementSchedule_MerchantSettlementIntervalIsSet(SettlementSchedule settlementSchedule)
-        {
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
-            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            
-            Should.NotThrow(async () =>
-            {
-                await this.DomainService.SetMerchantSettlementSchedule(TestData.EstateId,
-                                                                       TestData.MerchantId,
-                                                                       settlementSchedule,
-                                                                       CancellationToken.None);
-            });
-        }
-
-        [Theory]
-        [InlineData(SettlementSchedule.Immediate)]
-        [InlineData(SettlementSchedule.Weekly)]
-        [InlineData(SettlementSchedule.Monthly)]
-        public async Task MerchantDomainService_SetMerchantSettlementSchedule_EstateNotCreated_ErrorThrown(SettlementSchedule settlementSchedule)
-        {
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
-
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
-            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-            Should.Throw<InvalidOperationException>(async () =>
-            {
-                await this.DomainService.SetMerchantSettlementSchedule(TestData.EstateId,
-                                                                       TestData.MerchantId,
-                                                                       settlementSchedule,
-                                                                       CancellationToken.None);
-            });
-        }
-
-        [Theory]
-        [InlineData(SettlementSchedule.Immediate)]
-        [InlineData(SettlementSchedule.Weekly)]
-        [InlineData(SettlementSchedule.Monthly)]
-        public async Task MerchantDomainService_SetMerchantSettlementSchedule_MerchantNotCreated_ErrorThrown(SettlementSchedule settlementSchedule)
-        {
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
-            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            
-            Should.Throw<InvalidOperationException>(async () =>
-            {
-                await this.DomainService.SetMerchantSettlementSchedule(TestData.EstateId,
-                                                                       TestData.MerchantId,
-                                                                       settlementSchedule,
-                                                                       CancellationToken.None);
-            });
-        }
-
         [Fact]
         public async Task MerchantDomainService_SwapMerchantDevice_MerchantDeviceSwapped()
         {
@@ -683,6 +623,28 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Should.Throw<InvalidOperationException>(async () => {
                 await this.DomainService.AddContractToMerchant(TestData.AddMerchantContractCommand, CancellationToken.None);
             });
+        }
+
+        [Theory]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate)]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly)]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.Weekly)]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.NotSet)]
+        public async Task MerchantDomainService_UpdateMerchant_MerchantIsUpdated(DataTransferObjects.Responses.Merchant.SettlementSchedule settlementSchedule)
+        {
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            MerchantCommands.UpdateMerchantCommand command = new(TestData.EstateId, TestData.MerchantId, TestData.UpdateMerchantRequest);
+
+            command.RequestDto.SettlementSchedule = settlementSchedule;
+
+            Should.NotThrow(async () =>
+                            {
+                                await this.DomainService.UpdateMerchant(command, CancellationToken.None);
+                            });
         }
     }
 }

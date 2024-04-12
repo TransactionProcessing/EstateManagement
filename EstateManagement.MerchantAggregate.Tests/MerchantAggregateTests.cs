@@ -423,5 +423,40 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             Should.Throw<InvalidOperationException>(() => { merchantAggregate.AddContract(contractAggregate); });
         }
+
+        [Fact]
+        public void MerchantAggregate_UpdateMerchant_NameUpdated_ErrorThrown()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            merchantAggregate.UpdateMerchant(TestData.MerchantNameUpdated);
+
+            merchantAggregate.Name.ShouldBe(TestData.MerchantNameUpdated);
+        }
+
+        [Fact]
+        public void MerchantAggregate_UpdateMerchant_SameName_NoUpdate_ErrorThrown()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            merchantAggregate.UpdateMerchant(TestData.MerchantName);
+
+            merchantAggregate.Name.ShouldBe(TestData.MerchantName);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void MerchantAggregate_UpdateMerchant_NameNotSet_NoUpdate_ErrorThrown(String merchantName)
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            merchantAggregate.UpdateMerchant(merchantName);
+
+            merchantAggregate.Name.ShouldBe(TestData.MerchantName);
+        }
     }
 }

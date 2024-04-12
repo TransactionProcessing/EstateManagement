@@ -27,6 +27,8 @@
         public record SwapMerchantDeviceCommand(Guid EstateId, Guid MerchantId, SwapMerchantDeviceRequest RequestDto): IRequest<Guid>;
 
         public record GenerateMerchantStatementCommand(Guid EstateId, Guid MerchantId, GenerateMerchantStatementRequest RequestDto) : IRequest<Guid>;
+        
+        public record UpdateMerchantCommand(Guid EstateId, Guid MerchantId, UpdateMerchantRequest RequestDto) : IRequest;
     }
 
     [ExcludeFromCodeCoverage]

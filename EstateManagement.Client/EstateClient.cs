@@ -157,6 +157,35 @@
             }
         }
 
+        public async Task UpdateMerchant(String accessToken, Guid estateId, Guid merchantId, UpdateMerchantRequest updateMerchantRequest, CancellationToken cancellationToken){
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}");
+            
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(updateMerchantRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                await this.HandleResponse(httpResponse, cancellationToken);
+
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error updating merchant {merchantId} for estate {estateId}.",
+                                                    ex);
+
+                throw exception;
+            }
+        }
+
         public async Task<AddProductToContractResponse> AddProductToContract(String accessToken,
                                                                              Guid estateId,
                                                                              Guid contractId,

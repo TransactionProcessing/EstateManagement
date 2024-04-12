@@ -37,11 +37,11 @@ public class DummyMerchantDomainService : IMerchantDomainService
         return Guid.NewGuid();
     }
 
-    public async Task SetMerchantSettlementSchedule(Guid estateId, Guid merchantId, SettlementSchedule settlementSchedule, CancellationToken cancellationToken){
+    public async Task AddContractToMerchant(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken){
         
     }
 
-    public async Task AddContractToMerchant(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken){
+    public async Task UpdateMerchant(MerchantCommands.UpdateMerchantCommand command, CancellationToken cancellationToken){
         
     }
 }
