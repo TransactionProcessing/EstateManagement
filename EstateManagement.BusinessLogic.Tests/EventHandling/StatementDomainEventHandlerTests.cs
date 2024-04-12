@@ -3,7 +3,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.EventHandling;
-    using EstateManagement.MerchantStatement.DomainEvents;
     using EstateManagement.Repository;
     using Moq;
     using Shared.Logger;

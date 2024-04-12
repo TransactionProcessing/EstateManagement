@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.EventHandling
 {
     using System.Threading;
     using BusinessLogic.EventHandling;
-    using EstateManagement.Contract.DomainEvents;
     using EstateManagement.Repository;
     using EstateManagement.Testing;
     using Moq;

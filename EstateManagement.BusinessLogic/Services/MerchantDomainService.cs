@@ -4,17 +4,16 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using ContractAggregate;
     using EstateAggregate;
-    using EventStore.Client;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
     using MerchantAggregate;
+    using Microsoft.IdentityModel.Tokens;
     using Models;
-    using Models.Estate;
     using Models.Merchant;
-    using Newtonsoft.Json.Linq;
+    using Requests;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Responses;
@@ -25,7 +24,10 @@
     using Shared.ValueObjects;
     using TransactionProcessor.Client;
     using TransactionProcessor.DataTransferObjects;
+    using Estate = Models.Estate.Estate;
+    using MerchantDepositSource = Models.MerchantDepositSource;
     using Operator = Models.Estate.Operator;
+    using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
 
     /// <summary>
     /// 
@@ -69,154 +71,147 @@
 
         #region Methods
 
-        public async Task AddDeviceToMerchant(Guid estateId,
-                                              Guid merchantId,
-                                              Guid deviceId,
-                                              String deviceIdentifier,
-                                              CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+        public async Task<Guid> AddDeviceToMerchant(MerchantCommands.AddMerchantDeviceCommand command, CancellationToken cancellationToken) {
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
-            merchantAggregate.AddDevice(deviceId, deviceIdentifier);
+            Guid deviceId = Guid.NewGuid();
+            merchantAggregate.AddDevice(deviceId, command.RequestDto.DeviceIdentifier);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+            
+            return deviceId;
         }
 
-        public async Task AssignOperatorToMerchant(Guid estateId,
-                                                   Guid merchantId,
-                                                   Guid operatorId,
-                                                   String merchantNumber,
-                                                   String terminalNumber,
-                                                   CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+        public async Task<Guid> AssignOperatorToMerchant(MerchantCommands.AssignOperatorToMerchantCommand command,
+                                                         CancellationToken cancellationToken) {
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
             // Is the operator valid for this estate
             Estate estate = estateAggregate.GetEstate();
-            Operator @operator = estate.Operators?.SingleOrDefault(o => o.OperatorId == operatorId);
+            Operator @operator = estate.Operators?.SingleOrDefault(o => o.OperatorId == command.RequestDto.OperatorId);
             if (@operator == null) {
-                throw new InvalidOperationException($"Operator Id {operatorId} is not supported on Estate [{estate.Name}]");
+                throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} is not supported on Estate [{estate.Name}]");
             }
 
             // Operator has been validated, now check the rules of the operator against the passed in data
             if (@operator.RequireCustomMerchantNumber) {
                 // requested addition must have a merchant number supplied
-                if (String.IsNullOrEmpty(merchantNumber)) {
-                    throw new InvalidOperationException($"Operator Id {operatorId} requires that a merchant number is provided");
+                if (String.IsNullOrEmpty(command.RequestDto.MerchantNumber)) {
+                    throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a merchant number is provided");
                 }
             }
 
             if (@operator.RequireCustomTerminalNumber) {
                 // requested addition must have a terminal number supplied
-                if (String.IsNullOrEmpty(terminalNumber)) {
-                    throw new InvalidOperationException($"Operator Id {operatorId} requires that a terminal number is provided");
+                if (String.IsNullOrEmpty(command.RequestDto.TerminalNumber)) {
+                    throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a terminal number is provided");
                 }
             }
 
             // Assign the operator
-            merchantAggregate.AssignOperator(operatorId, @operator.Name, merchantNumber, terminalNumber);
+            merchantAggregate.AssignOperator(command.RequestDto.OperatorId, @operator.Name, command.RequestDto.MerchantNumber, command.RequestDto.TerminalNumber);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+
+            return command.RequestDto.OperatorId;
         }
 
-        public async Task CreateMerchant(Guid estateId,
-                                         Guid merchantId,
-                                         String name,
-                                         Guid addressId,
-                                         String addressLine1,
-                                         String addressLine2,
-                                         String addressLine3,
-                                         String addressLine4,
-                                         String town,
-                                         String region,
-                                         String postalCode,
-                                         String country,
-                                         Guid contactId,
-                                         String contactName,
-                                         String contactPhoneNumber,
-                                         String contactEmailAddress,
-                                         SettlementSchedule settlementSchedule,
-                                         DateTime createdDateTime,
-                                         CancellationToken cancellationToken) {
+        public async Task<Guid> CreateMerchant(MerchantCommands.CreateMerchantCommand command, CancellationToken cancellationToken){
+            // Convert the settlement schedule
+            Models.SettlementSchedule settlementScheduleModel = command.RequestDto.SettlementSchedule switch
+            {
+                SettlementSchedule.Immediate => Models.SettlementSchedule.Immediate,
+                SettlementSchedule.Monthly => Models.SettlementSchedule.Monthly,
+                SettlementSchedule.Weekly => Models.SettlementSchedule.Weekly,
+                _ => Models.SettlementSchedule.NotSet
+            };
+
+            // Check if we have been sent a merchant id to use
+            Guid merchantId = command.RequestDto.MerchantId ?? Guid.NewGuid();
+            
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-            if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
+            if (estateAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
             // Reject Duplicate Merchant Names... is this needed ?
 
             // Create the merchant
-            if (merchantAggregate.IsCreated) {
-                merchantAggregate.Create(estateId, name, merchantAggregate.DateCreated);
+            if (merchantAggregate.IsCreated)
+            {
+                merchantAggregate.Create(command.EstateId, command.RequestDto.Name, merchantAggregate.DateCreated);
                 merchantAggregate.GenerateReference();
             }
-            else {
-                merchantAggregate.Create(estateId, name, createdDateTime);
+            else
+            {
+                merchantAggregate.Create(command.EstateId, command.RequestDto.Name, command.RequestDto.CreatedDateTime.GetValueOrDefault(DateTime.Now));
                 merchantAggregate.GenerateReference();
 
+                Guid addressId = Guid.NewGuid();
                 // Add the address 
-                merchantAggregate.AddAddress(addressId, addressLine1, addressLine2, addressLine3, addressLine4, town, region, postalCode, country);
+                merchantAggregate.AddAddress(addressId, command.RequestDto.Address.AddressLine1, command.RequestDto.Address.AddressLine2, command.RequestDto.Address.AddressLine3,
+                                             command.RequestDto.Address.AddressLine4, command.RequestDto.Address.Town, command.RequestDto.Address.Region,
+                                             command.RequestDto.Address.PostalCode, command.RequestDto.Address.Country);
 
                 // Add the contact
-                merchantAggregate.AddContact(contactId, contactName, contactPhoneNumber, contactEmailAddress);
+                Guid contactId = Guid.NewGuid();
+                merchantAggregate.AddContact(contactId, command.RequestDto.Contact.ContactName, command.RequestDto.Contact.PhoneNumber, command.RequestDto.Contact.EmailAddress);
 
                 // Set the settlement schedule
-                merchantAggregate.SetSettlementSchedule(settlementSchedule);
+                merchantAggregate.SetSettlementSchedule(settlementScheduleModel);
             }
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
-        }
 
-        public async Task<Guid> CreateMerchantUser(Guid estateId,
-                                                   Guid merchantId,
-                                                   String emailAddress,
-                                                   String password,
-                                                   String givenName,
-                                                   String middleName,
-                                                   String familyName,
-                                                   CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            return merchantId;
+        }
+        
+        public async Task<Guid> CreateMerchantUser(MerchantCommands.CreateMerchantUserCommand command, CancellationToken cancellationToken) {
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
             CreateUserRequest createUserRequest = new CreateUserRequest {
-                                                                            EmailAddress = emailAddress,
-                                                                            FamilyName = familyName,
-                                                                            GivenName = givenName,
-                                                                            MiddleName = middleName,
-                                                                            Password = password,
+                                                                            EmailAddress = command.RequestDto.EmailAddress,
+                                                                            FamilyName = command.RequestDto.FamilyName,
+                                                                            GivenName = command.RequestDto.GivenName,
+                                                                            MiddleName = command.RequestDto.MiddleName,
+                                                                            Password = command.RequestDto.Password,
                                                                             PhoneNumber = "123456", // Is this really needed :|
                                                                             Roles = new List<String>(),
                                                                             Claims = new Dictionary<String, String>()
@@ -224,13 +219,13 @@
 
             String merchantRoleName = Environment.GetEnvironmentVariable("MerchantRoleName");
             createUserRequest.Roles.Add(String.IsNullOrEmpty(merchantRoleName) ? "Merchant" : merchantRoleName);
-            createUserRequest.Claims.Add("estateId", estateId.ToString());
-            createUserRequest.Claims.Add("merchantId", merchantId.ToString());
+            createUserRequest.Claims.Add("estateId", command.EstateId.ToString());
+            createUserRequest.Claims.Add("merchantId", command.MerchantId.ToString());
 
             CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
 
             // Add the user to the aggregate 
-            merchantAggregate.AddSecurityUser(createUserResponse.UserId, emailAddress);
+            merchantAggregate.AddSecurityUser(createUserResponse.UserId, command.RequestDto.EmailAddress);
 
             // TODO: add a delete user here in case the aggregate add fails...
 
@@ -239,94 +234,83 @@
             return createUserResponse.UserId;
         }
 
-        public async Task<Guid> MakeMerchantDeposit(Guid estateId,
-                                                    Guid merchantId,
-                                                    MerchantDepositSource source,
-                                                    String reference,
-                                                    DateTime depositDateTime,
-                                                    Decimal depositAmount,
-                                                    CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+        public async Task<Guid> MakeMerchantDeposit(MerchantCommands.MakeMerchantDepositCommand command, CancellationToken cancellationToken) {
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
-            MerchantDepositListAggregate merchantDepositListAggregate = await this.MerchantDepositListAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantDepositListAggregate merchantDepositListAggregate = await this.MerchantDepositListAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             if (merchantDepositListAggregate.IsCreated == false) {
-                merchantDepositListAggregate.Create(merchantAggregate, depositDateTime);
+                merchantDepositListAggregate.Create(merchantAggregate, command.RequestDto.DepositDateTime);
             }
 
-            PositiveMoney amount = PositiveMoney.Create(Money.Create(depositAmount));
+            PositiveMoney amount = PositiveMoney.Create(Money.Create(command.RequestDto.Amount));
 
-            merchantDepositListAggregate.MakeDeposit(source, reference, depositDateTime, amount);
+            merchantDepositListAggregate.MakeDeposit(command.DepositSource, command.RequestDto.Reference, command.RequestDto.DepositDateTime, amount);
 
             await this.MerchantDepositListAggregateRepository.SaveChanges(merchantDepositListAggregate, cancellationToken);
 
             List<Deposit> deposits = merchantDepositListAggregate.GetDeposits();
 
             // Find the deposit
-            Deposit deposit = deposits.Single(d => d.Reference == reference && d.DepositDateTime == depositDateTime && d.Source == source && d.Amount == amount.Value);
+            Deposit deposit = deposits.Single(d => d.Reference == command.RequestDto.Reference && d.DepositDateTime == command.RequestDto.DepositDateTime && d.Source == command.DepositSource && d.Amount == amount.Value);
 
             return deposit.DepositId;
         }
 
-        public async Task<Guid> MakeMerchantWithdrawal(Guid estateId,
-                                                 Guid merchantId,
-                                                 DateTime withdrawalDateTime,
-                                                 Decimal withdrawalAmount,
+        public async Task<Guid> MakeMerchantWithdrawal(MerchantCommands.MakeMerchantWithdrawalCommand command,
                                                  CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false)
             {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false)
             {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
-            MerchantDepositListAggregate merchantDepositListAggregate = await this.MerchantDepositListAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantDepositListAggregate merchantDepositListAggregate = await this.MerchantDepositListAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             if (merchantDepositListAggregate.IsCreated == false)
             {
-                throw new InvalidOperationException($"Merchant [{merchantId}] has not made any deposits yet");
+                throw new InvalidOperationException($"Merchant [{command.MerchantId}] has not made any deposits yet");
             }
 
             // Now we need to check the merchants balance to ensure they have funds to withdraw
             this.TokenResponse = await this.GetToken(cancellationToken);
-            //MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(this.TokenResponse.AccessToken, estateId, merchantId, cancellationToken);
-            //Decimal merchantBalance = await this.GetMerchantBalance(merchantId);
-            MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(this.TokenResponse.AccessToken, estateId, merchantId, cancellationToken);
+            MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(this.TokenResponse.AccessToken, command.EstateId, command.MerchantId, cancellationToken);
 
-            if (withdrawalAmount > merchantBalance.Balance) {
-                throw new InvalidOperationException($"Not enough credit available for withdrawal of [{withdrawalAmount}]. Balance is {merchantBalance}");
+            if (command.RequestDto.Amount > merchantBalance.Balance) {
+                throw new InvalidOperationException($"Not enough credit available for withdrawal of [{command.RequestDto.Amount}]. Balance is {merchantBalance}");
             }
 
             // If we are here we have enough credit to withdraw
-            PositiveMoney amount = PositiveMoney.Create(Money.Create(withdrawalAmount));
+            PositiveMoney amount = PositiveMoney.Create(Money.Create(command.RequestDto.Amount));
 
-            merchantDepositListAggregate.MakeWithdrawal(withdrawalDateTime, amount);
+            merchantDepositListAggregate.MakeWithdrawal(command.RequestDto.WithdrawalDateTime, amount);
 
             await this.MerchantDepositListAggregateRepository.SaveChanges(merchantDepositListAggregate, cancellationToken);
 
             List<Withdrawal> withdrawals = merchantDepositListAggregate.GetWithdrawals();
 
             // Find the withdrawal
-            Withdrawal withdrawal = withdrawals.Single(d => d.WithdrawalDateTime == withdrawalDateTime && d.Amount == amount.Value);
+            Withdrawal withdrawal = withdrawals.Single(d => d.WithdrawalDateTime == command.RequestDto.WithdrawalDateTime && d.Amount == amount.Value);
 
             return withdrawal.WithdrawalId;
         }
@@ -370,7 +354,7 @@
 
         public async Task SetMerchantSettlementSchedule(Guid estateId,
                                                         Guid merchantId,
-                                                        SettlementSchedule settlementSchedule,
+                                                        Models.SettlementSchedule settlementSchedule,
                                                         CancellationToken cancellationToken) {
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 
@@ -390,26 +374,26 @@
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
-        public async Task AddContractToMerchant(Guid estateId, Guid merchantId, Guid contractId, CancellationToken cancellationToken){
-            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+        public async Task AddContractToMerchant(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken){
+            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(command.RequestDto.ContractId, cancellationToken);
             if (contractAggregate.IsCreated == false)
             {
-                throw new InvalidOperationException($"Contract Id {contractId} has not been created");
+                throw new InvalidOperationException($"Contract Id {command.RequestDto.ContractId} has not been created");
             }
 
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false)
             {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false)
             {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
 
             merchantAggregate.AddContract(contractAggregate);
@@ -417,28 +401,26 @@
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
-        public async Task SwapMerchantDevice(Guid estateId,
-                                             Guid merchantId,
-                                             Guid deviceId,
-                                             String originalDeviceIdentifier,
-                                             String newDeviceIdentifier,
+        public async Task<Guid> SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command,
                                              CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
-
-            merchantAggregate.SwapDevice(deviceId, originalDeviceIdentifier, newDeviceIdentifier);
+            Guid deviceId = Guid.NewGuid();
+            merchantAggregate.SwapDevice(deviceId, command.RequestDto.OriginalDeviceIdentifier, command.RequestDto.NewDeviceIdentifier);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+
+            return deviceId;
         }
         
         #endregion

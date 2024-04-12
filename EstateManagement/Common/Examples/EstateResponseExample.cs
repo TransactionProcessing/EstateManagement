@@ -4,6 +4,7 @@
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Responses.Estate;
 
     [ExcludeFromCodeCoverage]
     public class EstateResponseExample : IExamplesProvider<EstateResponse>

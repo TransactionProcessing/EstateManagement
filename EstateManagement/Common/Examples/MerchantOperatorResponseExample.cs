@@ -3,6 +3,8 @@
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Responses.Merchant;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
 
     [ExcludeFromCodeCoverage]
     public class MerchantOperatorResponseExample : IExamplesProvider<MerchantOperatorResponse>

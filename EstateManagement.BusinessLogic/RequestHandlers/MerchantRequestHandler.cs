@@ -1,132 +1,135 @@
 ﻿namespace EstateManagement.BusinessLogic.RequestHandlers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using DataTransferObjects.Responses.Merchant;
+    using EstateManagement.Database.Entities;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
+    using EstateManagement.Models.Estate;
+    using Manger;
     using MediatR;
+    using Models.Contract;
+    using Models.Merchant;
     using Requests;
     using Services;
+    using Shared.Exceptions;
+    using Merchant = Models.Merchant.Merchant;
 
-    public class MerchantRequestHandler : IRequestHandler<CreateMerchantRequest>,
-                                          IRequestHandler<AssignOperatorToMerchantRequest>,
-                                          IRequestHandler<CreateMerchantUserRequest, Guid>,
-                                          IRequestHandler<AddMerchantDeviceRequest>,
-                                          IRequestHandler<MakeMerchantDepositRequest, Guid>,
-                                          IRequestHandler<SetMerchantSettlementScheduleRequest>,
-                                          IRequestHandler<SwapMerchantDeviceRequest>,
-                                          IRequestHandler<MakeMerchantWithdrawalRequest, Guid>,
-                                          IRequestHandler<AddMerchantContractRequest>{
+    public class MerchantRequestHandler : IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand,Guid>,
+                                          IRequestHandler<MerchantCommands.AddMerchantContractCommand>,
+                                          IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>,
+                                          IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>,
+                                          IRequestHandler<MerchantCommands.AddMerchantDeviceCommand, Guid>,
+                                          IRequestHandler<MerchantCommands.CreateMerchantUserCommand, Guid>,
+                                          IRequestHandler<MerchantCommands.MakeMerchantDepositCommand, Guid>, 
+                                          IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Guid>,
+                                          IRequestHandler<MerchantQueries.GetMerchantQuery, Models.Merchant.Merchant>,
+                                          IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>,
+                                          IRequestHandler<MerchantQueries.GetMerchantsQuery, List<Models.Merchant.Merchant>>,
+                                          IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>{
         #region Fields
 
         private readonly IMerchantDomainService MerchantDomainService;
+
+        private readonly IEstateManagementManager EstateManagementManager;
 
         #endregion
 
         #region Constructors
 
-        public MerchantRequestHandler(IMerchantDomainService merchantDomainService) {
+        public MerchantRequestHandler(IMerchantDomainService merchantDomainService, 
+                                      IEstateManagementManager estateManagementManager){
             this.MerchantDomainService = merchantDomainService;
+            this.EstateManagementManager = estateManagementManager;
         }
 
         #endregion
 
         #region Methods
-
-        public async Task Handle(CreateMerchantRequest request,
+        
+        public async Task<Guid> Handle(MerchantCommands.AssignOperatorToMerchantCommand command,
                                        CancellationToken cancellationToken) {
-            await this.MerchantDomainService.CreateMerchant(request.EstateId,
-                                                            request.MerchantId,
-                                                            request.Name,
-                                                            request.AddressId,
-                                                            request.AddressLine1,
-                                                            request.AddressLine2,
-                                                            request.AddressLine3,
-                                                            request.AddressLine4,
-                                                            request.Town,
-                                                            request.Region,
-                                                            request.PostalCode,
-                                                            request.Country,
-                                                            request.ContactId,
-                                                            request.ContactName,
-                                                            request.ContactPhoneNumber,
-                                                            request.ContactEmailAddress,
-                                                            request.SettlementSchedule,
-                                                            request.CreateDateTime,
-                                                            cancellationToken);
+            Guid result = await this.MerchantDomainService.AssignOperatorToMerchant(command, cancellationToken);
+            return result;
         }
 
-        public async Task Handle(AssignOperatorToMerchantRequest request,
+        public async Task<Guid> Handle(MerchantCommands.CreateMerchantUserCommand command,
                                        CancellationToken cancellationToken) {
-            await this.MerchantDomainService.AssignOperatorToMerchant(request.EstateId,
-                                                                      request.MerchantId,
-                                                                      request.OperatorId,
-                                                                      request.MerchantNumber,
-                                                                      request.TerminalNumber,
-                                                                      cancellationToken);
-        }
-
-        public async Task<Guid> Handle(CreateMerchantUserRequest request,
-                                       CancellationToken cancellationToken) {
-            Guid userId = await this.MerchantDomainService.CreateMerchantUser(request.EstateId,
-                                                                              request.MerchantId,
-                                                                              request.EmailAddress,
-                                                                              request.Password,
-                                                                              request.GivenName,
-                                                                              request.MiddleName,
-                                                                              request.FamilyName,
-                                                                              cancellationToken);
+            Guid userId = await this.MerchantDomainService.CreateMerchantUser(command, cancellationToken);
 
             return userId;
         }
 
-        public async Task Handle(AddMerchantDeviceRequest request,
-                                       CancellationToken cancellationToken) {
-            await this.MerchantDomainService.AddDeviceToMerchant(request.EstateId, request.MerchantId, request.DeviceId, request.DeviceIdentifier, cancellationToken);
+        public async Task<Guid> Handle(MerchantCommands.AddMerchantDeviceCommand command,
+                                       CancellationToken cancellationToken)
+        {
+            Guid result = await this.MerchantDomainService.AddDeviceToMerchant(command, cancellationToken);
+            return result;
         }
 
-        public async Task<Guid> Handle(MakeMerchantDepositRequest request,
+        public async Task<Guid> Handle(MerchantCommands.MakeMerchantDepositCommand command,
                                        CancellationToken cancellationToken) {
-            Guid depositId = await this.MerchantDomainService.MakeMerchantDeposit(request.EstateId,
-                                                                                  request.MerchantId,
-                                                                                  request.Source,
-                                                                                  request.Reference,
-                                                                                  request.DepositDateTime,
-                                                                                  request.Amount,
-                                                                                  cancellationToken);
+            Guid depositId = await this.MerchantDomainService.MakeMerchantDeposit(command, cancellationToken);
 
             return depositId;
         }
-
-        public async Task Handle(SetMerchantSettlementScheduleRequest request,
+        
+        public async Task<Guid> Handle(MerchantCommands.SwapMerchantDeviceCommand command,
                                        CancellationToken cancellationToken) {
-            await this.MerchantDomainService.SetMerchantSettlementSchedule(request.EstateId, request.MerchantId, request.SettlementSchedule, cancellationToken);
+            Guid deviceId = await this.MerchantDomainService.SwapMerchantDevice(command, cancellationToken);
+            return deviceId;
         }
 
-        public async Task Handle(SwapMerchantDeviceRequest request,
+        public async Task<Guid> Handle(MerchantCommands.MakeMerchantWithdrawalCommand command,
                                        CancellationToken cancellationToken) {
-            await this.MerchantDomainService.SwapMerchantDevice(request.EstateId,
-                                                                request.MerchantId,
-                                                                request.DeviceId,
-                                                                request.OriginalDeviceIdentifier,
-                                                                request.NewDeviceIdentifier,
-                                                                cancellationToken);
-        }
-
-        public async Task<Guid> Handle(MakeMerchantWithdrawalRequest request,
-                                       CancellationToken cancellationToken) {
-            Guid withdrawalId = await this.MerchantDomainService.MakeMerchantWithdrawal(request.EstateId,
-                                                                                        request.MerchantId,
-                                                                                        request.WithdrawalDateTime,
-                                                                                        request.Amount,
-                                                                                        cancellationToken);
-
+            Guid withdrawalId = await this.MerchantDomainService.MakeMerchantWithdrawal(command, cancellationToken);
             return withdrawalId;
         }
 
         #endregion
 
-        public async Task Handle(AddMerchantContractRequest request, CancellationToken cancellationToken){
-            await this.MerchantDomainService.AddContractToMerchant(request.EstateId, request.MerchantId, request.ContractId, cancellationToken);
+        public async Task Handle(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.AddContractToMerchant(command, cancellationToken);
+        }
+
+        public async Task<Guid> Handle(MerchantCommands.CreateMerchantCommand command, CancellationToken cancellationToken){
+            Guid result = await this.MerchantDomainService.CreateMerchant(command, cancellationToken);
+            return result;
+        }
+
+        public async Task<Models.Merchant.Merchant> Handle(MerchantQueries.GetMerchantQuery query, CancellationToken cancellationToken){
+            Models.Merchant.Merchant merchant = await this.EstateManagementManager.GetMerchant(query.EstateId, query.MerchantId, cancellationToken);
+
+            if (merchant == null){
+                throw new NotFoundException($"Merchant not found with estate Id {query.EstateId} and merchant Id {query.MerchantId}");
+            }
+
+            return merchant;
+        }
+
+        public async Task<List<Models.Contract.Contract>> Handle(MerchantQueries.GetMerchantContractsQuery query, CancellationToken cancellationToken){
+            List<Models.Contract.Contract> contracts = await this.EstateManagementManager.GetMerchantContracts(query.EstateId, query.MerchantId, cancellationToken);
+            return contracts;
+        }
+
+        public async Task<List<Merchant>> Handle(MerchantQueries.GetMerchantsQuery query, CancellationToken cancellationToken){
+            List<Merchant> merchants = await this.EstateManagementManager.GetMerchants(query.EstateId, cancellationToken);
+
+            if (merchants == null || merchants.Any() == false){
+                throw new NotFoundException($"No Merchants found for estate Id {query.EstateId}");
+            }
+
+            return merchants;
+        }
+
+        public async Task<List<TransactionFee>> Handle(MerchantQueries.GetTransactionFeesForProductQuery query, CancellationToken cancellationToken){
+            List<TransactionFee> transactionFees =
+                    await this.EstateManagementManager.GetTransactionFeesForProduct(query.EstateId, query.MerchantId, query.ContractId, query.ProductId, cancellationToken);
+
+            return transactionFees;
         }
     }
 }

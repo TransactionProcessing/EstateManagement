@@ -21,8 +21,6 @@ namespace EstateManagement.Models.Factories
 {
     using System;
     using System.Collections.Generic;
-    using EstateManagement.Database.ViewEntities;
-    using MerchantStatement;
 
     /// <summary>
     /// 

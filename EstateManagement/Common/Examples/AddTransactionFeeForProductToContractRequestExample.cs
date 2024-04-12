@@ -3,7 +3,8 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using DataTransferObjects;
-    using DataTransferObjects.Requests;
+    using DataTransferObjects.Requests.Contract;
+    using DataTransferObjects.Responses.Contract;
     using Swashbuckle.AspNetCore.Filters;
 
     [ExcludeFromCodeCoverage]

@@ -2,7 +2,6 @@
 {
     using System;
     using MediatR;
-    using Models.Contract;
 
     /// <summary>
     /// 

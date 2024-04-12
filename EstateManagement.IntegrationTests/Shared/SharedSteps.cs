@@ -7,11 +7,16 @@ namespace EstateManagement.IntegrationTests.Shared
     using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
-    using Azure.Core;
     using Common;
     using DataTransferObjects;
-    using DataTransferObjects.Requests;
+    using DataTransferObjects.Requests.Contract;
+    using DataTransferObjects.Requests.Estate;
+    using DataTransferObjects.Requests.Merchant;
+    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses;
+    using DataTransferObjects.Responses.Contract;
+    using DataTransferObjects.Responses.Estate;
+    using DataTransferObjects.Responses.Merchant;
     using global::Shared.IntegrationTesting;
     using IntegrationTesting.Helpers;
     using Newtonsoft.Json.Linq;
@@ -24,6 +29,8 @@ namespace EstateManagement.IntegrationTests.Shared
     using TransactionProcessor.IntegrationTesting.Helpers;
     using ClientDetails = Common.ClientDetails;
     using DockerHelper = Common.DockerHelper;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
     using ReqnrollExtensions = IntegrationTesting.Helpers.ReqnrollExtensions;
     using ReqnrollTableHelper = global::Shared.IntegrationTesting.ReqnrollTableHelper;
 

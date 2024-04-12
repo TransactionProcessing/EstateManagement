@@ -1,13 +1,18 @@
 ﻿namespace EstateManagement.IntegrationTesting.Helpers;
 
 using DataTransferObjects;
-using DataTransferObjects.Requests;
 using Newtonsoft.Json;
 using Shared.Extensions;
 using Shared.General;
 using Shared.IntegrationTesting;
 using Shouldly;
 using System.Collections.Generic;
+using DataTransferObjects.Requests.Contract;
+using DataTransferObjects.Requests.Estate;
+using DataTransferObjects.Requests.Merchant;
+using DataTransferObjects.Requests.Operator;
+using DataTransferObjects.Responses.Contract;
+using DataTransferObjects.Responses.Merchant;
 using Reqnroll;
 
 public static class ReqnrollExtensions

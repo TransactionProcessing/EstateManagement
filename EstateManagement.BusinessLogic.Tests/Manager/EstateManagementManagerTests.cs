@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.BusinessLogic.Tests.Manager
 {
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Castle.DynamicProxy.Generators;
     using ContractAggregate;
     using EstateAggregate;
     using Manger;
@@ -21,7 +19,6 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventStore;
     using Shared.Exceptions;
     using Shouldly;
     using Testing;
@@ -56,6 +53,20 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
                                             this.ContractAggregateRepository.Object,
                                             this.MerchantAggregateRepository.Object,
                                             this.ModelFactory.Object);
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetEstates_EstatesAreReturned()
+        {
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
+
+            List<Estate> estateModels = await this.EstateManagementManager.GetEstates(TestData.EstateId, CancellationToken.None);
+
+            estateModels.ShouldNotBeNull();
+            estateModels.ShouldHaveSingleItem();
+            estateModels.Single().EstateId.ShouldBe(TestData.EstateModel.EstateId);
+            estateModels.Single().Name.ShouldBe(TestData.EstateModel.Name);
         }
 
         [Fact]

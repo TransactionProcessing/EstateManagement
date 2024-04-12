@@ -2,7 +2,6 @@
 
 using EntityFramework.Exceptions.MySQL.Pomelo;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Shared.General;
 
 public class EstateManagementMySqlContext : EstateManagementGenericContext

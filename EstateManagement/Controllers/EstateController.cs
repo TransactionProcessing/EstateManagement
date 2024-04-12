@@ -8,26 +8,22 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Manger;
-    using Common;
     using Common.Examples;
-    using DataTransferObjects;
-    using DataTransferObjects.Requests;
     using DataTransferObjects.Responses;
+    using DataTransferObjects.Responses.Estate;
     using Factories;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
-    using Models;
     using Shared.Exceptions;
-    using EstateManagement.BusinessLogic.Requests;
     using Microsoft.AspNetCore.Authorization;
     using Models.Estate;
     using Shared.General;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
     using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
-    using CreateEstateRequestDTO = DataTransferObjects.Requests.CreateEstateRequest;
+    using CreateEstateRequestDTO = DataTransferObjects.Requests.Estate.CreateEstateRequest;
     using CreateEstateUserRequest = BusinessLogic.Requests.CreateEstateUserRequest;
-    using CreateEstateUserRequestDTO = DataTransferObjects.Requests.CreateEstateUserRequest;
+    using CreateEstateUserRequestDTO = DataTransferObjects.Requests.Estate.CreateEstateUserRequest;
 
     [ExcludeFromCodeCoverage]
     [Route(EstateController.ControllerRoute)]

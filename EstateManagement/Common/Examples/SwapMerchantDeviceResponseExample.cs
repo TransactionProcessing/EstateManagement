@@ -4,6 +4,8 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace EstateManagement.Common.Examples
 {
+    using DataTransferObjects.Responses.Merchant;
+
     [ExcludeFromCodeCoverage]
     public class SwapMerchantDeviceResponseExample : IExamplesProvider<SwapMerchantDeviceResponse>
     {

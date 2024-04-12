@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.MerchantAggregate.Tests
 {
-    using System.Collections;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -12,7 +10,6 @@ namespace EstateManagement.MerchantAggregate.Tests
     using EstateManagement.Models;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
-    using Shared.ValueObjects;
     using Shouldly;
     using Testing;
     using Xunit;

@@ -2,7 +2,9 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using DataTransferObjects.Responses;
+    using DataTransferObjects.Responses.Merchant;
     using Swashbuckle.AspNetCore.Filters;
+    using AddressResponse = DataTransferObjects.Responses.Merchant.AddressResponse;
 
     [ExcludeFromCodeCoverage]
     public class AddressResponseExample : IExamplesProvider<AddressResponse>

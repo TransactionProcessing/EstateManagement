@@ -2,11 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using Contract;
     using Newtonsoft.Json;
 
     /// <summary>
     /// 
     /// </summary>
+    [ExcludeFromCodeCoverage]
+    [Obsolete("Use class in EstateManagement.DataTransferObjects.Responses.Merchant namespace")]
     public class MerchantResponse
     {
         #region Properties

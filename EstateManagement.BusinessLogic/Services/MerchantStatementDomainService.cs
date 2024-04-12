@@ -5,7 +5,6 @@
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.IO.Abstractions;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
@@ -14,9 +13,9 @@
     using MerchantStatementAggregate;
     using MessagingService.Client;
     using MessagingService.DataTransferObjects;
-    using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
     using Models.MerchantStatement;
     using Repository;
+    using Requests;
     using SecurityService.Client;
     using SecurityService.DataTransferObjects.Responses;
     using Shared.DomainDrivenDesign.EventSourcing;
@@ -177,12 +176,9 @@
         /// <param name="statementDate">The statement date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<Guid> GenerateStatement(Guid estateId,
-                                                  Guid merchantId,
-                                                  DateTime statementDate,
-                                                  CancellationToken cancellationToken)
+        public async Task<Guid> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken)
         {
-            Guid statementId = GuidCalculator.Combine(merchantId, statementDate.ToGuid());
+            Guid statementId = GuidCalculator.Combine(command.MerchantId, command.RequestDto.MerchantStatementDate.ToGuid());
             MerchantStatementAggregate merchantStatementAggregate =
                 await GetLatestVersion(statementId, cancellationToken);
 

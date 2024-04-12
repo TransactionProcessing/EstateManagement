@@ -1,15 +1,10 @@
 ﻿namespace EstateManagement.BusinessLogic.EventHandling
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateManagement.Repository;
-    using MediatR;
-    using Requests;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.EventHandling;
-    using Shared.Extensions;
-    using Shared.General;
     using Shared.Logger;
     using TransactionProcessor.Settlement.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;

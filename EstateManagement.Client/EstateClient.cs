@@ -8,9 +8,18 @@
     using System.Threading;
     using System.Threading.Tasks;
     using ClientProxyBase;
-    using DataTransferObjects.Requests;
+    using DataTransferObjects.Requests.Contract;
+    using DataTransferObjects.Requests.Estate;
+    using DataTransferObjects.Requests.Merchant;
+    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses;
+    using DataTransferObjects.Responses.Contract;
+    using DataTransferObjects.Responses.Estate;
+    using DataTransferObjects.Responses.Merchant;
+    using DataTransferObjects.Responses.Operator;
+    using DataTransferObjects.Responses.Settlement;
     using Newtonsoft.Json;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
     public class EstateClient : ClientProxyBase, IEstateClient
     {

@@ -1,22 +1,11 @@
 namespace EstateManagement
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using System.Linq;
-    using System.Reflection;
     using Bootstrapper;
-    using BusinessLogic.Events;
-    using Contract.DomainEvents;
-    using Estate.DomainEvents;
-    using EventStore.Client;
-    using FileProcessor.File.DomainEvents;
-    using FileProcessor.FileImportLog.DomainEvents;
     using HealthChecks.UI.Client;
     using Lamar;
-    using Merchant.DomainEvents;
-    using MerchantStatement.DomainEvents;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
@@ -24,15 +13,10 @@ namespace EstateManagement
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using NLog.Extensions.Logging;
-    using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.Extensions;
     using Shared.General;
     using Shared.Logger;
-    using TransactionProcessor.Float.DomainEvents;
-    using TransactionProcessor.Settlement.DomainEvents;
-    using TransactionProcessor.Transaction.DomainEvents;
-    using TransactionProcessor.Voucher.DomainEvents;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
 
     /// <summary>

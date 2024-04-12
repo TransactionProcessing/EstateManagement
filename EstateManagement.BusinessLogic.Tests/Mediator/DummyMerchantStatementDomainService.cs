@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BusinessLogic.Services;
+using Requests;
 
 public class DummyMerchantStatementDomainService : IMerchantStatementDomainService{
     public async Task AddTransactionToStatement(Guid estateId,
@@ -24,13 +25,10 @@ public class DummyMerchantStatementDomainService : IMerchantStatementDomainServi
                                                CancellationToken cancellationToken) {
     }
 
-    public async Task<Guid> GenerateStatement(Guid estateId,
-                                              Guid merchantId,
-                                              DateTime statementDate,
-                                              CancellationToken cancellationToken) {
+    public async Task<Guid> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken){
         return Guid.NewGuid();
     }
-
+    
     public async Task EmailStatement(Guid estateId,
                                      Guid merchantId,
                                      Guid merchantStatementId,

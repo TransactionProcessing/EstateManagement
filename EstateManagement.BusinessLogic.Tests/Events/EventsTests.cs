@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.Events
 {
     using EstateManagement.BusinessLogic.Events;
-    using EstateManagement.Contract.DomainEvents;
     using Shouldly;
     using Testing;
     using Xunit;

@@ -1,12 +1,14 @@
 ﻿namespace EstateManagement.Bootstrapper
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using BusinessLogic.RequestHandlers;
     using BusinessLogic.Requests;
     using Lamar;
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.Merchant;
 
     /// <summary>
     /// 
@@ -29,15 +31,19 @@
             this.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<AddOperatorToEstateRequest>, EstateRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<CreateMerchantRequest>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AssignOperatorToMerchantRequest>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<CreateMerchantUserRequest, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddMerchantDeviceRequest>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MakeMerchantDepositRequest, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MakeMerchantWithdrawalRequest, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<SetMerchantSettlementScheduleRequest>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<SwapMerchantDeviceRequest>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddMerchantContractRequest>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantUserCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantDepositCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContractCommand>, MerchantRequestHandler>();
+
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantQuery, Merchant>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantsQuery, List<Models.Merchant.Merchant>>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>, MerchantRequestHandler>();
 
             this.AddSingleton<IRequestHandler<CreateContractRequest>, ContractRequestHandler>();
             this.AddSingleton<IRequestHandler<AddProductToContractRequest>, ContractRequestHandler>();
@@ -46,7 +52,7 @@
 
             this.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest>, MerchantStatementRequestHandler>();
             this.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest>, MerchantStatementRequestHandler>();
-            this.AddSingleton<IRequestHandler<GenerateMerchantStatementRequest, Guid>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.GenerateMerchantStatementCommand, Guid>, MerchantStatementRequestHandler>();
             this.AddSingleton<IRequestHandler<EmailMerchantStatementRequest>, MerchantStatementRequestHandler>();
         }
 

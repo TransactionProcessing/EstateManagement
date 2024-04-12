@@ -3,6 +3,7 @@
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Responses.Merchant;
 
     [ExcludeFromCodeCoverage]
     public class CreateMerchantResponseExample : IExamplesProvider<CreateMerchantResponse>
@@ -13,8 +14,6 @@
                    {
                        EstateId = ExampleData.EstateId,
                        MerchantId = ExampleData.MerchantId,
-                       AddressId = ExampleData.AddressId,
-                       ContactId = ExampleData.ContactId
                    };
         }
     }

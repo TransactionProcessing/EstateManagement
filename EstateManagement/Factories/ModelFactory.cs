@@ -3,17 +3,25 @@
     using System.Collections.Generic;
     using System.Linq;
     using DataTransferObjects.Responses;
-    using Microsoft.Extensions.DependencyModel.Resolution;
+    using DataTransferObjects.Responses.Contract;
+    using DataTransferObjects.Responses.Estate;
+    using DataTransferObjects.Responses.File;
+    using DataTransferObjects.Responses.Merchant;
+    using DataTransferObjects.Responses.Settlement;
     using Models;
     using Models.Contract;
     using Models.Estate;
     using Models.File;
     using Models.Merchant;
-    using CalculationType = DataTransferObjects.CalculationType;
+    using AddressResponse = DataTransferObjects.Responses.Merchant.AddressResponse;
+    using CalculationType = DataTransferObjects.Responses.Contract.CalculationType;
     using Contract = Models.Contract.Contract;
-    using FeeType = DataTransferObjects.FeeType;
-    using SettlementSchedule = DataTransferObjects.SettlementSchedule;
-    using ProductType = DataTransferObjects.ProductType;
+    using FeeType = DataTransferObjects.Responses.Contract.FeeType;
+    using MerchantContractResponse = DataTransferObjects.Responses.Merchant.MerchantContractResponse;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
+    using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
+    using ProductType = DataTransferObjects.Responses.Contract.ProductType;
     
     /// <summary>
     /// 
@@ -190,10 +198,10 @@
 
         private static SettlementSchedule ConvertFrom(Models.SettlementSchedule settlementSchedule){
             return settlementSchedule switch{
-                Models.SettlementSchedule.Weekly => DataTransferObjects.SettlementSchedule.Weekly,
-                Models.SettlementSchedule.Monthly => DataTransferObjects.SettlementSchedule.Monthly,
-                Models.SettlementSchedule.Immediate => DataTransferObjects.SettlementSchedule.Immediate,
-                Models.SettlementSchedule.NotSet => DataTransferObjects.SettlementSchedule.NotSet,
+                Models.SettlementSchedule.Weekly => SettlementSchedule.Weekly,
+                Models.SettlementSchedule.Monthly => SettlementSchedule.Monthly,
+                Models.SettlementSchedule.Immediate => SettlementSchedule.Immediate,
+                Models.SettlementSchedule.NotSet => SettlementSchedule.NotSet,
             };
         }
 

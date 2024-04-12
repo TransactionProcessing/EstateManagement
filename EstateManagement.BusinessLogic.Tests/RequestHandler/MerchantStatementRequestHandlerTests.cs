@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.RequestHandler
@@ -62,14 +59,31 @@ namespace EstateManagement.BusinessLogic.Tests.RequestHandler
         }
 
         [Fact]
-        public void MerchantStatementRequestHandler_GenerateMerchantStatementRequest_IsHandled()
+        public void MerchantStatementRequestHandler_GenerateMerchantStatementCommand_IsHandled()
         {
             Mock<IMerchantStatementDomainService> merchantDomainService = new Mock<IMerchantStatementDomainService>(MockBehavior.Strict);
-            merchantDomainService.Setup(m => m.GenerateStatement(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            merchantDomainService.Setup(m => m.GenerateStatement(It.IsAny<MerchantCommands.GenerateMerchantStatementCommand>(),It.IsAny<CancellationToken>()))
                                  .ReturnsAsync(TestData.MerchantStatementId);
             MerchantStatementRequestHandler handler = new MerchantStatementRequestHandler(merchantDomainService.Object);
 
-            GenerateMerchantStatementRequest request = TestData.GenerateMerchantStatementRequest;
+            MerchantCommands.GenerateMerchantStatementCommand request = TestData.GenerateMerchantStatementCommand;
+
+            Should.NotThrow(async () =>
+                            {
+                                await handler.Handle(request, CancellationToken.None);
+                            });
+
+        }
+
+        [Fact]
+        public void MerchantStatementRequestHandler_EmailMerchantStatementRequest_IsHandled()
+        {
+            Mock<IMerchantStatementDomainService> merchantDomainService = new Mock<IMerchantStatementDomainService>(MockBehavior.Strict);
+            merchantDomainService.Setup(m => m.EmailStatement(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                                 .Returns(Task.CompletedTask);
+            MerchantStatementRequestHandler handler = new MerchantStatementRequestHandler(merchantDomainService.Object);
+
+            EmailMerchantStatementRequest request = TestData.EmailMerchantStatementRequest;
 
             Should.NotThrow(async () =>
                             {

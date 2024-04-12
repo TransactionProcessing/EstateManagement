@@ -18,7 +18,6 @@
     using ContractModel = Models.Contract.Contract;
     using StatementHeader = Models.MerchantStatement.StatementHeader;
     using StatementLine = Models.MerchantStatement.StatementLine;
-    using EstateManagement.Models.Estate;
     using Models.File;
     using Estate = Database.Entities.Estate;
     using File = Models.File.File;

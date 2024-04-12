@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateManagement.IntegrationTests.Common
+﻿namespace EstateManagement.IntegrationTests.Common
 {
-    using System.Linq;
-    using System.Xml.Serialization;
-    using DataTransferObjects;
-    using DataTransferObjects.Responses;
-    using TransactionProcessor.DataTransferObjects;
-
     //public class EstateDetails
     //{
     //    private EstateDetails(Guid estateId, String estateName, String estateReference)

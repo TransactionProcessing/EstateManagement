@@ -5,6 +5,7 @@
     using Newtonsoft.Json;
 
     [ExcludeFromCodeCoverage]
+    [Obsolete("Use class in EstateManagement.DataTransferObjects.Responses.Merchant namespace")]
     public class MerchantContractResponse
     {
         [JsonProperty("contract_id")]

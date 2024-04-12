@@ -69,7 +69,7 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <SpecFlowFeatureFiles Update="Features\Contract.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Contract.feature.cs</LastGenOutput>
@@ -79,6 +79,6 @@
       <LastGenOutput>Merchant.feature.cs</LastGenOutput>
       <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
     </SpecFlowFeatureFiles>
-  </ItemGroup>
+  </ItemGroup>-->
 
 </Project>

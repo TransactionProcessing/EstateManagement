@@ -4,8 +4,6 @@ namespace EstateManagement.IntegrationTests.Common
 {
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
-    using global::Shared.Logger;
-    using NLog;
     using Reqnroll;
     using Shouldly;
     using System.Threading.Tasks;

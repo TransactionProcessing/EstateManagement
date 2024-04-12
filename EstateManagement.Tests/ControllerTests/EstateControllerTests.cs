@@ -7,8 +7,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
-    using DataTransferObjects.Requests;
+    using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Responses;
+    using DataTransferObjects.Responses.Estate;
     using EstateManagement.Testing;
     using Newtonsoft.Json;
     using Shouldly;

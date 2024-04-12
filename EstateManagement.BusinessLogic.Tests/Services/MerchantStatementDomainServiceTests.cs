@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
@@ -18,7 +15,6 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using Moq;
     using Repository;
     using SecurityService.Client;
-    using SecurityService.DataTransferObjects.Responses;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.General;
@@ -195,13 +191,10 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             
             Should.NotThrow(async () =>
             {
-                await merchantStatementDomainService.GenerateStatement(TestData.EstateId,
-                                                                              TestData.MerchantId,
-                                                                              TestData.StatementCreateDate,
-                                                                              CancellationToken.None);
+                await merchantStatementDomainService.GenerateStatement(TestData.GenerateMerchantStatementCommand, CancellationToken.None);
             });
 
-            var merchantStatement = merchantStatementAggregate.GetStatement(false);
+            MerchantStatement merchantStatement = merchantStatementAggregate.GetStatement(false);
             merchantStatement.IsGenerated.ShouldBeTrue();
         }
 

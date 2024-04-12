@@ -9,7 +9,6 @@
     using SecurityService.DataTransferObjects;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventStore;
 
     /// <summary>
     /// 

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EstateManagement.Tests.Factories{
     using System.Linq;
     using DataTransferObjects.Responses;
-    using EstateAggregate;
+    using DataTransferObjects.Responses.Contract;
+    using DataTransferObjects.Responses.Estate;
+    using DataTransferObjects.Responses.File;
+    using DataTransferObjects.Responses.Merchant;
+    using DataTransferObjects.Responses.Settlement;
     using EstateManagement.Factories;
     using Models;
     using Models.Contract;
@@ -15,7 +18,12 @@ namespace EstateManagement.Tests.Factories{
     using Shouldly;
     using Testing;
     using Xunit;
+    using AddressResponse = DataTransferObjects.Responses.Merchant.AddressResponse;
     using Contract = Models.Contract.Contract;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
+    using ProductType = DataTransferObjects.Responses.Contract.ProductType;
+    using SettlementSchedule = Models.SettlementSchedule;
 
     public class ModelFactoryTests{
         [Fact]
@@ -316,7 +324,7 @@ namespace EstateManagement.Tests.Factories{
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.Name);
-            contractProduct.ProductType.ShouldBe(Enum.Parse<DataTransferObjects.ProductType>(expectedContractProduct.ProductType.ToString()));
+            contractProduct.ProductType.ShouldBe(Enum.Parse<ProductType>(expectedContractProduct.ProductType.ToString()));
             contractProduct.TransactionFees.ShouldBeNull();
         }
 
@@ -340,7 +348,7 @@ namespace EstateManagement.Tests.Factories{
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.Name);
-            contractProduct.ProductType.ShouldBe(Enum.Parse<DataTransferObjects.ProductType>(expectedContractProduct.ProductType.ToString()));
+            contractProduct.ProductType.ShouldBe(Enum.Parse<ProductType>(expectedContractProduct.ProductType.ToString()));
             contractProduct.TransactionFees.ShouldNotBeNull();
             contractProduct.TransactionFees.ShouldHaveSingleItem();
 

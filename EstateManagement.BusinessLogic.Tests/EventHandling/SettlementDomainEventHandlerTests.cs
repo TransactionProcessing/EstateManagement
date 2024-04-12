@@ -2,8 +2,6 @@
 
 using System.Threading;
 using BusinessLogic.EventHandling;
-using EstateManagement.Merchant.DomainEvents;
-using MediatR;
 using Moq;
 using Repository;
 using Shared.Logger;

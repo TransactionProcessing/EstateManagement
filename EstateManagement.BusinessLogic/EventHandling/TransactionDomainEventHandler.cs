@@ -5,14 +5,10 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using Common;
     using EstateManagement.Repository;
     using MediatR;
-    using Requests;
-    using Services;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.EventHandling;
-    using Shared.Logger;
     using TransactionProcessor.Reconciliation.DomainEvents;
     using TransactionProcessor.Transaction.DomainEvents;
     using TransactionProcessor.Voucher.DomainEvents;

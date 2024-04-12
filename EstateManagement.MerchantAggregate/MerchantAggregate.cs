@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
     using ContractAggregate;
     using Merchant.DomainEvents;
     using Models;
@@ -13,9 +11,7 @@
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    using Shared.EventStore.EventStore;
     using Shared.General;
-    using Shared.ValueObjects;
 
     public static class MerchantAggregateExtensions{
         

@@ -1,8 +1,8 @@
 ﻿namespace EstateManagement.Common.Examples
 {
-    using DataTransferObjects.Requests;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Requests.Estate;
 
     [ExcludeFromCodeCoverage]
     public class CreateEstateUserRequestExample : IExamplesProvider<CreateEstateUserRequest>

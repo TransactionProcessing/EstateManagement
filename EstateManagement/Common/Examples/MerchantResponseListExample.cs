@@ -5,6 +5,11 @@
     using DataTransferObjects.Responses;
     using Swashbuckle.AspNetCore.Filters;
     using System.Diagnostics.CodeAnalysis;
+    using DataTransferObjects.Responses.Contract;
+    using DataTransferObjects.Responses.Merchant;
+    using AddressResponse = DataTransferObjects.Responses.Merchant.AddressResponse;
+    using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
+    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
     [ExcludeFromCodeCoverage]
     public class MerchantResponseListExample : IExamplesProvider<List<MerchantResponse>>

@@ -3,7 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+    using Requests;
 
     /// <summary>
     /// 
@@ -11,79 +11,26 @@
     public interface IMerchantDomainService
     {
         #region Methods
+        Task<Guid> CreateMerchant(MerchantCommands.CreateMerchantCommand command, CancellationToken cancellationToken);
         
-        Task CreateMerchant(Guid estateId,
-                            Guid merchantId,
-                            String name,
-                            Guid addressId,
-                            String addressLine1,
-                            String addressLine2,
-                            String addressLine3,
-                            String addressLine4,
-                            String town,
-                            String region,
-                            String postalCode,
-                            String country,
-                            Guid contactId,
-                            String contactName,
-                            String contactPhoneNumber,
-                            String contactEmailAddress,
-                            Models.SettlementSchedule settlementSchedule,
-                            DateTime createDateTime,
-                            CancellationToken cancellationToken);
+        Task<Guid> AssignOperatorToMerchant(MerchantCommands.AssignOperatorToMerchantCommand command, CancellationToken cancellationToken);
 
-        Task AssignOperatorToMerchant(Guid estateId,
-                                      Guid merchantId,
-                                      Guid operatorId,
-                                      String merchantNumber,
-                                      String terminalNumber,
-                                      CancellationToken cancellationToken);
+        Task<Guid> CreateMerchantUser(MerchantCommands.CreateMerchantUserCommand command, CancellationToken cancellationToken);
 
-        Task<Guid> CreateMerchantUser(Guid estateId,
-                                      Guid merchantId,
-                                      String emailAddress,
-                                      String password,
-                                      String givenName,
-                                      String middleName,
-                                      String familyName,
-                                      CancellationToken cancellationToken);
+        Task<Guid> AddDeviceToMerchant(MerchantCommands.AddMerchantDeviceCommand command, CancellationToken cancellationToken);
 
-        Task AddDeviceToMerchant(Guid estateId,
-                                         Guid merchantId,
-                                         Guid deviceId,
-                                         String deviceIdentifier,
-                                         CancellationToken cancellationToken);
-
-        Task SwapMerchantDevice(Guid estateId,
-            Guid merchantId,
-            Guid deviceId,
-            String originalDeviceIdentifier,
-            String newDeviceIdentifier,
-            CancellationToken cancellationToken);
+        Task<Guid> SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command, CancellationToken cancellationToken);
         
-        Task<Guid> MakeMerchantDeposit(Guid estateId,
-                                 Guid merchantId,
-                                 Models.MerchantDepositSource source,
-                                 String reference,
-                                 DateTime depositDateTime,
-                                 Decimal amount,
-                                 CancellationToken cancellationToken);
+        Task<Guid> MakeMerchantDeposit(MerchantCommands.MakeMerchantDepositCommand command, CancellationToken cancellationToken);
 
-        Task<Guid> MakeMerchantWithdrawal(Guid estateId,
-                                       Guid merchantId,
-                                       DateTime withdrawalDateTime,
-                                       Decimal amount,
-                                       CancellationToken cancellationToken);
+        Task<Guid> MakeMerchantWithdrawal(MerchantCommands.MakeMerchantWithdrawalCommand command, CancellationToken cancellationToken);
 
         Task SetMerchantSettlementSchedule(Guid estateId,
                                            Guid merchantId,
                                            Models.SettlementSchedule settlementSchedule,
                                            CancellationToken cancellationToken);
 
-        Task AddContractToMerchant(Guid estateId,
-                                   Guid merchantId,
-                                   Guid contractId,
-                                   CancellationToken cancellationToken);
+        Task AddContractToMerchant(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken);
 
         #endregion
     }
