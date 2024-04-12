@@ -178,29 +178,7 @@
             disableTransactionFeeForProductRequest.ProductId.ShouldBe(TestData.ProductId);
             disableTransactionFeeForProductRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
         }
-
-        [Fact]
-        public void GenerateMerchantStatementRequest_CanBeCreated_IsCreated() {
-            GenerateMerchantStatementRequest generateMerchantStatementRequest =
-                GenerateMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
-
-            generateMerchantStatementRequest.ShouldNotBeNull();
-            generateMerchantStatementRequest.EstateId.ShouldBe(TestData.EstateId);
-            generateMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
-            generateMerchantStatementRequest.StatementDate.ShouldBe(TestData.StatementCreateDate);
-        }
         
-        [Fact]
-        public void SetMerchantSettlementScheduleRequest_CanBeCreated_IsCreated() {
-            SetMerchantSettlementScheduleRequest setMerchantSettlementScheduleRequest =
-                SetMerchantSettlementScheduleRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.SettlementSchedule);
-
-            setMerchantSettlementScheduleRequest.ShouldNotBeNull();
-            setMerchantSettlementScheduleRequest.EstateId.ShouldBe(TestData.EstateId);
-            setMerchantSettlementScheduleRequest.MerchantId.ShouldBe(TestData.MerchantId);
-            setMerchantSettlementScheduleRequest.SettlementSchedule.ShouldBe(TestData.SettlementSchedule);
-        }
-
         [Fact]
         public void EmailMerchantStatementRequest_CanBeCreated_IsCreated(){
             EmailMerchantStatementRequest emailMerchantStatementRequest =

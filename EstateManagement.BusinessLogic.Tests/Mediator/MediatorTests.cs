@@ -21,7 +21,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
 
     public class MediatorTests
     {
-        private List<IBaseRequest> Requests = new List<IBaseRequest>();
+        private readonly List<IBaseRequest> Requests = new();
 
         private IMediator mediator;
 
@@ -33,6 +33,8 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.CreateMerchantUserCommand);
             this.Requests.Add(TestData.MakeMerchantDepositCommand);
             this.Requests.Add(TestData.MakeMerchantWithdrawalCommand);
+            this.Requests.Add(TestData.SwapMerchantDeviceCommand);
+            this.Requests.Add(TestData.GenerateMerchantStatementCommand);
             //this.Requests.Add(TestData.AddProductToContractRequest);
             //this.Requests.Add(TestData.AddSettledFeeToMerchantStatementRequest);
             //this.Requests.Add(TestData.AddTransactionFeeForProductToContractRequest);
@@ -44,7 +46,6 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             //this.Requests.Add(TestData.EmailMerchantStatementRequest);
             //this.Requests.Add(TestData.GenerateMerchantStatementRequest);
             //this.Requests.Add(TestData.SetMerchantSettlementScheduleRequest);
-            //this.Requests.Add(TestData.SwapMerchantDeviceRequest);
 
             Mock<IWebHostEnvironment> hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(he => he.EnvironmentName).Returns("Development");

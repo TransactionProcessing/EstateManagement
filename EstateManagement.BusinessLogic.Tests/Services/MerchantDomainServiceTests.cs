@@ -62,17 +62,42 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                            this.TransactionProcessorClient.Object);
         }
 
-        [Fact]
-        public async Task MerchantDomainService_CreateMerchant_MerchantIsCreated()
+        [Theory]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate)]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly)]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.Weekly)]
+        [InlineData(DataTransferObjects.Responses.Merchant.SettlementSchedule.NotSet)]
+        public async Task MerchantDomainService_CreateMerchant_MerchantIsCreated(DataTransferObjects.Responses.Merchant.SettlementSchedule settlementSchedule)
         {
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            MerchantCommands.CreateMerchantCommand command = new MerchantCommands.CreateMerchantCommand(TestData.EstateId, TestData.CreateMerchantRequest);
+
+            command.RequestDto.SettlementSchedule = settlementSchedule;
             
             Should.NotThrow( async () =>
                             {
-                                await this.DomainService.CreateMerchant(TestData.CreateMerchantCommand, CancellationToken.None);
+                                await this.DomainService.CreateMerchant(command, CancellationToken.None);
+                            });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_CreateMerchant_MerchantIdNotSet_MerchantIsCreated()
+        {
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new MerchantAggregate());
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            MerchantCommands.CreateMerchantCommand command = new MerchantCommands.CreateMerchantCommand(TestData.EstateId, TestData.CreateMerchantRequest);
+            command.RequestDto.MerchantId = null;
+
+            Should.NotThrow(async () =>
+                            {
+                                await this.DomainService.CreateMerchant(command, CancellationToken.None);
                             });
         }
 
@@ -367,7 +392,25 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                                         await this.DomainService.MakeMerchantDeposit(TestData.MakeMerchantDepositCommand, CancellationToken.None);
                                                     });
         }
-        
+
+        [Fact]
+        public async Task MerchantDomainService_MakeMerchantDeposit_NoDepositsYet_DepositIsMade()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            this.MerchantDepositListAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.EmptyMerchantDepositListAggregate);
+            this.MerchantDepositListAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Should.NotThrow(async () =>
+                            {
+                                await this.DomainService.MakeMerchantDeposit(TestData.MakeMerchantDepositCommand, CancellationToken.None);
+                            });
+        }
+
         [Theory]
         [InlineData(SettlementSchedule.Immediate)]
         [InlineData(SettlementSchedule.Weekly)]
@@ -438,12 +481,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             
             Should.NotThrow(async () =>
                             {
-                                await this.DomainService.SwapMerchantDevice(TestData.EstateId,
-                                                                            TestData.MerchantId,
-                                                                            TestData.DeviceId,
-                                                                            TestData.DeviceIdentifier,
-                                                                            TestData.NewDeviceIdentifier,
-                                                                            CancellationToken.None);
+                                await this.DomainService.SwapMerchantDevice(TestData.SwapMerchantDeviceCommand, CancellationToken.None);
                             });
         }
 
@@ -457,12 +495,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             
             Should.Throw<InvalidOperationException>(async () =>
                             {
-                                await this.DomainService.SwapMerchantDevice(TestData.EstateId,
-                                                                            TestData.MerchantId,
-                                                                            TestData.DeviceId,
-                                                                            TestData.DeviceIdentifier,
-                                                                            TestData.NewDeviceIdentifier,
-                                                                            CancellationToken.None);
+                                await this.DomainService.SwapMerchantDevice(TestData.SwapMerchantDeviceCommand, CancellationToken.None);
                             });
         }
 
@@ -476,12 +509,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             
             Should.Throw<InvalidOperationException>(async () =>
             {
-                await this.DomainService.SwapMerchantDevice(TestData.EstateId,
-                                                            TestData.MerchantId,
-                                                            TestData.DeviceId,
-                                                            TestData.DeviceIdentifier,
-                                                            TestData.NewDeviceIdentifier,
-                                                            CancellationToken.None);
+                await this.DomainService.SwapMerchantDevice(TestData.SwapMerchantDeviceCommand, CancellationToken.None);
             });
         }
 

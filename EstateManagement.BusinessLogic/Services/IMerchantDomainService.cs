@@ -19,12 +19,7 @@
 
         Task<Guid> AddDeviceToMerchant(MerchantCommands.AddMerchantDeviceCommand command, CancellationToken cancellationToken);
 
-        Task SwapMerchantDevice(Guid estateId,
-            Guid merchantId,
-            Guid deviceId,
-            String originalDeviceIdentifier,
-            String newDeviceIdentifier,
-            CancellationToken cancellationToken);
+        Task<Guid> SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command, CancellationToken cancellationToken);
         
         Task<Guid> MakeMerchantDeposit(MerchantCommands.MakeMerchantDepositCommand command, CancellationToken cancellationToken);
 

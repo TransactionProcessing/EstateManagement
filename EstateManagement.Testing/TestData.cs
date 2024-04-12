@@ -42,10 +42,8 @@
     using TransactionProcessor.Float.DomainEvents;
     using EstateManagement.DataTransferObjects.Requests.Merchant;
     using Azure.Core;
-    using GenerateMerchantStatementRequest = BusinessLogic.Requests.GenerateMerchantStatementRequest;
     using MerchantDepositSource = Models.MerchantDepositSource;
-    using SwapMerchantDeviceRequest = BusinessLogic.Requests.SwapMerchantDeviceRequest;
-
+    
     public class TestData
     {
         #region Fields
@@ -961,12 +959,6 @@
 
         public static DateTime NextSettlementDate = new DateTime(2021,8,30);
 
-        public static SetMerchantSettlementScheduleRequest SetMerchantSettlementScheduleRequest => SetMerchantSettlementScheduleRequest.Create(TestData.EstateId,
-                                                                                                                                               TestData.MerchantId, TestData.SettlementSchedule);
-
-        public static SwapMerchantDeviceRequest SwapMerchantDeviceRequest =>
-            SwapMerchantDeviceRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
-
         public static Guid CallbackId = Guid.Parse("ABC603D3-360E-4F58-8BB9-827EE7A1CB03");
 
         public static String CallbackReference = "Estate1-Merchant1";
@@ -1099,9 +1091,6 @@
             TestData.SettledFeeAmount1,
             TestData.TransactionId1,
             TestData.SettledFeeId1);
-
-        public static GenerateMerchantStatementRequest GenerateMerchantStatementRequest =
-            GenerateMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.StatementCreateDate);
 
         public static Guid MessageId = Guid.Parse("353FB307-FDD5-41AE-A2AF-C927D57EADBB");
         
@@ -1896,7 +1885,7 @@
             SettlementSchedule = TestData.SettlementScheduleDTO
         };
 
-        public static CreateMerchantUserRequest CreateMerchantUserRequest = new CreateMerchantUserRequest{
+        public static CreateMerchantUserRequest CreateMerchantUserRequest => new CreateMerchantUserRequest{
                                                                                                              EmailAddress = TestData.EmailAddress,
                                                                                                              FamilyName = TestData.MerchantUserFamilyName,
                                                                                                              GivenName = TestData.MerchantUserGivenName,
@@ -1904,7 +1893,7 @@
                                                                                                              Password = TestData.MerchantUserPassword
                                                                                                          };
 
-        public static MakeMerchantDepositRequest MakeMerchantDepositRequest = new MakeMerchantDepositRequest{
+        public static MakeMerchantDepositRequest MakeMerchantDepositRequest => new MakeMerchantDepositRequest{
                                                                                                                 DepositDateTime = TestData.DepositDateTime,
                                                                                                                 Amount = TestData.DepositAmount.Value,
                                                                                                                 Reference = TestData.DepositReference
@@ -1912,7 +1901,7 @@
 
         public static MerchantCommands.CreateMerchantCommand CreateMerchantCommand => new (TestData.EstateId, TestData.CreateMerchantRequest);
 
-        public static AddMerchantDeviceRequest AddMerchantDeviceRequest = new AddMerchantDeviceRequest{
+        public static AddMerchantDeviceRequest AddMerchantDeviceRequest => new AddMerchantDeviceRequest{
                                                                                                           DeviceIdentifier = TestData.DeviceIdentifier
                                                                                                       };
 
@@ -1922,22 +1911,39 @@
                                                                                                                          Reference = TestData.WithdrawalReference
                                                                                                                      };
 
-        public static MerchantCommands.AddMerchantDeviceCommand AddMerchantDeviceCommand = new (TestData.EstateId, TestData.MerchantId, TestData.AddMerchantDeviceRequest);
+        public static MerchantCommands.AddMerchantDeviceCommand AddMerchantDeviceCommand => new (TestData.EstateId, TestData.MerchantId, TestData.AddMerchantDeviceRequest);
 
-        public static MerchantCommands.AddMerchantContractCommand AddMerchantContractCommand = new (TestData.EstateId, TestData.MerchantId, TestData.AddMerchantContractRequest);
+        public static MerchantCommands.AddMerchantContractCommand AddMerchantContractCommand => new (TestData.EstateId, TestData.MerchantId, TestData.AddMerchantContractRequest);
 
-        public static MerchantCommands.CreateMerchantUserCommand CreateMerchantUserCommand = new(TestData.EstateId, TestData.MerchantId, TestData.CreateMerchantUserRequest);
+        public static MerchantCommands.CreateMerchantUserCommand CreateMerchantUserCommand => new(TestData.EstateId, TestData.MerchantId, TestData.CreateMerchantUserRequest);
 
-        public static MerchantCommands.MakeMerchantDepositCommand MakeMerchantDepositCommand = new(TestData.EstateId,
-                                                                                                   TestData.MerchantId,
-                                                                                                   TestData.MerchantDepositSourceManual,
-                                                                                                   TestData.MakeMerchantDepositRequest);
-
-        public static MerchantCommands.MakeMerchantWithdrawalCommand MakeMerchantWithdrawalCommand = new(TestData.EstateId,
-                                                                                                         TestData.MerchantId,
-                                                                                                         TestData.MakeMerchantWithdrawalRequest);
+        public static MerchantCommands.MakeMerchantDepositCommand MakeMerchantDepositCommand => new(TestData.EstateId,
+                                                                                                    TestData.MerchantId,
+                                                                                                    TestData.MerchantDepositSourceManual,
+                                                                                                    TestData.MakeMerchantDepositRequest);
+        
+        public static MerchantCommands.MakeMerchantWithdrawalCommand MakeMerchantWithdrawalCommand => new(TestData.EstateId,
+                                                                                                          TestData.MerchantId,
+                                                                                                          TestData.MakeMerchantWithdrawalRequest);
 
         public static String WithdrawalReference = "Withdraw1";
+
+        public static MerchantCommands.SwapMerchantDeviceCommand SwapMerchantDeviceCommand => new MerchantCommands.SwapMerchantDeviceCommand(TestData.EstateId, TestData.MerchantId, TestData.SwapMerchantDeviceRequest);
+
+        public static SwapMerchantDeviceRequest SwapMerchantDeviceRequest =>
+            new SwapMerchantDeviceRequest{
+                                             NewDeviceIdentifier = TestData.NewDeviceIdentifier,
+                                             OriginalDeviceIdentifier = TestData.DeviceIdentifier
+                                         };
+
+        public static MerchantCommands.GenerateMerchantStatementCommand GenerateMerchantStatementCommand => new MerchantCommands.GenerateMerchantStatementCommand(TestData.EstateId, TestData.MerchantId, TestData.GenerateMerchantStatementRequest);
+
+        public static GenerateMerchantStatementRequest GenerateMerchantStatementRequest =>
+            new GenerateMerchantStatementRequest{
+                                                    MerchantStatementDate = TestData.StatementCreateDate
+                                                };
+
+        public static MerchantDepositListAggregate EmptyMerchantDepositListAggregate = new MerchantDepositListAggregate();
     }
 
 

@@ -401,28 +401,26 @@
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
 
-        public async Task SwapMerchantDevice(Guid estateId,
-                                             Guid merchantId,
-                                             Guid deviceId,
-                                             String originalDeviceIdentifier,
-                                             String newDeviceIdentifier,
+        public async Task<Guid> SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command,
                                              CancellationToken cancellationToken) {
-            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
+            MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
             // Check merchant has been created
             if (merchantAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Merchant Id {merchantId} has not been created");
+                throw new InvalidOperationException($"Merchant Id {command.MerchantId} has not been created");
             }
 
             // Estate Id is a valid estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
             if (estateAggregate.IsCreated == false) {
-                throw new InvalidOperationException($"Estate Id {estateId} has not been created");
+                throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
-
-            merchantAggregate.SwapDevice(deviceId, originalDeviceIdentifier, newDeviceIdentifier);
+            Guid deviceId = Guid.NewGuid();
+            merchantAggregate.SwapDevice(deviceId, command.RequestDto.OriginalDeviceIdentifier, command.RequestDto.NewDeviceIdentifier);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
+
+            return deviceId;
         }
         
         #endregion
