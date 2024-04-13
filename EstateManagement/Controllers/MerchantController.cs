@@ -415,6 +415,9 @@
                 ? "Merchant"
                 : Environment.GetEnvironmentVariable("MerchantRoleName");
 
+            if (this.User.IsInRole(merchantRoleName) == false)
+                return true;
+
             if (ClaimsHelper.IsUserRolesValid(this.User, new[] { merchantRoleName }) == false)
             {
                 return false;
