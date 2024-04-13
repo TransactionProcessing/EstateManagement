@@ -41,6 +41,11 @@
         {
             aggregate.EnsureMerchantHasBeenCreated();
 
+            Boolean isExistingAddress = aggregate.Addresses.Any(a => a.AddressId == addressId);
+
+            if (isExistingAddress)
+                return;
+
             AddressAddedEvent addressAddedEvent = new AddressAddedEvent(aggregate.AggregateId,
                                                                         aggregate.EstateId,
                                                                         addressId,

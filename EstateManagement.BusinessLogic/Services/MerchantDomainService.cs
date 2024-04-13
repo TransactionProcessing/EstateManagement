@@ -154,7 +154,12 @@
                 merchantAggregate.Create(command.EstateId, command.RequestDto.Name, command.RequestDto.CreatedDateTime.GetValueOrDefault(DateTime.Now));
                 merchantAggregate.GenerateReference();
 
-                Guid addressId = Guid.NewGuid();
+                Guid addressId = IdGenerationService.GenerateAddressId((command.RequestDto.Address.AddressLine1,
+                                                                               command.RequestDto.Address.Town,
+                                                                               command.RequestDto.Address.Region,
+                                                                               command.RequestDto.Address.PostalCode,
+                                                                               command.RequestDto.Address.Country));
+                
                 // Add the address 
                 merchantAggregate.AddAddress(addressId, command.RequestDto.Address.AddressLine1, command.RequestDto.Address.AddressLine2, command.RequestDto.Address.AddressLine3,
                                              command.RequestDto.Address.AddressLine4, command.RequestDto.Address.Town, command.RequestDto.Address.Region,
@@ -323,6 +328,28 @@
             await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
         }
 
+        public async Task AddMerchantAddress(MerchantCommands.AddMerchantAddressCommand command, CancellationToken cancellationToken){
+            (MerchantAggregate merchantAggregate, EstateAggregate estateAggregate) validateResults = await this.ValidateEstateAndMerchant(command.EstateId, command.MerchantId, cancellationToken);
+
+            // validate the address is not a duplicate
+            Guid addressId = IdGenerationService.GenerateAddressId((command.RequestDto.AddressLine1,
+                                                                       command.RequestDto.Town,
+                                                                       command.RequestDto.Region,
+                                                                       command.RequestDto.PostalCode,
+                                                                       command.RequestDto.Country));
+
+            validateResults.merchantAggregate.AddAddress(addressId,
+                                                         command.RequestDto.AddressLine1,
+                                                         command.RequestDto.AddressLine2,
+                                                         command.RequestDto.AddressLine3,
+                                                         command.RequestDto.AddressLine4,
+                                                         command.RequestDto.Town,
+                                                         command.RequestDto.Region,
+                                                         command.RequestDto.PostalCode,
+                                                         command.RequestDto.Country);
+
+            await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
+        }
 
         private async Task<(MerchantAggregate merchantAggregate, EstateAggregate estateAggregate)> ValidateEstateAndMerchant(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);

@@ -406,14 +406,16 @@
         private Boolean PerformMerchantUserChecks(Guid estateId, Guid merchantId)
         {
 
-            if (this.PerformStandardChecks(estateId) == false)
-            {
+            if (this.PerformStandardChecks(estateId) == false){
                 return false;
             }
 
             String merchantRoleName = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MerchantRoleName"))
                 ? "Merchant"
                 : Environment.GetEnvironmentVariable("MerchantRoleName");
+
+            if (this.User.IsInRole(merchantRoleName) == false)
+                return true;
 
             if (ClaimsHelper.IsUserRolesValid(this.User, new[] { merchantRoleName }) == false)
             {
@@ -471,13 +473,34 @@
             return this.NoContent();
         }
 
+        [Route("{merchantId}/addresses")]
+        [HttpPost]
+        //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
+        public async Task<IActionResult> AddMerchantAddress([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromBody] DataTransferObjects.Requests.Merchant.Address addAddressRequest,
+                                                            CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.AddMerchantAddressCommand command = new (estateId,merchantId, addAddressRequest);
+
+            await this.Mediator.Send(command, cancellationToken);
+
+            return this.NoContent();
+        }
+
         #endregion
 
-        #region Others
+            #region Others
 
-        /// <summary>
-        /// The controller name
-        /// </summary>
+            /// <summary>
+            /// The controller name
+            /// </summary>
         public const String ControllerName = "merchants";
 
         /// <summary>
