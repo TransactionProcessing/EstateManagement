@@ -110,7 +110,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.SettlementSchedule.ShouldBe(expectedModel.SettlementSchedule);
 
             merchantModel.Addresses.ShouldHaveSingleItem();
-            merchantModel.Addresses.Single().AddressId.ShouldBe(expectedModel.Addresses.Single().AddressId);
+            merchantModel.Addresses.Single().AddressId.ShouldNotBe(Guid.Empty);
             merchantModel.Addresses.Single().AddressLine1.ShouldBe(expectedModel.Addresses.Single().AddressLine1);
             merchantModel.Addresses.Single().AddressLine2.ShouldBe(expectedModel.Addresses.Single().AddressLine2);
             merchantModel.Addresses.Single().AddressLine3.ShouldBe(expectedModel.Addresses.Single().AddressLine3);

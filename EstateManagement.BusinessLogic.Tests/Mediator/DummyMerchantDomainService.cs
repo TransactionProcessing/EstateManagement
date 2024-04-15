@@ -44,4 +44,12 @@ public class DummyMerchantDomainService : IMerchantDomainService
     public async Task UpdateMerchant(MerchantCommands.UpdateMerchantCommand command, CancellationToken cancellationToken){
         
     }
+
+    public async Task AddMerchantAddress(MerchantCommands.AddMerchantAddressCommand command, CancellationToken cancellationToken){
+        
+    }
+
+    public async Task UpdateMerchantAddress(MerchantCommands.UpdateMerchantAddressCommand command, CancellationToken cancellationToken){
+        
+    }
 }

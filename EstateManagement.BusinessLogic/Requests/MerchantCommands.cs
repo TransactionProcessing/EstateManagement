@@ -1,11 +1,9 @@
 ﻿namespace EstateManagement.BusinessLogic.Requests
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using EstateManagement.DataTransferObjects.Requests.Merchant;
     using MediatR;
-    using Models.Contract;
 
     [ExcludeFromCodeCoverage]
     public class MerchantCommands{
@@ -29,17 +27,10 @@
         public record GenerateMerchantStatementCommand(Guid EstateId, Guid MerchantId, GenerateMerchantStatementRequest RequestDto) : IRequest<Guid>;
         
         public record UpdateMerchantCommand(Guid EstateId, Guid MerchantId, UpdateMerchantRequest RequestDto) : IRequest;
+
+        public record AddMerchantAddressCommand(Guid EstateId, Guid MerchantId,  Address RequestDto) : IRequest;
+        public record UpdateMerchantAddressCommand(Guid EstateId, Guid MerchantId, Guid AddressId, Address RequestDto) : IRequest;
     }
 
-    [ExcludeFromCodeCoverage]
-    public class MerchantQueries{
-        public record GetMerchantQuery(Guid EstateId, Guid MerchantId) : IRequest<Models.Merchant.Merchant>;
-
-        public record GetMerchantContractsQuery(Guid EstateId, Guid MerchantId) : IRequest<List<Models.Contract.Contract>>;
-
-        public record GetMerchantsQuery(Guid EstateId) : IRequest<List<Models.Merchant.Merchant>>;
-
-        public record GetTransactionFeesForProductQuery(Guid EstateId, Guid MerchantId, Guid ContractId,Guid ProductId) : IRequest<List<TransactionFee>>;
-
-    }
+    
 }

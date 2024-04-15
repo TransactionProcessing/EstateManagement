@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using ContractAggregate;
     using Merchant.DomainEvents;
     using Models;
@@ -28,8 +29,101 @@
             }
         }
 
+        public static void UpdateAddress(this MerchantAggregate aggregate, Guid addressId,
+                                        String addressLine1,
+                                        String addressLine2,
+                                        String addressLine3,
+                                        String addressLine4,
+                                        String town,
+                                        String region,
+                                        String postalCode,
+                                        String country)
+        {
+            aggregate.EnsureMerchantHasBeenCreated();
+
+            Boolean isExistingAddress = aggregate.Addresses.ContainsKey(addressId);
+
+            if (isExistingAddress == false){
+                // Not an existing address, what should we do here ??
+                return;
+            }
+            var existingAddress = aggregate.Addresses.Single(a => a.Key == addressId).Value;
+            
+            var updatedAddress = new Address(addressLine1,
+                                             addressLine2,
+                                             addressLine3,
+                                             addressLine4,
+                                             town,
+                                             region,
+                                             postalCode,
+                                             country);
+
+            if (updatedAddress == existingAddress){
+                // No changes
+                return;
+            }
+
+            aggregate.HandleAddressUpdates(addressId,existingAddress, updatedAddress);
+        }
+
+        private static void HandleAddressUpdates(this MerchantAggregate merchantAggregate, Guid addressId, Address existingAddress, Address updatedAddress){
+            if (existingAddress.AddressLine1 != updatedAddress.AddressLine1){
+                MerchantAddressLine1UpdatedEvent merchantAddressLine1UpdatedEvent = new (merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                                                                         updatedAddress.AddressLine1);
+                merchantAggregate.ApplyAndAppend(merchantAddressLine1UpdatedEvent);
+            }
+
+            if (existingAddress.AddressLine2 != updatedAddress.AddressLine2)
+            {
+                MerchantAddressLine2UpdatedEvent merchantAddressLine2UpdatedEvent = new (merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                                                                         updatedAddress.AddressLine2);
+                merchantAggregate.ApplyAndAppend(merchantAddressLine2UpdatedEvent);
+            }
+
+            if (existingAddress.AddressLine3 != updatedAddress.AddressLine3)
+            {
+                MerchantAddressLine3UpdatedEvent merchantAddressLine3UpdatedEvent = new (merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                                                                         updatedAddress.AddressLine3);
+                merchantAggregate.ApplyAndAppend(merchantAddressLine3UpdatedEvent);
+            }
+
+            if (existingAddress.AddressLine4 != updatedAddress.AddressLine4)
+            {
+                MerchantAddressLine4UpdatedEvent merchantAddressLine4UpdatedEvent = new (merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                                                                         updatedAddress.AddressLine4);
+                merchantAggregate.ApplyAndAppend(merchantAddressLine4UpdatedEvent);
+            }
+
+            if (existingAddress.Country != updatedAddress.Country)
+            {
+                MerchantCountyUpdatedEvent merchantCountyUpdatedEvent = new (merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                                                             updatedAddress.Country);
+                merchantAggregate.ApplyAndAppend(merchantCountyUpdatedEvent);
+            }
+
+            if (existingAddress.PostalCode != updatedAddress.PostalCode)
+            {
+                MerchantPostalCodeUpdatedEvent merchantPostalCodeUpdatedEvent = new (merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                                                       updatedAddress.PostalCode);
+                merchantAggregate.ApplyAndAppend(merchantPostalCodeUpdatedEvent);
+            }
+
+            if (existingAddress.Region != updatedAddress.Region)
+            {
+                MerchantRegionUpdatedEvent merchantRegionUpdatedEvent = new(merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                                    updatedAddress.Region);
+                merchantAggregate.ApplyAndAppend(merchantRegionUpdatedEvent);
+            }
+
+            if (existingAddress.Town != updatedAddress.Town)
+            {
+                MerchantTownUpdatedEvent merchantTownUpdatedEvent = new(merchantAggregate.AggregateId, merchantAggregate.EstateId, addressId,
+                                                                            updatedAddress.Town);
+                merchantAggregate.ApplyAndAppend(merchantTownUpdatedEvent);
+            }
+        }
+
         public static void AddAddress(this MerchantAggregate aggregate,
-            Guid addressId,
                                String addressLine1,
                                String addressLine2,
                                String addressLine3,
@@ -40,10 +134,13 @@
                                String country)
         {
             aggregate.EnsureMerchantHasBeenCreated();
+            
+            if (IsDuplicateAddress(aggregate, addressLine1,addressLine2, addressLine3, addressLine4, town,region, postalCode, country))
+                return;
 
             AddressAddedEvent addressAddedEvent = new AddressAddedEvent(aggregate.AggregateId,
                                                                         aggregate.EstateId,
-                                                                        addressId,
+                                                                        Guid.NewGuid(), 
                                                                         addressLine1,
                                                                         addressLine2,
                                                                         addressLine3,
@@ -64,7 +161,7 @@
 
             aggregate.EnsureMerchantHasBeenCreated();
 
-            String reference = String.Format("{0:X}", aggregate.AggregateId.GetHashCode());
+            String reference = $"{aggregate.AggregateId.GetHashCode():X}";
 
             MerchantReferenceAllocatedEvent merchantReferenceAllocatedEvent = new MerchantReferenceAllocatedEvent(aggregate.AggregateId, aggregate.EstateId, reference);
 
@@ -182,18 +279,20 @@
             if (aggregate.Addresses.Any())
             {
                 merchantModel.Addresses = new List<Models.Merchant.Address>();
-                aggregate.Addresses.ForEach(a => merchantModel.Addresses.Add(new Models.Merchant.Address
-                                                                             {
-                                                                                 AddressId = a.AddressId,
-                                                                                 Town = a.Town,
-                                                                                 Region = a.Region,
-                                                                                 PostalCode = a.PostalCode,
-                                                                                 Country = a.Country,
-                                                                                 AddressLine1 = a.AddressLine1,
-                                                                                 AddressLine4 = a.AddressLine4,
-                                                                                 AddressLine3 = a.AddressLine3,
-                                                                                 AddressLine2 = a.AddressLine2
-                                                                             }));
+                foreach (KeyValuePair<Guid, Address> aggregateAddress in aggregate.Addresses){
+                    merchantModel.Addresses.Add(new Models.Merchant.Address
+                    {
+                        AddressId = aggregateAddress.Key,
+                        Town = aggregateAddress.Value.Town,
+                        Region = aggregateAddress.Value.Region,
+                        PostalCode = aggregateAddress.Value.PostalCode,
+                        Country = aggregateAddress.Value.Country,
+                        AddressLine1 = aggregateAddress.Value.AddressLine1,
+                        AddressLine4 = aggregateAddress.Value.AddressLine4,
+                        AddressLine3 = aggregateAddress.Value.AddressLine3,
+                        AddressLine2 = aggregateAddress.Value.AddressLine2
+                    });
+                }
             }
 
             if (aggregate.Contacts.Any())
@@ -311,6 +410,27 @@
             }
         }
 
+        private static Boolean IsDuplicateAddress(this MerchantAggregate aggregate, String addressLine1,
+                                                  String addressLine2,
+                                                  String addressLine3,
+                                                  String addressLine4,
+                                                  String town,
+                                                  String region,
+                                                  String postalCode,
+                                                  String country)
+        {
+            // create record of "new" address
+            Address newAddress = new Address(addressLine1, addressLine2, addressLine3,addressLine4, town, region, postalCode,country);
+
+            foreach (KeyValuePair<Guid, Address> aggregateAddress in aggregate.Addresses){
+                if (newAddress == aggregateAddress.Value){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static void EnsureDeviceBelongsToMerchant(this MerchantAggregate aggregate, String originalDeviceIdentifier)
         {
             if (aggregate.Devices.ContainsValue(originalDeviceIdentifier) == false)
@@ -367,17 +487,103 @@
 
         public static void PlayEvent(this MerchantAggregate aggregate, AddressAddedEvent addressAddedEvent)
         {
-            Address address = Address.Create(addressAddedEvent.AddressId,
-                                             addressAddedEvent.AddressLine1,
-                                             addressAddedEvent.AddressLine2,
-                                             addressAddedEvent.AddressLine3,
-                                             addressAddedEvent.AddressLine4,
-                                             addressAddedEvent.Town,
-                                             addressAddedEvent.Region,
-                                             addressAddedEvent.PostalCode,
-                                             addressAddedEvent.Country);
+            Address address = new Address(addressAddedEvent.AddressLine1,
+                                          addressAddedEvent.AddressLine2,
+                                          addressAddedEvent.AddressLine3,
+                                          addressAddedEvent.AddressLine4,
+                                          addressAddedEvent.Town,
+                                          addressAddedEvent.Region,
+                                          addressAddedEvent.PostalCode,
+                                          addressAddedEvent.Country);
 
-            aggregate.Addresses.Add(address);
+            aggregate.Addresses.Add(addressAddedEvent.AddressId,address);
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine1UpdatedEvent addressLine1UpdatedEvent){
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine1UpdatedEvent.AddressId);
+            
+            Address updatedAddress = address.Value with
+                                     {
+                                         AddressLine1 = addressLine1UpdatedEvent.AddressLine1
+                                     };
+            aggregate.Addresses[addressLine1UpdatedEvent.AddressId] = updatedAddress;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine2UpdatedEvent addressLine2UpdatedEvent)
+        {
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine2UpdatedEvent.AddressId);
+
+            Address updatedAddress = address.Value with
+                                     {
+                                         AddressLine2 = addressLine2UpdatedEvent.AddressLine2
+                                     };
+            aggregate.Addresses[addressLine2UpdatedEvent.AddressId] = updatedAddress;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine3UpdatedEvent addressLine3UpdatedEvent)
+        {
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine3UpdatedEvent.AddressId);
+
+            Address updatedAddress = address.Value with
+                                     {
+                                         AddressLine3 = addressLine3UpdatedEvent.AddressLine3
+                                     };
+            aggregate.Addresses[addressLine3UpdatedEvent.AddressId] = updatedAddress;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine4UpdatedEvent addressLine4UpdatedEvent)
+        {
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine4UpdatedEvent.AddressId);
+
+            Address updatedAddress = address.Value with
+                                     {
+                                         AddressLine4 = addressLine4UpdatedEvent.AddressLine4
+                                     };
+            aggregate.Addresses[addressLine4UpdatedEvent.AddressId] = updatedAddress;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantPostalCodeUpdatedEvent merchantPostalCodeUpdatedEvent)
+        {
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantPostalCodeUpdatedEvent.AddressId);
+
+            Address updatedAddress = address.Value with
+                                     {
+                                         PostalCode = merchantPostalCodeUpdatedEvent.PostalCode
+                                     };
+            aggregate.Addresses[merchantPostalCodeUpdatedEvent.AddressId] = updatedAddress;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantTownUpdatedEvent merchantTownUpdatedEvent)
+        {
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantTownUpdatedEvent.AddressId);
+
+            Address updatedAddress = address.Value with
+                                     {
+                                         Town = merchantTownUpdatedEvent.Town
+                                     };
+            aggregate.Addresses[merchantTownUpdatedEvent.AddressId] = updatedAddress;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantRegionUpdatedEvent merchantRegionUpdatedEvent)
+        {
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantRegionUpdatedEvent.AddressId);
+
+            Address updatedAddress = address.Value with
+                                     {
+                                         Region = merchantRegionUpdatedEvent.Region
+                                     };
+            aggregate.Addresses[merchantRegionUpdatedEvent.AddressId] = updatedAddress;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantCountyUpdatedEvent merchantCountyUpdatedEvent)
+        {
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantCountyUpdatedEvent.AddressId);
+
+            Address updatedAddress = address.Value with
+                                     {
+                                         Country = merchantCountyUpdatedEvent.Country
+                                     };
+            aggregate.Addresses[merchantCountyUpdatedEvent.AddressId] = updatedAddress;
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, ContactAddedEvent contactAddedEvent)
@@ -440,7 +646,7 @@
     {
         #region Fields
 
-        internal readonly List<Address> Addresses;
+        internal readonly Dictionary<Guid, Address> Addresses;
 
         internal readonly List<Contact> Contacts;
 
@@ -463,7 +669,7 @@
         public MerchantAggregate()
         {
             // Nothing here
-            this.Addresses = new List<Address>();
+            this.Addresses = new Dictionary<Guid, Address>();
             this.Contacts = new List<Contact>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
@@ -480,7 +686,7 @@
             Guard.ThrowIfInvalidGuid(aggregateId, "Aggregate Id cannot be an Empty Guid");
 
             this.AggregateId = aggregateId;
-            this.Addresses = new List<Address>();
+            this.Addresses = new Dictionary<Guid, Address>();
             this.Contacts = new List<Contact>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
@@ -531,5 +737,7 @@
 
 
         #endregion
+
+        
     }
 }

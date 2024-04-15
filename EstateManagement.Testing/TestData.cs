@@ -63,12 +63,16 @@
                                                                 };
 
         public static String MerchantAddressLine1 = "Address Line 1";
+        public static String MerchantAddressLine1Update = "Address Line 1 Update";
 
         public static String MerchantAddressLine2 = "Address Line 2";
+        public static String MerchantAddressLine2Update = "Address Line 2 Update";
 
         public static String MerchantAddressLine3 = "Address Line 3";
+        public static String MerchantAddressLine3Update = "Address Line 3 Update";
 
         public static String MerchantAddressLine4 = "Address Line 4";
+        public static String MerchantAddressLine4Update = "Address Line 4 Update";
 
         public static String MerchantContactEmailAddress = "testcontact@merchant1.co.uk";
 
@@ -77,6 +81,7 @@
         public static String MerchantContactPhoneNumber = "1234567890";
 
         public static String MerchantCountry = "United Kingdom";
+        public static String MerchantCountryUpdate = "United Kingdom Update";
 
         public static Guid MerchantId = Guid.Parse("ac476195-f993-4712-8ea1-cb41c0b44328");
 
@@ -91,10 +96,13 @@
         public static String MerchantNameUpdated = "Test Merchant 1 Updated";
 
         public static String MerchantPostalCode = "TE571NG";
+        public static String MerchantPostalCodeUpdate = "TE571NGUpdate";
 
         public static String MerchantRegion = "Test Region";
+        public static String MerchantRegionUpdate = "Test Region Update";
 
         public static String MerchantTown = "Test Town";
+        public static String MerchantTownUpdate = "Test Town Update";
         
         public static EstateAggregate EmptyEstateAggregate = EstateAggregate.Create(TestData.EstateId);
 
@@ -164,7 +172,7 @@
 
         public static DateTime DateMerchantCreated = new DateTime(2019,11,16);
 
-        public static Guid MerchantAddressId = Guid.Parse("F463D464-CD2F-4293-98F1-A31529B12426");
+        //public static Guid MerchantAddressId = Guid.Parse("F463D464-CD2F-4293-98F1-A31529B12426");
 
         public static Guid MerchantContactId = Guid.Parse("37B08E8A-8B1E-482A-AE9C-C87DC3B36026");
 
@@ -252,7 +260,7 @@
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
 
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddAddress(TestData.MerchantAddressId, TestData.MerchantAddressLine1, TestData.MerchantAddressLine2, 
+            merchantAggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2, 
                                          TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown, 
                                          TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
 
@@ -266,7 +274,7 @@
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             merchantAggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
                                          TestData.MerchantContactEmailAddress);
-            merchantAggregate.AddAddress(TestData.MerchantAddressId, TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+            merchantAggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
                                          TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
                                          TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
             merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
@@ -308,7 +316,7 @@
                                                                                            {
                                                                                                Town = TestData.MerchantTown,
                                                                                                AddressLine4 = TestData.MerchantAddressLine4,
-                                                                                               AddressId = TestData.MerchantAddressId,
+                                                                                               AddressId = Guid.NewGuid(),
                                                                                                Region = TestData.MerchantRegion,
                                                                                                Country = TestData.MerchantCountry,
                                                                                                AddressLine1 = TestData.MerchantAddressLine1,
@@ -417,7 +425,7 @@
                                                                                                {
                                                                                                    Town = TestData.MerchantTown,
                                                                                                    AddressLine4 = TestData.MerchantAddressLine4,
-                                                                                                   AddressId = TestData.MerchantAddressId,
+                                                                                                   AddressId = Guid.NewGuid(),
                                                                                                    Region = TestData.MerchantRegion,
                                                                                                    Country = TestData.MerchantCountry,
                                                                                                    AddressLine1 = TestData.MerchantAddressLine1,
@@ -454,7 +462,7 @@
                                                                                   {
                                                                                       Town = TestData.MerchantTown,
                                                                                       AddressLine4 = TestData.MerchantAddressLine4,
-                                                                                      AddressId = TestData.MerchantAddressId,
+                                                                                      AddressId = Guid.NewGuid(),
                                                                                       Region = TestData.MerchantRegion,
                                                                                       Country = TestData.MerchantCountry,
                                                                                       AddressLine1 = TestData.MerchantAddressLine1,
@@ -497,7 +505,7 @@
                                                                                     {
                                                                                         Town = TestData.MerchantTown,
                                                                                         AddressLine4 = TestData.MerchantAddressLine4,
-                                                                                        AddressId = TestData.MerchantAddressId,
+                                                                                        AddressId = Guid.NewGuid(),
                                                                                         Region = TestData.MerchantRegion,
                                                                                         Country = TestData.MerchantCountry,
                                                                                         AddressLine1 = TestData.MerchantAddressLine1,
@@ -647,7 +655,7 @@
                                                                                                      PostalCode = TestData.MerchantPostalCode,
                                                                                                      Region = TestData.MerchantRegion,
                                                                                                      Town = TestData.MerchantTown,
-                                                                                                     AddressId = TestData.MerchantAddressId
+            AddressId = Guid.NewGuid()
                                                                                                  };
 
         public static EstateManagement.Database.Entities.MerchantOperator MerchantOperatorEntity = new MerchantOperator
@@ -1964,6 +1972,29 @@
                                                                   TestData.MerchantId,
                                                                   TestData.ContractId,
                                                                   TestData.ProductId);
+
+        public static DataTransferObjects.Requests.Merchant.Address Address =>
+            new DataTransferObjects.Requests.Merchant.Address{
+                                                                 AddressLine1 = TestData.AddressLine1,
+                                                                 AddressLine2 = TestData.AddressLine2,
+                                                                 AddressLine3 = TestData.AddressLine3,
+                                                                 AddressLine4 = TestData.AddressLine4,
+                                                                 Country = TestData.Country,
+                                                                 PostalCode = TestData.PostCode,
+                                                                 Region = TestData.Region,
+                                                                 Town = TestData.Town
+                                                             };
+
+        public static MerchantCommands.AddMerchantAddressCommand AddMerchantAddressCommand =>
+            new MerchantCommands.AddMerchantAddressCommand(TestData.EstateId,
+                                                           TestData.MerchantId,
+                                                           TestData.Address);
+
+        public static MerchantCommands.UpdateMerchantAddressCommand UpdateMerchantAddressCommand =>
+            new MerchantCommands.UpdateMerchantAddressCommand(TestData.EstateId,
+                                                              TestData.MerchantId,
+                                                              Guid.NewGuid(),
+                                                              TestData.Address);
     }
 
 

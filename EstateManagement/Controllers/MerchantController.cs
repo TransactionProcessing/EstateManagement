@@ -406,8 +406,7 @@
         private Boolean PerformMerchantUserChecks(Guid estateId, Guid merchantId)
         {
 
-            if (this.PerformStandardChecks(estateId) == false)
-            {
+            if (this.PerformStandardChecks(estateId) == false){
                 return false;
             }
 
@@ -469,6 +468,50 @@
 
             MerchantCommands.UpdateMerchantCommand command = new (estateId, merchantId, updateMerchantRequest);
             
+            await this.Mediator.Send(command, cancellationToken);
+
+            return this.NoContent();
+        }
+
+        [Route("{merchantId}/addresses")]
+        [HttpPost]
+        //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
+        public async Task<IActionResult> AddMerchantAddress([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromBody] DataTransferObjects.Requests.Merchant.Address addAddressRequest,
+                                                            CancellationToken cancellationToken){
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.AddMerchantAddressCommand command = new (estateId,merchantId, addAddressRequest);
+
+            await this.Mediator.Send(command, cancellationToken);
+
+            return this.NoContent();
+        }
+
+        [Route("{merchantId}/addresses/{addressId}")]
+        [HttpPatch]
+        //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
+        public async Task<IActionResult> UpdateMerchantAddress([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromRoute] Guid addressId,
+                                                            [FromBody] DataTransferObjects.Requests.Merchant.Address updateAddressRequest,
+                                                            CancellationToken cancellationToken)
+        {
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.UpdateMerchantAddressCommand command = new(estateId, merchantId, addressId, updateAddressRequest);
+
             await this.Mediator.Send(command, cancellationToken);
 
             return this.NoContent();

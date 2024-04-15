@@ -40,6 +40,8 @@
             this.AddSingleton<IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContractCommand>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantCommand>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantAddressCommand>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand>, MerchantRequestHandler>();
 
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantQuery, Merchant>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>, MerchantRequestHandler>();

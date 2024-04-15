@@ -37,6 +37,8 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.SwapMerchantDeviceCommand);
             this.Requests.Add(TestData.GenerateMerchantStatementCommand);
             this.Requests.Add(TestData.UpdateMerchantCommand);
+            this.Requests.Add(TestData.AddMerchantAddressCommand);
+
             this.Requests.Add(TestData.GetMerchantsQuery);
             this.Requests.Add(TestData.GetMerchantQuery);
             this.Requests.Add(TestData.GetMerchantContractsQuery);

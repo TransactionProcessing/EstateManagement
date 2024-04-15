@@ -30,7 +30,10 @@
                                           IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>,
                                           IRequestHandler<MerchantQueries.GetMerchantsQuery, List<Models.Merchant.Merchant>>,
                                           IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>,
-                                          IRequestHandler<MerchantCommands.UpdateMerchantCommand>{
+                                          IRequestHandler<MerchantCommands.UpdateMerchantCommand>,
+                                          IRequestHandler<MerchantCommands.AddMerchantAddressCommand>,
+                                          IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand>
+    {
         #region Fields
 
         private readonly IMerchantDomainService MerchantDomainService;
@@ -135,6 +138,14 @@
 
         public async Task Handle(MerchantCommands.UpdateMerchantCommand command, CancellationToken cancellationToken){
             await this.MerchantDomainService.UpdateMerchant(command, cancellationToken);
+        }
+
+        public async Task Handle(MerchantCommands.AddMerchantAddressCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.AddMerchantAddress(command, cancellationToken);
+        }
+
+        public async Task Handle(MerchantCommands.UpdateMerchantAddressCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.UpdateMerchantAddress(command, cancellationToken);
         }
     }
 }

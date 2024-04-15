@@ -8,11 +8,7 @@
     using System.Threading.Tasks;
     using ContractAggregate;
     using EstateAggregate;
-    using EstateManagement.Database.Entities;
-    using EstateManagement.DataTransferObjects.Requests.Merchant;
     using MerchantAggregate;
-    using Microsoft.IdentityModel.Tokens;
-    using Models;
     using Models.Merchant;
     using Requests;
     using SecurityService.Client;
@@ -25,9 +21,7 @@
     using Shared.ValueObjects;
     using TransactionProcessor.Client;
     using TransactionProcessor.DataTransferObjects;
-    using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
     using Estate = Models.Estate.Estate;
-    using MerchantDepositSource = Models.MerchantDepositSource;
     using Operator = Models.Estate.Operator;
     using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
 
@@ -154,9 +148,8 @@
                 merchantAggregate.Create(command.EstateId, command.RequestDto.Name, command.RequestDto.CreatedDateTime.GetValueOrDefault(DateTime.Now));
                 merchantAggregate.GenerateReference();
 
-                Guid addressId = Guid.NewGuid();
                 // Add the address 
-                merchantAggregate.AddAddress(addressId, command.RequestDto.Address.AddressLine1, command.RequestDto.Address.AddressLine2, command.RequestDto.Address.AddressLine3,
+                merchantAggregate.AddAddress(command.RequestDto.Address.AddressLine1, command.RequestDto.Address.AddressLine2, command.RequestDto.Address.AddressLine3,
                                              command.RequestDto.Address.AddressLine4, command.RequestDto.Address.Town, command.RequestDto.Address.Region,
                                              command.RequestDto.Address.PostalCode, command.RequestDto.Address.Country);
 
@@ -323,6 +316,36 @@
             await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
         }
 
+        public async Task AddMerchantAddress(MerchantCommands.AddMerchantAddressCommand command, CancellationToken cancellationToken){
+            (MerchantAggregate merchantAggregate, EstateAggregate estateAggregate) validateResults = await this.ValidateEstateAndMerchant(command.EstateId, command.MerchantId, cancellationToken);
+
+            validateResults.merchantAggregate.AddAddress(command.RequestDto.AddressLine1,
+                                                         command.RequestDto.AddressLine2,
+                                                         command.RequestDto.AddressLine3,
+                                                         command.RequestDto.AddressLine4,
+                                                         command.RequestDto.Town,
+                                                         command.RequestDto.Region,
+                                                         command.RequestDto.PostalCode,
+                                                         command.RequestDto.Country);
+
+            await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
+        }
+
+        public async Task UpdateMerchantAddress(MerchantCommands.UpdateMerchantAddressCommand command, CancellationToken cancellationToken){
+            (MerchantAggregate merchantAggregate, EstateAggregate estateAggregate) validateResults = await this.ValidateEstateAndMerchant(command.EstateId, command.MerchantId, cancellationToken);
+
+            validateResults.merchantAggregate.UpdateAddress(command.AddressId,
+                                                         command.RequestDto.AddressLine1,
+                                                         command.RequestDto.AddressLine2,
+                                                         command.RequestDto.AddressLine3,
+                                                         command.RequestDto.AddressLine4,
+                                                         command.RequestDto.Town,
+                                                         command.RequestDto.Region,
+                                                         command.RequestDto.PostalCode,
+                                                         command.RequestDto.Country);
+
+            await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
+        }
 
         private async Task<(MerchantAggregate merchantAggregate, EstateAggregate estateAggregate)> ValidateEstateAndMerchant(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);

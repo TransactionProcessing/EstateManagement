@@ -93,4 +93,41 @@ namespace EstateManagement.Merchant.DomainEvents
                                                  Guid EstateId,
                                                  String MerchantName) : DomainEvent(MerchantId, Guid.NewGuid());
 
+    public record MerchantAddressLine1UpdatedEvent(Guid MerchantId,
+                                           Guid EstateId,
+                                           Guid AddressId,
+                                           String AddressLine1) : DomainEvent(MerchantId, Guid.NewGuid());
+    public record MerchantAddressLine2UpdatedEvent(Guid MerchantId,
+                                                   Guid EstateId,
+                                                   Guid AddressId,
+                                                   String AddressLine2) : DomainEvent(MerchantId, Guid.NewGuid());
+    public record MerchantAddressLine3UpdatedEvent(Guid MerchantId,
+                                                   Guid EstateId,
+                                                   Guid AddressId,
+                                                   String AddressLine3) : DomainEvent(MerchantId, Guid.NewGuid());
+    public record MerchantAddressLine4UpdatedEvent(Guid MerchantId,
+                                                   Guid EstateId,
+                                                   Guid AddressId,
+                                                   String AddressLine4) : DomainEvent(MerchantId, Guid.NewGuid());
+
+    public record MerchantCountyUpdatedEvent(Guid MerchantId,
+                                                   Guid EstateId,
+                                                   Guid AddressId,
+                                                   String Country) : DomainEvent(MerchantId, Guid.NewGuid());
+
+    public record MerchantRegionUpdatedEvent(Guid MerchantId,
+                                                   Guid EstateId,
+                                                   Guid AddressId,
+                                                   String Region) : DomainEvent(MerchantId, Guid.NewGuid());
+
+    public record MerchantTownUpdatedEvent(Guid MerchantId,
+                                                   Guid EstateId,
+                                                   Guid AddressId,
+                                                   String Town) : DomainEvent(MerchantId, Guid.NewGuid());
+
+    public record MerchantPostalCodeUpdatedEvent(Guid MerchantId,
+                                                   Guid EstateId,
+                                                   Guid AddressId,
+                                                   String PostalCode) : DomainEvent(MerchantId, Guid.NewGuid());
+
 }

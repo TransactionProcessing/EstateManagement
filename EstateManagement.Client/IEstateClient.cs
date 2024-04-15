@@ -171,6 +171,13 @@
                             UpdateMerchantRequest request,
                             CancellationToken cancellationToken);
 
+        Task UpdateMerchantAddress(String accessToken,
+                                   Guid estateId,
+                                   Guid merchantId,
+                                   Guid addressId,
+                                   Address updatedAddressRequest,
+                                   CancellationToken cancellationToken);
+
         #endregion
     }
 }
