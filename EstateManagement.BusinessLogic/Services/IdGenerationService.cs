@@ -35,11 +35,5 @@ namespace EstateManagement.BusinessLogic.Services
                                                                                     };
 
         public static Guid GenerateEventId(Object o) => IdGenerationService.GenerateUniqueId(o);
-
-        public static Guid GenerateAddressId((String addressLine1,
-                                             String town,
-                                             String region,
-                                             String postalCode,
-                                             String country) address) => IdGenerationService.GenerateUniqueId(address);
     }
 }

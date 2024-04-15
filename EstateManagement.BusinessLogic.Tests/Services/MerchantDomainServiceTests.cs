@@ -646,5 +646,33 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                                 await this.DomainService.UpdateMerchant(command, CancellationToken.None);
                             });
         }
+
+        [Fact]
+        public async Task MerchantDomainService_AddMerchantAddress_AddressAdded()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Should.NotThrow(async () =>
+                                                    {
+                                                        await this.DomainService.AddMerchantAddress(TestData.AddMerchantAddressCommand, CancellationToken.None);
+                                                    });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_UpdateMerchantAddress_AddressAdded()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Should.NotThrow(async () =>
+                            {
+                                await this.DomainService.UpdateMerchantAddress(TestData.UpdateMerchantAddressCommand, CancellationToken.None);
+                            });
+        }
     }
 }

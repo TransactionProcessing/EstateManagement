@@ -494,13 +494,36 @@
             return this.NoContent();
         }
 
+        [Route("{merchantId}/addresses/{addressId}")]
+        [HttpPatch]
+        //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
+        public async Task<IActionResult> UpdateMerchantAddress([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromRoute] Guid addressId,
+                                                            [FromBody] DataTransferObjects.Requests.Merchant.Address updateAddressRequest,
+                                                            CancellationToken cancellationToken)
+        {
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.UpdateMerchantAddressCommand command = new(estateId, merchantId, addressId, updateAddressRequest);
+
+            await this.Mediator.Send(command, cancellationToken);
+
+            return this.NoContent();
+        }
+
         #endregion
 
-            #region Others
+        #region Others
 
-            /// <summary>
-            /// The controller name
-            /// </summary>
+        /// <summary>
+        /// The controller name
+        /// </summary>
         public const String ControllerName = "merchants";
 
         /// <summary>

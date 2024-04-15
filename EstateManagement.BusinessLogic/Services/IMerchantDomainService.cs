@@ -29,6 +29,7 @@
 
         Task UpdateMerchant(MerchantCommands.UpdateMerchantCommand command, CancellationToken cancellationToken);
         Task AddMerchantAddress(MerchantCommands.AddMerchantAddressCommand command, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantCommands.UpdateMerchantAddressCommand command, CancellationToken cancellationToken);
 
         #endregion
     }

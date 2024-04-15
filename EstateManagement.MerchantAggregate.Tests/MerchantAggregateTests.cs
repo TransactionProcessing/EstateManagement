@@ -10,6 +10,7 @@ namespace EstateManagement.MerchantAggregate.Tests
     using EstateManagement.Models;
     using Models.Merchant;
     using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shouldly;
     using Testing;
     using Xunit;
@@ -65,14 +66,14 @@ namespace EstateManagement.MerchantAggregate.Tests
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.AddAddress(TestData.MerchantAddressId, TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+            aggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
                                  TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
                                  TestData.MerchantRegion, TestData.MerchantPostalCode,TestData.MerchantCountry);
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Addresses.ShouldHaveSingleItem();
             Address addressModel = merchantModel.Addresses.Single();
-            addressModel.AddressId.ShouldBe(TestData.MerchantAddressId);
+            addressModel.AddressId.ShouldNotBe(Guid.Empty);
             addressModel.AddressLine1.ShouldBe(TestData.MerchantAddressLine1);
             addressModel.AddressLine2.ShouldBe(TestData.MerchantAddressLine2);
             addressModel.AddressLine3.ShouldBe(TestData.MerchantAddressLine3);
@@ -84,14 +85,36 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
+        public void MerchantAggregate_AddAddress_SameAddress_AddressIsNotAdded()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
+                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+            aggregate.AddAddress(TestData.MerchantAddressLine1Update, TestData.MerchantAddressLine2Update,
+                                 TestData.MerchantAddressLine3Update, TestData.MerchantAddressLine4Update, TestData.MerchantTownUpdate,
+                                 TestData.MerchantRegionUpdate, TestData.MerchantPostalCodeUpdate, TestData.MerchantCountryUpdate);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Addresses.Count.ShouldBe(2);
+
+            aggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
+                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+
+            merchantModel = aggregate.GetMerchant();
+            merchantModel.Addresses.Count.ShouldBe(2);
+        }
+
+        [Fact]
         public void MerchantAggregate_AddAddress_MerchantNotCreated_ErrorThrown()
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             
             InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
                                                                                           {
-                                                                                              aggregate.AddAddress(TestData.MerchantAddressId,
-                                                                                                                   TestData.MerchantAddressLine1,
+                                                                                              aggregate.AddAddress(TestData.MerchantAddressLine1,
                                                                                                                    TestData.MerchantAddressLine2,
                                                                                                                    TestData.MerchantAddressLine3,
                                                                                                                    TestData.MerchantAddressLine4,
@@ -457,6 +480,97 @@ namespace EstateManagement.MerchantAggregate.Tests
             merchantAggregate.UpdateMerchant(merchantName);
 
             merchantAggregate.Name.ShouldBe(TestData.MerchantName);
+        }
+
+        [Fact]
+        public void MerchantAggregate_UpdateAddress_AddressIsAdded(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
+                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+
+            Merchant merchantModel = merchantAggregate.GetMerchant();
+            var address = merchantModel.Addresses.ShouldHaveSingleItem();
+            address.AddressLine1.ShouldBe(TestData.MerchantAddressLine1);
+            address.AddressLine2.ShouldBe(TestData.MerchantAddressLine2);
+            address.AddressLine3.ShouldBe(TestData.MerchantAddressLine3);
+            address.AddressLine4.ShouldBe(TestData.MerchantAddressLine4);
+            address.Town.ShouldBe(TestData.MerchantTown);
+            address.Region.ShouldBe(TestData.MerchantRegion);
+            address.PostalCode.ShouldBe(TestData.MerchantPostalCode);
+            address.Country.ShouldBe(TestData.MerchantCountry);
+
+            merchantAggregate.UpdateAddress(address.AddressId,
+                                            TestData.MerchantAddressLine1Update, TestData.MerchantAddressLine2Update,
+                                            TestData.MerchantAddressLine3Update, TestData.MerchantAddressLine4Update, TestData.MerchantTownUpdate,
+                                            TestData.MerchantRegionUpdate, TestData.MerchantPostalCodeUpdate, TestData.MerchantCountryUpdate);
+
+            merchantModel = merchantAggregate.GetMerchant();
+            address = merchantModel.Addresses.ShouldHaveSingleItem();
+            address.AddressLine1.ShouldBe(TestData.MerchantAddressLine1Update);
+            address.AddressLine2.ShouldBe(TestData.MerchantAddressLine2Update);
+            address.AddressLine3.ShouldBe(TestData.MerchantAddressLine3Update);
+            address.AddressLine4.ShouldBe(TestData.MerchantAddressLine4Update);
+            address.Town.ShouldBe(TestData.MerchantTownUpdate);
+            address.Region.ShouldBe(TestData.MerchantRegionUpdate);
+            address.PostalCode.ShouldBe(TestData.MerchantPostalCodeUpdate);
+            address.Country.ShouldBe(TestData.MerchantCountryUpdate);
+        }
+
+        [Fact]
+        public void MerchantAggregate_UpdateAddress_AddressNotFound_NoErrorThrown(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            Should.NotThrow(() => {
+                                merchantAggregate.UpdateAddress(Guid.NewGuid(), 
+                                                                TestData.MerchantAddressLine1Update,
+                                                                TestData.MerchantAddressLine2Update,
+                                                                TestData.MerchantAddressLine3Update,
+                                                                TestData.MerchantAddressLine4Update,
+                                                                TestData.MerchantTownUpdate,
+                                                                TestData.MerchantRegionUpdate,
+                                                                TestData.MerchantPostalCodeUpdate,
+                                                                TestData.MerchantCountryUpdate);
+                            });
+        }
+
+        [Fact]
+        public void MerchantAggregate_UpdateAddress_UpdatedAddressHasNotChanges_NoErrorThrown()
+        {
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
+                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+
+            Merchant merchantModel = merchantAggregate.GetMerchant();
+            var address = merchantModel.Addresses.ShouldHaveSingleItem();
+            address.AddressLine1.ShouldBe(TestData.MerchantAddressLine1);
+            address.AddressLine2.ShouldBe(TestData.MerchantAddressLine2);
+            address.AddressLine3.ShouldBe(TestData.MerchantAddressLine3);
+            address.AddressLine4.ShouldBe(TestData.MerchantAddressLine4);
+            address.Town.ShouldBe(TestData.MerchantTown);
+            address.Region.ShouldBe(TestData.MerchantRegion);
+            address.PostalCode.ShouldBe(TestData.MerchantPostalCode);
+            address.Country.ShouldBe(TestData.MerchantCountry);
+
+            merchantAggregate.UpdateAddress(address.AddressId,
+                                            TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
+                                            TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
+                                            TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+
+            merchantModel = merchantAggregate.GetMerchant();
+            address = merchantModel.Addresses.ShouldHaveSingleItem();
+            address.AddressLine1.ShouldBe(TestData.MerchantAddressLine1);
+            address.AddressLine2.ShouldBe(TestData.MerchantAddressLine2);
+            address.AddressLine3.ShouldBe(TestData.MerchantAddressLine3);
+            address.AddressLine4.ShouldBe(TestData.MerchantAddressLine4);
+            address.Town.ShouldBe(TestData.MerchantTown);
+            address.Region.ShouldBe(TestData.MerchantRegion);
+            address.PostalCode.ShouldBe(TestData.MerchantPostalCode);
+            address.Country.ShouldBe(TestData.MerchantCountry);
         }
     }
 }
