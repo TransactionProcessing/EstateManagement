@@ -517,6 +517,51 @@
             return this.NoContent();
         }
 
+        [Route("{merchantId}/contacts")]
+        [HttpPost]
+        //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
+        public async Task<IActionResult> AddMerchantContact([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromBody] DataTransferObjects.Requests.Merchant.Contact addContactRrequest,
+                                                            CancellationToken cancellationToken)
+        {
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.AddMerchantContactCommand command = new(estateId, merchantId, addContactRrequest);
+
+            await this.Mediator.Send(command, cancellationToken);
+
+            return this.NoContent();
+        }
+
+        [Route("{merchantId}/contacts/{contactId}")]
+        [HttpPatch]
+        //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
+        //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
+        public async Task<IActionResult> UpdateMerchantContact([FromRoute] Guid estateId,
+                                                               [FromRoute] Guid merchantId,
+                                                               [FromRoute] Guid contactId,
+                                                               [FromBody] DataTransferObjects.Requests.Merchant.Contact updateContactRequest,
+                                                               CancellationToken cancellationToken)
+        {
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.UpdateMerchantContactCommand command = new(estateId, merchantId, contactId,updateContactRequest);
+
+            await this.Mediator.Send(command, cancellationToken);
+
+            return this.NoContent();
+        }
+
         #endregion
 
         #region Others

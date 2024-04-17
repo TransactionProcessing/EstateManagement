@@ -15,11 +15,9 @@ namespace EstateManagement.MerchantAggregate.Tests
     using Testing;
     using Xunit;
 
-    public class MerchantAggregateTests
-    {
+    public class MerchantAggregateTests{
         [Fact]
-        public void MerchantAggregate_CanBeCreated_IsCreated()
-        {
+        public void MerchantAggregate_CanBeCreated_IsCreated(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
             aggregate.AggregateId.ShouldBe(TestData.MerchantId);
@@ -28,8 +26,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_Create_IsCreated()
-        {
+        public void MerchantAggregate_Create_IsCreated(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.GenerateReference();
@@ -41,10 +38,9 @@ namespace EstateManagement.MerchantAggregate.Tests
             aggregate.IsCreated.ShouldBeTrue();
             aggregate.MerchantReference.ShouldBe(TestData.MerchantReference);
         }
-        
+
         [Fact]
-        public async Task MerchantAggregate_Create_MerchantAlreadyCreated_ErrorThrown()
-        {
+        public async Task MerchantAggregate_Create_MerchantAlreadyCreated_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
@@ -52,8 +48,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_GenerateReference_CalledTwice_NoErrorThrown()
-        {
+        public void MerchantAggregate_GenerateReference_CalledTwice_NoErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.GenerateReference();
@@ -62,13 +57,17 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_AddAddress_AddressIsAdded()
-        {
+        public void MerchantAggregate_AddAddress_AddressIsAdded(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
-                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
-                                 TestData.MerchantRegion, TestData.MerchantPostalCode,TestData.MerchantCountry);
+            aggregate.AddAddress(TestData.MerchantAddressLine1,
+                                 TestData.MerchantAddressLine2,
+                                 TestData.MerchantAddressLine3,
+                                 TestData.MerchantAddressLine4,
+                                 TestData.MerchantTown,
+                                 TestData.MerchantRegion,
+                                 TestData.MerchantPostalCode,
+                                 TestData.MerchantCountry);
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Addresses.ShouldHaveSingleItem();
@@ -85,35 +84,47 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_AddAddress_SameAddress_AddressIsNotAdded()
-        {
+        public void MerchantAggregate_AddAddress_SameAddress_AddressIsNotAdded(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
-                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
-                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
-            aggregate.AddAddress(TestData.MerchantAddressLine1Update, TestData.MerchantAddressLine2Update,
-                                 TestData.MerchantAddressLine3Update, TestData.MerchantAddressLine4Update, TestData.MerchantTownUpdate,
-                                 TestData.MerchantRegionUpdate, TestData.MerchantPostalCodeUpdate, TestData.MerchantCountryUpdate);
+            aggregate.AddAddress(TestData.MerchantAddressLine1,
+                                 TestData.MerchantAddressLine2,
+                                 TestData.MerchantAddressLine3,
+                                 TestData.MerchantAddressLine4,
+                                 TestData.MerchantTown,
+                                 TestData.MerchantRegion,
+                                 TestData.MerchantPostalCode,
+                                 TestData.MerchantCountry);
+            aggregate.AddAddress(TestData.MerchantAddressLine1Update,
+                                 TestData.MerchantAddressLine2Update,
+                                 TestData.MerchantAddressLine3Update,
+                                 TestData.MerchantAddressLine4Update,
+                                 TestData.MerchantTownUpdate,
+                                 TestData.MerchantRegionUpdate,
+                                 TestData.MerchantPostalCodeUpdate,
+                                 TestData.MerchantCountryUpdate);
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Addresses.Count.ShouldBe(2);
 
-            aggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
-                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
-                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+            aggregate.AddAddress(TestData.MerchantAddressLine1,
+                                 TestData.MerchantAddressLine2,
+                                 TestData.MerchantAddressLine3,
+                                 TestData.MerchantAddressLine4,
+                                 TestData.MerchantTown,
+                                 TestData.MerchantRegion,
+                                 TestData.MerchantPostalCode,
+                                 TestData.MerchantCountry);
 
             merchantModel = aggregate.GetMerchant();
             merchantModel.Addresses.Count.ShouldBe(2);
         }
 
         [Fact]
-        public void MerchantAggregate_AddAddress_MerchantNotCreated_ErrorThrown()
-        {
+        public void MerchantAggregate_AddAddress_MerchantNotCreated_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
-            
-            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
-                                                                                          {
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() => {
                                                                                               aggregate.AddAddress(TestData.MerchantAddressLine1,
                                                                                                                    TestData.MerchantAddressLine2,
                                                                                                                    TestData.MerchantAddressLine3,
@@ -128,42 +139,77 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_AddContact_ContactIsAdded()
-        {
+        public void MerchantAggregate_AddContact_ContactIsAdded(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
+            aggregate.AddContact(TestData.MerchantContactName,
+                                 TestData.MerchantContactPhoneNumber,
                                  TestData.MerchantContactEmailAddress);
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Contacts.ShouldHaveSingleItem();
             Contact contactModel = merchantModel.Contacts.Single();
-            contactModel.ContactId.ShouldBe(TestData.MerchantContactId);
+            contactModel.ContactId.ShouldNotBe(Guid.Empty);
             contactModel.ContactName.ShouldBe(TestData.MerchantContactName);
             contactModel.ContactEmailAddress.ShouldBe(TestData.MerchantContactEmailAddress);
             contactModel.ContactPhoneNumber.ShouldBe(TestData.MerchantContactPhoneNumber);
         }
 
         [Fact]
-        public void MerchantAggregate_AddContact_MerchantNotCreated_ErrorThrown()
+        public void MerchantAggregate_AddContact_SecondContact_ContactIsAdded()
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddContact(TestData.MerchantContactName,
+                                 TestData.MerchantContactPhoneNumber,
+                                 TestData.MerchantContactEmailAddress);
 
-            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
-            {
-                aggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
-                                     TestData.MerchantContactEmailAddress);
-            });
+            aggregate.AddContact(TestData.ContactName,
+                                 TestData.ContactPhone,
+                                 TestData.ContactEmail);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Contacts.Count.ShouldBe(2);
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddContact_SameContact_ContactNotAdded(){
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddContact(TestData.MerchantContactName,
+                                 TestData.MerchantContactPhoneNumber,
+                                 TestData.MerchantContactEmailAddress);
+            aggregate.AddContact(TestData.MerchantContactName,
+                                 TestData.MerchantContactPhoneNumber,
+                                 TestData.MerchantContactEmailAddress);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Contacts.ShouldHaveSingleItem();
+            Contact contactModel = merchantModel.Contacts.Single();
+            contactModel.ContactId.ShouldNotBe(Guid.Empty);
+            contactModel.ContactName.ShouldBe(TestData.MerchantContactName);
+            contactModel.ContactEmailAddress.ShouldBe(TestData.MerchantContactEmailAddress);
+            contactModel.ContactPhoneNumber.ShouldBe(TestData.MerchantContactPhoneNumber);
+        }
+
+        [Fact]
+        public void MerchantAggregate_AddContact_MerchantNotCreated_ErrorThrown(){
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() => {
+                                                                                              aggregate.AddContact(TestData.MerchantContactName,
+                                                                                                                   TestData.MerchantContactPhoneNumber,
+                                                                                                                   TestData.MerchantContactEmailAddress);
+                                                                                          });
 
             exception.Message.ShouldContain($"Merchant has not been created");
         }
 
         [Fact]
-        public void MerchantAggregate_AssignOperator_OperatorIsAssigned()
-        {
+        public void MerchantAggregate_AssignOperator_OperatorIsAssigned(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.AssignOperator(TestData.OperatorId,TestData.OperatorName,TestData.OperatorMerchantNumber,TestData.OperatorTerminalNumber);
+            aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Operators.ShouldHaveSingleItem();
@@ -175,32 +221,23 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_AssignOperator_MerchantNotCreated_ErrorThrown()
-        {
+        public void MerchantAggregate_AssignOperator_MerchantNotCreated_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<InvalidOperationException>(() =>
-                                                    {
-                                                        aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
-                                                    });
+            Should.Throw<InvalidOperationException>(() => { aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber); });
         }
 
         [Fact]
-        public void MerchantAggregate_AssignOperator_OperatorAlreadyAssigned_ErrorThrown()
-        {
+        public void MerchantAggregate_AssignOperator_OperatorAlreadyAssigned_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
 
-            Should.Throw<InvalidOperationException>(() =>
-                                                    {
-                                                        aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
-                                                    });
+            Should.Throw<InvalidOperationException>(() => { aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber); });
         }
 
         [Fact]
-        public void MerchantAggregate_AddSecurityUserToMerchant_SecurityUserIsAdded()
-        {
+        public void MerchantAggregate_AddSecurityUserToMerchant_SecurityUserIsAdded(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.MerchantUserEmailAddress);
@@ -213,21 +250,16 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_AddSecurityUserToMerchant_MerchantNotCreated_ErrorThrown()
-        {
+        public void MerchantAggregate_AddSecurityUserToMerchant_MerchantNotCreated_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
-                                                                                          {
-                                                                                              aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.EstateUserEmailAddress);
-                                                                                          });
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() => { aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.EstateUserEmailAddress); });
 
             exception.Message.ShouldContain("Merchant has not been created");
         }
 
         [Fact]
-        public void MerchantAggregate_AddDevice_DeviceAdded()
-        {
+        public void MerchantAggregate_AddDevice_DeviceAdded(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
@@ -242,59 +274,42 @@ namespace EstateManagement.MerchantAggregate.Tests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void MerchantAggregate_AddDevice_DeviceIdentifierInvalid_ErrorThrown(String deviceIdentifier)
-        {
+        public void MerchantAggregate_AddDevice_DeviceIdentifierInvalid_ErrorThrown(String deviceIdentifier){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    aggregate.AddDevice(TestData.DeviceId, deviceIdentifier);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { aggregate.AddDevice(TestData.DeviceId, deviceIdentifier); });
         }
 
         [Fact]
-        public void MerchantAggregate_AddDevice_MerchantNotCreated_ErrorThrown()
-        {
+        public void MerchantAggregate_AddDevice_MerchantNotCreated_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<InvalidOperationException>(() =>
-                                                    {
-                                                        aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
-                                                    });
+            Should.Throw<InvalidOperationException>(() => { aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier); });
         }
 
         [Fact]
-        public void MerchantAggregate_AddDevice_MerchantNoSpaceForDevice_ErrorThrown()
-        {
+        public void MerchantAggregate_AddDevice_MerchantNoSpaceForDevice_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
 
-            Should.Throw<InvalidOperationException>(() =>
-                                                    {
-                                                        aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
-                                                    });
+            Should.Throw<InvalidOperationException>(() => { aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier); });
         }
 
-        [Fact(Skip="Not valid until can request additional device")]
-        public void MerchantAggregate_AddDevice_DuplicateDevice_ErrorThrown()
-        {
+        [Fact(Skip = "Not valid until can request additional device")]
+        public void MerchantAggregate_AddDevice_DuplicateDevice_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
 
-            Should.Throw<InvalidOperationException>(() =>
-                                                    {
-                                                        aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
-                                                    });
+            Should.Throw<InvalidOperationException>(() => { aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier); });
         }
 
-        
+
 
         [Fact]
-        public void MerchantAggregate_SetSetttlmentSchedule_ScheduleIsSet()
-        {
+        public void MerchantAggregate_SetSetttlmentSchedule_ScheduleIsSet(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.SetSettlementSchedule(SettlementSchedule.Immediate);
@@ -318,13 +333,12 @@ namespace EstateManagement.MerchantAggregate.Tests
         [InlineData(SettlementSchedule.Immediate, SettlementSchedule.Immediate)]
         [InlineData(SettlementSchedule.Weekly, SettlementSchedule.Weekly)]
         [InlineData(SettlementSchedule.Monthly, SettlementSchedule.Monthly)]
-        public void MerchantAggregate_SetSetttlmentSchedule_SameValue_NoEventRaised(SettlementSchedule originalSettlementSchedule, SettlementSchedule newSettlementSchedule)
-        {
+        public void MerchantAggregate_SetSetttlmentSchedule_SameValue_NoEventRaised(SettlementSchedule originalSettlementSchedule, SettlementSchedule newSettlementSchedule){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.SetSettlementSchedule(originalSettlementSchedule);
             aggregate.SetSettlementSchedule(newSettlementSchedule);
-            
+
             Type type = aggregate.GetType();
             PropertyInfo property = type.GetProperty("PendingEvents", BindingFlags.Instance | BindingFlags.NonPublic);
             Object value = property.GetValue(aggregate);
@@ -337,13 +351,12 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_SwapDevice_DeviceIsSwapped()
-        {
+        public void MerchantAggregate_SwapDevice_DeviceIsSwapped(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
 
-            aggregate.SwapDevice(TestData.DeviceId,TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
+            aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
 
             Merchant merchant = aggregate.GetMerchant();
             merchant.Devices.Count.ShouldBe(1);
@@ -354,61 +367,41 @@ namespace EstateManagement.MerchantAggregate.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void MerchantAggregate_SwapDevice_InvalidOriginalDeviceIdentifier_ErrorThrown(String originalDeviceIdentifier)
-        {
+        public void MerchantAggregate_SwapDevice_InvalidOriginalDeviceIdentifier_ErrorThrown(String originalDeviceIdentifier){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<ArgumentNullException>(() =>
-            {
-                aggregate.SwapDevice(TestData.DeviceId, originalDeviceIdentifier, TestData.NewDeviceIdentifier);
-            });
+            Should.Throw<ArgumentNullException>(() => { aggregate.SwapDevice(TestData.DeviceId, originalDeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void MerchantAggregate_SwapDevice_InvalidNewDeviceIdentifier_ErrorThrown(String newDeviceIdentifier)
-        {
+        public void MerchantAggregate_SwapDevice_InvalidNewDeviceIdentifier_ErrorThrown(String newDeviceIdentifier){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<ArgumentNullException>(() =>
-            {
-                aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, newDeviceIdentifier);
-            });
+            Should.Throw<ArgumentNullException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, newDeviceIdentifier); });
         }
 
         [Fact]
-        public void MerchantAggregate_SwapDevice_MerchantNotCreated_ErrorThrown()
-        {
+        public void MerchantAggregate_SwapDevice_MerchantNotCreated_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<InvalidOperationException>(() =>
-            {
-                aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
-            });
+            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Fact]
-        public void MerchantAggregate_SwapDevice_MerchantDoesNotHaveOriginalDevice_ErrorThrown()
-        {
+        public void MerchantAggregate_SwapDevice_MerchantDoesNotHaveOriginalDevice_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            Should.Throw<InvalidOperationException>(() =>
-            {
-                aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
-            });
+            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Fact]
-        public void MerchantAggregate_SwapDevice_MerchantAlreadyHasNewDevice_ErrorThrown()
-        {
+        public void MerchantAggregate_SwapDevice_MerchantAlreadyHasNewDevice_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddDevice(TestData.DeviceId, TestData.NewDeviceIdentifier);
-            Should.Throw<InvalidOperationException>(() =>
-            {
-                aggregate.SwapDevice(TestData.DeviceId, TestData.NewDeviceIdentifier, TestData.NewDeviceIdentifier);
-            });
+            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.NewDeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Fact]
@@ -448,8 +441,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_UpdateMerchant_NameUpdated_ErrorThrown()
-        {
+        public void MerchantAggregate_UpdateMerchant_NameUpdated_ErrorThrown(){
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
@@ -459,8 +451,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_UpdateMerchant_SameName_NoUpdate_ErrorThrown()
-        {
+        public void MerchantAggregate_UpdateMerchant_SameName_NoUpdate_ErrorThrown(){
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
@@ -472,8 +463,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void MerchantAggregate_UpdateMerchant_NameNotSet_NoUpdate_ErrorThrown(String merchantName)
-        {
+        public void MerchantAggregate_UpdateMerchant_NameNotSet_NoUpdate_ErrorThrown(String merchantName){
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
@@ -486,9 +476,14 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void MerchantAggregate_UpdateAddress_AddressIsAdded(){
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
-                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
-                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+            merchantAggregate.AddAddress(TestData.MerchantAddressLine1,
+                                         TestData.MerchantAddressLine2,
+                                         TestData.MerchantAddressLine3,
+                                         TestData.MerchantAddressLine4,
+                                         TestData.MerchantTown,
+                                         TestData.MerchantRegion,
+                                         TestData.MerchantPostalCode,
+                                         TestData.MerchantCountry);
 
             Merchant merchantModel = merchantAggregate.GetMerchant();
             var address = merchantModel.Addresses.ShouldHaveSingleItem();
@@ -502,9 +497,14 @@ namespace EstateManagement.MerchantAggregate.Tests
             address.Country.ShouldBe(TestData.MerchantCountry);
 
             merchantAggregate.UpdateAddress(address.AddressId,
-                                            TestData.MerchantAddressLine1Update, TestData.MerchantAddressLine2Update,
-                                            TestData.MerchantAddressLine3Update, TestData.MerchantAddressLine4Update, TestData.MerchantTownUpdate,
-                                            TestData.MerchantRegionUpdate, TestData.MerchantPostalCodeUpdate, TestData.MerchantCountryUpdate);
+                                            TestData.MerchantAddressLine1Update,
+                                            TestData.MerchantAddressLine2Update,
+                                            TestData.MerchantAddressLine3Update,
+                                            TestData.MerchantAddressLine4Update,
+                                            TestData.MerchantTownUpdate,
+                                            TestData.MerchantRegionUpdate,
+                                            TestData.MerchantPostalCodeUpdate,
+                                            TestData.MerchantCountryUpdate);
 
             merchantModel = merchantAggregate.GetMerchant();
             address = merchantModel.Addresses.ShouldHaveSingleItem();
@@ -524,7 +524,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
             Should.NotThrow(() => {
-                                merchantAggregate.UpdateAddress(Guid.NewGuid(), 
+                                merchantAggregate.UpdateAddress(Guid.NewGuid(),
                                                                 TestData.MerchantAddressLine1Update,
                                                                 TestData.MerchantAddressLine2Update,
                                                                 TestData.MerchantAddressLine3Update,
@@ -537,13 +537,17 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_UpdateAddress_UpdatedAddressHasNotChanges_NoErrorThrown()
-        {
+        public void MerchantAggregate_UpdateAddress_UpdatedAddressHasNotChanges_NoErrorThrown(){
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
-                                 TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
-                                 TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+            merchantAggregate.AddAddress(TestData.MerchantAddressLine1,
+                                         TestData.MerchantAddressLine2,
+                                         TestData.MerchantAddressLine3,
+                                         TestData.MerchantAddressLine4,
+                                         TestData.MerchantTown,
+                                         TestData.MerchantRegion,
+                                         TestData.MerchantPostalCode,
+                                         TestData.MerchantCountry);
 
             Merchant merchantModel = merchantAggregate.GetMerchant();
             var address = merchantModel.Addresses.ShouldHaveSingleItem();
@@ -557,9 +561,14 @@ namespace EstateManagement.MerchantAggregate.Tests
             address.Country.ShouldBe(TestData.MerchantCountry);
 
             merchantAggregate.UpdateAddress(address.AddressId,
-                                            TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
-                                            TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
-                                            TestData.MerchantRegion, TestData.MerchantPostalCode, TestData.MerchantCountry);
+                                            TestData.MerchantAddressLine1,
+                                            TestData.MerchantAddressLine2,
+                                            TestData.MerchantAddressLine3,
+                                            TestData.MerchantAddressLine4,
+                                            TestData.MerchantTown,
+                                            TestData.MerchantRegion,
+                                            TestData.MerchantPostalCode,
+                                            TestData.MerchantCountry);
 
             merchantModel = merchantAggregate.GetMerchant();
             address = merchantModel.Addresses.ShouldHaveSingleItem();
@@ -571,6 +580,67 @@ namespace EstateManagement.MerchantAggregate.Tests
             address.Region.ShouldBe(TestData.MerchantRegion);
             address.PostalCode.ShouldBe(TestData.MerchantPostalCode);
             address.Country.ShouldBe(TestData.MerchantCountry);
+        }
+
+
+
+        /*-------------------------------------*/
+        [Fact]
+        public void MerchantAggregate_UpdateContact_ContactIsUpdated(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddContact(TestData.ContactName, TestData.ContactPhone, TestData.ContactEmail);
+
+            Merchant merchantModel = merchantAggregate.GetMerchant();
+            var contact = merchantModel.Contacts.ShouldHaveSingleItem();
+            contact.ContactName.ShouldBe(TestData.ContactName);
+            contact.ContactEmailAddress.ShouldBe(TestData.ContactEmail);
+            contact.ContactPhoneNumber.ShouldBe(TestData.ContactPhone);
+
+            merchantAggregate.UpdateContact(contact.ContactId,
+                                            TestData.ContactNameUpdate,
+                                            TestData.ContactEmailUpdate,
+                                            TestData.ContactPhoneUpdate);
+
+            merchantModel = merchantAggregate.GetMerchant();
+            contact = merchantModel.Contacts.ShouldHaveSingleItem();
+            contact.ContactName.ShouldBe(TestData.ContactNameUpdate);
+            contact.ContactEmailAddress.ShouldBe(TestData.ContactEmailUpdate);
+            contact.ContactPhoneNumber.ShouldBe(TestData.ContactPhoneUpdate);
+        }
+
+        [Fact]
+        public void MerchantAggregate_UpdateContact_ContactNotFound_NoErrorThrown(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+            Should.NotThrow(() => {
+                                merchantAggregate.UpdateContact(Guid.NewGuid(),
+                                                                TestData.ContactName,
+                                                                TestData.ContactEmail,
+                                                                TestData.ContactPhone);
+                            });
+        }
+
+        [Fact]
+        public void MerchantAggregate_UpdateContact_UpdatedContactHasNotChanges_NoErrorThrown(){
+            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            merchantAggregate.AddContact(TestData.ContactName, TestData.ContactPhone, TestData.ContactEmail);
+
+            Merchant merchantModel = merchantAggregate.GetMerchant();
+            var contact = merchantModel.Contacts.ShouldHaveSingleItem();
+            contact.ContactName.ShouldBe(TestData.ContactName);
+            contact.ContactEmailAddress.ShouldBe(TestData.ContactEmail);
+            contact.ContactPhoneNumber.ShouldBe(TestData.ContactPhone);
+
+            merchantAggregate.UpdateContact(contact.ContactId, TestData.ContactName, TestData.ContactEmail, TestData.ContactPhone);
+
+            merchantModel = merchantAggregate.GetMerchant();
+            contact = merchantModel.Contacts.ShouldHaveSingleItem();
+            contact.ContactName.ShouldBe(TestData.ContactName);
+            contact.ContactEmailAddress.ShouldBe(TestData.ContactEmail);
+            contact.ContactPhoneNumber.ShouldBe(TestData.ContactPhone);
         }
     }
 }

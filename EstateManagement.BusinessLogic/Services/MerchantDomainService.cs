@@ -154,8 +154,7 @@
                                              command.RequestDto.Address.PostalCode, command.RequestDto.Address.Country);
 
                 // Add the contact
-                Guid contactId = Guid.NewGuid();
-                merchantAggregate.AddContact(contactId, command.RequestDto.Contact.ContactName, command.RequestDto.Contact.PhoneNumber, command.RequestDto.Contact.EmailAddress);
+                merchantAggregate.AddContact(command.RequestDto.Contact.ContactName, command.RequestDto.Contact.PhoneNumber, command.RequestDto.Contact.EmailAddress);
 
                 // Set the settlement schedule
                 merchantAggregate.SetSettlementSchedule(settlementSchedule);
@@ -343,6 +342,27 @@
                                                          command.RequestDto.Region,
                                                          command.RequestDto.PostalCode,
                                                          command.RequestDto.Country);
+
+            await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
+        }
+
+        public async Task AddMerchantContact(MerchantCommands.AddMerchantContactCommand command, CancellationToken cancellationToken){
+            (MerchantAggregate merchantAggregate, EstateAggregate estateAggregate) validateResults = await this.ValidateEstateAndMerchant(command.EstateId, command.MerchantId, cancellationToken);
+
+            validateResults.merchantAggregate.AddContact(command.RequestDto.ContactName,
+                                                         command.RequestDto.PhoneNumber,
+                                                         command.RequestDto.EmailAddress);
+
+            await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
+        }
+
+        public async Task UpdateMerchantContact(MerchantCommands.UpdateMerchantContactCommand command, CancellationToken cancellationToken){
+            (MerchantAggregate merchantAggregate, EstateAggregate estateAggregate) validateResults = await this.ValidateEstateAndMerchant(command.EstateId, command.MerchantId, cancellationToken);
+
+            validateResults.merchantAggregate.UpdateContact(command.ContactId,
+                                                            command.RequestDto.ContactName,
+                                                         command.RequestDto.PhoneNumber,
+                                                         command.RequestDto.EmailAddress);
 
             await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
         }

@@ -7,19 +7,23 @@
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
     using DataTransferObjects.Requests.Operator;
-    using DataTransferObjects.Responses;
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.Merchant;
     using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
-    using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
     /// <summary>
     /// 
     /// </summary>
     public interface IEstateClient{
         #region Methods
+
+        Task AddContractToMerchant(String accessToken,
+                                   Guid estateId,
+                                   Guid merchantId,
+                                   AddMerchantContractRequest request,
+                                   CancellationToken cancellationToken);
 
         Task<AddMerchantDeviceResponse> AddDeviceToMerchant(String accessToken,
                                                             Guid estateId,
@@ -98,8 +102,8 @@
                                        CancellationToken cancellationToken);
 
         Task<List<EstateResponse>> GetEstates(String accessToken,
-                                       Guid estateId,
-                                       CancellationToken cancellationToken);
+                                              Guid estateId,
+                                              CancellationToken cancellationToken);
 
         Task<MerchantResponse> GetMerchant(String accessToken,
                                            Guid estateId,
@@ -159,23 +163,36 @@
                                                                SwapMerchantDeviceRequest request,
                                                                CancellationToken cancellationToken);
 
-        Task AddContractToMerchant(String accessToken,
-                                   Guid estateId,
-                                   Guid merchantId,
-                                   AddMerchantContractRequest request,
-                                   CancellationToken cancellationToken);
-
         Task UpdateMerchant(String accessToken,
                             Guid estateId,
                             Guid merchantId,
                             UpdateMerchantRequest request,
                             CancellationToken cancellationToken);
 
+        Task AddMerchantAddress(String accessToken,
+                                   Guid estateId,
+                                   Guid merchantId,
+                                   Address newAddressRequest,
+                                   CancellationToken cancellationToken);
+
         Task UpdateMerchantAddress(String accessToken,
                                    Guid estateId,
                                    Guid merchantId,
                                    Guid addressId,
                                    Address updatedAddressRequest,
+                                   CancellationToken cancellationToken);
+
+        Task AddMerchantContact(String accessToken,
+                                Guid estateId,
+                                Guid merchantId,
+                                Contact newContactRequest,
+                                CancellationToken cancellationToken);
+
+        Task UpdateMerchantContact(String accessToken,
+                                   Guid estateId,
+                                   Guid merchantId,
+                                   Guid contactId,
+                                   Contact updatedContactRequest,
                                    CancellationToken cancellationToken);
 
         #endregion

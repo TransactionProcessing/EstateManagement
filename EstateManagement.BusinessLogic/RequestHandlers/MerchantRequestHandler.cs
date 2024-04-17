@@ -32,7 +32,9 @@
                                           IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>,
                                           IRequestHandler<MerchantCommands.UpdateMerchantCommand>,
                                           IRequestHandler<MerchantCommands.AddMerchantAddressCommand>,
-                                          IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand>
+                                          IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand>,
+                                          IRequestHandler<MerchantCommands.AddMerchantContactCommand>,
+                                          IRequestHandler<MerchantCommands.UpdateMerchantContactCommand>
     {
         #region Fields
 
@@ -107,9 +109,9 @@
         public async Task<Models.Merchant.Merchant> Handle(MerchantQueries.GetMerchantQuery query, CancellationToken cancellationToken){
             Models.Merchant.Merchant merchant = await this.EstateManagementManager.GetMerchant(query.EstateId, query.MerchantId, cancellationToken);
 
-            if (merchant == null){
-                throw new NotFoundException($"Merchant not found with estate Id {query.EstateId} and merchant Id {query.MerchantId}");
-            }
+            //if (merchant == null){
+            //    throw new NotFoundException($"Merchant not found with estate Id {query.EstateId} and merchant Id {query.MerchantId}");
+            //}
 
             return merchant;
         }
@@ -121,11 +123,7 @@
 
         public async Task<List<Merchant>> Handle(MerchantQueries.GetMerchantsQuery query, CancellationToken cancellationToken){
             List<Merchant> merchants = await this.EstateManagementManager.GetMerchants(query.EstateId, cancellationToken);
-
-            if (merchants == null || merchants.Any() == false){
-                throw new NotFoundException($"No Merchants found for estate Id {query.EstateId}");
-            }
-
+            
             return merchants;
         }
 
@@ -146,6 +144,14 @@
 
         public async Task Handle(MerchantCommands.UpdateMerchantAddressCommand command, CancellationToken cancellationToken){
             await this.MerchantDomainService.UpdateMerchantAddress(command, cancellationToken);
+        }
+
+        public async Task Handle(MerchantCommands.AddMerchantContactCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.AddMerchantContact(command, cancellationToken);
+        }
+
+        public async Task Handle(MerchantCommands.UpdateMerchantContactCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.UpdateMerchantContact(command, cancellationToken);
         }
     }
 }

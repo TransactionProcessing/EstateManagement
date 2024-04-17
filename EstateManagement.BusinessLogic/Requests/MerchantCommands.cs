@@ -30,6 +30,10 @@
 
         public record AddMerchantAddressCommand(Guid EstateId, Guid MerchantId,  Address RequestDto) : IRequest;
         public record UpdateMerchantAddressCommand(Guid EstateId, Guid MerchantId, Guid AddressId, Address RequestDto) : IRequest;
+
+        public record AddMerchantContactCommand(Guid EstateId, Guid MerchantId, Contact RequestDto) : IRequest;
+
+        public record UpdateMerchantContactCommand(Guid EstateId, Guid MerchantId, Guid ContactId, Contact RequestDto) : IRequest;
     }
 
     
