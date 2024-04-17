@@ -25,8 +25,8 @@ public class DummyMerchantDomainService : IMerchantDomainService
         return Guid.NewGuid();
     }
 
-    public async Task<Guid> SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command, CancellationToken cancellationToken){
-        return Guid.NewGuid();
+    public async Task SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command, CancellationToken cancellationToken){
+
     }
     
     public async Task<Guid> MakeMerchantDeposit(MerchantCommands.MakeMerchantDepositCommand command, CancellationToken cancellationToken){

@@ -127,8 +127,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantModel.Contacts.Single().ContactPhoneNumber.ShouldBe(expectedModel.Contacts.Single().ContactPhoneNumber);
 
             merchantModel.Devices.ShouldHaveSingleItem();
-            merchantModel.Devices.Single().Key.ShouldBe(expectedModel.Devices.Single().Key);
-            merchantModel.Devices.Single().Value.ShouldBe(expectedModel.Devices.Single().Value);
+            merchantModel.Devices.Single().DeviceId.ShouldBe(expectedModel.Devices.Single().DeviceId);
+            merchantModel.Devices.Single().DeviceIdentifier.ShouldBe(expectedModel.Devices.Single().DeviceIdentifier);
 
             merchantModel.Operators.ShouldHaveSingleItem();
             merchantModel.Operators.Single().MerchantNumber.ShouldBe(expectedModel.Operators.Single().MerchantNumber);

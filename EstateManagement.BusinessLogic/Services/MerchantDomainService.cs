@@ -394,7 +394,7 @@
             return (merchantAggregate, estateAggregate);
         }
 
-        public async Task<Guid> SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command,
+        public async Task SwapMerchantDevice(MerchantCommands.SwapMerchantDeviceCommand command,
                                                    CancellationToken cancellationToken) {
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(command.MerchantId, cancellationToken);
 
@@ -408,12 +408,10 @@
             if (estateAggregate.IsCreated == false) {
                 throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
-            Guid deviceId = Guid.NewGuid();
-            merchantAggregate.SwapDevice(deviceId, command.RequestDto.OriginalDeviceIdentifier, command.RequestDto.NewDeviceIdentifier);
+            
+            merchantAggregate.SwapDevice(command.RequestDto.OriginalDeviceIdentifier, command.RequestDto.NewDeviceIdentifier);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
-
-            return deviceId;
         }
         
         #endregion

@@ -267,8 +267,8 @@ namespace EstateManagement.MerchantAggregate.Tests
 
             Merchant merchantModel = aggregate.GetMerchant();
             merchantModel.Devices.ShouldHaveSingleItem();
-            merchantModel.Devices.Single().Key.ShouldBe(TestData.DeviceId);
-            merchantModel.Devices.Single().Value.ShouldBe(TestData.DeviceIdentifier);
+            merchantModel.Devices.Single().DeviceId.ShouldBe(TestData.DeviceId);
+            merchantModel.Devices.Single().DeviceIdentifier.ShouldBe(TestData.DeviceIdentifier);
         }
 
         [Theory]
@@ -356,12 +356,14 @@ namespace EstateManagement.MerchantAggregate.Tests
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
 
-            aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
+            aggregate.SwapDevice(TestData.DeviceIdentifier, TestData.NewDeviceIdentifier);
 
             Merchant merchant = aggregate.GetMerchant();
-            merchant.Devices.Count.ShouldBe(1);
-            merchant.Devices.ContainsValue(TestData.DeviceIdentifier).ShouldBeFalse();
-            merchant.Devices.ContainsValue(TestData.NewDeviceIdentifier).ShouldBeTrue();
+            merchant.Devices.Count.ShouldBe(2);
+            var originalDevice = merchant.Devices.Single(d => d.DeviceIdentifier == TestData.DeviceIdentifier);
+            var newDevice = merchant.Devices.Single(d => d.DeviceIdentifier == TestData.NewDeviceIdentifier);
+            originalDevice.IsEnabled.ShouldBeFalse();
+            newDevice.IsEnabled.ShouldBeTrue();
         }
 
         [Theory]
@@ -370,7 +372,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void MerchantAggregate_SwapDevice_InvalidOriginalDeviceIdentifier_ErrorThrown(String originalDeviceIdentifier){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<ArgumentNullException>(() => { aggregate.SwapDevice(TestData.DeviceId, originalDeviceIdentifier, TestData.NewDeviceIdentifier); });
+            Should.Throw<ArgumentNullException>(() => { aggregate.SwapDevice(originalDeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Theory]
@@ -379,21 +381,21 @@ namespace EstateManagement.MerchantAggregate.Tests
         public void MerchantAggregate_SwapDevice_InvalidNewDeviceIdentifier_ErrorThrown(String newDeviceIdentifier){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<ArgumentNullException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, newDeviceIdentifier); });
+            Should.Throw<ArgumentNullException>(() => { aggregate.SwapDevice(TestData.DeviceIdentifier, newDeviceIdentifier); });
         }
 
         [Fact]
         public void MerchantAggregate_SwapDevice_MerchantNotCreated_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier); });
+            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Fact]
         public void MerchantAggregate_SwapDevice_MerchantDoesNotHaveOriginalDevice_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.DeviceIdentifier, TestData.NewDeviceIdentifier); });
+            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Fact]
@@ -401,7 +403,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             aggregate.AddDevice(TestData.DeviceId, TestData.NewDeviceIdentifier);
-            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.DeviceId, TestData.NewDeviceIdentifier, TestData.NewDeviceIdentifier); });
+            Should.Throw<InvalidOperationException>(() => { aggregate.SwapDevice(TestData.NewDeviceIdentifier, TestData.NewDeviceIdentifier); });
         }
 
         [Fact]

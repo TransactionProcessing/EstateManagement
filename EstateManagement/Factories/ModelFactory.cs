@@ -167,8 +167,8 @@
             if (merchant.Devices != null && merchant.Devices.Any()){
                 merchantResponse.Devices = new Dictionary<Guid, String>();
 
-                foreach ((Guid key, String value) in merchant.Devices){
-                    merchantResponse.Devices.Add(key, value);
+                foreach (Device device in merchant.Devices){
+                    merchantResponse.Devices.Add(device.DeviceId, device.DeviceIdentifier);
                 }
             }
 

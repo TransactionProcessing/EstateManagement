@@ -42,6 +42,7 @@
     using TransactionProcessor.Float.DomainEvents;
     using EstateManagement.DataTransferObjects.Requests.Merchant;
     using Azure.Core;
+    using Models.Merchant;
     using MerchantDepositSource = Models.MerchantDepositSource;
     
     public class TestData
@@ -335,10 +336,12 @@
                                                                                               ContactEmailAddress = TestData.MerchantContactEmailAddress
                                                                                           }
                                                                                       },
-                                                                           Devices = new Dictionary<Guid, String>
-                                                                                     {
-                                                                                         {TestData.DeviceId, TestData.DeviceIdentifier}
-                                                                                     },
+                                                                           Devices = new List<Device>{
+                                                                               new Device{
+                                                                                             DeviceIdentifier = TestData.DeviceIdentifier,
+                                                                                             IsEnabled = true,
+                                                                                             DeviceId = TestData.DeviceId,
+                                                                                         }},
                                                                            Operators = new List<Models.Merchant.Operator>
                                                                                        {
                                                                                            new Models.Merchant.Operator
@@ -375,11 +378,13 @@
                                                                                                       ContactEmailAddress = TestData.MerchantContactEmailAddress
                                                                                                   }
                                                                                               },
-                                                                                   Devices = new Dictionary<Guid, String>
-                                                                                             {
-                                                                                                 {TestData.DeviceId, TestData.DeviceIdentifier}
-                                                                                             },
-                                                                                   Operators = new List<Models.Merchant.Operator>
+            Devices = new List<Device>{
+                                          new Device{
+                                                        DeviceIdentifier = TestData.DeviceIdentifier,
+                                                        IsEnabled = true,
+                                                        DeviceId = TestData.DeviceId,
+                                                    }},
+            Operators = new List<Models.Merchant.Operator>
                                                                                                {
                                                                                                    new Models.Merchant.Operator
                                                                                                    {
@@ -398,10 +403,12 @@
             SettlementSchedule = SettlementSchedule.Immediate,
             Addresses = null,
             Contacts = null,
-            Devices = new Dictionary<Guid, String>
-                                                                                             {
-                                                                                                 {TestData.DeviceId, TestData.DeviceIdentifier}
-                                                                                             },
+            Devices = new List<Device>{
+                                          new Device{
+                                                        DeviceIdentifier = TestData.DeviceIdentifier,
+                                                        IsEnabled = true,
+                                                        DeviceId = TestData.DeviceId,
+                                                    }},
             Operators = new List<Models.Merchant.Operator>
                                                                                                {
                                                                                                    new Models.Merchant.Operator
@@ -435,11 +442,13 @@
                                                                                                }
                                                                                            },
                                                                                Contacts = null,
-                                                                               Devices = new Dictionary<Guid, String>
-                                                                                         {
-                                                                                             {TestData.DeviceId, TestData.DeviceIdentifier}
-                                                                                         },
-                                                                               Operators = new List<Models.Merchant.Operator>
+            Devices = new List<Device>{
+                                          new Device{
+                                                        DeviceIdentifier = TestData.DeviceIdentifier,
+                                                        IsEnabled = true,
+                                                        DeviceId = TestData.DeviceId,
+                                                    }},
+            Operators = new List<Models.Merchant.Operator>
                                                                                            {
                                                                                                new Models.Merchant.Operator
                                                                                                {
@@ -524,11 +533,13 @@
                                                                                        ContactEmailAddress = TestData.MerchantContactEmailAddress
                                                                                    }
                                                                                },
-                                                                    Devices = new Dictionary<Guid, String>
-                                                                              {
-                                                                                  {TestData.DeviceId, TestData.DeviceIdentifier}
-                                                                              },
-                                                                    Operators = null
+            Devices = new List<Device>{
+                                          new Device{
+                                                        DeviceIdentifier = TestData.DeviceIdentifier,
+                                                        IsEnabled = true,
+                                                        DeviceId = TestData.DeviceId,
+                                                    }},
+            Operators = null
                                                                 };
 
         public static Guid OperatorId = Guid.Parse("6A63DA8B-4621-4731-90B1-A9D09B130D4B");

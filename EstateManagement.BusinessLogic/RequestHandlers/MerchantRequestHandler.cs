@@ -18,7 +18,7 @@
     using Shared.Exceptions;
     using Merchant = Models.Merchant.Merchant;
 
-    public class MerchantRequestHandler : IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand,Guid>,
+    public class MerchantRequestHandler : IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand>,
                                           IRequestHandler<MerchantCommands.AddMerchantContractCommand>,
                                           IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>,
                                           IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>,
@@ -84,10 +84,9 @@
             return depositId;
         }
         
-        public async Task<Guid> Handle(MerchantCommands.SwapMerchantDeviceCommand command,
+        public async Task Handle(MerchantCommands.SwapMerchantDeviceCommand command,
                                        CancellationToken cancellationToken) {
-            Guid deviceId = await this.MerchantDomainService.SwapMerchantDevice(command, cancellationToken);
-            return deviceId;
+            await this.MerchantDomainService.SwapMerchantDevice(command, cancellationToken);
         }
 
         public async Task<Guid> Handle(MerchantCommands.MakeMerchantWithdrawalCommand command,
@@ -109,11 +108,6 @@
 
         public async Task<Models.Merchant.Merchant> Handle(MerchantQueries.GetMerchantQuery query, CancellationToken cancellationToken){
             Models.Merchant.Merchant merchant = await this.EstateManagementManager.GetMerchant(query.EstateId, query.MerchantId, cancellationToken);
-
-            //if (merchant == null){
-            //    throw new NotFoundException($"Merchant not found with estate Id {query.EstateId} and merchant Id {query.MerchantId}");
-            //}
-
             return merchant;
         }
 

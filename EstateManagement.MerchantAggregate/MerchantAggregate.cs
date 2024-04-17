@@ -71,16 +71,16 @@
                 // Not an existing address, what should we do here ??
                 return;
             }
-            var existingAddress = aggregate.Addresses.Single(a => a.Key == addressId).Value;
+            Address existingAddress = aggregate.Addresses.Single(a => a.Key == addressId).Value;
             
-            var updatedAddress = new Address(addressLine1,
-                                             addressLine2,
-                                             addressLine3,
-                                             addressLine4,
-                                             town,
-                                             region,
-                                             postalCode,
-                                             country);
+            Address updatedAddress = new Address(addressLine1,
+                                                 addressLine2,
+                                                 addressLine3,
+                                                 addressLine4,
+                                                 town,
+                                                 region,
+                                                 postalCode,
+                                                 country);
 
             if (updatedAddress == existingAddress){
                 // No changes
@@ -261,16 +261,13 @@
 
             aggregate.EnsureMerchantHasBeenCreated();
             aggregate.EnsureMerchantHasSpaceForDevice();
-            // TODO: Reintroduce when merchant can request > 1 device
-            //aggregate.EnsureNotDuplicateDevice(deviceId, deviceIdentifier);
-
+            
             DeviceAddedToMerchantEvent deviceAddedToMerchantEvent = new DeviceAddedToMerchantEvent(aggregate.AggregateId, aggregate.EstateId, deviceId, deviceIdentifier);
 
             aggregate.ApplyAndAppend(deviceAddedToMerchantEvent);
         }
 
         public static void SwapDevice(this MerchantAggregate aggregate, 
-                                      Guid deviceId,
                                       String originalDeviceIdentifier,
                                       String newDeviceIdentifier)
         {
@@ -281,9 +278,10 @@
             aggregate.EnsureDeviceBelongsToMerchant(originalDeviceIdentifier);
             aggregate.EnsureDeviceDoesNotAlreadyBelongToMerchant(newDeviceIdentifier);
 
-            DeviceSwappedForMerchantEvent deviceSwappedForMerchantEvent = new DeviceSwappedForMerchantEvent(
-                                                                                                            aggregate.AggregateId, aggregate.EstateId,
-                deviceId, originalDeviceIdentifier, newDeviceIdentifier);
+            Guid deviceId = Guid.NewGuid();
+            
+            DeviceSwappedForMerchantEvent deviceSwappedForMerchantEvent = new DeviceSwappedForMerchantEvent(aggregate.AggregateId, aggregate.EstateId,
+                                                                                                            deviceId, originalDeviceIdentifier, newDeviceIdentifier);
 
             aggregate.ApplyAndAppend(deviceSwappedForMerchantEvent);
         }
@@ -398,12 +396,15 @@
                                                                                      }));
             }
 
-            if (aggregate.Devices.Any())
-            {
-                merchantModel.Devices = new Dictionary<Guid, String>();
-                foreach ((Guid key, String value) in aggregate.Devices)
+            if (aggregate.Devices.Any()){
+                merchantModel.Devices = new List<Models.Merchant.Device>();
+                foreach ((Guid key, Device device) in aggregate.Devices)
                 {
-                    merchantModel.Devices.Add(key, value);
+                    merchantModel.Devices.Add(new Models.Merchant.Device{
+                                                                            DeviceIdentifier = device.DeviceIdentifier,
+                                                                            DeviceId = key,
+                                                                            IsEnabled = device.IsEnabled
+                                                                        });
                 }
             }
 
@@ -520,7 +521,7 @@
 
         private static void EnsureDeviceBelongsToMerchant(this MerchantAggregate aggregate, String originalDeviceIdentifier)
         {
-            if (aggregate.Devices.ContainsValue(originalDeviceIdentifier) == false)
+            if (aggregate.Devices.Any(d => d.Value.DeviceIdentifier == originalDeviceIdentifier) == false)
             {
                 throw new InvalidOperationException("Merchant does not have this device allocated");
             }
@@ -528,7 +529,7 @@
 
         private static void EnsureDeviceDoesNotAlreadyBelongToMerchant(this MerchantAggregate aggregate, String newDeviceIdentifier)
         {
-            if (aggregate.Devices.ContainsValue(newDeviceIdentifier) == true)
+            if (aggregate.Devices.Any(d => d.Value.DeviceIdentifier == newDeviceIdentifier))
             {
                 throw new InvalidOperationException("Merchant already has this device allocated");
             }
@@ -762,15 +763,18 @@
 
         public static void PlayEvent(this MerchantAggregate aggregate, DeviceSwappedForMerchantEvent domainEvent)
         {
-            KeyValuePair<Guid, String> device = aggregate.Devices.Single(d => d.Value == domainEvent.OriginalDeviceIdentifier);
-            aggregate.Devices.Remove(device.Key);
+            KeyValuePair<Guid, Device> device = aggregate.Devices.Single(d => d.Value.DeviceIdentifier == domainEvent.OriginalDeviceIdentifier);
+            aggregate.Devices[device.Key] = device.Value with{
+                                                                 IsEnabled = false
+                                                             };
 
-            aggregate.Devices.Add(domainEvent.DeviceId, domainEvent.NewDeviceIdentifier);
+            aggregate.Devices.Add(domainEvent.DeviceId, new Device(domainEvent.NewDeviceIdentifier));
 
         }
         public static void PlayEvent(this MerchantAggregate aggregate, DeviceAddedToMerchantEvent domainEvent)
         {
-            aggregate.Devices.Add(domainEvent.DeviceId, domainEvent.DeviceIdentifier);
+            Device device = new Device(domainEvent.DeviceIdentifier);
+            aggregate.Devices.Add(domainEvent.DeviceId, device);
         }
     }
 
@@ -782,7 +786,7 @@
 
         internal readonly Dictionary<Guid, Contact> Contacts;
 
-        internal readonly Dictionary<Guid, String> Devices;
+        internal readonly Dictionary<Guid, Device> Devices;
 
         internal readonly Dictionary<Guid, Operator> Operators;
 
@@ -805,7 +809,7 @@
             this.Contacts = new Dictionary<Guid,Contact>();
             this.Operators = new Dictionary<Guid, Operator>();
             this.SecurityUsers = new List<SecurityUser>();
-            this.Devices = new Dictionary<Guid, String>();
+            this.Devices = new Dictionary<Guid, Device>();
             this.Contracts = new List<Contract>();
         }
 
@@ -822,7 +826,7 @@
             this.Contacts = new Dictionary<Guid, Contact>();
             this.Operators = new Dictionary<Guid, Operator>();
             this.SecurityUsers = new List<SecurityUser>();
-            this.Devices = new Dictionary<Guid, String>();
+            this.Devices = new Dictionary<Guid, Device>();
             this.Contracts = new List<Contract>();
         }
 

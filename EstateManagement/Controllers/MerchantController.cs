@@ -295,16 +295,10 @@
 
             MerchantCommands.SwapMerchantDeviceCommand command = new(estateId, merchantId, swapMerchantDeviceRequest);
 
-            Guid deviceId = await this.Mediator.Send(command, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
             // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new SwapMerchantDeviceResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    DeviceId = deviceId
-                                });
+            return this.Ok();
         }
 
         [HttpPost]

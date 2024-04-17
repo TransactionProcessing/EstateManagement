@@ -24,7 +24,7 @@
 
         public record MakeMerchantWithdrawalCommand(Guid EstateId, Guid MerchantId, MakeMerchantWithdrawalRequest RequestDto) : IRequest<Guid>;
 
-        public record SwapMerchantDeviceCommand(Guid EstateId, Guid MerchantId, SwapMerchantDeviceRequest RequestDto): IRequest<Guid>;
+        public record SwapMerchantDeviceCommand(Guid EstateId, Guid MerchantId, SwapMerchantDeviceRequest RequestDto): IRequest;
 
         public record GenerateMerchantStatementCommand(Guid EstateId, Guid MerchantId, GenerateMerchantStatementRequest RequestDto) : IRequest<Guid>;
         
