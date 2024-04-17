@@ -153,8 +153,8 @@ namespace EstateManagement.Tests.Factories{
 
             merchantResponse.Devices.ShouldHaveSingleItem();
             KeyValuePair<Guid, String> device = merchantResponse.Devices.Single();
-            device.Key.ShouldBe(merchantModel.Devices.Single().Key);
-            device.Value.ShouldBe(merchantModel.Devices.Single().Value);
+            device.Key.ShouldBe(merchantModel.Devices.Single().DeviceId);
+            device.Value.ShouldBe(merchantModel.Devices.Single().DeviceIdentifier);
 
             merchantResponse.Operators.ShouldHaveSingleItem();
             MerchantOperatorResponse operatorDetails = merchantResponse.Operators.Single();
@@ -190,8 +190,8 @@ namespace EstateManagement.Tests.Factories{
 
             merchantResponse.Devices.ShouldHaveSingleItem();
             KeyValuePair<Guid, String> device = merchantResponse.Devices.Single();
-            device.Key.ShouldBe(merchantModel.Devices.Single().Key);
-            device.Value.ShouldBe(merchantModel.Devices.Single().Value);
+            device.Key.ShouldBe(merchantModel.Devices.Single().DeviceId);
+            device.Value.ShouldBe(merchantModel.Devices.Single().DeviceIdentifier);
 
             merchantResponse.Operators.ShouldHaveSingleItem();
             MerchantOperatorResponse operatorDetails = merchantResponse.Operators.Single();
@@ -271,8 +271,8 @@ namespace EstateManagement.Tests.Factories{
 
             merchantResponse.Devices.ShouldHaveSingleItem();
             var device = merchantResponse.Devices.Single();
-            device.Key.ShouldBe(merchantModel.Devices.Single().Key);
-            device.Value.ShouldBe(merchantModel.Devices.Single().Value);
+            device.Key.ShouldBe(merchantModel.Devices.Single().DeviceId);
+            device.Value.ShouldBe(merchantModel.Devices.Single().DeviceIdentifier);
 
             merchantResponse.Operators.ShouldBeNull();
         }

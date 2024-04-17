@@ -37,7 +37,7 @@
             this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantDepositCommand, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContractCommand>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantCommand>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantAddressCommand>, MerchantRequestHandler>();

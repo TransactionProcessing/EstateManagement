@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Contract;
+    using Merchant;
     using EstateModel = Estate.Estate;
     using EstateEntity = EstateManagement.Database.Entities.Estate;
     using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;
@@ -152,8 +153,11 @@
 
             if (merchantDevices != null && merchantDevices.Any())
             {
-                merchantModel.Devices = new Dictionary<Guid, String>();
-                merchantDevices.ForEach(md => merchantModel.Devices.Add(md.DeviceId, md.DeviceIdentifier));
+                merchantModel.Devices = new List<Device>();
+                merchantDevices.ForEach(md => merchantModel.Devices.Add(new Device{
+                                                                                      DeviceIdentifier = md.DeviceIdentifier,
+                                                                                      DeviceId = md.DeviceId,
+                                                                                  }));
             }
 
             if (merchantSecurityUsers != null && merchantSecurityUsers.Any())

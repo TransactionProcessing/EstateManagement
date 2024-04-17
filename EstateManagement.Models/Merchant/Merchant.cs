@@ -15,7 +15,7 @@
 
         public List<Contract> Contracts { get; set; }
 
-        public Dictionary<Guid, String> Devices { get; set; }
+        public List<Device> Devices { get; set; }
 
         public Guid EstateId { get; set; }
 
