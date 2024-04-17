@@ -66,6 +66,10 @@ namespace EstateManagement.Merchant.DomainEvents
                                                   String MerchantNumber,
                                                   String TerminalNumber) : DomainEvent(MerchantId, Guid.NewGuid());
 
+    public record OperatorRemovedFromMerchantEvent(Guid MerchantId,
+                                                  Guid EstateId,
+                                                  Guid OperatorId) : DomainEvent(MerchantId, Guid.NewGuid());
+
     public record SecurityUserAddedToMerchantEvent(Guid MerchantId,
                                                    Guid EstateId,
                                                    Guid SecurityUserId,

@@ -60,4 +60,8 @@ public class DummyMerchantDomainService : IMerchantDomainService
     public async Task UpdateMerchantContact(MerchantCommands.UpdateMerchantContactCommand command, CancellationToken cancellationToken){
         
     }
+
+    public async Task RemoveOperatorFromMerchant(MerchantCommands.RemoveOperatorFromMerchantCommand command, CancellationToken cancellationToken){
+        
+    }
 }
