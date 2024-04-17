@@ -367,6 +367,14 @@
             await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
         }
 
+        public async Task RemoveOperatorFromMerchant(MerchantCommands.RemoveOperatorFromMerchantCommand command, CancellationToken cancellationToken){
+            (MerchantAggregate merchantAggregate, EstateAggregate estateAggregate) validateResults = await this.ValidateEstateAndMerchant(command.EstateId, command.MerchantId, cancellationToken);
+
+            validateResults.merchantAggregate.RemoveOperator(command.OperatorId);
+
+            await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
+        }
+
         private async Task<(MerchantAggregate merchantAggregate, EstateAggregate estateAggregate)> ValidateEstateAndMerchant(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
             MerchantAggregate merchantAggregate = await this.MerchantAggregateRepository.GetLatestVersion(merchantId, cancellationToken);
 

@@ -51,6 +51,12 @@
                                                               AssignOperatorRequest assignOperatorRequest,
                                                               CancellationToken cancellationToken);
 
+        Task RemoveOperatorFromMerchant(String accessToken,
+                                        Guid estateId,
+                                        Guid merchantId,
+                                        Guid operatorId,
+                                        CancellationToken cancellationToken);
+
         Task<CreateContractResponse> CreateContract(String accessToken,
                                                     Guid estateId,
                                                     CreateContractRequest createContractRequest,

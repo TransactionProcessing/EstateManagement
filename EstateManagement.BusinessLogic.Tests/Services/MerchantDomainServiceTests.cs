@@ -550,7 +550,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         }
 
         [Fact]
-        public async Task ContactAdded(){
+        public async Task MerchantDomainService_AddMerchantContact_ContactAdded(){
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
 
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
@@ -560,13 +560,24 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         }
 
         [Fact]
-        public async Task MerchantDomainService_UpdateMerchantContact_ContactAdded(){
+        public async Task MerchantDomainService_UpdateMerchantContact_ContactUpdated(){
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
 
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             Should.NotThrow(async () => { await this.DomainService.UpdateMerchantContact(TestData.UpdateMerchantContactCommand, CancellationToken.None); });
+        }
+
+        [Fact]
+        public async Task MerchantDomainService_RemoveOperatorFromMerchant_OperatorRemoved()
+        {
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithOperator);
+            this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Should.NotThrow(async () => { await this.DomainService.RemoveOperatorFromMerchant(TestData.RemoveOperatorFromMerchantCommand, CancellationToken.None); });
         }
     }
 }

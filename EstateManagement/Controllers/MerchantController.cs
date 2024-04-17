@@ -113,6 +113,28 @@
                                 });
         }
 
+        [HttpDelete]
+        [Route("{merchantId}/operators/{operatorId}")]
+        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        [FromRoute] Guid operatorId,
+                                                        CancellationToken cancellationToken)
+        {
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.RemoveOperatorFromMerchantCommand command = new(estateId, merchantId, operatorId);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
+        }
+
         [HttpPost]
         [Route("{merchantId}/devices")]
         [SwaggerResponse(201, "Created", typeof(AddMerchantDeviceResponse))]

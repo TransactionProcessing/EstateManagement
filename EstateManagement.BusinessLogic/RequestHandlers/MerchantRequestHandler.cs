@@ -34,7 +34,8 @@
                                           IRequestHandler<MerchantCommands.AddMerchantAddressCommand>,
                                           IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand>,
                                           IRequestHandler<MerchantCommands.AddMerchantContactCommand>,
-                                          IRequestHandler<MerchantCommands.UpdateMerchantContactCommand>
+                                          IRequestHandler<MerchantCommands.UpdateMerchantContactCommand>,
+                                          IRequestHandler<MerchantCommands.RemoveOperatorFromMerchantCommand>
     {
         #region Fields
 
@@ -152,6 +153,10 @@
 
         public async Task Handle(MerchantCommands.UpdateMerchantContactCommand command, CancellationToken cancellationToken){
             await this.MerchantDomainService.UpdateMerchantContact(command, cancellationToken);
+        }
+
+        public async Task Handle(MerchantCommands.RemoveOperatorFromMerchantCommand command, CancellationToken cancellationToken){
+            await this.MerchantDomainService.RemoveOperatorFromMerchant(command, cancellationToken);
         }
     }
 }

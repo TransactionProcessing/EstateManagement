@@ -582,9 +582,6 @@ namespace EstateManagement.MerchantAggregate.Tests
             address.Country.ShouldBe(TestData.MerchantCountry);
         }
 
-
-
-        /*-------------------------------------*/
         [Fact]
         public void MerchantAggregate_UpdateContact_ContactIsUpdated(){
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
@@ -641,6 +638,41 @@ namespace EstateManagement.MerchantAggregate.Tests
             contact.ContactName.ShouldBe(TestData.ContactName);
             contact.ContactEmailAddress.ShouldBe(TestData.ContactEmail);
             contact.ContactPhoneNumber.ShouldBe(TestData.ContactPhone);
+        }
+
+        [Fact]
+        public void MerchantAggregate_RemoveOperator_OperatorIsRemvoed()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+            aggregate.RemoveOperator(TestData.OperatorId);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Operators.ShouldHaveSingleItem();
+            Models.Merchant.Operator operatorModel = merchantModel.Operators.Single();
+            operatorModel.OperatorId.ShouldBe(TestData.OperatorId);
+            operatorModel.Name.ShouldBe(TestData.OperatorName);
+            operatorModel.MerchantNumber.ShouldBe(TestData.OperatorMerchantNumber);
+            operatorModel.TerminalNumber.ShouldBe(TestData.OperatorTerminalNumber);
+            operatorModel.IsDeleted.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void MerchantAggregate_Remove_MerchantNotCreated_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+            Should.Throw<InvalidOperationException>(() => { aggregate.RemoveOperator(TestData.OperatorId); });
+        }
+
+        [Fact]
+        public void MerchantAggregate_AssignOperator_OperatorNotAlreadyAssigned_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            
+            Should.Throw<InvalidOperationException>(() => { aggregate.RemoveOperator(TestData.OperatorId); });
         }
     }
 }

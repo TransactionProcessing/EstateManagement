@@ -314,6 +314,18 @@
             aggregate.ApplyAndAppend(operatorAssignedToMerchantEvent);
         }
 
+        public static void RemoveOperator(this MerchantAggregate aggregate,
+                                          Guid operatorId)
+        {
+            aggregate.EnsureMerchantHasBeenCreated();
+            aggregate.EnsureOperatorHasBeenAssigned(operatorId);
+
+            OperatorRemovedFromMerchantEvent operatorRemovedFromMerchantEvent =
+                new OperatorRemovedFromMerchantEvent(aggregate.AggregateId, aggregate.EstateId, operatorId);
+
+            aggregate.ApplyAndAppend(operatorRemovedFromMerchantEvent);
+        }
+
         public static Merchant GetMerchant(this MerchantAggregate aggregate)
         {
             if (aggregate.IsCreated == false)
@@ -365,13 +377,15 @@
             if (aggregate.Operators.Any())
             {
                 merchantModel.Operators = new List<Models.Merchant.Operator>();
-                aggregate.Operators.ForEach(o => merchantModel.Operators.Add(new Models.Merchant.Operator
-                                                                             {
-                                                                                 OperatorId = o.OperatorId,
-                                                                                 Name = o.Name,
-                                                                                 TerminalNumber = o.TerminalNumber,
-                                                                                 MerchantNumber = o.MerchantNumber
-                                                                             }));
+                foreach (KeyValuePair<Guid, Operator> aggregateOperator in aggregate.Operators){
+                    merchantModel.Operators.Add(new Models.Merchant.Operator{
+                                                                                OperatorId = aggregateOperator.Key,
+                                                                                Name = aggregateOperator.Value.Name,
+                                                                                TerminalNumber = aggregateOperator.Value.TerminalNumber,
+                                                                                MerchantNumber = aggregateOperator.Value.MerchantNumber,
+                                                                                IsDeleted = aggregateOperator.Value.IsDeleted
+                                                                            });
+                }
             }
 
             if (aggregate.SecurityUsers.Any())
@@ -530,9 +544,17 @@
 
         private static void EnsureOperatorHasNotAlreadyBeenAssigned(this MerchantAggregate aggregate, Guid operatorId)
         {
-            if (aggregate.Operators.Any(o => o.OperatorId == operatorId))
+            if (aggregate.Operators.Any(o => o.Key == operatorId))
             {
                 throw new InvalidOperationException($"Operator {operatorId} has already been assigned to merchant");
+            }
+        }
+
+        private static void EnsureOperatorHasBeenAssigned(this MerchantAggregate aggregate, Guid operatorId)
+        {
+            if (aggregate.Operators.Any(o => o.Key == operatorId) == false)
+            {
+                throw new InvalidOperationException($"Operator {operatorId} has not been assigned to merchant");
             }
         }
 
@@ -701,12 +723,19 @@
 
         public static void PlayEvent(this MerchantAggregate aggregate, OperatorAssignedToMerchantEvent operatorAssignedToMerchantEvent)
         {
-            Operator @operator = Operator.Create(operatorAssignedToMerchantEvent.OperatorId,
-                                                 operatorAssignedToMerchantEvent.Name,
-                                                 operatorAssignedToMerchantEvent.MerchantNumber,
-                                                 operatorAssignedToMerchantEvent.TerminalNumber);
+            Operator @operator = new Operator(operatorAssignedToMerchantEvent.Name,
+                                              operatorAssignedToMerchantEvent.MerchantNumber,
+                                              operatorAssignedToMerchantEvent.TerminalNumber);
 
-            aggregate.Operators.Add(@operator);
+            aggregate.Operators.Add(operatorAssignedToMerchantEvent.OperatorId, @operator);
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, OperatorRemovedFromMerchantEvent operatorRemovedFromMerchantEvent){
+            KeyValuePair<Guid, Operator> @operator = aggregate.Operators.Single(o => o.Key == operatorRemovedFromMerchantEvent.OperatorId);
+
+            aggregate.Operators[operatorRemovedFromMerchantEvent.OperatorId] = @operator.Value with{
+                                                                                                       IsDeleted = true
+                                                                                                   };
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, SecurityUserAddedToMerchantEvent domainEvent)
@@ -755,7 +784,7 @@
 
         internal readonly Dictionary<Guid, String> Devices;
 
-        internal readonly List<Operator> Operators;
+        internal readonly Dictionary<Guid, Operator> Operators;
 
         internal readonly List<SecurityUser> SecurityUsers;
 
@@ -774,7 +803,7 @@
             // Nothing here
             this.Addresses = new Dictionary<Guid, Address>();
             this.Contacts = new Dictionary<Guid,Contact>();
-            this.Operators = new List<Operator>();
+            this.Operators = new Dictionary<Guid, Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();
             this.Contracts = new List<Contract>();
@@ -791,7 +820,7 @@
             this.AggregateId = aggregateId;
             this.Addresses = new Dictionary<Guid, Address>();
             this.Contacts = new Dictionary<Guid, Contact>();
-            this.Operators = new List<Operator>();
+            this.Operators = new Dictionary<Guid, Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();
             this.Contracts = new List<Contract>();

@@ -41,6 +41,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.UpdateMerchantAddressCommand);
             this.Requests.Add(TestData.AddMerchantContactCommand);
             this.Requests.Add(TestData.UpdateMerchantContactCommand);
+            this.Requests.Add(TestData.RemoveOperatorFromMerchantCommand);
 
             this.Requests.Add(TestData.GetMerchantsQuery);
             this.Requests.Add(TestData.GetMerchantQuery);

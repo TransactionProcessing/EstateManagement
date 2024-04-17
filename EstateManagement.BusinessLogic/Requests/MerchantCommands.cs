@@ -12,6 +12,8 @@
 
         public record AssignOperatorToMerchantCommand(Guid EstateId, Guid MerchantId, AssignOperatorRequest RequestDto) : IRequest<Guid>;
 
+        public record RemoveOperatorFromMerchantCommand(Guid EstateId, Guid MerchantId, Guid OperatorId) : IRequest;
+
         public record AddMerchantDeviceCommand(Guid EstateId, Guid MerchantId, AddMerchantDeviceRequest RequestDto) : IRequest<Guid>;
 
         public record AddMerchantContractCommand(Guid EstateId, Guid MerchantId, AddMerchantContractRequest RequestDto) : IRequest;
