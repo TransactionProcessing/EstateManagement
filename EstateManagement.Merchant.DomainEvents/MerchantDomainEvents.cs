@@ -130,4 +130,9 @@ namespace EstateManagement.Merchant.DomainEvents
                                                    Guid AddressId,
                                                    String PostalCode) : DomainEvent(MerchantId, Guid.NewGuid());
 
+    public record MerchantContactNameUpdatedEvent(Guid MerchantId, Guid EstateId, Guid ContactId, String ContactName) : DomainEvent(MerchantId, Guid.NewGuid());
+
+    public record MerchantContactEmailAddressUpdatedEvent(Guid MerchantId, Guid EstateId, Guid ContactId, String ContactEmailAddress) : DomainEvent(MerchantId, Guid.NewGuid());
+
+    public record MerchantContactPhoneNumberUpdatedEvent(Guid MerchantId, Guid EstateId, Guid ContactId, String ContactPhoneNumber) : DomainEvent(MerchantId, Guid.NewGuid());
 }

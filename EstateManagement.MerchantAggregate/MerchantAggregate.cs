@@ -16,6 +16,30 @@
 
     public static class MerchantAggregateExtensions{
 
+        public static void UpdateContact(this MerchantAggregate aggregate,  Guid contactId, String contactName, String contactEmailAddress, String contactPhoneNumber){
+            aggregate.EnsureMerchantHasBeenCreated();
+
+            Boolean isExistingContact = aggregate.Contacts.ContainsKey(contactId);
+
+            if (isExistingContact == false)
+            {
+                // Not an existing contact, what should we do here ??
+                return;
+            }
+
+            var existingContact = aggregate.Contacts.Single(a => a.Key == contactId).Value;
+
+            var updatedContact = new Contact(contactEmailAddress, contactName, contactPhoneNumber);
+
+            if (updatedContact == existingContact)
+            {
+                // No changes
+                return;
+            }
+
+            aggregate.HandleContactUpdates(contactId, existingContact, updatedContact);
+        }
+    
         public static void UpdateMerchant(this MerchantAggregate aggregate, String name){
             aggregate.EnsureMerchantHasBeenCreated();
 
@@ -64,6 +88,34 @@
             }
 
             aggregate.HandleAddressUpdates(addressId,existingAddress, updatedAddress);
+        }
+
+
+        private static void HandleContactUpdates(this MerchantAggregate merchantAggregate, Guid contactId, Contact existingContact, Contact updatedContact){
+            if (existingContact.ContactName != updatedContact.ContactName){
+                MerchantContactNameUpdatedEvent merchantContactNameUpdatedEvent = new(merchantAggregate.AggregateId,
+                                                                                      merchantAggregate.EstateId,
+                                                                                      contactId,
+                                                                                      updatedContact.ContactName);
+                merchantAggregate.ApplyAndAppend(merchantContactNameUpdatedEvent);
+            }
+
+            if (existingContact.ContactEmailAddress != updatedContact.ContactEmailAddress){
+                MerchantContactEmailAddressUpdatedEvent merchantContactEmailAddressUpdatedEvent = new(merchantAggregate.AggregateId,
+                                                                                      merchantAggregate.EstateId,
+                                                                                      contactId,
+                                                                                      updatedContact.ContactEmailAddress);
+                merchantAggregate.ApplyAndAppend(merchantContactEmailAddressUpdatedEvent);
+            }
+
+            if (existingContact.ContactPhoneNumber != updatedContact.ContactPhoneNumber)
+            {
+                MerchantContactPhoneNumberUpdatedEvent merchantContactPhoneNumberUpdatedEvent = new(merchantAggregate.AggregateId,
+                                                                                      merchantAggregate.EstateId,
+                                                                                      contactId,
+                                                                                      updatedContact.ContactPhoneNumber);
+                merchantAggregate.ApplyAndAppend(merchantContactPhoneNumberUpdatedEvent);
+            }
         }
 
         private static void HandleAddressUpdates(this MerchantAggregate merchantAggregate, Guid addressId, Address existingAddress, Address updatedAddress){
@@ -186,15 +238,17 @@
         }
 
         public static void AddContact(this MerchantAggregate aggregate, 
-                                      Guid contactId,
                                       String contactName,
                                       String contactPhoneNumber,
                                       String contactEmailAddress)
         {
             aggregate.EnsureMerchantHasBeenCreated();
 
+            if (IsDuplicateContact(aggregate, contactName, contactEmailAddress, contactPhoneNumber))
+             return;
+
             ContactAddedEvent contactAddedEvent =
-                new ContactAddedEvent(aggregate.AggregateId, aggregate.EstateId, contactId, contactName, contactPhoneNumber, contactEmailAddress);
+                new ContactAddedEvent(aggregate.AggregateId, aggregate.EstateId, Guid.NewGuid(), contactName, contactPhoneNumber, contactEmailAddress);
 
             aggregate.ApplyAndAppend(contactAddedEvent);
         }
@@ -298,13 +352,14 @@
             if (aggregate.Contacts.Any())
             {
                 merchantModel.Contacts = new List<Models.Merchant.Contact>();
-                aggregate.Contacts.ForEach(c => merchantModel.Contacts.Add(new Models.Merchant.Contact
-                                                                           {
-                                                                               ContactId = c.ContactId,
-                                                                               ContactPhoneNumber = c.ContactPhoneNumber,
-                                                                               ContactEmailAddress = c.ContactEmailAddress,
-                                                                               ContactName = c.ContactName
-                                                                           }));
+                foreach (KeyValuePair<Guid, Contact> aggregateContact in aggregate.Contacts){
+                    merchantModel.Contacts.Add(new Models.Merchant.Contact{
+                                                                              ContactEmailAddress = aggregateContact.Value.ContactEmailAddress,
+                                                                              ContactName = aggregateContact.Value.ContactName,
+                                                                              ContactPhoneNumber = aggregateContact.Value.ContactPhoneNumber,
+                                                                              ContactId = aggregateContact.Key
+                                                                          });
+                }
             }
 
             if (aggregate.Operators.Any())
@@ -424,6 +479,24 @@
 
             foreach (KeyValuePair<Guid, Address> aggregateAddress in aggregate.Addresses){
                 if (newAddress == aggregateAddress.Value){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static Boolean IsDuplicateContact(this MerchantAggregate aggregate, String contactName,
+                                                  String contactEmailAddress,
+                                                  String contactPhoneNumber)
+        {
+            // create record of "new" contact
+            Contact newContact = new Contact(contactEmailAddress, contactName, contactPhoneNumber);
+
+            foreach (KeyValuePair<Guid, Contact> aggregateContacts in aggregate.Contacts)
+            {
+                if (newContact == aggregateContacts.Value)
+                {
                     return true;
                 }
             }
@@ -553,6 +626,39 @@
             aggregate.Addresses[merchantPostalCodeUpdatedEvent.AddressId] = updatedAddress;
         }
 
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactNameUpdatedEvent merchantContactNameUpdatedEvent)
+        {
+            KeyValuePair<Guid, Contact> contact = aggregate.Contacts.Single(a => a.Key == merchantContactNameUpdatedEvent.ContactId);
+
+            Contact updatedContact= contact.Value with
+                                     {
+                                         ContactName = merchantContactNameUpdatedEvent.ContactName
+                                     };
+            aggregate.Contacts[merchantContactNameUpdatedEvent.ContactId] = updatedContact;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactEmailAddressUpdatedEvent merchantContactEmailAddressUpdatedEvent)
+        {
+            KeyValuePair<Guid, Contact> contact = aggregate.Contacts.Single(a => a.Key == merchantContactEmailAddressUpdatedEvent.ContactId);
+
+            Contact updatedContact = contact.Value with
+                                     {
+                                         ContactEmailAddress = merchantContactEmailAddressUpdatedEvent.ContactEmailAddress
+                                     };
+            aggregate.Contacts[merchantContactEmailAddressUpdatedEvent.ContactId] = updatedContact;
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactPhoneNumberUpdatedEvent merchantContactPhoneNumberUpdatedEvent)
+        {
+            KeyValuePair<Guid, Contact> contact = aggregate.Contacts.Single(a => a.Key == merchantContactPhoneNumberUpdatedEvent.ContactId);
+
+            Contact updatedContact = contact.Value with
+                                     {
+                                         ContactPhoneNumber = merchantContactPhoneNumberUpdatedEvent.ContactPhoneNumber
+                                     };
+            aggregate.Contacts[merchantContactPhoneNumberUpdatedEvent.ContactId] = updatedContact;
+        }
+
         public static void PlayEvent(this MerchantAggregate aggregate, MerchantTownUpdatedEvent merchantTownUpdatedEvent)
         {
             KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantTownUpdatedEvent.AddressId);
@@ -588,12 +694,9 @@
 
         public static void PlayEvent(this MerchantAggregate aggregate, ContactAddedEvent contactAddedEvent)
         {
-            Contact contact = Contact.Create(contactAddedEvent.ContactId,
-                                             contactAddedEvent.ContactName,
-                                             contactAddedEvent.ContactPhoneNumber,
-                                             contactAddedEvent.ContactEmailAddress);
+            Contact contact = new Contact(contactAddedEvent.ContactEmailAddress, contactAddedEvent.ContactName, contactAddedEvent.ContactPhoneNumber);
 
-            aggregate.Contacts.Add(contact);
+            aggregate.Contacts.Add(contactAddedEvent.ContactId, contact);
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, OperatorAssignedToMerchantEvent operatorAssignedToMerchantEvent)
@@ -648,7 +751,7 @@
 
         internal readonly Dictionary<Guid, Address> Addresses;
 
-        internal readonly List<Contact> Contacts;
+        internal readonly Dictionary<Guid, Contact> Contacts;
 
         internal readonly Dictionary<Guid, String> Devices;
 
@@ -670,7 +773,7 @@
         {
             // Nothing here
             this.Addresses = new Dictionary<Guid, Address>();
-            this.Contacts = new List<Contact>();
+            this.Contacts = new Dictionary<Guid,Contact>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();
@@ -687,7 +790,7 @@
 
             this.AggregateId = aggregateId;
             this.Addresses = new Dictionary<Guid, Address>();
-            this.Contacts = new List<Contact>();
+            this.Contacts = new Dictionary<Guid, Contact>();
             this.Operators = new List<Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, String>();

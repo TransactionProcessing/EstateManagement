@@ -17,6 +17,7 @@
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.Exceptions;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
     using Contract = Models.Contract.Contract;
 
     /// <summary>
@@ -127,7 +128,14 @@
         public async Task<List<Merchant>> GetMerchants(Guid estateId,
                                                        CancellationToken cancellationToken)
         {
-            return await this.EstateManagementRepository.GetMerchants(estateId, cancellationToken);
+            List<Merchant> merchants = await this.EstateManagementRepository.GetMerchants(estateId, cancellationToken);
+
+            if (merchants == null || merchants.Any() == false)
+            {
+                throw new NotFoundException($"No Merchants found for estate Id {estateId}");
+            }
+
+            return merchants;
         }
         
         public async Task<List<TransactionFee>> GetTransactionFeesForProduct(Guid estateId,

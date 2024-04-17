@@ -122,7 +122,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             
             merchantModel.Contacts.ShouldHaveSingleItem();
             merchantModel.Contacts.Single().ContactEmailAddress.ShouldBe(expectedModel.Contacts.Single().ContactEmailAddress);
-            merchantModel.Contacts.Single().ContactId.ShouldBe(expectedModel.Contacts.Single().ContactId);
+            merchantModel.Contacts.Single().ContactId.ShouldNotBe(Guid.Empty);
             merchantModel.Contacts.Single().ContactName.ShouldBe(expectedModel.Contacts.Single().ContactName);
             merchantModel.Contacts.Single().ContactPhoneNumber.ShouldBe(expectedModel.Contacts.Single().ContactPhoneNumber);
 
@@ -207,6 +207,27 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             merchantList.ShouldNotBeNull();
             merchantList.ShouldNotBeEmpty();
             merchantList.ShouldHaveSingleItem();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetMerchants_NullMerchants_ExceptionThrown(){
+            List<Merchant> merchants = null;
+            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchants);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+                                            });
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetMerchants_EmptyMerchants_ExceptionThrown()
+        {
+            List<Merchant> merchants = new List<Merchant>();
+            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchants);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+                                            });
         }
 
         [Fact]

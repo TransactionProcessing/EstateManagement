@@ -174,7 +174,7 @@
 
         //public static Guid MerchantAddressId = Guid.Parse("F463D464-CD2F-4293-98F1-A31529B12426");
 
-        public static Guid MerchantContactId = Guid.Parse("37B08E8A-8B1E-482A-AE9C-C87DC3B36026");
+        //public static Guid MerchantContactId = Guid.Parse("37B08E8A-8B1E-482A-AE9C-C87DC3B36026");
 
         #endregion
 
@@ -272,7 +272,7 @@
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
 
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
+            merchantAggregate.AddContact(TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
                                          TestData.MerchantContactEmailAddress);
             merchantAggregate.AddAddress(TestData.MerchantAddressLine1, TestData.MerchantAddressLine2,
                                          TestData.MerchantAddressLine3, TestData.MerchantAddressLine4, TestData.MerchantTown,
@@ -288,7 +288,7 @@
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
 
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddContact(TestData.MerchantContactId, TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
+            merchantAggregate.AddContact(TestData.MerchantContactName, TestData.MerchantContactPhoneNumber,
                                          TestData.MerchantContactEmailAddress);
 
             return merchantAggregate;
@@ -329,7 +329,7 @@
                                                                                       {
                                                                                           new Contact
                                                                                           {
-                                                                                              ContactId = TestData.MerchantContactId,
+                                                                                              ContactId = Guid.NewGuid(),
                                                                                               ContactName = TestData.MerchantContactName,
                                                                                               ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
                                                                                               ContactEmailAddress = TestData.MerchantContactEmailAddress
@@ -369,7 +369,7 @@
                                                                                               {
                                                                                                   new Contact
                                                                                                   {
-                                                                                                      ContactId = TestData.MerchantContactId,
+                                                                                                      ContactId = Guid.NewGuid(),
                                                                                                       ContactName = TestData.MerchantContactName,
                                                                                                       ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
                                                                                                       ContactEmailAddress = TestData.MerchantContactEmailAddress
@@ -475,7 +475,7 @@
                                                                              {
                                                                                  new Contact
                                                                                  {
-                                                                                     ContactId = TestData.MerchantContactId,
+                                                                                     ContactId = Guid.NewGuid(),
                                                                                      ContactName = TestData.MerchantContactName,
                                                                                      ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
                                                                                      ContactEmailAddress = TestData.MerchantContactEmailAddress
@@ -518,7 +518,7 @@
                                                                                {
                                                                                    new Contact
                                                                                    {
-                                                                                       ContactId = TestData.MerchantContactId,
+                                                                                       ContactId = Guid.NewGuid(),
                                                                                        ContactName = TestData.MerchantContactName,
                                                                                        ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
                                                                                        ContactEmailAddress = TestData.MerchantContactEmailAddress
@@ -637,8 +637,8 @@
 
         public static EstateManagement.Database.Entities.MerchantContact MerchantContactEntity = new MerchantContact
                                                                                                  {
-                                                                                                     ContactId = TestData.MerchantContactId,
-                                                                                                     Name = TestData.MerchantContactName,
+                                                                                                     ContactId = Guid.NewGuid(),
+            Name = TestData.MerchantContactName,
                                                                                                      EmailAddress = TestData.MerchantContactEmailAddress,
                                                                                                      PhoneNumber = TestData.MerchantContactPhoneNumber,
                                                                                                      CreatedDateTime = TestData.DateMerchantCreated
@@ -1253,6 +1253,7 @@
         /// The contact email
         /// </summary>
         public static String ContactEmail = "testcontact1@testmerchant1.co.uk";
+        public static String ContactEmailUpdate = "testcontact1@testmerchant1.com";
 
         /// <summary>
         /// The contact identifier
@@ -1264,10 +1265,13 @@
         /// </summary>
         public static String ContactName = "Test Contact";
 
+        public static String ContactNameUpdate = "Test Contact Update";
+
         /// <summary>
         /// The contact phone
         /// </summary>
         public static String ContactPhone = "123456789";
+        public static String ContactPhoneUpdate = "1234567890";
 
         /// <summary>
         /// The contact added event
@@ -1985,6 +1989,14 @@
                                                                  Town = TestData.Town
                                                              };
 
+        public static DataTransferObjects.Requests.Merchant.Contact Contact =>
+            new DataTransferObjects.Requests.Merchant.Contact
+            {
+                ContactName = TestData.ContactName,
+                EmailAddress = TestData.ContactEmail,
+                PhoneNumber = TestData.ContactPhone
+            };
+
         public static MerchantCommands.AddMerchantAddressCommand AddMerchantAddressCommand =>
             new MerchantCommands.AddMerchantAddressCommand(TestData.EstateId,
                                                            TestData.MerchantId,
@@ -1995,6 +2007,17 @@
                                                               TestData.MerchantId,
                                                               Guid.NewGuid(),
                                                               TestData.Address);
+
+        public static MerchantCommands.AddMerchantContactCommand AddMerchantContactCommand =>
+            new MerchantCommands.AddMerchantContactCommand(TestData.EstateId,
+                                                           TestData.MerchantId,
+                                                           TestData.Contact);
+
+        public static MerchantCommands.UpdateMerchantContactCommand UpdateMerchantContactCommand =>
+            new MerchantCommands.UpdateMerchantContactCommand(TestData.EstateId,
+                                                              TestData.MerchantId,
+                                                              Guid.NewGuid(),
+                                                              TestData.Contact);
     }
 
 
