@@ -18,6 +18,8 @@
 
         public record AddMerchantContractCommand(Guid EstateId, Guid MerchantId, AddMerchantContractRequest RequestDto) : IRequest;
 
+        public record RemoveMerchantContractCommand(Guid EstateId, Guid MerchantId, Guid ContractId) : IRequest;
+
         public record CreateMerchantUserCommand(Guid EstateId, Guid MerchantId, CreateMerchantUserRequest RequestDto) : IRequest<Guid>;
 
         public record MakeMerchantDepositCommand(Guid EstateId, Guid MerchantId, Models.MerchantDepositSource DepositSource, MakeMerchantDepositRequest RequestDto) : IRequest<Guid>;

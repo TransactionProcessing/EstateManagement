@@ -45,6 +45,7 @@
             this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContactCommand>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantContactCommand>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.RemoveOperatorFromMerchantCommand>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.RemoveMerchantContractCommand>, MerchantRequestHandler>();
 
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantQuery, Merchant>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>, MerchantRequestHandler>();

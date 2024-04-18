@@ -8,6 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 public class Contract{
     public Guid ContractId{ get; set; }
 
+    public Boolean IsDeleted { get; set; }
+
     public List<Guid> ContractProducts{ get; set; }
 
     public Contract(){

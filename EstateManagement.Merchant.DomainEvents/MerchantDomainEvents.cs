@@ -90,6 +90,10 @@ namespace EstateManagement.Merchant.DomainEvents
                                              Guid EstateId,
                                              Guid ContractId) : DomainEvent(MerchantId, Guid.NewGuid());
 
+    public record ContractRemovedFromMerchantEvent(Guid MerchantId,
+                                               Guid EstateId,
+                                               Guid ContractId) : DomainEvent(MerchantId, Guid.NewGuid());
+
     public record ContractProductAddedToMerchantEvent(Guid MerchantId, Guid EstateId, Guid ContractId, 
                                                       Guid ContractProductId) : DomainEvent(MerchantId, Guid.NewGuid());
 

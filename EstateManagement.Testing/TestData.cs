@@ -2031,6 +2031,11 @@
                                                               TestData.Contact);
 
         public static MerchantCommands.RemoveOperatorFromMerchantCommand RemoveOperatorFromMerchantCommand => new MerchantCommands.RemoveOperatorFromMerchantCommand(TestData.EstateId, TestData.MerchantId, TestData.OperatorId);
+
+        public static MerchantCommands.RemoveMerchantContractCommand RemoveMerchantContractCommand =>
+            new MerchantCommands.RemoveMerchantContractCommand(TestData.EstateId,
+                                                               TestData.MerchantId,
+                                                               TestData.ContractId);
     }
 
 

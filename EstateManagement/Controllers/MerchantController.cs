@@ -188,6 +188,28 @@
         }
 
         [HttpPost]
+        [Route("{merchantId}/contracts/{contractId}")]
+        public async Task<IActionResult> RemoveContract([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromRoute] Guid contractId,
+                                                     CancellationToken cancellationToken)
+        {
+            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
+            if (isRequestAllowed == false)
+            {
+                return this.Forbid();
+            }
+
+            MerchantCommands.RemoveMerchantContractCommand command = new(estateId, merchantId, contractId);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
+        }
+
+        [HttpPost]
         [Route("{merchantId}/users")]
         [SwaggerResponse(201, "Created", typeof(CreateMerchantUserResponse))]
         [SwaggerResponseExample(201, typeof(CreateMerchantUserResponseExample))]
