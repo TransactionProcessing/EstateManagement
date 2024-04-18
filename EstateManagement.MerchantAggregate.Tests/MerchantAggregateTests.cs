@@ -297,7 +297,7 @@ namespace EstateManagement.MerchantAggregate.Tests
             Should.Throw<InvalidOperationException>(() => { aggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier); });
         }
 
-        [Fact(Skip = "Not valid until can request additional device")]
+        [Fact]
         public void MerchantAggregate_AddDevice_DuplicateDevice_ErrorThrown(){
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
@@ -643,7 +643,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_RemoveOperator_OperatorIsRemvoed()
+        public void MerchantAggregate_RemoveOperator_OperatorIsRemoved()
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
@@ -661,7 +661,7 @@ namespace EstateManagement.MerchantAggregate.Tests
         }
 
         [Fact]
-        public void MerchantAggregate_Remove_MerchantNotCreated_ErrorThrown()
+        public void MerchantAggregate_RemoveOperator_MerchantNotCreated_ErrorThrown()
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
 
@@ -675,6 +675,43 @@ namespace EstateManagement.MerchantAggregate.Tests
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
             
             Should.Throw<InvalidOperationException>(() => { aggregate.RemoveOperator(TestData.OperatorId); });
+        }
+
+        [Fact]
+        public void MerchantAggregate_RemoveContract_ContractIsRemoved()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            aggregate.AddContract(TestData.CreatedContractAggregate());
+            aggregate.RemoveContract(TestData.ContractId);
+
+            Merchant merchantModel = aggregate.GetMerchant();
+            merchantModel.Contracts.ShouldHaveSingleItem();
+            Contract contractModel = merchantModel.Contracts.Single();
+            contractModel.ContractId.ShouldBe(TestData.ContractId);
+            contractModel.IsDeleted.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void MerchantAggregate_RemoveContract_MerchantNotCreated_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            
+            Should.Throw<InvalidOperationException>(() =>
+            {
+                aggregate.RemoveContract(TestData.ContractId);
+            });
+        }
+
+        [Fact]
+        public void MerchantAggregate_RemoveContract_MerchantDoesNotHaveContract_ErrorThrown()
+        {
+            MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
+            aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+            Should.Throw<InvalidOperationException>(() =>
+                                                    {
+                                                        aggregate.RemoveContract(TestData.ContractId);
+                                                    });
         }
     }
 }

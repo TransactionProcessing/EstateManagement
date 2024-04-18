@@ -25,6 +25,7 @@
         Task AddMerchantContact(MerchantCommands.AddMerchantContactCommand command, CancellationToken cancellationToken);
         Task UpdateMerchantContact(MerchantCommands.UpdateMerchantContactCommand command, CancellationToken cancellationToken);
         Task RemoveOperatorFromMerchant(MerchantCommands.RemoveOperatorFromMerchantCommand command, CancellationToken cancellationToken);
+        Task RemoveContractFromMerchant(MerchantCommands.RemoveMerchantContractCommand command, CancellationToken cancellationToken);
 
         #endregion
     }

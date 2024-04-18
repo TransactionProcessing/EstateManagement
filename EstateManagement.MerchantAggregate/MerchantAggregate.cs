@@ -220,6 +220,15 @@
             aggregate.ApplyAndAppend(merchantReferenceAllocatedEvent);
         }
 
+        public static void RemoveContract(this MerchantAggregate aggregate, Guid contractId){
+            aggregate.EnsureMerchantHasBeenCreated();
+            aggregate.EnsureContractHasBeenAdded(contractId);
+
+            ContractRemovedFromMerchantEvent contractRemovedFromMerchantEvent = new ContractRemovedFromMerchantEvent(aggregate.AggregateId, aggregate.EstateId, contractId);
+
+            aggregate.ApplyAndAppend(contractRemovedFromMerchantEvent);
+        }
+
         public static void AddContract(this MerchantAggregate aggregate, ContractAggregate contractAggregate){
             aggregate.EnsureMerchantHasBeenCreated();
             aggregate.EnsureContractHasNotAlreadyBeenAdded(contractAggregate.AggregateId);
@@ -410,11 +419,12 @@
 
             if (aggregate.Contracts.Any()){
                 merchantModel.Contracts = new List<Models.Merchant.Contract>();
-                foreach (Contract aggregateContract in aggregate.Contracts){
+                foreach (KeyValuePair<Guid, Contract> aggregateContract in aggregate.Contracts){
                     Models.Merchant.Contract contract = new Models.Merchant.Contract();
-                    contract.ContractId = aggregateContract.ContractId;
-                    aggregateContract.ContractProducts.ForEach(cp => contract.ContractProducts.Add(cp));
-                    merchantModel.Contracts.Add(contract);
+                    contract.ContractId = aggregateContract.Key;
+                    contract.IsDeleted = aggregateContract.Value.IsDeleted;
+                    aggregateContract.Value.ContractProducts.ForEach(cp => contract.ContractProducts.Add(cp));
+                    merchantModel.Contracts.Add(contract);    
                 }
             }
 
@@ -561,9 +571,17 @@
 
         private static void EnsureContractHasNotAlreadyBeenAdded(this MerchantAggregate aggregate, Guid contractId)
         {
-            if (aggregate.Contracts.Any(o => o.ContractId == contractId))
+            if (aggregate.Contracts.ContainsKey(contractId))
             {
                 throw new InvalidOperationException($"Contract {contractId} has already been assigned to merchant");
+            }
+        }
+
+        private static void EnsureContractHasBeenAdded(this MerchantAggregate aggregate, Guid contractId)
+        {
+            if (aggregate.Contracts.ContainsKey(contractId) == false)
+            {
+                throw new InvalidOperationException($"Contract {contractId} has not been assigned to merchant");
             }
         }
 
@@ -753,12 +771,22 @@
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, ContractAddedToMerchantEvent domainEvent){
-            aggregate.Contracts.Add(new Contract(domainEvent.ContractId));
+            aggregate.Contracts.Add(domainEvent.ContractId, new Contract());
+        }
+
+        public static void PlayEvent(this MerchantAggregate aggregate, ContractRemovedFromMerchantEvent domainEvent)
+        {
+            KeyValuePair<Guid, Contract> contract = aggregate.Contracts.Single(c => c.Key == domainEvent.ContractId);
+            
+            aggregate.Contracts[domainEvent.ContractId] = contract.Value with{
+                                                                                 IsDeleted = true
+                                                                             };
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, ContractProductAddedToMerchantEvent domainEvent){
-            Contract contract = aggregate.Contracts.Single(c => c.ContractId == domainEvent.ContractId);
-            contract.AddContractProduct(domainEvent.ContractProductId);
+            KeyValuePair<Guid, Contract> contract = aggregate.Contracts.Single(c => c.Key == domainEvent.ContractId);
+            contract.Value.ContractProducts.Add(domainEvent.ContractProductId);
+            aggregate.Contracts[domainEvent.ContractId] = contract.Value;
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, DeviceSwappedForMerchantEvent domainEvent)
@@ -792,7 +820,7 @@
 
         internal readonly List<SecurityUser> SecurityUsers;
 
-        internal readonly List<Contract> Contracts;
+        internal readonly Dictionary<Guid, Contract> Contracts;
 
         #endregion
 
@@ -810,7 +838,7 @@
             this.Operators = new Dictionary<Guid, Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, Device>();
-            this.Contracts = new List<Contract>();
+            this.Contracts = new Dictionary<Guid, Contract>();
         }
 
         /// <summary>
@@ -827,7 +855,7 @@
             this.Operators = new Dictionary<Guid, Operator>();
             this.SecurityUsers = new List<SecurityUser>();
             this.Devices = new Dictionary<Guid, Device>();
-            this.Contracts = new List<Contract>();
+            this.Contracts = new Dictionary<Guid, Contract>();
         }
 
         #endregion
