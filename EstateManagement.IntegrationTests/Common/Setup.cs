@@ -26,11 +26,6 @@ namespace EstateManagement.IntegrationTests.Common
             dockerHelper.DockerCredentials = Setup.DockerCredentials;
             dockerHelper.SqlServerContainerName = "sharedsqlserver";
 
-            //await Retry.For(async () => {
-            //                    Setup.DatabaseServerNetwork = dockerHelper.SetupTestNetwork("sharednetwork", true);
-            //                    Setup.DatabaseServerContainer = await dockerHelper.SetupSqlServerContainer(Setup.DatabaseServerNetwork);
-            //                }, TimeSpan.FromSeconds(60));
-
             lock (Setup.padLock)
             {
                 Setup.DatabaseServerNetwork = dockerHelper.SetupTestNetwork("sharednetwork");
