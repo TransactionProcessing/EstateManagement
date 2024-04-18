@@ -53,7 +53,7 @@ namespace EstateManagement.IntegrationTests.Common
             this.TestingContext.DockerHelper.SetImageDetails(ContainerType.EstateManagement, ("estatemanagement", false));
 
             this.TestingContext.Logger = logger;
-            this.TestingContext.Logger.LogInformation("About to Start Containers for Scenario Run");
+            this.TestingContext.Logger.LogInformation($"About to Start Containers for Scenario Run [{this.ScenarioContext.ScenarioInfo.Title}]");
             await this.TestingContext.DockerHelper.StartContainersForScenarioRun(scenarioName, dockerServices).ConfigureAwait(false);
             this.TestingContext.Logger.LogInformation("Containers for Scenario Run Started");
         }
@@ -64,7 +64,8 @@ namespace EstateManagement.IntegrationTests.Common
 
             this.TestingContext.Logger.LogInformation("About to Stop Containers for Scenario Run");
             await this.TestingContext.DockerHelper.StopContainersForScenarioRun(dockerSharedServices).ConfigureAwait(false);
-            this.TestingContext.Logger.LogInformation("Containers for Scenario Run Stopped");
+            this.TestingContext.Logger.LogInformation($"Containers for Scenario Run [{this.ScenarioContext.ScenarioInfo.Title}] Stopped Status is [{this.ScenarioContext.ScenarioExecutionStatus}]");
+            
         }
     }
 }
