@@ -72,12 +72,11 @@
             }
         }
 
-        public async Task<AddMerchantDeviceResponse> AddDeviceToMerchant(String accessToken,
+        public async Task AddDeviceToMerchant(String accessToken,
                                                                          Guid estateId,
                                                                          Guid merchantId,
                                                                          AddMerchantDeviceRequest addMerchantDeviceRequest,
                                                                          CancellationToken cancellationToken){
-            AddMerchantDeviceResponse response = null;
 
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices");
 
@@ -93,10 +92,8 @@
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
+                await this.HandleResponse(httpResponse, cancellationToken);
 
-                // call was successful so now deserialise the body to the response object
-                response = JsonConvert.DeserializeObject<AddMerchantDeviceResponse>(content);
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
@@ -104,8 +101,6 @@
 
                 throw exception;
             }
-
-            return response;
         }
 
         public async Task AddMerchantAddress(String accessToken, Guid estateId, Guid merchantId, Address newAddressRequest, CancellationToken cancellationToken){
@@ -238,12 +233,11 @@
             return response;
         }
 
-        public async Task<AssignOperatorResponse> AssignOperatorToMerchant(String accessToken,
+        public async Task AssignOperatorToMerchant(String accessToken,
                                                                            Guid estateId,
                                                                            Guid merchantId,
                                                                            AssignOperatorRequest assignOperatorRequest,
                                                                            CancellationToken cancellationToken){
-            AssignOperatorResponse response = null;
 
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/operators");
 
@@ -259,10 +253,7 @@
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
-
-                // call was successful so now deserialise the body to the response object
-                response = JsonConvert.DeserializeObject<AssignOperatorResponse>(content);
+                await this.HandleResponse(httpResponse, cancellationToken);
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
@@ -271,8 +262,6 @@
 
                 throw exception;
             }
-
-            return response;
         }
 
         public async Task RemoveOperatorFromMerchant(String accessToken, Guid estateId, Guid merchantId, Guid operatorId, CancellationToken cancellationToken){
@@ -959,12 +948,11 @@
             }
         }
 
-        public async Task<SwapMerchantDeviceResponse> SwapDeviceForMerchant(String accessToken,
+        public async Task SwapDeviceForMerchant(String accessToken,
                                                                             Guid estateId,
                                                                             Guid merchantId,
                                                                             SwapMerchantDeviceRequest swapMerchantDeviceRequest,
                                                                             CancellationToken cancellationToken){
-            SwapMerchantDeviceResponse response = null;
 
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices");
 
@@ -980,10 +968,7 @@
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
-
-                // call was successful so now deserialise the body to the response object
-                response = JsonConvert.DeserializeObject<SwapMerchantDeviceResponse>(content);
+                await this.HandleResponse(httpResponse, cancellationToken);
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
@@ -991,8 +976,6 @@
 
                 throw exception;
             }
-
-            return response;
         }
 
         public async Task UpdateMerchant(String accessToken, Guid estateId, Guid merchantId, UpdateMerchantRequest updateMerchantRequest, CancellationToken cancellationToken){
