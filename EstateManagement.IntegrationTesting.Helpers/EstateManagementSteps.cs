@@ -218,18 +218,14 @@ public class EstateManagementSteps{
 
         List<(EstateDetails estate, Guid merchantId, Guid operatorId)> merchantOperators = new();
         foreach ((EstateDetails estate, Guid merchantId, AssignOperatorRequest request) request in requests){
-            AssignOperatorResponse assignOperatorResponse = await this.EstateClient
+            await this.EstateClient
                                                                       .AssignOperatorToMerchant(accessToken,
                                                                                                 request.estate.EstateId,
                                                                                                 request.merchantId,
                                                                                                 request.request,
                                                                                                 CancellationToken.None).ConfigureAwait(false);
-
-            assignOperatorResponse.EstateId.ShouldBe(request.estate.EstateId);
-            assignOperatorResponse.MerchantId.ShouldBe(request.merchantId);
-            assignOperatorResponse.OperatorId.ShouldBe(request.request.OperatorId);
-
-            merchantOperators.Add((request.estate, assignOperatorResponse.MerchantId, assignOperatorResponse.OperatorId));
+            
+            merchantOperators.Add((request.estate, request.merchantId, request.request.OperatorId));
         }
 
         foreach (var m in merchantOperators){
@@ -250,11 +246,7 @@ public class EstateManagementSteps{
         List<(EstateDetails, MerchantResponse, String)> result = new();
         List<(EstateDetails estate, Guid merchantId, Guid deviceId)> merchantDevices = new();
         foreach ((EstateDetails, Guid, AddMerchantDeviceRequest) request in requests){
-            AddMerchantDeviceResponse addMerchantDeviceResponse = await this.EstateClient.AddDeviceToMerchant(accessToken, request.Item1.EstateId, request.Item2, request.Item3, CancellationToken.None).ConfigureAwait(false);
-
-            addMerchantDeviceResponse.EstateId.ShouldBe(request.Item1.EstateId);
-            addMerchantDeviceResponse.MerchantId.ShouldBe(request.Item2);
-            addMerchantDeviceResponse.DeviceId.ShouldNotBe(Guid.Empty);
+            await this.EstateClient.AddDeviceToMerchant(accessToken, request.Item1.EstateId, request.Item2, request.Item3, CancellationToken.None).ConfigureAwait(false);
         }
 
         foreach (var m in merchantDevices){
@@ -615,16 +607,12 @@ public class EstateManagementSteps{
 
     public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(String accessToken, List<(EstateDetails, Guid, SwapMerchantDeviceRequest)> requests){
         foreach ((EstateDetails, Guid, SwapMerchantDeviceRequest) request in requests){
-            SwapMerchantDeviceResponse swapMerchantDeviceResponse = await this.EstateClient
+            await this.EstateClient
                                                                               .SwapDeviceForMerchant(accessToken,
                                                                                                      request.Item1.EstateId,
                                                                                                      request.Item2,
                                                                                                      request.Item3,
                                                                                                      CancellationToken.None).ConfigureAwait(false);
-
-            swapMerchantDeviceResponse.EstateId.ShouldBe(request.Item1.EstateId);
-            swapMerchantDeviceResponse.MerchantId.ShouldBe(request.Item2);
-            swapMerchantDeviceResponse.DeviceId.ShouldNotBe(Guid.Empty);
 
             //this.TestingContext.Logger.LogInformation($"Device {newDeviceIdentifier} assigned to Merchant {merchantName}");
 

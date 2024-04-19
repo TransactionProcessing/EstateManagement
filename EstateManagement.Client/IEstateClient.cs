@@ -25,11 +25,11 @@
                                    AddMerchantContractRequest request,
                                    CancellationToken cancellationToken);
 
-        Task<AddMerchantDeviceResponse> AddDeviceToMerchant(String accessToken,
-                                                            Guid estateId,
-                                                            Guid merchantId,
-                                                            AddMerchantDeviceRequest request,
-                                                            CancellationToken cancellationToken);
+        Task AddDeviceToMerchant(String accessToken,
+                                 Guid estateId,
+                                 Guid merchantId,
+                                 AddMerchantDeviceRequest request,
+                                 CancellationToken cancellationToken);
 
         Task<AddProductToContractResponse> AddProductToContract(String accessToken,
                                                                 Guid estateId,
@@ -45,7 +45,7 @@
                                                                                                       addTransactionFeeForProductToContractRequest,
                                                                                                   CancellationToken cancellationToken);
 
-        Task<AssignOperatorResponse> AssignOperatorToMerchant(String accessToken,
+        Task AssignOperatorToMerchant(String accessToken,
                                                               Guid estateId,
                                                               Guid merchantId,
                                                               AssignOperatorRequest assignOperatorRequest,
@@ -163,7 +163,7 @@
                                            SetSettlementScheduleRequest setSettlementScheduleRequest,
                                            CancellationToken cancellationToken);
 
-        Task<SwapMerchantDeviceResponse> SwapDeviceForMerchant(String accessToken,
+        Task SwapDeviceForMerchant(String accessToken,
                                                                Guid estateId,
                                                                Guid merchantId,
                                                                SwapMerchantDeviceRequest request,
