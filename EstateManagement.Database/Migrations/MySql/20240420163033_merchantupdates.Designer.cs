@@ -4,47 +4,50 @@ using EstateManagement.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace EstateManagement.Database.Migrations.SqlServer
+namespace EstateManagement.Database.Migrations.MySql
 {
-    [DbContext(typeof(EstateManagementSqlServerContext))]
-    partial class EstateManagementSqlServerContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(EstateManagementMySqlContext))]
+    [Migration("20240420163033_merchantupdates")]
+    partial class merchantupdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Calendar", b =>
                 {
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("DayOfWeek")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("DayOfWeekNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("DayOfWeekShort")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("MonthNameLong")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("MonthNameShort")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("MonthNumber")
                         .HasColumnType("int");
@@ -54,14 +57,14 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     b.Property<string>("WeekNumberString")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.Property<string>("YearWeekNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Date");
 
@@ -74,20 +77,20 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("OperatorId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ContractId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("ContractReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContractReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ContractReportingId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("EstateReportingId", "OperatorId", "ContractId");
 
@@ -100,27 +103,27 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("ContractProductReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContractProductReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ContractProductReportingId"));
 
                     b.Property<string>("DisplayText")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("ProductType")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Value")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("ContractReportingId", "ProductId");
 
@@ -133,26 +136,26 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("TransactionFeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("CalculationType")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("FeeType")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("TransactionFeeReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionFeeReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransactionFeeReportingId"));
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,4)");
@@ -168,20 +171,20 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstateReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("EstateReportingId"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("EstateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("EstateReportingId");
 
@@ -197,23 +200,23 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("OperatorId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("EstateOperatorReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstateOperatorReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("EstateOperatorReportingId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("RequireCustomMerchantNumber")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("RequireCustomTerminalNumber")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("EstateReportingId", "OperatorId");
 
@@ -223,17 +226,17 @@ namespace EstateManagement.Database.Migrations.SqlServer
             modelBuilder.Entity("EstateManagement.Database.Entities.EstateSecurityUser", b =>
                 {
                     b.Property<Guid>("SecurityUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("SecurityUserId", "EstateReportingId");
 
@@ -246,38 +249,38 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("FileReportingId"));
 
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("FileId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("FileImportLogReportingId")
                         .HasColumnType("int");
 
                     b.Property<string>("FileLocation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("FileProfileId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("FileReceivedDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("FileReceivedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MerchantReportingId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("FileReportingId");
 
@@ -296,16 +299,16 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileImportLogReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("FileImportLogReportingId"));
 
                     b.Property<Guid>("FileImportLogId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("ImportLogDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("ImportLogDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("EstateReportingId", "FileImportLogReportingId");
 
@@ -325,26 +328,26 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     b.Property<string>("FilePath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("FileProfileId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("FileUploadedDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("FileUploadedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("MerchantReportingId")
                         .HasColumnType("int");
 
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("FileImportLogReportingId", "FileReportingId");
 
@@ -361,18 +364,17 @@ namespace EstateManagement.Database.Migrations.SqlServer
 
                     b.Property<string>("FileLineData")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("TransactionReportingId")
                         .HasColumnType("int");
 
-                    b.HasKey("FileReportingId", "LineNumber");
-
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("FileReportingId", "LineNumber"));
+                    b.HasKey("FileReportingId", "LineNumber")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.HasIndex("TransactionReportingId");
 
@@ -383,30 +385,28 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 {
                     b.Property<Guid>("FloatId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ContractId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("EstateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
-                    b.HasKey("FloatId");
+                    b.HasKey("FloatId")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("FloatId"), false);
-
-                    b.HasIndex("CreatedDate");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CreatedDate"));
+                    b.HasIndex("CreatedDate")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("Floats");
                 });
@@ -415,34 +415,32 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 {
                     b.Property<Guid>("EventId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("ActivityDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("ActivityDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("CostPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("CreditOrDebit")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("FloatId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
-                    b.HasKey("EventId");
+                    b.HasKey("EventId")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("EventId"), false);
-
-                    b.HasIndex("ActivityDate");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("ActivityDate"));
+                    b.HasIndex("ActivityDate")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("FloatActivity");
                 });
@@ -456,29 +454,29 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MerchantReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MerchantReportingId"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("LastSaleDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("LastSaleDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("LastStatementGenerated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("MerchantId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("SettlementSchedule")
                         .HasColumnType("int");
@@ -497,35 +495,35 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("AddressId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("AddressLine1")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("AddressLine2")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("AddressLine3")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("AddressLine4")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Region")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Town")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("MerchantReportingId", "AddressId");
 
@@ -538,20 +536,20 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("ContactId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("MerchantReportingId", "ContactId");
 
@@ -567,7 +565,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("MerchantReportingId", "ContractReportingId");
 
@@ -580,14 +578,14 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("DeviceId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("DeviceIdentifier")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("MerchantReportingId", "DeviceId");
 
@@ -600,20 +598,20 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("OperatorId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("MerchantNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("TerminalNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("MerchantReportingId", "OperatorId");
 
@@ -626,14 +624,14 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("SecurityUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("MerchantReportingId", "SecurityUserId");
 
@@ -652,16 +650,16 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<decimal>("CalculatedValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("FeeCalculatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("FeeValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<bool>("IsSettled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MerchantReportingId")
                         .HasColumnType("int");
@@ -679,25 +677,25 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransactionReportingId"));
 
                     b.Property<string>("DeviceIdentifier")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsAuthorised")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MerchantReportingId")
                         .HasColumnType("int");
 
                     b.Property<string>("ResponseCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ResponseMessage")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("TransactionCount")
                         .HasColumnType("int");
@@ -706,29 +704,26 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("date");
 
                     b.Property<DateTime>("TransactionDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<TimeSpan>("TransactionTime")
-                        .HasColumnType("time");
+                        .HasColumnType("time(6)");
 
                     b.Property<decimal>("TransactionValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("TransactionReportingId");
+                    b.HasKey("TransactionReportingId")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("TransactionReportingId"), false);
-
-                    b.HasIndex("TransactionDate", "MerchantReportingId");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("TransactionDate", "MerchantReportingId"));
+                    b.HasIndex("TransactionDate", "MerchantReportingId")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.HasIndex("TransactionId", "MerchantReportingId")
-                        .IsUnique();
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("TransactionId", "MerchantReportingId"), false);
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("reconciliation");
                 });
@@ -739,11 +734,11 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResponseCode"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ResponseCode"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("ResponseCode");
 
@@ -756,41 +751,38 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SettlementReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SettlementReportingId"));
 
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MerchantReportingId")
                         .HasColumnType("int");
 
                     b.Property<bool>("ProcessingStarted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("ProcessingStartedDateTIme")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("SettlementDate")
                         .HasColumnType("date");
 
                     b.Property<Guid>("SettlementId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
-                    b.HasKey("SettlementReportingId");
-
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("SettlementReportingId"), false);
+                    b.HasKey("SettlementReportingId")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("EstateReportingId", "SettlementId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
 
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("EstateReportingId", "SettlementId"), false);
-
-                    b.HasIndex("SettlementDate", "EstateReportingId");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("SettlementDate", "EstateReportingId"));
+                    b.HasIndex("SettlementDate", "EstateReportingId")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("settlement");
                 });
@@ -801,33 +793,31 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<Guid>("StatementId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("StatementCreatedDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("StatementCreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("StatementGeneratedDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("StatementGeneratedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("StatementReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StatementReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("StatementReportingId"));
 
-                    b.HasKey("MerchantReportingId", "StatementId");
+                    b.HasKey("MerchantReportingId", "StatementId")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("MerchantReportingId", "StatementId"), false);
-
-                    b.HasIndex("MerchantReportingId", "StatementGeneratedDate");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("MerchantReportingId", "StatementGeneratedDate"));
+                    b.HasIndex("MerchantReportingId", "StatementGeneratedDate")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("statementheader");
                 });
@@ -841,7 +831,7 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ActivityDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("ActivityType")
                         .HasColumnType("int");
@@ -850,13 +840,13 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("date");
 
                     b.Property<string>("ActivityDescription")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("InAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("OutAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("StatementReportingId", "TransactionReportingId", "ActivityDateTime", "ActivityType");
 
@@ -869,10 +859,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionReportingId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransactionReportingId"));
 
                     b.Property<string>("AuthorisationCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("ContractProductReportingId")
                         .HasColumnType("int");
@@ -881,70 +871,66 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<string>("DeviceIdentifier")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("EstateOperatorReportingId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsAuthorised")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MerchantReportingId")
                         .HasColumnType("int");
 
                     b.Property<string>("ResponseCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ResponseMessage")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("TransactionAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("TransactionDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("TransactionNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("TransactionSource")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("TransactionTime")
-                        .HasColumnType("time");
+                        .HasColumnType("time(6)");
 
                     b.Property<string>("TransactionType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
-                    b.HasKey("TransactionReportingId");
-
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("TransactionReportingId"), false);
+                    b.HasKey("TransactionReportingId")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("TransactionId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
 
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("TransactionId"), false);
-
-                    b.HasIndex("TransactionDate", "MerchantReportingId");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("TransactionDate", "MerchantReportingId"));
+                    b.HasIndex("TransactionDate", "MerchantReportingId")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.HasIndex("TransactionId", "MerchantReportingId")
-                        .IsUnique();
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("TransactionId", "MerchantReportingId"), false);
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("transaction");
                 });
@@ -955,10 +941,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<string>("Amount")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("CustomerAccountNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("TransactionReportingId");
 
@@ -979,60 +965,60 @@ namespace EstateManagement.Database.Migrations.SqlServer
                 {
                     b.Property<Guid>("VoucherId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("ExpiryDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("GenerateDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("GenerateDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsGenerated")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsIssued")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsRedeemed")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("IssuedDate")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("IssuedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("OperatorIdentifier")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RecipientEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RecipientMobile")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("RedeemedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("RedeemedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("TransactionReportingId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("VoucherCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("VoucherId");
 
@@ -1046,54 +1032,54 @@ namespace EstateManagement.Database.Migrations.SqlServer
             modelBuilder.Entity("EstateManagement.Database.ViewEntities.SettlementView", b =>
                 {
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("CalculatedValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("DayOfWeek")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("EstateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("FeeDescription")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsSettled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<Guid>("MerchantId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("MerchantName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Month")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("MonthNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("OperatorIdentifier")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("SettlementDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("SettlementId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("WeekNumber")
                         .HasColumnType("int");

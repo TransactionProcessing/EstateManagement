@@ -875,13 +875,15 @@ await this.FeatureBackgroundAsync();
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Update Merchant")]
+        [NUnit.Framework.CategoryAttribute("PRTest")]
         public async System.Threading.Tasks.Task UpdateMerchant()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Update Merchant", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 180
- this.ScenarioInitialize(scenarioInfo);
+#line 181
+this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
             {
@@ -913,7 +915,7 @@ await this.FeatureBackgroundAsync();
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1",
                             "Weekly"});
-#line 181
+#line 182
  await testRunner.WhenAsync("I create the following merchants", ((string)(null)), table68, "When ");
 #line hidden
                 Reqnroll.Table table69 = new Reqnroll.Table(new string[] {
@@ -928,7 +930,7 @@ await this.FeatureBackgroundAsync();
                             "00000001",
                             "10000001",
                             "Test Estate 1"});
-#line 184
+#line 185
  await testRunner.WhenAsync("I assign the following operator to the merchants", ((string)(null)), table69, "When ");
 #line hidden
                 Reqnroll.Table table70 = new Reqnroll.Table(new string[] {
@@ -945,7 +947,7 @@ await this.FeatureBackgroundAsync();
                             "User1",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 187
+#line 188
  await testRunner.WhenAsync("I create the following security users", ((string)(null)), table70, "When ");
 #line hidden
                 Reqnroll.Table table71 = new Reqnroll.Table(new string[] {
@@ -956,7 +958,7 @@ await this.FeatureBackgroundAsync();
                             "TestDevice1",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 190
+#line 191
  await testRunner.WhenAsync("I add the following devices to the merchant", ((string)(null)), table71, "When ");
 #line hidden
                 Reqnroll.Table table72 = new Reqnroll.Table(new string[] {
@@ -967,7 +969,7 @@ await this.FeatureBackgroundAsync();
                             "Test Estate 1",
                             "Test Merchant 1",
                             "Safaricom Contract"});
-#line 193
+#line 194
  await testRunner.WhenAsync("I add the following contracts to the following merchants", ((string)(null)), table72, "When ");
 #line hidden
                 Reqnroll.Table table73 = new Reqnroll.Table(new string[] {
@@ -980,7 +982,7 @@ await this.FeatureBackgroundAsync();
                             "Monthly",
                             "Test Estate 1",
                             "Test Merchant 1"});
-#line 196
+#line 197
  await testRunner.WhenAsync("I update the merchants with the following details", ((string)(null)), table73, "When ");
 #line hidden
                 Reqnroll.Table table74 = new Reqnroll.Table(new string[] {
@@ -1003,7 +1005,7 @@ await this.FeatureBackgroundAsync();
                             "United KingdomU",
                             "Test Estate 1",
                             "Test Merchant 1"});
-#line 199
+#line 200
  await testRunner.WhenAsync("I update the merchants address with the following details", ((string)(null)), table74, "When ");
 #line hidden
                 Reqnroll.Table table75 = new Reqnroll.Table(new string[] {
@@ -1018,7 +1020,7 @@ await this.FeatureBackgroundAsync();
                             "12345678",
                             "Test Estate 1",
                             "Test Merchant 1"});
-#line 202
+#line 203
  await testRunner.WhenAsync("I update the merchants contact with the following details", ((string)(null)), table75, "When ");
 #line hidden
                 Reqnroll.Table table76 = new Reqnroll.Table(new string[] {
@@ -1031,14 +1033,14 @@ await this.FeatureBackgroundAsync();
                             "TestDevice2",
                             "Test Merchant 1",
                             "Test Estate 1"});
-#line 205
+#line 206
  await testRunner.WhenAsync("I swap the merchant device the device is swapped", ((string)(null)), table76, "When ");
 #line hidden
-#line 208
+#line 209
  await testRunner.WhenAsync("I remove the contract \'Safaricom Contract\' from merchant \'Test Merchant 1\' on \'Te" +
                         "st Estate 1\' the contract is removed", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 209
+#line 210
  await testRunner.WhenAsync("I remove the operator \'Test Operator 1\' from merchant \'Test Merchant 1\' on \'Test " +
                         "Estate 1\' the operator is removed", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
