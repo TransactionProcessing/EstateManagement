@@ -585,7 +585,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         {
             this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
 
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithOperator);
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithEverything(SettlementSchedule.Immediate));
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             Should.NotThrow(async () => { await this.DomainService.RemoveContractFromMerchant(TestData.RemoveMerchantContractCommand, CancellationToken.None); });
