@@ -289,6 +289,31 @@
             }
         }
 
+        public async Task RemoveContractFromMerchant(String accessToken, Guid estateId, Guid merchantId, Guid contractId, CancellationToken cancellationToken){
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contracts/{contractId}");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.DeleteAsync(requestUri, cancellationToken);
+
+                // Process the response
+                await this.HandleResponse(httpResponse, cancellationToken);
+
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error removing contract Id {contractId} from merchant Id {merchantId} for estate {estateId}.",
+                                                    ex);
+
+                throw exception;
+            }
+        }
+
         public async Task<CreateContractResponse> CreateContract(String accessToken,
                                                                  Guid estateId,
                                                                  CreateContractRequest createContractRequest,
@@ -1031,7 +1056,7 @@
         }
 
         public async Task UpdateMerchantContact(String accessToken, Guid estateId, Guid merchantId, Guid contactId, Contact updatedContactRequest, CancellationToken cancellationToken){
-            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contact/{contactId}");
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contacts/{contactId}");
 
             try{
                 String requestSerialised = JsonConvert.SerializeObject(updatedContactRequest);

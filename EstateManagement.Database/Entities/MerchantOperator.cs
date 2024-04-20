@@ -20,6 +20,8 @@
 
         public String? TerminalNumber { get; set; }
 
+        public Boolean IsDeleted { get; set; }
+
         #endregion
     }
 }

@@ -425,6 +425,40 @@ namespace EstateManagement.IntegrationTests.Shared
             List<ReqnrollExtensions.SettlementFeeDetails> settlementFeeDetailsList = table.Rows.ToSettlementFeeDetails(estateName, merchantName, settlementDateString, this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(this.TestingContext.AccessToken, settlementFeeDetailsList);
         }
+
+        [When("I update the merchants address with the following details")]
+        public async Task WhenIUpdateTheMerchantsAddressWithTheFollowingDetails(DataTable dataTable){
+            List<(EstateDetails, MerchantResponse, Guid, Address)> addressUpdatesList = dataTable.Rows.ToAddressUpdates(this.TestingContext.Estates);
+            await this.EstateManagementSteps.WhenIUpdateTheMerchantsAddressWithTheFollowingDetails(this.TestingContext.AccessToken, addressUpdatesList);
+        }
+
+        [When("I update the merchants contact with the following details")]
+        public async Task WhenIUpdateTheMerchantsContactWithTheFollowingDetails(DataTable dataTable)
+        {
+            List<(EstateDetails, MerchantResponse, Guid, Contact)> contactUpdatesList = dataTable.Rows.ToContactUpdates(this.TestingContext.Estates);
+            await this.EstateManagementSteps.WhenIUpdateTheMerchantsContactWithTheFollowingDetails(this.TestingContext.AccessToken, contactUpdatesList);
+        }
+        
+        [When("I remove the contract {string} from merchant {string} on {string} the contract is removed")]
+        public async Task WhenIRemoveTheContractFromMerchantOnTheContractIsRemoved(string contractName, string merchantName, string estateName)
+        {
+            await this.EstateManagementSteps.WhenIRemoveTheContractFromMerchantOnTheContractIsRemoved(this.TestingContext.AccessToken,
+                                                                                                      this.TestingContext.Estates,
+                                                                                                      estateName,
+                                                                                                      merchantName,
+                                                                                                      contractName);
+        }
+        
+        [When("I remove the operator {string} from merchant {string} on {string} the operator is removed")]
+        public async Task WhenIRemoveTheOperatorFromMerchantOnTheOperatorIsRemoved(string operatorName, string merchantName, string estateName)
+        {
+            await this.EstateManagementSteps.WhenIRemoveTheOperatorFromMerchantOnTheOperatorIsRemoved(this.TestingContext.AccessToken,
+                                                                                                      this.TestingContext.Estates,
+                                                                                                      estateName,
+                                                                                                      merchantName,
+                                                                                                      operatorName);
+        }
+
     }
 
     public static class Extensions

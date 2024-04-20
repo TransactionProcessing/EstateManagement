@@ -53,7 +53,37 @@
         public async Task Handle(IDomainEvent domainEvent,
                                  CancellationToken cancellationToken)
         {
-            await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+            Task t = domainEvent switch{
+                MerchantCreatedEvent de => this.EstateReportingRepository.AddMerchant(de, cancellationToken),
+                MerchantNameUpdatedEvent de => this.EstateReportingRepository.UpdateMerchant(de, cancellationToken),
+                AddressAddedEvent de => this.EstateReportingRepository.AddMerchantAddress(de, cancellationToken),
+                ContactAddedEvent de => this.EstateReportingRepository.AddMerchantContact(de, cancellationToken),
+                SecurityUserAddedToMerchantEvent de => this.EstateReportingRepository.AddMerchantSecurityUser(de, cancellationToken),
+                DeviceAddedToMerchantEvent de => this.EstateReportingRepository.AddMerchantDevice(de, cancellationToken),
+                OperatorAssignedToMerchantEvent de => this.EstateReportingRepository.AddMerchantOperator(de, cancellationToken),
+                SettlementScheduleChangedEvent de => this.EstateReportingRepository.UpdateMerchant(de, cancellationToken),
+                MerchantReferenceAllocatedEvent de => this.EstateReportingRepository.UpdateMerchant(de, cancellationToken),
+                StatementGeneratedEvent de => this.EstateReportingRepository.UpdateMerchant(de, cancellationToken),
+                TransactionHasBeenCompletedEvent de => this.EstateReportingRepository.UpdateMerchant(de, cancellationToken),
+                ContractAddedToMerchantEvent de => this.EstateReportingRepository.AddContractToMerchant(de, cancellationToken),
+                CallbackReceivedEnrichedEvent de => this.HandleSpecificDomainEvent(de, cancellationToken),
+                DeviceSwappedForMerchantEvent de => this.EstateReportingRepository.SwapMerchantDevice(de, cancellationToken),
+                OperatorRemovedFromMerchantEvent de => this.EstateReportingRepository.RemoveOperatorFromMerchant(de, cancellationToken),
+                MerchantAddressLine1UpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de,cancellationToken),
+                MerchantAddressLine2UpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de, cancellationToken),
+                MerchantAddressLine3UpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de, cancellationToken),
+                MerchantAddressLine4UpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de, cancellationToken),
+                MerchantCountyUpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de, cancellationToken),
+                MerchantRegionUpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de, cancellationToken),
+                MerchantTownUpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de, cancellationToken),
+                MerchantPostalCodeUpdatedEvent de => this.EstateReportingRepository.UpdateMerchantAddress(de, cancellationToken),
+                MerchantContactNameUpdatedEvent de => this.EstateReportingRepository.UpdateMerchantContact(de, cancellationToken),
+                MerchantContactEmailAddressUpdatedEvent de => this.EstateReportingRepository.UpdateMerchantContact(de, cancellationToken),
+                MerchantContactPhoneNumberUpdatedEvent de => this.EstateReportingRepository.UpdateMerchantContact(de, cancellationToken),
+                _ => null
+            };
+            if (t != null)
+                await t;
         }
 
         private async Task HandleSpecificDomainEvent(CallbackReceivedEnrichedEvent domainEvent,
@@ -80,103 +110,9 @@
                 await this.Mediator.Send(command, cancellationToken);
             }
         }
-        /// <summary>
-        /// Handles the specific domain event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(MerchantCreatedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddMerchant(domainEvent, cancellationToken);
-        }
-
-        private async Task HandleSpecificDomainEvent(MerchantNameUpdatedEvent domainEvent, CancellationToken cancellationToken){
-            await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);
-        }
-
-        /// <summary>
-        /// Handles the specific domain event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(AddressAddedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddMerchantAddress(domainEvent, cancellationToken);
-        }
-
-        /// <summary>
-        /// Handles the specific domain event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(ContactAddedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddMerchantContact(domainEvent, cancellationToken);
-        }
-
-        /// <summary>
-        /// Handles the specific domain event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(SecurityUserAddedToMerchantEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddMerchantSecurityUser(domainEvent, cancellationToken);
-        }
-
-        /// <summary>
-        /// Handles the specific domain event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(DeviceAddedToMerchantEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddMerchantDevice(domainEvent, cancellationToken);
-        }
-
-        /// <summary>
-        /// Handles the specific domain event.
-        /// </summary>
-        /// <param name="domainEvent">The domain event.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(OperatorAssignedToMerchantEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.AddMerchantOperator(domainEvent, cancellationToken);
-        }
         
-        private async Task HandleSpecificDomainEvent(SettlementScheduleChangedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);
-        }
-
-        private async Task HandleSpecificDomainEvent(MerchantReferenceAllocatedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);
-        }
-
-        private async Task HandleSpecificDomainEvent(StatementGeneratedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);
-        }
-
-        private async Task HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            await this.EstateReportingRepository.UpdateMerchant(domainEvent, cancellationToken);
-        }
-
-        private async Task HandleSpecificDomainEvent(ContractAddedToMerchantEvent domainEvent, CancellationToken cancellationToken){
-            await this.EstateReportingRepository.AddContractToMerchant(domainEvent, cancellationToken);
-        }
+        
+        
 
         #endregion
     }

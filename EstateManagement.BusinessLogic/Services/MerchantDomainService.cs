@@ -361,8 +361,9 @@
 
             validateResults.merchantAggregate.UpdateContact(command.ContactId,
                                                             command.RequestDto.ContactName,
-                                                         command.RequestDto.PhoneNumber,
-                                                         command.RequestDto.EmailAddress);
+                                                            command.RequestDto.EmailAddress,
+                                                         command.RequestDto.PhoneNumber
+                                                         );
 
             await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
         }
@@ -378,7 +379,7 @@
         public async Task RemoveContractFromMerchant(MerchantCommands.RemoveMerchantContractCommand command, CancellationToken cancellationToken){
             (MerchantAggregate merchantAggregate, EstateAggregate estateAggregate) validateResults = await this.ValidateEstateAndMerchant(command.EstateId, command.MerchantId, cancellationToken);
 
-            //validateResults.merchantAggregate.RemoveOperator(command.OperatorId);
+            validateResults.merchantAggregate.RemoveContract(command.ContractId);
 
             await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
         }

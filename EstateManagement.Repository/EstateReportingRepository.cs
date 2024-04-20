@@ -397,6 +397,23 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
+    public async Task SwapMerchantDevice(DeviceSwappedForMerchantEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Merchant merchant = await this.LoadMerchant(context, domainEvent, cancellationToken);
+
+        MerchantDevice device = await context.MerchantDevices.SingleOrDefaultAsync(d => d.DeviceId == domainEvent.DeviceId &&
+                                                                                        d.MerchantReportingId == merchant.MerchantReportingId, cancellationToken);
+
+        if (device == null){
+            throw new NotFoundException($"Device Id {domainEvent.DeviceId} not found for Merchant {domainEvent.MerchantId}");
+        }
+
+        device.DeviceIdentifier = domainEvent.NewDeviceIdentifier;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task AddMerchantOperator(OperatorAssignedToMerchantEvent domainEvent,
                                           CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
@@ -1135,6 +1152,143 @@ public class EstateReportingRepository : IEstateReportingRepository{
         await context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task RemoveOperatorFromMerchant(OperatorRemovedFromMerchantEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Merchant merchant = await this.LoadMerchant(context, domainEvent, cancellationToken);
+
+        MerchantOperator merchantOperator = await context.MerchantOperators.SingleOrDefaultAsync(o => o.OperatorId == domainEvent.OperatorId &&
+                                                                                                      o.MerchantReportingId == merchant.MerchantReportingId,
+                                                                                                 cancellationToken:cancellationToken);
+        merchantOperator.IsDeleted = true;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemoveContractFromMerchant(ContractRemovedFromMerchantEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Merchant merchant = await this.LoadMerchant(context, domainEvent, cancellationToken);
+        Contract contract = await this.LoadContract(context, domainEvent, cancellationToken);
+
+        MerchantContract merchantContract = await context.MerchantContracts.SingleOrDefaultAsync(o => o.ContractReportingId == contract.ContractReportingId &&
+                                                                                                      o.MerchantReportingId == merchant.MerchantReportingId,
+                                                                                                 cancellationToken: cancellationToken);
+        merchantContract.IsDeleted = true;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantAddressLine1UpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+
+        merchantAddress.AddressLine1 = domainEvent.AddressLine1;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantAddressLine2UpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+
+        merchantAddress.AddressLine2 = domainEvent.AddressLine2;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantAddressLine3UpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+        
+        merchantAddress.AddressLine3 = domainEvent.AddressLine3;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantAddressLine4UpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+
+        merchantAddress.AddressLine4 = domainEvent.AddressLine4;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantCountyUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+
+        merchantAddress.Country = domainEvent.Country;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantRegionUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+
+        merchantAddress.Region = domainEvent.Region;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantTownUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+
+        merchantAddress.Town = domainEvent.Town;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantAddress(MerchantPostalCodeUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantAddress merchantAddress = await this.LoadMerchantAddress(context, domainEvent, cancellationToken);
+        
+        merchantAddress.PostalCode = domainEvent.PostalCode;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantContact(MerchantContactNameUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantContact merchantContact = await this.LoadMerchantContact(context, domainEvent, cancellationToken);
+
+        merchantContact.Name = domainEvent.ContactName;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantContact(MerchantContactEmailAddressUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantContact merchantContact = await this.LoadMerchantContact(context, domainEvent, cancellationToken);
+
+        merchantContact.EmailAddress = domainEvent.ContactEmailAddress;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMerchantContact(MerchantContactPhoneNumberUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        MerchantContact merchantContact = await this.LoadMerchantContact(context, domainEvent, cancellationToken);
+
+        merchantContact.PhoneNumber = domainEvent.ContactPhoneNumber;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task AddContractToMerchant(ContractAddedToMerchantEvent domainEvent, CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
 
@@ -1238,6 +1392,35 @@ public class EstateReportingRepository : IEstateReportingRepository{
         }
 
         return merchant;
+    }
+
+    private async Task<MerchantAddress> LoadMerchantAddress(EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken){
+        Merchant merchant = await LoadMerchant(context, domainEvent, cancellationToken);
+
+        Guid addressId = DomainEventHelper.GetAddressId(domainEvent);
+        MerchantAddress merchantAddress = await context.MerchantAddresses.SingleOrDefaultAsync(e => e.MerchantReportingId == merchant.MerchantReportingId &&
+                                                                                                    e.AddressId == addressId, cancellationToken: cancellationToken);
+        if (merchantAddress == null)
+        {
+            throw new NotFoundException($"Merchant Address {addressId} not found with merchant Id {merchant.MerchantId}");
+        }
+
+        return merchantAddress;
+    }
+
+    private async Task<MerchantContact> LoadMerchantContact(EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Merchant merchant = await LoadMerchant(context, domainEvent, cancellationToken);
+
+        Guid contactId = DomainEventHelper.GetContactId(domainEvent);
+        MerchantContact merchantContact = await context.MerchantContacts.SingleOrDefaultAsync(e => e.MerchantReportingId == merchant.MerchantReportingId &&
+                                                                                                    e.ContactId == contactId, cancellationToken: cancellationToken);
+        if (merchantContact == null)
+        {
+            throw new NotFoundException($"Merchant Contact {contactId} not found with merchant Id {merchant.MerchantId}");
+        }
+
+        return merchantContact;
     }
 
     private async Task<Reconciliation> LoadReconcilation(EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken){

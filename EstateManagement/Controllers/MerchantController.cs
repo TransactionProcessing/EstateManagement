@@ -115,7 +115,7 @@
 
         [HttpDelete]
         [Route("{merchantId}/operators/{operatorId}")]
-        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
+        public async Task<IActionResult> RemoveOperator([FromRoute] Guid estateId,
                                                         [FromRoute] Guid merchantId,
                                                         [FromRoute] Guid operatorId,
                                                         CancellationToken cancellationToken)
@@ -187,7 +187,7 @@
             return this.Ok();
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("{merchantId}/contracts/{contractId}")]
         public async Task<IActionResult> RemoveContract([FromRoute] Guid estateId,
                                                      [FromRoute] Guid merchantId,
