@@ -13,6 +13,8 @@ using DataTransferObjects.Requests.Merchant;
 using DataTransferObjects.Requests.Operator;
 using DataTransferObjects.Responses.Contract;
 using DataTransferObjects.Responses.Merchant;
+using Ductus.FluentDocker.Model.Compose;
+using Newtonsoft.Json.Bson;
 using Reqnroll;
 
 public static class ReqnrollExtensions
@@ -111,6 +113,73 @@ public static class ReqnrollExtensions
             result.NumberOfFeesSettled = ReqnrollTableHelper.GetIntValue(tableRow, "NumberOfFeesSettled");
             result.ValueOfFeesSettled = ReqnrollTableHelper.GetDecimalValue(tableRow, "ValueOfFeesSettled");
             result.IsCompleted = ReqnrollTableHelper.GetBooleanValue(tableRow, "IsCompleted");
+        }
+
+        return result;
+    }
+
+    public static List<(EstateDetails, MerchantResponse, Guid, Address)> ToAddressUpdates(this DataTableRows tableRows, List<EstateDetails> estateDetailsList){
+
+        List<(EstateDetails, MerchantResponse, Guid, Address)> result = new ();
+
+        foreach (DataTableRow tableRow in tableRows)
+        {
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
+            
+            foreach (DataTableRow dataTableRow in tableRows){
+
+                String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                MerchantResponse merchant = estateDetails.GetMerchant(merchantName);
+
+                Guid addressId = merchant.Addresses.First().AddressId;
+
+                Address addressUpdateRequest = new Address(){
+                                                                AddressLine1 = ReqnrollTableHelper.GetStringRowValue(tableRow, "AddressLine1"),
+                                                                AddressLine2 = ReqnrollTableHelper.GetStringRowValue(tableRow, "AddressLine2"),
+                                                                AddressLine3 = ReqnrollTableHelper.GetStringRowValue(tableRow, "AddressLine3"),
+                                                                AddressLine4 = ReqnrollTableHelper.GetStringRowValue(tableRow, "AddressLine4"),
+                                                                Town = ReqnrollTableHelper.GetStringRowValue(tableRow, "Town"),
+                                                                Region = ReqnrollTableHelper.GetStringRowValue(tableRow, "Region"),
+                                                                Country = ReqnrollTableHelper.GetStringRowValue(tableRow, "Country"),
+                                                                PostalCode = ReqnrollTableHelper.GetStringRowValue(tableRow, "PostalCode")
+                                                            };
+                result.Add((estateDetails, merchant, addressId,addressUpdateRequest));
+            }
+            
+        }
+
+        return result;
+    }
+
+    public static List<(EstateDetails, MerchantResponse, Guid, Contact)> ToContactUpdates(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
+    {
+
+        List<(EstateDetails, MerchantResponse, Guid, Contact)> result = new();
+
+        foreach (DataTableRow tableRow in tableRows)
+        {
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
+
+            foreach (DataTableRow dataTableRow in tableRows)
+            {
+
+                String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                MerchantResponse merchant = estateDetails.GetMerchant(merchantName);
+
+                Guid contactId = merchant.Contacts.First().ContactId;
+
+                Contact contactUpdateRequest = new Contact()
+                {
+                    ContactName = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContactName"),
+                    EmailAddress = ReqnrollTableHelper.GetStringRowValue(tableRow, "EmailAddress"),
+                    PhoneNumber = ReqnrollTableHelper.GetStringRowValue(tableRow, "PhoneNumber"),
+                };
+                result.Add((estateDetails, merchant, contactId, contactUpdateRequest));
+            }
         }
 
         return result;

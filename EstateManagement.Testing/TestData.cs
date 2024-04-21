@@ -281,6 +281,7 @@
             merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
             merchantAggregate.SetSettlementSchedule(settlementSchedule);
             merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+            merchantAggregate.AddContract(TestData.CreatedContractAggregate());
             return merchantAggregate;
         }
 

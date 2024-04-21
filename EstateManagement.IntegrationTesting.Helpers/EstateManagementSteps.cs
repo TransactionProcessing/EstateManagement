@@ -15,6 +15,8 @@ using DataTransferObjects.Responses.Operator;
 using DataTransferObjects.Responses.Settlement;
 using Shared.IntegrationTesting;
 using Shouldly;
+using AddressResponse = DataTransferObjects.Responses.Merchant.AddressResponse;
+using MerchantContractResponse = DataTransferObjects.Responses.Merchant.MerchantContractResponse;
 using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
 using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
 
@@ -662,7 +664,94 @@ public class EstateManagementSteps{
                         TimeSpan.FromMinutes(2));
     }
 
-    
+    public async Task WhenIRemoveTheContractFromMerchantOnTheContractIsRemoved(String accessToken, List<EstateDetails> estateDetailsList, String estateName, String merchantName, String contractName)
+    {
+        EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+        estateDetails.ShouldNotBeNull();
+        Contract estateContract = estateDetails.GetContract(contractName);
+        estateContract.ShouldNotBeNull();
+        MerchantResponse merchant = estateDetails.GetMerchant(merchantName);
+
+        //MerchantContractResponse? contract = merchant.Contracts.SingleOrDefault(c => c.ContractId == estateContract.ContractId);
+        //contract.ShouldNotBeNull();
+
+        await this.EstateClient.RemoveContractFromMerchant(accessToken, estateDetails.EstateId, merchant.MerchantId, estateContract.ContractId, CancellationToken.None);
+
+        await Retry.For(async () => {
+                            MerchantResponse? merchantResponse = await this.EstateClient.GetMerchant(accessToken, estateDetails.EstateId, merchant.MerchantId, CancellationToken.None);
+                            merchantResponse.ShouldNotBeNull();
+
+                            MerchantContractResponse? contractResponse = merchantResponse.Contracts.SingleOrDefault(c => c.ContractId == estateContract.ContractId);
+                            contractResponse.ShouldNotBeNull();
+                            contractResponse.IsDeleted.ShouldBeTrue();
+                        });
+    }
+
+    public async Task WhenIRemoveTheOperatorFromMerchantOnTheOperatorIsRemoved(String accessToken, List<EstateDetails> estateDetailsList, String estateName, String merchantName, String operatorName)
+    {
+        EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+        estateDetails.ShouldNotBeNull();
+        Guid operatorId = estateDetails.GetOperatorId(operatorName);
+        MerchantResponse merchant = estateDetails.GetMerchant(merchantName);
+
+        //MerchantContractResponse? contract = merchant.Contracts.SingleOrDefault(c => c.ContractId == estateContract.ContractId);
+        //contract.ShouldNotBeNull();
+
+        await this.EstateClient.RemoveOperatorFromMerchant(accessToken, estateDetails.EstateId, merchant.MerchantId, operatorId, CancellationToken.None);
+
+        await Retry.For(async () => {
+                            MerchantResponse? merchantResponse = await this.EstateClient.GetMerchant(accessToken, estateDetails.EstateId, merchant.MerchantId, CancellationToken.None);
+                            merchantResponse.ShouldNotBeNull();
+
+                            MerchantOperatorResponse? operatorResponse = merchantResponse.Operators.SingleOrDefault(c => c.OperatorId == operatorId);
+                            operatorResponse.ShouldNotBeNull();
+                            operatorResponse.IsDeleted.ShouldBeTrue();
+                        });
+    }
+
+    public async Task WhenIUpdateTheMerchantsContactWithTheFollowingDetails(String accessToken, List<(EstateDetails, MerchantResponse, Guid, Contact)> contactUpdatesList){
+        foreach ((EstateDetails, MerchantResponse, Guid, Contact) contactUpdate in contactUpdatesList)
+        {
+            await this.EstateClient.UpdateMerchantContact(accessToken, contactUpdate.Item1.EstateId, contactUpdate.Item2.MerchantId, contactUpdate.Item3, contactUpdate.Item4, CancellationToken.None);
+        }
+
+        foreach ((EstateDetails, MerchantResponse, Guid, Contact) contactVerify in contactUpdatesList)
+        {
+            await Retry.For(async () => {
+                                MerchantResponse? merchant = await this.EstateClient.GetMerchant(accessToken, contactVerify.Item1.EstateId, contactVerify.Item2.MerchantId, CancellationToken.None);
+                                merchant.ShouldNotBeNull();
+
+                                ContactResponse? contact  = merchant.Contacts.First();
+                                contact.ContactEmailAddress.ShouldBe(contactVerify.Item4.EmailAddress);
+                                contact.ContactPhoneNumber.ShouldBe(contactVerify.Item4.PhoneNumber);
+                                contact.ContactName.ShouldBe(contactVerify.Item4.ContactName);
+            });
+        }
+    }
+
+    public async Task WhenIUpdateTheMerchantsAddressWithTheFollowingDetails(String accessToken, List<(EstateDetails, MerchantResponse, Guid, Address)> addressUpdatesList)
+    {
+        foreach ((EstateDetails, MerchantResponse, Guid, Address) addressUpdate in addressUpdatesList){
+            await this.EstateClient.UpdateMerchantAddress(accessToken, addressUpdate.Item1.EstateId, addressUpdate.Item2.MerchantId, addressUpdate.Item3, addressUpdate.Item4, CancellationToken.None);
+        }
+
+        foreach ((EstateDetails, MerchantResponse, Guid, Address) addressVerify in addressUpdatesList){
+            await Retry.For(async () => {
+                                MerchantResponse? merchant = await this.EstateClient.GetMerchant(accessToken, addressVerify.Item1.EstateId, addressVerify.Item2.MerchantId, CancellationToken.None);
+                                merchant.ShouldNotBeNull();
+
+                                AddressResponse? address = merchant.Addresses.First();
+                                address.AddressLine1.ShouldBe(addressVerify.Item4.AddressLine1);
+                                address.AddressLine2.ShouldBe(addressVerify.Item4.AddressLine2);
+                                address.AddressLine3.ShouldBe(addressVerify.Item4.AddressLine3);
+                                address.AddressLine4.ShouldBe(addressVerify.Item4.AddressLine4);
+                                address.Country.ShouldBe(addressVerify.Item4.Country);
+                                address.Region.ShouldBe(addressVerify.Item4.Region);
+                                address.Town.ShouldBe(addressVerify.Item4.Town);
+                                address.PostalCode.ShouldBe(addressVerify.Item4.PostalCode);
+            });
+        }
+    }
 
     public async Task WhenIGetTheEstateSettlementReportForEstateForMerchantWithTheDateTheFollowingFeesAreSettled(String accessToken, List<ReqnrollExtensions.SettlementFeeDetails> settlementFeeDetailsList){
         var settlements = settlementFeeDetailsList.DistinctBy(d => new{

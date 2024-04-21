@@ -10,6 +10,9 @@
         [JsonProperty("contract_id")]
         public Guid ContractId { get; set; }
 
+        [JsonProperty("is_deleted")]
+        public Boolean IsDeleted { get; set; }
+
         [JsonProperty("contract_products")]
         public List<Guid> ContractProducts { get; set; }
 

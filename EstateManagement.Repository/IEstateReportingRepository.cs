@@ -74,6 +74,9 @@
         Task AddMerchantDevice(DeviceAddedToMerchantEvent domainEvent,
                                CancellationToken cancellationToken);
 
+        Task SwapMerchantDevice(DeviceSwappedForMerchantEvent domainEvent,
+                                CancellationToken cancellationToken);
+
         Task AddMerchantOperator(OperatorAssignedToMerchantEvent domainEvent,
                                  CancellationToken cancellationToken);
 
@@ -201,6 +204,26 @@
         Task UpdateVoucherRedemptionDetails(VoucherFullyRedeemedEvent domainEvent,
                                             CancellationToken cancellationToken);
 
+        Task RemoveOperatorFromMerchant(OperatorRemovedFromMerchantEvent domainEvent, CancellationToken cancellationToken);
+
+        Task RemoveContractFromMerchant(ContractRemovedFromMerchantEvent domainEvent, CancellationToken cancellationToken);
+
+        Task UpdateMerchantAddress(MerchantAddressLine1UpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantAddressLine2UpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantAddressLine3UpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantAddressLine4UpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantCountyUpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantRegionUpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantTownUpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantAddress(MerchantPostalCodeUpdatedEvent domainEvent, CancellationToken cancellationToken);
+
+        Task UpdateMerchantContact(MerchantContactNameUpdatedEvent domainEvent, CancellationToken cancellationToken);
+
+        Task UpdateMerchantContact(MerchantContactEmailAddressUpdatedEvent domainEvent, CancellationToken cancellationToken);
+        Task UpdateMerchantContact(MerchantContactPhoneNumberUpdatedEvent domainEvent, CancellationToken cancellationToken);
+
+
+
         #endregion
     }
 
@@ -220,6 +243,9 @@
         public static Guid GetFileImportLogId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FileImportLogId");
 
         public static Guid GetMerchantId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "MerchantId");
+        public static Guid GetAddressId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "AddressId");
+
+        public static Guid GetContactId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "ContactId");
 
         public static T GetProperty<T>(IDomainEvent domainEvent, String propertyName){
             try{

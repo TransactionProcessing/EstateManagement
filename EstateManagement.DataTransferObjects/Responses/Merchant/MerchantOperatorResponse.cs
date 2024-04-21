@@ -45,6 +45,9 @@
         [JsonProperty("terminal_number")]
         public String TerminalNumber { get; set; }
 
+        [JsonProperty("is_deleted")]
+        public Boolean IsDeleted { get; set; }
+
         #endregion
     }
 }

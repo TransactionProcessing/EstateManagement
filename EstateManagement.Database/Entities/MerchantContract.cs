@@ -4,5 +4,6 @@
     {
         public Int32 MerchantReportingId { get; set; }
         public Int32 ContractReportingId { get; set; }
+        public Boolean IsDeleted{ get; set; }
     }
 }

@@ -57,6 +57,12 @@
                                         Guid operatorId,
                                         CancellationToken cancellationToken);
 
+        Task RemoveContractFromMerchant(String accessToken,
+                                        Guid estateId,
+                                        Guid merchantId,
+                                        Guid contractId,
+                                        CancellationToken cancellationToken);
+
         Task<CreateContractResponse> CreateContract(String accessToken,
                                                     Guid estateId,
                                                     CreateContractRequest createContractRequest,

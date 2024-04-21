@@ -179,7 +179,8 @@
                                                                                                                Name = a.Name,
                                                                                                                MerchantNumber = a.MerchantNumber,
                                                                                                                OperatorId = a.OperatorId,
-                                                                                                               TerminalNumber = a.TerminalNumber
+                                                                                                               TerminalNumber = a.TerminalNumber,
+                                                                                                               IsDeleted = a.IsDeleted
                                                                                                            }));
             }
 
@@ -189,6 +190,7 @@
                                                merchantResponse.Contracts.Add(new MerchantContractResponse(){
                                                                                                                 ContractId = mc.ContractId,
                                                                                                                 ContractProducts = mc.ContractProducts,
+                                                                                                                IsDeleted = mc.IsDeleted,
                                                                                                             });
                                            });
             }

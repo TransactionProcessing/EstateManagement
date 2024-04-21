@@ -35,6 +35,10 @@ Background:
 	| Test Estate 1 | Test Operator 1 | True                        | True                        |
 	| Test Estate 2 | Test Operator 1 | True                        | True                        |
 
+	Given I create a contract with the following values
+	| EstateName    | OperatorName    | ContractDescription |
+	| Test Estate 1 | Test Operator 1 | Safaricom Contract |
+
 	Given I have created the following security users
 	| EmailAddress                  | Password | GivenName  | FamilyName | EstateName    |
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |
@@ -173,7 +177,8 @@ Scenario: Get Merchants for Estate
 
 	When I get the merchants for 'Test Estate 2' then 2 merchants will be returned
 
-	Scenario: Update Merchant
+@PRTest
+Scenario: Update Merchant
 	When I create the following merchants
 	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    | SettlementSchedule |
 	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate 1 | Weekly             |
@@ -186,6 +191,21 @@ Scenario: Get Merchants for Estate
 	When I add the following devices to the merchant
 	| DeviceIdentifier | MerchantName    | EstateName    |
 	| TestDevice1      | Test Merchant 1 | Test Estate 1 |
+	When I add the following contracts to the following merchants
+	| EstateName    | MerchantName    | ContractDescription          |
+	| Test Estate 1 | Test Merchant 1 | Safaricom Contract |
 	When I update the merchants with the following details
 	| UpdateMerchantName | SettlementSchedule | EstateName    | MerchantName    |
 	| Update Merchant 1  | Monthly            | Test Estate 1 | Test Merchant 1 |
+	When I update the merchants address with the following details
+	| AddressLine1   | AddressLine2   | AddressLine3   | AddressLine4   | Town     | Region      | Country        | EstateName    | MerchantName    |
+	| Address Line 1U | Address Line 2 | Address Line 3 | Address Line 4 | TestTownU | Test RegionU | United KingdomU | Test Estate 1 | Test Merchant 1 |
+	When I update the merchants contact with the following details
+	| ContactName    | EmailAddress                       | PhoneNumber | EstateName    | MerchantName    |
+	| Test Contact 1U | testcontact1update@merchant1.co.uk | 12345678    | Test Estate 1 | Test Merchant 1 |
+	When I swap the merchant device the device is swapped
+	| OriginalDeviceIdentifier | NewDeviceIdentifier | MerchantName    | EstateName    |
+	| TestDevice1              | TestDevice2         | Test Merchant 1 | Test Estate 1 |
+	When I remove the contract 'Safaricom Contract' from merchant 'Test Merchant 1' on 'Test Estate 1' the contract is removed
+	When I remove the operator 'Test Operator 1' from merchant 'Test Merchant 1' on 'Test Estate 1' the operator is removed
+

@@ -3,6 +3,7 @@ using System;
 using EstateManagement.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -16,8 +17,10 @@ namespace EstateManagement.Database.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Calendar", b =>
                 {
@@ -80,6 +83,8 @@ namespace EstateManagement.Database.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ContractReportingId"));
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -100,6 +105,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("ContractProductReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ContractProductReportingId"));
 
                     b.Property<string>("DisplayText")
                         .IsRequired()
@@ -145,6 +152,8 @@ namespace EstateManagement.Database.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransactionFeeReportingId"));
+
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,4)");
 
@@ -158,6 +167,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("EstateReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("EstateReportingId"));
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime(6)");
@@ -191,6 +202,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("EstateOperatorReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("EstateOperatorReportingId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -232,6 +245,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("FileReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("FileReportingId"));
 
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
@@ -280,6 +295,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("FileImportLogReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("FileImportLogReportingId"));
 
                     b.Property<Guid>("FileImportLogId")
                         .HasColumnType("char(36)");
@@ -434,6 +451,8 @@ namespace EstateManagement.Database.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MerchantReportingId"));
+
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime(6)");
 
@@ -542,6 +561,9 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("ContractReportingId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.HasKey("MerchantReportingId", "ContractReportingId");
 
                     b.ToTable("MerchantContracts");
@@ -574,6 +596,9 @@ namespace EstateManagement.Database.Migrations.MySql
 
                     b.Property<Guid>("OperatorId")
                         .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("MerchantNumber")
                         .HasColumnType("longtext");
@@ -649,6 +674,8 @@ namespace EstateManagement.Database.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransactionReportingId"));
+
                     b.Property<string>("DeviceIdentifier")
                         .HasColumnType("longtext");
 
@@ -704,6 +731,8 @@ namespace EstateManagement.Database.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ResponseCode"));
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -718,6 +747,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("SettlementReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SettlementReportingId"));
 
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
@@ -777,6 +808,8 @@ namespace EstateManagement.Database.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("StatementReportingId"));
+
                     b.HasKey("MerchantReportingId", "StatementId")
                         .HasAnnotation("SqlServer:Clustered", false);
 
@@ -822,6 +855,8 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<int>("TransactionReportingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransactionReportingId"));
 
                     b.Property<string>("AuthorisationCode")
                         .HasColumnType("longtext");
