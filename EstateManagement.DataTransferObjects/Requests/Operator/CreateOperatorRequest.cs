@@ -23,6 +23,10 @@
         [JsonProperty("name")]
         public String Name { get; set; }
 
+        [Required]
+        [JsonProperty("operator_id")]
+        public Guid OperatorId { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether [require custom merchant number].
         /// </summary>

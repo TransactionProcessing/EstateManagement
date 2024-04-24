@@ -396,12 +396,14 @@ public static class ReqnrollExtensions
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
             estateDetails.ShouldNotBeNull();
 
+            Guid operatorId = Guid.NewGuid();
             String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
             Boolean requireCustomMerchantNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
             Boolean requireCustomTerminalNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
 
             CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
                                                           {
+                                                              OperatorId = operatorId,
                                                               Name = operatorName,
                                                               RequireCustomMerchantNumber = requireCustomMerchantNumber,
                                                               RequireCustomTerminalNumber = requireCustomTerminalNumber
