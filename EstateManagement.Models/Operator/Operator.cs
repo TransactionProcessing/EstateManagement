@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EstateManagement.Models.Estate
+namespace EstateManagement.Models.Operator
 {
     [ExcludeFromCodeCoverage]
     public class Operator

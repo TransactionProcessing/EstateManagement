@@ -11,6 +11,7 @@
     using MerchantStatementAggregate;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using OperatorAggregate;
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EntityFramework;
@@ -86,6 +87,8 @@
                 AggregateRepository<MerchantStatementAggregate, DomainEvent>>();
             this.AddSingleton<IAggregateRepository<MerchantDepositListAggregate, DomainEvent>,
                 AggregateRepository<MerchantDepositListAggregate, DomainEvent>>();
+            this.AddSingleton<IAggregateRepository<OperatorAggregate, DomainEvent>,
+                AggregateRepository<OperatorAggregate, DomainEvent>>();
 
             this.AddSingleton<Func<String, Int32, ISubscriptionRepository>>(cont => (esConnString, cacheDuration) => {
                                                                                         return SubscriptionRepository.Create(esConnString, cacheDuration);

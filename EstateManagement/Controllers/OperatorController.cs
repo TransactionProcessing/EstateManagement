@@ -47,23 +47,26 @@ namespace EstateManagement.Controllers
         [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
         public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
-            Guid operatorId = Guid.NewGuid();
-
             // Create the command
-            AddOperatorToEstateRequest command = AddOperatorToEstateRequest.Create(estateId, operatorId,
-                                                                         createOperatorRequest.Name,
-                                                                         createOperatorRequest.RequireCustomMerchantNumber.Value,
-                                                                         createOperatorRequest.RequireCustomTerminalNumber.Value);
+            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);
 
+            // Now as a shortcut atm assign this operator to the estate
+            AddOperatorToEstateRequest request = AddOperatorToEstateRequest.Create(estateId, 
+                                                                                   createOperatorRequest.OperatorId,
+                                                                                   createOperatorRequest.Name,
+                                                                                   createOperatorRequest.RequireCustomMerchantNumber.GetValueOrDefault(),
+                                                                                   createOperatorRequest.RequireCustomTerminalNumber.GetValueOrDefault());
+            await this.Mediator.Send(request, cancellationToken);
+
             // return the result
-            return this.Created($"{OperatorController.ControllerRoute}/{operatorId}",
+            return this.Created($"{OperatorController.ControllerRoute}/{createOperatorRequest.OperatorId}",
                                 new CreateOperatorResponse
                                 {
                                     EstateId = estateId,
-                                    OperatorId = operatorId
+                                    OperatorId = createOperatorRequest.OperatorId
                                 });
         }
 
