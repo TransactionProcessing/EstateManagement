@@ -49,6 +49,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateManagement.BusinessLogic\EstateManagement.BusinessLogic.csproj" />
+    <ProjectReference Include="..\EstateManagement.OperatorAggregate\EstateManagement.OperatorAggregate.csproj" />
     <ProjectReference Include="..\EstateManagement.Repository\EstateManagement.Repository.csproj" />
   </ItemGroup>
 

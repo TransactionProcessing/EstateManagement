@@ -1,8 +1,12 @@
-﻿namespace EstateManagement.Models.Estate
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace EstateManagement.Models.Estate
+{
     [ExcludeFromCodeCoverage]
     public class Operator
     {

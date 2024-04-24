@@ -10,12 +10,12 @@ using System.Collections.Generic;
 using DataTransferObjects.Requests.Contract;
 using DataTransferObjects.Requests.Estate;
 using DataTransferObjects.Requests.Merchant;
+using DataTransferObjects.Requests.Operator;
 using DataTransferObjects.Responses.Contract;
 using DataTransferObjects.Responses.Merchant;
 using Ductus.FluentDocker.Model.Compose;
 using Newtonsoft.Json.Bson;
 using Reqnroll;
-using AssignOperatorRequest = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
 
 public static class ReqnrollExtensions
 {
@@ -385,34 +385,34 @@ public static class ReqnrollExtensions
         return requests;
     }
 
-    // TODO: Fix once operator aggregate in place
-    // https://github.com/TransactionProcessing/EstateManagement/issues/558
-    //public static List<(EstateDetails estate, CreateOperatorRequest request)> ToCreateOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
-    //{
-    //    List<(EstateDetails estate, CreateOperatorRequest request)> requests = new();
+    public static List<(EstateDetails estate, CreateOperatorRequest request)> ToCreateOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
+    {
+        List<(EstateDetails estate, CreateOperatorRequest request)> requests = new();
 
-    //    foreach (DataTableRow tableRow in tableRows)
-    //    {
-    //        String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
+        foreach (DataTableRow tableRow in tableRows)
+        {
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
 
-    //        EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
-    //        estateDetails.ShouldNotBeNull();
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
 
-    //        String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
-    //        Boolean requireCustomMerchantNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
-    //        Boolean requireCustomTerminalNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
+            Guid operatorId = Guid.NewGuid();
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            Boolean requireCustomMerchantNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
+            Boolean requireCustomTerminalNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
 
-    //        CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
-    //                                                      {
-    //                                                          Name = operatorName,
-    //                                                          RequireCustomMerchantNumber = requireCustomMerchantNumber,
-    //                                                          RequireCustomTerminalNumber = requireCustomTerminalNumber
-    //                                                      };
-    //        requests.Add((estateDetails, createOperatorRequest));
-    //    }
+            CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
+                                                          {
+                                                              OperatorId = operatorId,
+                                                              Name = operatorName,
+                                                              RequireCustomMerchantNumber = requireCustomMerchantNumber,
+                                                              RequireCustomTerminalNumber = requireCustomTerminalNumber
+                                                          };
+            requests.Add((estateDetails, createOperatorRequest));
+        }
 
-    //    return requests;
-    //}
+        return requests;
+    }
 
     public static List<(EstateDetails estate, CreateMerchantRequest)> ToCreateMerchantRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
@@ -464,8 +464,6 @@ public static class ReqnrollExtensions
         return requests;
     }
 
-    // TODO: Fix once operator aggregate in place
-    // https://github.com/TransactionProcessing/EstateManagement/issues/558
     public static List<(EstateDetails, Guid, AssignOperatorRequest)> ToAssignOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Guid, AssignOperatorRequest)> requests = new();
@@ -483,13 +481,13 @@ public static class ReqnrollExtensions
             String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
             Guid operatorId = estateDetails.GetOperatorId(operatorName);
             AssignOperatorRequest assignOperatorRequest = new AssignOperatorRequest
-            {
-                OperatorId = operatorId,
-                MerchantNumber =
+                                                          {
+                                                              OperatorId = operatorId,
+                                                              MerchantNumber =
                                                                   ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
-                TerminalNumber =
+                                                              TerminalNumber =
                                                                   ReqnrollTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
-            };
+                                                          };
 
             requests.Add((estateDetails, merchantId, assignOperatorRequest));
         }

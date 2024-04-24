@@ -31,6 +31,8 @@
             this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateUserCommand>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<EstateCommands.AddOperatorToEstateCommand>, EstateRequestHandler>();
 
+            this.AddSingleton<IRequestHandler<OperatorCommands.CreateOperatorCommand>, OperatorRequestHandler>();
+
             this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantUserCommand, Guid>, MerchantRequestHandler>();

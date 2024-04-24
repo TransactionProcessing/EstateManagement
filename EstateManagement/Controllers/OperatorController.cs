@@ -7,6 +7,7 @@ namespace EstateManagement.Controllers
     using System.Threading;
     using BusinessLogic.Requests;
     using Common.Examples;
+    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses;
     using DataTransferObjects.Responses.Operator;
     using MediatR;
@@ -14,7 +15,7 @@ namespace EstateManagement.Controllers
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
 
-    /*[ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     [Route(OperatorController.ControllerRoute)]
     [ApiController]
     public class OperatorController : ControllerBase
@@ -47,13 +48,26 @@ namespace EstateManagement.Controllers
         public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
             // Create the command
-            EstateCommands.AddOperatorToEstateCommand command = new (estateId, createOperatorRequest);
+            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);
 
+            // Now as a shortcut atm assign this operator to the estate
+            AddOperatorToEstateRequest request = AddOperatorToEstateRequest.Create(estateId, 
+                                                                                   createOperatorRequest.OperatorId,
+                                                                                   createOperatorRequest.Name,
+                                                                                   createOperatorRequest.RequireCustomMerchantNumber.GetValueOrDefault(),
+                                                                                   createOperatorRequest.RequireCustomTerminalNumber.GetValueOrDefault());
+            await this.Mediator.Send(request, cancellationToken);
+
             // return the result
-            return this.Ok();
+            return this.Created($"{OperatorController.ControllerRoute}/{createOperatorRequest.OperatorId}",
+                                new CreateOperatorResponse
+                                {
+                                    EstateId = estateId,
+                                    OperatorId = createOperatorRequest.OperatorId
+                                });
         }
 
         #region Others
@@ -69,5 +83,5 @@ namespace EstateManagement.Controllers
         private const String ControllerRoute = "api/estates/{estateid}/" + OperatorController.ControllerName;
 
         #endregion
-    }*/
+    }
 }
