@@ -57,9 +57,6 @@
                 estateModel.Operators = new List<EstateOperatorModel>();
                 estateOperators.ForEach(eo => estateModel.Operators.Add(new EstateOperatorModel
                                                                         {
-                                                                            Name = eo.Name,
-                                                                            RequireCustomMerchantNumber = eo.RequireCustomMerchantNumber,
-                                                                            RequireCustomTerminalNumber = eo.RequireCustomTerminalNumber,
                                                                             OperatorId = eo.OperatorId
                                                                         }));
             }

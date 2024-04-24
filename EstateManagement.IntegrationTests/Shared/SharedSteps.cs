@@ -12,7 +12,6 @@ namespace EstateManagement.IntegrationTests.Shared
     using DataTransferObjects.Requests.Contract;
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
-    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses;
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
@@ -28,6 +27,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using Shouldly;
     using TransactionProcessor.DataTransferObjects;
     using TransactionProcessor.IntegrationTesting.Helpers;
+    using AssignOperatorRequest = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
     using ClientDetails = Common.ClientDetails;
     using DockerHelper = Common.DockerHelper;
     using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
@@ -74,14 +74,16 @@ namespace EstateManagement.IntegrationTests.Shared
         [Given(@"I have created the following operators")]
         [When(@"I create the following operators")]
         public async Task WhenICreateTheFollowingOperators(DataTable table) {
-            List<(EstateDetails estate, CreateOperatorRequest request)> requests = table.Rows.ToCreateOperatorRequests(this.TestingContext.Estates);
+            // TODO: Fix once operator aggregate in place
+            // https://github.com/TransactionProcessing/EstateManagement/issues/558
+            //List<(EstateDetails estate, CreateOperatorRequest request)> requests = table.Rows.ToCreateOperatorRequests(this.TestingContext.Estates);
 
-            List<(Guid, EstateOperatorResponse)> results = await this.EstateManagementSteps.WhenICreateTheFollowingOperators(this.TestingContext.AccessToken, requests);
+            //List<(Guid, EstateOperatorResponse)> results = await this.EstateManagementSteps.WhenICreateTheFollowingOperators(this.TestingContext.AccessToken, requests);
 
-            foreach ((Guid, EstateOperatorResponse) result in results)
-            {
-                this.TestingContext.Logger.LogInformation($"Operator {result.Item2.Name} created with Id {result.Item2.OperatorId} for Estate {result.Item1}");
-            }
+            //foreach ((Guid, EstateOperatorResponse) result in results)
+            //{
+            //    this.TestingContext.Logger.LogInformation($"Operator {result.Item2.Name} created with Id {result.Item2.OperatorId} for Estate {result.Item1}");
+            //}
         }
 
         [Given("I create the following merchants")]

@@ -10,12 +10,12 @@
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.CreateEstateUserRequest, System.Guid}" />
-    /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.CreateEstateRequest, System.String}" />
-    /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AddOperatorToEstateRequest, System.String}" />
-    public class EstateRequestHandler : IRequestHandler<CreateEstateRequest>,
-                                        IRequestHandler<AddOperatorToEstateRequest>,
-                                        IRequestHandler<CreateEstateUserRequest,Guid>
+    /// <seealso cref="Guid" />
+    /// <seealso cref="DataTransferObjects.Requests.Estate.CreateEstateRequest.String}" />
+    /// <seealso cref="AddOperatorToEstateRequest.String}" />
+    public class EstateRequestHandler : IRequestHandler<EstateCommands.CreateEstateCommand>,
+                                        IRequestHandler<EstateCommands.AddOperatorToEstateCommand>,
+                                        IRequestHandler<EstateCommands.CreateEstateUserCommand>
     {
         #region Fields
 
@@ -41,53 +41,20 @@
 
         #region Methods
 
-        /// <summary>
-        /// Handles the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task Handle(CreateEstateRequest request,
-                                         CancellationToken cancellationToken)
+        public async Task Handle(EstateCommands.CreateEstateCommand command, CancellationToken cancellationToken)
         {
-            await this.EstateDomainService.CreateEstate(request.EstateId, request.Name, cancellationToken);
+            await this.EstateDomainService.CreateEstate(command, cancellationToken);
         }
 
-        /// <summary>
-        /// Handles the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task<Guid> Handle(CreateEstateUserRequest request,
-                                       CancellationToken cancellationToken)
+        public async Task Handle(EstateCommands.CreateEstateUserCommand command, CancellationToken cancellationToken)
         {
-            Guid userId = await this.EstateDomainService.CreateEstateUser(request.EstateId,
-                                                                          request.EmailAddress,
-                                                                          request.Password,
-                                                                          request.GivenName,
-                                                                          request.MiddleName,
-                                                                          request.FamilyName,
-                                                                          cancellationToken);
-
-            return userId;
+            await this.EstateDomainService.CreateEstateUser(command, cancellationToken);
         }
 
-        /// <summary>
-        /// Handles the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task Handle(AddOperatorToEstateRequest request,
+        public async Task Handle(EstateCommands.AddOperatorToEstateCommand command,
                                          CancellationToken cancellationToken)
         {
-            await this.EstateDomainService.AddOperatorToEstate(request.EstateId,
-                                                               request.OperatorId,
-                                                               request.Name,
-                                                               request.RequireCustomMerchantNumber,
-                                                               request.RequireCustomTerminalNumber,
-                                                               cancellationToken);
+            await this.EstateDomainService.AddOperatorToEstate(command, cancellationToken);
         }
 
         #endregion

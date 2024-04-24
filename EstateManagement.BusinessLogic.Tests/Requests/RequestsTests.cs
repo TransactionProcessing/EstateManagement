@@ -139,33 +139,6 @@
             createContractRequest.OperatorId.ShouldBe(TestData.OperatorId);
             createContractRequest.Description.ShouldBe(TestData.ContractDescription);
         }
-
-        [Fact]
-        public void CreateEstateRequest_CanBeCreated_IsCreated() {
-            CreateEstateRequest createEstateRequest = CreateEstateRequest.Create(TestData.EstateId, TestData.EstateName);
-
-            createEstateRequest.ShouldNotBeNull();
-            createEstateRequest.EstateId.ShouldBe(TestData.EstateId);
-            createEstateRequest.Name.ShouldBe(TestData.EstateName);
-        }
-
-        [Fact]
-        public void CreateEstateUserRequest_CanBeCreated_IsCreated() {
-            CreateEstateUserRequest createEstateUserRequest = CreateEstateUserRequest.Create(TestData.EstateId,
-                                                                                             TestData.EstateUserEmailAddress,
-                                                                                             TestData.EstateUserPassword,
-                                                                                             TestData.EstateUserGivenName,
-                                                                                             TestData.EstateUserMiddleName,
-                                                                                             TestData.EstateUserFamilyName);
-
-            createEstateUserRequest.ShouldNotBeNull();
-            createEstateUserRequest.EstateId.ShouldBe(TestData.EstateId);
-            createEstateUserRequest.EmailAddress.ShouldBe(TestData.EstateUserEmailAddress);
-            createEstateUserRequest.Password.ShouldBe(TestData.EstateUserPassword);
-            createEstateUserRequest.GivenName.ShouldBe(TestData.EstateUserGivenName);
-            createEstateUserRequest.MiddleName.ShouldBe(TestData.EstateUserMiddleName);
-            createEstateUserRequest.FamilyName.ShouldBe(TestData.EstateUserFamilyName);
-        }
         
         [Fact]
         public void DisableTransactionFeeForProductRequest_CanBeCreated_IsCreated() {

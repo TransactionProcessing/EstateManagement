@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Requests\Common\" />
+    <Folder Include="Requests\Operator\" />
   </ItemGroup>
 
 </Project>

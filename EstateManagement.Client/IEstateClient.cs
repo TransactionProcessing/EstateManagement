@@ -6,12 +6,11 @@
     using DataTransferObjects.Requests.Contract;
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
-    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.Merchant;
-    using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
+    using AssignOperatorRequest = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
 
     /// <summary>
     /// 
@@ -88,10 +87,10 @@
                                                             CreateMerchantUserRequest createMerchantUserRequest,
                                                             CancellationToken cancellationToken);
 
-        Task<CreateOperatorResponse> CreateOperator(String accessToken,
-                                                    Guid estateId,
-                                                    CreateOperatorRequest createOperatorRequest,
-                                                    CancellationToken cancellationToken);
+        Task AssignOperatorToEstate(String accessToken,
+                                    Guid estateId,
+                                    DataTransferObjects.Requests.Estate.AssignOperatorRequest assignOperatorRequest,
+                                    CancellationToken cancellationToken);
 
         Task DisableTransactionFeeForProduct(String accessToken,
                                              Guid estateId,

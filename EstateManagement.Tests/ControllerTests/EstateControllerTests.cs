@@ -40,7 +40,7 @@
             HttpClient client = this.WebApplicationFactory.CreateClient();
 
 
-            CreateEstateRequest createEstateRequest = TestData.CreateEstateRequestDTO;
+            CreateEstateRequest createEstateRequest = TestData.CreateEstateRequest;
             String uri = "api/estates/";
             StringContent content = Helpers.CreateStringContent(createEstateRequest);
             client.DefaultRequestHeaders.Add("api-version", "1.0");

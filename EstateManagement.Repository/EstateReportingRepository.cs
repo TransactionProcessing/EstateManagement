@@ -163,10 +163,10 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         EstateOperator estateOperator = new EstateOperator{
                                                               EstateReportingId = estate.EstateReportingId,
-                                                              Name = domainEvent.Name,
+                                                              //Name = domainEvent.Name,
                                                               OperatorId = domainEvent.OperatorId,
-                                                              RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber,
-                                                              RequireCustomTerminalNumber = domainEvent.RequireCustomTerminalNumber
+                                                              //RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber,
+                                                              //RequireCustomTerminalNumber = domainEvent.RequireCustomTerminalNumber
                                                           };
 
         await context.EstateOperators.AddAsync(estateOperator, cancellationToken);

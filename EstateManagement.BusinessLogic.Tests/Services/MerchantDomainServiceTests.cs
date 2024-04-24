@@ -118,7 +118,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue));
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator());
 
             await this.DomainService.AssignOperatorToMerchant(TestData.AssignOperatorToMerchantCommand, CancellationToken.None);
         }
@@ -153,14 +153,16 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Should.Throw<InvalidOperationException>(async () => { await this.DomainService.AssignOperatorToMerchant(TestData.AssignOperatorToMerchantCommand, CancellationToken.None); });
         }
 
-        [Theory]
+        // TODO: Reintroduce when we have an Operator Aggregate
+        // https://github.com/TransactionProcessing/EstateManagement/issues/558
+        [Theory(Skip = "Needs Operator Aggregate")]
         [InlineData(null)]
         [InlineData("")]
         public void MerchantDomainService_AssignOperatorToMerchant_OperatorRequiresMerchantNumber_MerchantNumberNotSet_ErrorThrown(String merchantNumber){
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberFalse));
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator());
 
             MerchantCommands.AssignOperatorToMerchantCommand command = new MerchantCommands.AssignOperatorToMerchantCommand(TestData.EstateId,
                                                                                                                             TestData.MerchantId,
@@ -173,14 +175,16 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Should.Throw<InvalidOperationException>(async () => { await this.DomainService.AssignOperatorToMerchant(command, CancellationToken.None); });
         }
 
-        [Theory]
+        // TODO: Reintroduce when we have an Operator Aggregate
+        // https://github.com/TransactionProcessing/EstateManagement/issues/558
+        [Theory(Skip = "Needs Operator Aggregate")]
         [InlineData(null)]
         [InlineData("")]
         public void MerchantDomainService_AssignOperatorToMerchant_OperatorRequiresTerminalNumber_TerminalNumberNotSet_ErrorThrown(String terminalNumber){
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue));
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator());
 
             MerchantCommands.AssignOperatorToMerchantCommand command = new MerchantCommands.AssignOperatorToMerchantCommand(TestData.EstateId,
                                                                                                                             TestData.MerchantId,
@@ -195,7 +199,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
         [Fact]
         public async Task MerchantDomainService_CreateMerchantUser_MerchantUserIsCreated(){
-            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator(TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue));
+            this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator());
 
             this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedMerchantAggregate);
             this.MerchantAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);

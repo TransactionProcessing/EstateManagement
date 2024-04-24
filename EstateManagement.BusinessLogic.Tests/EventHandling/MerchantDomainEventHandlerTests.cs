@@ -6,6 +6,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
     using System.Threading;
     using BusinessLogic.EventHandling;
     using BusinessLogic.Events;
+    using EstateManagement.Estate.DomainEvents;
     using EstateManagement.Merchant.DomainEvents;
     using EstateManagement.MerchantStatement.DomainEvents;
     using MediatR;
@@ -72,10 +73,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
         public void MerchantDomainEventHandler_ContactAddedEvent_EventIsHandled()
         {
             ContactAddedEvent contactAddedEvent = TestData.ContactAddedEvent;
-
             
-            
-
             Should.NotThrow(async () => { await this.DomainEventHandler.Handle(contactAddedEvent, CancellationToken.None); });
         }
 
@@ -136,7 +134,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
         }
 
         [Fact]
-        public void SettlementDomainEventHandler_TransactionHasBeenCompletedEvent_EventIsHandled()
+        public void MerchantDomainEventHandler_TransactionHasBeenCompletedEvent_EventIsHandled()
         {
             TransactionHasBeenCompletedEvent domainEvent = TestData.TransactionHasBeenCompletedEvent;
 
@@ -144,9 +142,117 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
         }
 
         [Fact]
-        public void SettlementDomainEventHandler_ContractAddedToMerchantEvent_EventIsHandled()
+        public void MerchantDomainEventHandler_MerchantNameUpdatedEvent_EventIsHandled()
+        {
+            MerchantNameUpdatedEvent domainEvent = TestData.MerchantNameUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+
+        [Fact]
+        public void MerchantDomainEventHandler_DeviceSwappedForMerchantEvent_EventIsHandled()
+        {
+            DeviceSwappedForMerchantEvent domainEvent = TestData.DeviceSwappedForMerchantEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_OperatorRemovedFromMerchantEvent_EventIsHandled()
+        {
+            OperatorRemovedFromMerchantEvent domainEvent = TestData.OperatorRemovedFromMerchantEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantAddressLine1UpdatedEvent_EventIsHandled()
+        {
+            MerchantAddressLine1UpdatedEvent domainEvent = TestData.MerchantAddressLine1UpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantAddressLine2UpdatedEvent_EventIsHandled()
+        {
+            MerchantAddressLine2UpdatedEvent domainEvent = TestData.MerchantAddressLine2UpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantAddressLine3UpdatedEvent_EventIsHandled()
+        {
+            MerchantAddressLine3UpdatedEvent domainEvent = TestData.MerchantAddressLine3UpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantAddressLine4UpdatedEvent_EventIsHandled()
+        {
+            MerchantAddressLine4UpdatedEvent domainEvent = TestData.MerchantAddressLine4UpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantCountyUpdatedEvent_EventIsHandled()
+        {
+            MerchantCountyUpdatedEvent domainEvent = TestData.MerchantCountyUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantRegionUpdatedEvent_EventIsHandled()
+        {
+            MerchantRegionUpdatedEvent domainEvent = TestData.MerchantRegionUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantTownUpdatedEvent_EventIsHandled()
+        {
+            MerchantTownUpdatedEvent domainEvent = TestData.MerchantTownUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantPostalCodeUpdatedEvent_EventIsHandled()
+        {
+            MerchantPostalCodeUpdatedEvent domainEvent = TestData.MerchantPostalCodeUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantContactNameUpdatedEvent_EventIsHandled()
+        {
+            MerchantContactNameUpdatedEvent domainEvent = TestData.MerchantContactNameUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantContactEmailAddressUpdatedEvent_EventIsHandled()
+        {
+            MerchantContactEmailAddressUpdatedEvent domainEvent = TestData.MerchantContactEmailAddressUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+        [Fact]
+        public void MerchantDomainEventHandler_MerchantContactPhoneNumberUpdatedEvent_EventIsHandled()
+        {
+            MerchantContactPhoneNumberUpdatedEvent domainEvent = TestData.MerchantContactPhoneNumberUpdatedEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+
+        [Fact]
+        public void MerchantDomainEventHandler_ContractAddedToMerchantEvent_EventIsHandled()
         {
             ContractAddedToMerchantEvent domainEvent = TestData.ContractAddedToMerchantEvent;
+
+            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
+        }
+
+        [Fact]
+        public void MerchantDomainEventHandler_EstateCreatedEvent_EventIsHandled()
+        {
+            EstateCreatedEvent domainEvent = TestData.EstateCreatedEvent;
 
             Should.NotThrow(async () => { await this.DomainEventHandler.Handle(domainEvent, CancellationToken.None); });
         }

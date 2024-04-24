@@ -10,13 +10,13 @@
     using DataTransferObjects.Requests.Contract;
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
-    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.Merchant;
     using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
     using Newtonsoft.Json;
+    using AssignOperatorRequest = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
 
     public class EstateClient : ClientProxyBase, IEstateClient{
         #region Fields
@@ -490,16 +490,14 @@
             return response;
         }
 
-        public async Task<CreateOperatorResponse> CreateOperator(String accessToken,
+        public async Task AssignOperatorToEstate(String accessToken,
                                                                  Guid estateId,
-                                                                 CreateOperatorRequest createOperatorRequest,
+                                                                 DataTransferObjects.Requests.Estate.AssignOperatorRequest assignOperatorRequest,
                                                                  CancellationToken cancellationToken){
-            CreateOperatorResponse response = null;
-
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators");
 
             try{
-                String requestSerialised = JsonConvert.SerializeObject(createOperatorRequest);
+                String requestSerialised = JsonConvert.SerializeObject(assignOperatorRequest);
 
                 StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
 
@@ -510,19 +508,14 @@
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
-
-                // call was successful so now deserialise the body to the response object
-                response = JsonConvert.DeserializeObject<CreateOperatorResponse>(content);
+                await this.HandleResponse(httpResponse, cancellationToken);
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
-                Exception exception = new Exception($"Error creating new operator {createOperatorRequest.Name} for estate {estateId}.", ex);
+                Exception exception = new Exception($"Error addign new operator {assignOperatorRequest.OperatorId} to estate {estateId}.", ex);
 
                 throw exception;
             }
-
-            return response;
         }
 
         public async Task DisableTransactionFeeForProduct(String accessToken,
