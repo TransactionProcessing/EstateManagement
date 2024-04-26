@@ -95,9 +95,11 @@
 
             Estate estateModel = estateAggregate.GetEstate();
 
-            foreach (Operator @operator in estateModel.Operators){
-                OperatorAggregate operatorAggregate = await this.OperatorAggregateRepository.GetLatestVersion(@operator.OperatorId, cancellationToken);
-                @operator.Name = operatorAggregate.Name;
+            if (estateModel.Operators != null){
+                foreach (Operator @operator in estateModel.Operators){
+                    OperatorAggregate operatorAggregate = await this.OperatorAggregateRepository.GetLatestVersion(@operator.OperatorId, cancellationToken);
+                    @operator.Name = operatorAggregate.Name;
+                }
             }
 
             return estateModel;

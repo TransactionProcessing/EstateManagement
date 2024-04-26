@@ -23,6 +23,7 @@
     using Models.Merchant;
     using Models.MerchantStatement;
     using Newtonsoft.Json;
+    using OperatorAggregate;
     using SecurityService.DataTransferObjects.Responses;
     using Shared.ValueObjects;
     using TransactionProcessor.DataTransferObjects;
@@ -1791,6 +1792,12 @@
                                                 TestData.TransactionFeeValue);
 
             return contractAggregate;
+        }
+
+        public static OperatorAggregate CreatedOperatorAggregate(){
+            OperatorAggregate operatorAggregate = OperatorAggregate.Create(TestData.OperatorId);
+            operatorAggregate.Create(TestData.EstateId, TestData.OperatorName, TestData.RequireCustomMerchantNumber, TestData.RequireCustomTerminalNumber);
+            return operatorAggregate;
         }
 
         public static EstateAggregate CreatedEstateAggregate(){
