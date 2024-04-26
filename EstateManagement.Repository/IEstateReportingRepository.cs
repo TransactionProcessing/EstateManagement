@@ -10,6 +10,7 @@
     using FileProcessor.FileImportLog.DomainEvents;
     using Merchant.DomainEvents;
     using MerchantStatement.DomainEvents;
+    using Operator.DomainEvents;
     using Shared.DomainDrivenDesign.EventSourcing;
     using TransactionProcessor.Float.DomainEvents;
     using TransactionProcessor.Reconciliation.DomainEvents;
@@ -19,6 +20,7 @@
 
     public interface IEstateReportingRepository{
         #region Methods
+        Task AddOperator(OperatorCreatedEvent domainEvent, CancellationToken cancellationToken);
 
         Task AddContract(ContractCreatedEvent domainEvent,
                          CancellationToken cancellationToken);
@@ -237,6 +239,7 @@
         public static Guid GetContractProductTransactionFeeId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FeeId");
 
         public static Guid GetEstateId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "EstateId");
+        public static Guid GetOperatorId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "OperatorId");
 
         public static Guid GetFileId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FileId");
 

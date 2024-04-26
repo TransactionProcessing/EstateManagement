@@ -16,6 +16,8 @@ using DataTransferObjects.Responses.Merchant;
 using Ductus.FluentDocker.Model.Compose;
 using Newtonsoft.Json.Bson;
 using Reqnroll;
+using AssignOperatorToMerchantRequest = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
+using AssignOperatorToEstateRequest = DataTransferObjects.Requests.Estate.AssignOperatorRequest;
 
 public static class ReqnrollExtensions
 {
@@ -403,12 +405,38 @@ public static class ReqnrollExtensions
 
             CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
                                                           {
+                                                              EstateId = estateDetails.EstateId,
                                                               OperatorId = operatorId,
                                                               Name = operatorName,
                                                               RequireCustomMerchantNumber = requireCustomMerchantNumber,
                                                               RequireCustomTerminalNumber = requireCustomTerminalNumber
                                                           };
             requests.Add((estateDetails, createOperatorRequest));
+        }
+
+        return requests;
+    }
+
+    public static List<(EstateDetails estate, AssignOperatorToEstateRequest request)> ToAssignOperatorToEstateRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
+    {
+        List<(EstateDetails estate, AssignOperatorToEstateRequest request)> requests = new();
+
+        foreach (DataTableRow tableRow in tableRows)
+        {
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
+
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
+
+
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            Guid operatorId = estateDetails.GetOperatorId(operatorName);
+            
+            AssignOperatorToEstateRequest assignOperatorRequest = new AssignOperatorToEstateRequest()
+                                                          {
+                                                              OperatorId = operatorId
+            };
+            requests.Add((estateDetails, assignOperatorRequest));
         }
 
         return requests;
@@ -464,9 +492,9 @@ public static class ReqnrollExtensions
         return requests;
     }
 
-    public static List<(EstateDetails, Guid, AssignOperatorRequest)> ToAssignOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
+    public static List<(EstateDetails, Guid, AssignOperatorToMerchantRequest)> ToAssignOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
-        List<(EstateDetails, Guid, AssignOperatorRequest)> requests = new();
+        List<(EstateDetails, Guid, AssignOperatorToMerchantRequest)> requests = new();
 
         foreach (DataTableRow tableRow in tableRows)
         {
@@ -480,14 +508,14 @@ public static class ReqnrollExtensions
 
             String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
             Guid operatorId = estateDetails.GetOperatorId(operatorName);
-            AssignOperatorRequest assignOperatorRequest = new AssignOperatorRequest
-                                                          {
-                                                              OperatorId = operatorId,
-                                                              MerchantNumber =
-                                                                  ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
-                                                              TerminalNumber =
-                                                                  ReqnrollTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
-                                                          };
+            AssignOperatorToMerchantRequest assignOperatorRequest = new AssignOperatorToMerchantRequest
+            {
+                                                                        OperatorId = operatorId,
+                                                                        MerchantNumber =
+                                                                            ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
+                                                                        TerminalNumber =
+                                                                            ReqnrollTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
+                                                                    };
 
             requests.Add((estateDetails, merchantId, assignOperatorRequest));
         }

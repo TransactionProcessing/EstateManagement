@@ -16,6 +16,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Models.Factories;
     using Models.Merchant;
     using Moq;
+    using OperatorAggregate;
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
@@ -31,6 +32,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         private readonly Mock<IAggregateRepository<EstateAggregate, DomainEvent>> EstateAggregateRepository;
         private readonly Mock<IAggregateRepository<ContractAggregate, DomainEvent>> ContractAggregateRepository;
         private readonly Mock<IAggregateRepository<MerchantAggregate, DomainEvent>> MerchantAggregateRepository;
+        private readonly Mock<IAggregateRepository<OperatorAggregate, DomainEvent>> OperatorAggregateRepository;
 
         private readonly Mock<IModelFactory> ModelFactory;
 
@@ -43,6 +45,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             this.ContractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             this.MerchantAggregateRepository = new Mock<IAggregateRepository<MerchantAggregate, DomainEvent>>();
+            this.OperatorAggregateRepository = new Mock<IAggregateRepository<OperatorAggregate, DomainEvent>>();
 
             this.ModelFactory = new Mock<IModelFactory>();
 
@@ -52,7 +55,8 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
                                             this.EstateAggregateRepository.Object,
                                             this.ContractAggregateRepository.Object,
                                             this.MerchantAggregateRepository.Object,
-                                            this.ModelFactory.Object);
+                                            this.ModelFactory.Object,
+                                            this.OperatorAggregateRepository.Object);
         }
 
         [Fact]

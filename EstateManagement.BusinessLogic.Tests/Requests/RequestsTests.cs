@@ -12,22 +12,6 @@
         #region Methods
         
         [Fact]
-        public void AddOperatorToEstateRequest_CanBeCreated_IsCreated() {
-            AddOperatorToEstateRequest addOperatorToEstateRequest = AddOperatorToEstateRequest.Create(TestData.EstateId,
-                                                                                                      TestData.OperatorId,
-                                                                                                      TestData.OperatorName,
-                                                                                                      TestData.RequireCustomMerchantNumberTrue,
-                                                                                                      TestData.RequireCustomTerminalNumberTrue);
-
-            addOperatorToEstateRequest.ShouldNotBeNull();
-            addOperatorToEstateRequest.EstateId.ShouldBe(TestData.EstateId);
-            addOperatorToEstateRequest.OperatorId.ShouldBe(TestData.OperatorId);
-            addOperatorToEstateRequest.Name.ShouldBe(TestData.OperatorName);
-            addOperatorToEstateRequest.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumberTrue);
-            addOperatorToEstateRequest.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumberTrue);
-        }
-
-        [Fact]
         public void AddProductToContractRequest_WithFixedValue_CanBeCreated_IsCreated() {
             AddProductToContractRequest addProductToContractRequest =
                 AddProductToContractRequest.Create(TestData.ContractId,

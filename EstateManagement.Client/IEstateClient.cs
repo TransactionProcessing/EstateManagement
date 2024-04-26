@@ -6,9 +6,11 @@
     using DataTransferObjects.Requests.Contract;
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
+    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.Merchant;
+    using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
     using AssignOperatorRequest = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
 
@@ -71,7 +73,11 @@
                                                 CreateEstateRequest createEstateRequest,
                                                 CancellationToken cancellationToken);
 
-        Task<CreateEstateUserResponse> CreateEstateUser(String accessToken,
+        Task<CreateOperatorResponse> CreateOperator(String accessToken,
+                                                CreateOperatorRequest createOperatorRequest,
+                                                CancellationToken cancellationToken);
+
+        Task CreateEstateUser(String accessToken,
                                                         Guid estateId,
                                                         CreateEstateUserRequest createEstateUserRequest,
                                                         CancellationToken cancellationToken);
@@ -81,7 +87,7 @@
                                                     CreateMerchantRequest createMerchantRequest,
                                                     CancellationToken cancellationToken);
 
-        Task<CreateMerchantUserResponse> CreateMerchantUser(String accessToken,
+        Task CreateMerchantUser(String accessToken,
                                                             Guid estateId,
                                                             Guid merchantId,
                                                             CreateMerchantUserRequest createMerchantUserRequest,

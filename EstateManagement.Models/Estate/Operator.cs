@@ -19,7 +19,10 @@ namespace EstateManagement.Models.Estate
         /// The operator identifier.
         /// </value>
         public Guid OperatorId { get; set; }
-        
+        public String Name{ get; set; }
+        public Boolean RequireCustomMerchantNumber { get; set; }
+        public Boolean RequireCustomTerminalNumber { get; set; }
+
         #endregion
     }
 }

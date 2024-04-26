@@ -227,16 +227,9 @@
             MerchantCommands.CreateMerchantUserCommand command = new(estateId, merchantId, createMerchantUserRequest);
 
             // Route the command
-            Guid userId = await this.Mediator.Send(command, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}/users/{userId}",
-                                new CreateMerchantUserResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    UserId = userId
-                                });
+            return this.Ok();
         }
 
         [HttpPost]

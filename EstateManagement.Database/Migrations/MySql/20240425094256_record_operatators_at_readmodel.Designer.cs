@@ -4,6 +4,7 @@ using EstateManagement.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstateManagement.Database.Migrations.MySql
 {
     [DbContext(typeof(EstateManagementMySqlContext))]
-    partial class EstateManagementMySqlContextModelSnapshot : ModelSnapshot
+    [Migration("20240425094256_record_operatators_at_readmodel")]
+    partial class record_operatators_at_readmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,13 +196,16 @@ namespace EstateManagement.Database.Migrations.MySql
 
             modelBuilder.Entity("EstateManagement.Database.Entities.EstateOperator", b =>
                 {
+                    b.Property<int>("OperatorReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OperatorReportingId"));
+
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OperatorReportingId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EstateReportingId", "OperatorReportingId");
+                    b.HasKey("OperatorReportingId");
 
                     b.ToTable("estateoperator");
                 });
@@ -654,11 +660,9 @@ namespace EstateManagement.Database.Migrations.MySql
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Operator", b =>
                 {
-                    b.Property<int>("OperatorReportingId")
+                    b.Property<Guid>("OperatorId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OperatorReportingId"));
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
@@ -667,8 +671,11 @@ namespace EstateManagement.Database.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("OperatorId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("OperatorReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OperatorReportingId"));
 
                     b.Property<bool>("RequireCustomMerchantNumber")
                         .HasColumnType("tinyint(1)");
@@ -676,10 +683,7 @@ namespace EstateManagement.Database.Migrations.MySql
                     b.Property<bool>("RequireCustomTerminalNumber")
                         .HasColumnType("tinyint(1)");
 
-                    b.HasKey("OperatorReportingId");
-
-                    b.HasIndex("OperatorId")
-                        .IsUnique();
+                    b.HasKey("OperatorId");
 
                     b.ToTable("operator");
                 });

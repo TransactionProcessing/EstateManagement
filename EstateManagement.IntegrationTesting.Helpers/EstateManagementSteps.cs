@@ -6,6 +6,7 @@ using DataTransferObjects;
 using DataTransferObjects.Requests.Contract;
 using DataTransferObjects.Requests.Estate;
 using DataTransferObjects.Requests.Merchant;
+using DataTransferObjects.Requests.Operator;
 using DataTransferObjects.Responses;
 using DataTransferObjects.Responses.Contract;
 using DataTransferObjects.Responses.Estate;
@@ -77,18 +78,12 @@ public class EstateManagementSteps{
                                                                                  MiddleName = createNewUserRequest.MiddleName,
                                                                                  Password = createNewUserRequest.Password
                                                                              };
+                await this.EstateClient.CreateEstateUser(accessToken,
+                                                         estateDetails.EstateId,
+                                                         request,
+                                                         CancellationToken.None);
 
-                CreateEstateUserResponse createEstateUserResponse =
-                    await this.EstateClient.CreateEstateUser(accessToken,
-                                                             estateDetails.EstateId,
-                                                             request,
-                                                             CancellationToken.None);
-
-                createEstateUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
-                createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
                 estateDetails.SetEstateUser(request.EmailAddress, request.Password);
-
-                //        this.TestingContext.Logger.LogInformation($"Security user {createEstateUserRequest.EmailAddress} assigned to Estate {estateDetails.EstateName}");
             }
             else{
                 // Creating a merchant user
@@ -105,20 +100,13 @@ public class EstateManagementSteps{
                                                                                                        Password = createNewUserRequest.Password
                                                                                                    };
 
-                CreateMerchantUserResponse createMerchantUserResponse =
-                    await this.EstateClient.CreateMerchantUser(token,
-                                                               estateDetails.EstateId,
-                                                               createNewUserRequest.MerchantId.Value,
-                                                               createMerchantUserRequest,
-                                                               CancellationToken.None);
-
-                createMerchantUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
-                createMerchantUserResponse.MerchantId.ShouldBe(createNewUserRequest.MerchantId.Value);
-                createMerchantUserResponse.UserId.ShouldNotBe(Guid.Empty);
-
+                await this.EstateClient.CreateMerchantUser(token,
+                                                           estateDetails.EstateId,
+                                                           createNewUserRequest.MerchantId.Value,
+                                                           createMerchantUserRequest,
+                                                           CancellationToken.None);
+                
                 estateDetails.AddMerchantUser(createNewUserRequest.MerchantName, createMerchantUserRequest.EmailAddress, createMerchantUserRequest.Password);
-
-                //        this.TestingContext.Logger.LogInformation($"Security user {createMerchantUserRequest.EmailAddress} assigned to Merchant {merchantName}");
             }
         }
     }
@@ -152,22 +140,52 @@ public class EstateManagementSteps{
         return results;
     }
 
-    // TODO: Fix once operator aggregate in place
-    // https://github.com/TransactionProcessing/EstateManagement/issues/558
-    //public async Task<List<(Guid, EstateOperatorResponse)>> WhenICreateTheFollowingOperators(String accessToken, List<(EstateDetails estate, CreateOperatorRequest request)> requests){
-    //    List<(Guid, EstateOperatorResponse)> results = new List<(Guid, EstateOperatorResponse)>();
-    //    foreach ((EstateDetails estate, CreateOperatorRequest request) request in requests){
-    //        CreateOperatorResponse response = await this.EstateClient
-    //                                                    .CreateOperator(accessToken,
-    //                                                                    request.estate.EstateId,
-    //                                                                    request.request,
-    //                                                                    CancellationToken.None).ConfigureAwait(false);
+    public async Task GivenIHaveAssignedTheFollowingOperatorsToTheEstates(String accessToken, List<(EstateDetails estate, DataTransferObjects.Requests.Estate.AssignOperatorRequest request)> requests)
+    {
+        List<(Guid, EstateOperatorResponse)> results = new List<(Guid, EstateOperatorResponse)>();
+        foreach ((EstateDetails estate, DataTransferObjects.Requests.Estate.AssignOperatorRequest request) request in requests){
+            await this.EstateClient.AssignOperatorToEstate(accessToken, request.estate.EstateId, request.request, CancellationToken.None);
+        }
 
-    //        response.ShouldNotBeNull();
-    //        response.EstateId.ShouldNotBe(Guid.Empty);
-    //        response.OperatorId.ShouldNotBe(Guid.Empty);
-    //    }
+            // verify at the read model
+            foreach (var request in requests){
+                await Retry.For(async () => {
+                                    EstateResponse e = await this.EstateClient.GetEstate(accessToken,
+                                                                                         request.estate.EstateId,
+                                                                                         CancellationToken.None);
+                                    EstateOperatorResponse operatorResponse = e.Operators.SingleOrDefault(o => o.OperatorId == request.request.OperatorId);
+                                    operatorResponse.ShouldNotBeNull();
+                                    results.Add((request.estate.EstateId, operatorResponse));
 
+                                    request.estate.AddAssignedOperator(operatorResponse.OperatorId);
+                                },
+                                retryFor:TimeSpan.FromSeconds(180)).ConfigureAwait(false);
+            }
+    }
+
+    public async Task<List<(Guid, EstateOperatorResponse)>> WhenICreateTheFollowingOperators(String accessToken, List<(EstateDetails estate, CreateOperatorRequest request)> requests){
+        List<(Guid, EstateOperatorResponse)> results = new List<(Guid, EstateOperatorResponse)>();
+        foreach ((EstateDetails estate, CreateOperatorRequest request) request in requests){
+            CreateOperatorResponse response = await this.EstateClient
+                                                        .CreateOperator(accessToken,
+                                                                        request.request,
+                                                                        CancellationToken.None).ConfigureAwait(false);
+
+            response.ShouldNotBeNull();
+            response.EstateId.ShouldNotBe(Guid.Empty);
+            response.OperatorId.ShouldNotBe(Guid.Empty);
+
+            request.estate.AddOperator(response.OperatorId, request.request.Name);
+            results.Add((request.estate.EstateId, new EstateOperatorResponse{
+                                                                                OperatorId = request.request.OperatorId,
+                                                                                Name = request.request.Name,
+                                                                                RequireCustomMerchantNumber = request.request.RequireCustomMerchantNumber.GetValueOrDefault(),
+                                                                                RequireCustomTerminalNumber = request.request.RequireCustomTerminalNumber.GetValueOrDefault()
+            }));
+        }
+
+        return results;
+    }
     //    // verify at the read model
     //    foreach ((EstateDetails estate, CreateOperatorRequest request) request in requests){
     //        await Retry.For(async () => {
@@ -432,13 +450,13 @@ public class EstateManagementSteps{
             }
         }
 
-        EstateResponse? estate = await this.EstateClient.GetEstate(token, estateId, CancellationToken.None).ConfigureAwait(false);
-        estate.ShouldNotBeNull();
+        var estates = await this.EstateClient.GetEstates(token, estateId, CancellationToken.None).ConfigureAwait(false);
+        estates.ShouldNotBeEmpty();
+        var estate = estates.Single();
         foreach (String expectedOperator in expectedOperators){
             EstateOperatorResponse? op = estate.Operators.SingleOrDefault(o => o.Name == expectedOperator);
             op.ShouldNotBeNull();
         }
-
     }
 
     public async Task WhenIGetTheMerchantsForThenMerchantsWillBeReturned(String accessToken, String estateName, List<EstateDetails> estateDetailsList, Int32 expectedMerchantCount){

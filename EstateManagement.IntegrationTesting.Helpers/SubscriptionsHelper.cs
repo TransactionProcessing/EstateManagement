@@ -18,7 +18,8 @@ public static class SubscriptionsHelper
                                                                                                ("$ce-SettlementAggregate", "Estate Management", 0),
                                                                                                ("$ce-TransactionAggregate", "Estate Management", 0),
                                                                                                ("$ce-TransactionAggregate", "Estate Management - Ordered", 0),
-                                                                                               ("$ce-VoucherAggregate", "Estate Management", 0)
+                                                                                               ("$ce-VoucherAggregate", "Estate Management", 0),
+                                                                                               ("$ce-OperatorAggregate", "Estate Management", 0),
                                                                                            };
         return subscriptions;
     }

@@ -12,6 +12,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using DataTransferObjects.Requests.Contract;
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
+    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses;
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
@@ -34,6 +35,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
     using ReqnrollExtensions = IntegrationTesting.Helpers.ReqnrollExtensions;
     using ReqnrollTableHelper = global::Shared.IntegrationTesting.ReqnrollTableHelper;
+    using Table = Microsoft.EntityFrameworkCore.Metadata.Internal.Table;
 
     [Binding]
     [Scope(Tag = "shared")]
@@ -76,15 +78,25 @@ namespace EstateManagement.IntegrationTests.Shared
         public async Task WhenICreateTheFollowingOperators(DataTable table) {
             // TODO: Fix once operator aggregate in place
             // https://github.com/TransactionProcessing/EstateManagement/issues/558
-            //List<(EstateDetails estate, CreateOperatorRequest request)> requests = table.Rows.ToCreateOperatorRequests(this.TestingContext.Estates);
+            List<(EstateDetails estate, CreateOperatorRequest request)> requests = table.Rows.ToCreateOperatorRequests(this.TestingContext.Estates);
 
-            //List<(Guid, EstateOperatorResponse)> results = await this.EstateManagementSteps.WhenICreateTheFollowingOperators(this.TestingContext.AccessToken, requests);
+            List<(Guid, EstateOperatorResponse)> results = await this.EstateManagementSteps.WhenICreateTheFollowingOperators(this.TestingContext.AccessToken, requests);
 
-            //foreach ((Guid, EstateOperatorResponse) result in results)
-            //{
-            //    this.TestingContext.Logger.LogInformation($"Operator {result.Item2.Name} created with Id {result.Item2.OperatorId} for Estate {result.Item1}");
-            //}
+            foreach ((Guid, EstateOperatorResponse) result in results)
+            {
+                this.TestingContext.Logger.LogInformation($"Operator {result.Item2.Name} created with Id {result.Item2.OperatorId} for Estate {result.Item1}");
+            }
         }
+
+        [Given("I have assigned the following operators to the estates")]
+        public async Task GivenIHaveAssignedTheFollowingOperatorsToTheEstates(DataTable dataTable){
+            List<(EstateDetails estate, DataTransferObjects.Requests.Estate.AssignOperatorRequest request)> requests = dataTable.Rows.ToAssignOperatorToEstateRequests(this.TestingContext.Estates);
+
+            await this.EstateManagementSteps.GivenIHaveAssignedTheFollowingOperatorsToTheEstates(this.TestingContext.AccessToken, requests);
+
+            // TODO Verify
+        }
+
 
         [Given("I create the following merchants")]
         [When(@"I create the following merchants")]

@@ -196,26 +196,10 @@ namespace EstateManagement.Database.Migrations.SqlServer
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("OperatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("EstateOperatorReportingId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("OperatorReportingId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstateOperatorReportingId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("RequireCustomMerchantNumber")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("RequireCustomTerminalNumber")
-                        .HasColumnType("bit");
-
-                    b.HasKey("EstateReportingId", "OperatorId");
+                    b.HasKey("EstateReportingId", "OperatorReportingId");
 
                     b.ToTable("estateoperator");
                 });
@@ -671,6 +655,38 @@ namespace EstateManagement.Database.Migrations.SqlServer
                     b.HasIndex("TransactionReportingId");
 
                     b.ToTable("merchantsettlementfee");
+                });
+
+            modelBuilder.Entity("EstateManagement.Database.Entities.Operator", b =>
+                {
+                    b.Property<int>("OperatorReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OperatorReportingId"));
+
+                    b.Property<int>("EstateReportingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OperatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("RequireCustomMerchantNumber")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RequireCustomTerminalNumber")
+                        .HasColumnType("bit");
+
+                    b.HasKey("OperatorReportingId");
+
+                    b.HasIndex("OperatorId")
+                        .IsUnique();
+
+                    b.ToTable("operator");
                 });
 
             modelBuilder.Entity("EstateManagement.Database.Entities.Reconciliation", b =>

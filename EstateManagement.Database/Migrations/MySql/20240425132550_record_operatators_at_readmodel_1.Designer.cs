@@ -4,6 +4,7 @@ using EstateManagement.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstateManagement.Database.Migrations.MySql
 {
     [DbContext(typeof(EstateManagementMySqlContext))]
-    partial class EstateManagementMySqlContextModelSnapshot : ModelSnapshot
+    [Migration("20240425132550_record_operatators_at_readmodel_1")]
+    partial class record_operatators_at_readmodel_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,13 +196,16 @@ namespace EstateManagement.Database.Migrations.MySql
 
             modelBuilder.Entity("EstateManagement.Database.Entities.EstateOperator", b =>
                 {
+                    b.Property<int>("OperatorReportingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OperatorReportingId"));
+
                     b.Property<int>("EstateReportingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OperatorReportingId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EstateReportingId", "OperatorReportingId");
+                    b.HasKey("OperatorReportingId");
 
                     b.ToTable("estateoperator");
                 });

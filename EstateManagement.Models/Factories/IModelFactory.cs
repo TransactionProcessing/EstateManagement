@@ -16,11 +16,13 @@ using ContractProductEntity = EstateManagement.Database.Entities.ContractProduct
 using ContractProductTransactionFeeEntity = EstateManagement.Database.Entities.ContractProductTransactionFee;
 using StatementLineEntity = EstateManagement.Database.Entities.StatementLine;
 using StatementLineModel = EstateManagement.Models.MerchantStatement.StatementLine;
+using OperatorEntity = EstateManagement.Database.Entities.Operator;
 
 namespace EstateManagement.Models.Factories
 {
     using System;
     using System.Collections.Generic;
+    using Operator;
 
     /// <summary>
     /// 
@@ -38,7 +40,8 @@ namespace EstateManagement.Models.Factories
         /// <returns></returns>
         EstateModel ConvertFrom(EstateEntity estate,
                                 List<EstateOperatorEntity> estateOperators,
-                                List<EstateSecurityUserEntity> estateSecurityUsers);
+                                List<EstateSecurityUserEntity> estateSecurityUsers,
+                                List<OperatorEntity> operators);
         
         MerchantModel ConvertFrom(Guid estateId, MerchantEntity merchant);
 

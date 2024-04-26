@@ -13,12 +13,14 @@
     using Models.Factories;
     using Models.File;
     using Models.Merchant;
+    using OperatorAggregate;
     using Repository;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     using Shared.Exceptions;
     using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
     using Contract = Models.Contract.Contract;
+    using Operator = Models.Estate.Operator;
 
     /// <summary>
     /// 
@@ -36,6 +38,8 @@
 
         private readonly IAggregateRepository<MerchantAggregate, DomainEvent> MerchantAggregateRepository;
 
+        private readonly IAggregateRepository<OperatorAggregate, DomainEvent> OperatorAggregateRepository;
+
         private readonly IModelFactory ModelFactory;
 
         #endregion
@@ -46,12 +50,14 @@
                                        IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
                                        IAggregateRepository<ContractAggregate,DomainEvent> contractAggregateRepository,
                                        IAggregateRepository<MerchantAggregate, DomainEvent> merchantAggregateRepository,
-                                       IModelFactory modelFactory)
+                                       IModelFactory modelFactory,
+                                       IAggregateRepository<OperatorAggregate, DomainEvent> operatorAggregateRepository)
         {
             this.EstateManagementRepository = estateManagementRepository;
             this.EstateAggregateRepository = estateAggregateRepository;
             this.ContractAggregateRepository = contractAggregateRepository;
             this.MerchantAggregateRepository = merchantAggregateRepository;
+            this.OperatorAggregateRepository = operatorAggregateRepository;
             this.ModelFactory = modelFactory;
         }
 
@@ -89,6 +95,11 @@
 
             Estate estateModel = estateAggregate.GetEstate();
 
+            foreach (Operator @operator in estateModel.Operators){
+                OperatorAggregate operatorAggregate = await this.OperatorAggregateRepository.GetLatestVersion(@operator.OperatorId, cancellationToken);
+                @operator.Name = operatorAggregate.Name;
+            }
+
             return estateModel;
         }
 
@@ -112,6 +123,13 @@
             }
 
             Merchant merchantModel = merchantAggregate.GetMerchant();
+
+            if (merchantModel.Operators != null){
+                foreach (Models.Merchant.Operator @operator in merchantModel.Operators){
+                    OperatorAggregate operatorAggregate = await this.OperatorAggregateRepository.GetLatestVersion(@operator.OperatorId, cancellationToken);
+                    @operator.Name = operatorAggregate.Name;
+                }
+            }
 
             return merchantModel;
         }

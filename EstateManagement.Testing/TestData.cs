@@ -37,6 +37,7 @@
     using Contract = Database.Entities.Contract;
     using Deposit = CallbackHandler.DataTransferObjects.Deposit;
     using Estate = Database.Entities.Estate;
+    using OperatorEntity = Database.Entities.Operator;
     using File = Models.File.File;
     using Merchant = Database.Entities.Merchant;
     using MerchantDepositSource = Models.MerchantDepositSource;
@@ -621,14 +622,7 @@
             new AddMerchantDeviceRequest{
                                             DeviceIdentifier = TestData.DeviceIdentifier
                                         };
-
-        public static AddOperatorToEstateRequest AddOperatorToEstateRequest =>
-            AddOperatorToEstateRequest.Create(TestData.EstateId,
-                                              TestData.OperatorId,
-                                              TestData.OperatorName,
-                                              TestData.RequireCustomMerchantNumberFalse,
-                                              TestData.RequireCustomTerminalNumberFalse);
-
+        
         public static AddProductToContractRequest AddProductToContractRequest =>
             AddProductToContractRequest.Create(TestData.ContractId,
                                                TestData.EstateId,
@@ -985,19 +979,25 @@
 
         public static EstateOperator EstateOperatorEntity =>
             new EstateOperator{
-                                  OperatorId = TestData.OperatorId,
-                                  RequireCustomTerminalNumber = TestData.RequireCustomMerchantNumberTrue,
-                                  Name = TestData.OperatorName,
-                                  RequireCustomMerchantNumber = TestData.RequireCustomTerminalNumberTrue
+                                  EstateReportingId = 1,
+                                  OperatorReportingId = 1
                               };
 
+        public static OperatorEntity OperatorEntity =>
+            new OperatorEntity{
+                                  Name = TestData.OperatorName,
+                                  OperatorId = TestData.OperatorId,
+                                  RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                                  RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
+                                  EstateReportingId = 1,
+                                  OperatorReportingId = 1
+                              };
+        
         public static EstateOperator EstateOperatorEntity2 =>
             new EstateOperator{
-                                  OperatorId = TestData.OperatorId2,
-                                  RequireCustomTerminalNumber = TestData.RequireCustomMerchantNumberTrue,
-                                  Name = TestData.OperatorName2,
-                                  RequireCustomMerchantNumber = TestData.RequireCustomTerminalNumberTrue
-                              };
+                EstateReportingId = 1,
+                OperatorReportingId = 2
+            };
 
         public static EstateReferenceAllocatedEvent EstateReferenceAllocatedEvent => new EstateReferenceAllocatedEvent(TestData.EstateId, TestData.EstateReference);
 

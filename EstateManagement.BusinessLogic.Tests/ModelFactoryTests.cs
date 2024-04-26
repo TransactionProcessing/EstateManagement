@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using OperatorEntity = EstateManagement.Database.Entities.Operator;
+
 using EstateModel = EstateManagement.Models.Estate.Estate;
 using EstateEntity = EstateManagement.Database.Entities.Estate;
 using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;
@@ -42,10 +44,13 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
                                                                  };
+            List<OperatorEntity> operators = new List<Operator>{
+                                                                   TestData.OperatorEntity
+                                                               };
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers, operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
@@ -65,10 +70,13 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
                                                                  };
+            List<OperatorEntity> operators = new List<Operator>{
+                                                                   TestData.OperatorEntity
+                                                               };
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers,operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
@@ -87,10 +95,12 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
                                                                  };
-
+            List<OperatorEntity> operators = new List<Operator>{
+                                                                   TestData.OperatorEntity
+                                                               };
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers, operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
@@ -109,10 +119,13 @@ namespace EstateManagement.BusinessLogic.Tests
                                                              TestData.EstateOperatorEntity
                                                          };
             List<EstateSecurityUserEntity> estateSecurityUsers = null;
+            List<OperatorEntity> operators = new List<Operator>{
+                                                                   TestData.OperatorEntity
+                                                               };
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers, operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
@@ -131,10 +144,13 @@ namespace EstateManagement.BusinessLogic.Tests
                                                              TestData.EstateOperatorEntity
                                                          };
             List<EstateSecurityUserEntity> estateSecurityUsers = null;
+            List<OperatorEntity> operators = new List<Operator>{
+                                                                   TestData.OperatorEntity
+                                                               };
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers,operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);

@@ -15,6 +15,7 @@ using FileProcessor.FileImportLog.DomainEvents;
 using Merchant.DomainEvents;
 using MerchantStatement.DomainEvents;
 using Microsoft.EntityFrameworkCore;
+using Operator.DomainEvents;
 using Shared.DomainDrivenDesign.EventSourcing;
 using Shared.Exceptions;
 using Shared.Logger;
@@ -60,6 +61,24 @@ public class EstateReportingRepository : IEstateReportingRepository{
     #endregion
 
     #region Methods
+
+    public async Task AddOperator(OperatorCreatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Estate estate = await this.LoadEstate(context, domainEvent, cancellationToken);
+
+        Operator @operator = new Operator{
+                                             RequireCustomTerminalNumber = domainEvent.RequireCustomTerminalNumber,
+                                             OperatorId = domainEvent.OperatorId,
+                                             Name = domainEvent.Name,
+                                             RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber,
+                                             EstateReportingId = estate.EstateReportingId
+                                         };
+
+        await context.Operators.AddAsync(@operator, cancellationToken);
+
+        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+    }
 
     public async Task AddContract(ContractCreatedEvent domainEvent,
                                   CancellationToken cancellationToken){
@@ -160,13 +179,10 @@ public class EstateReportingRepository : IEstateReportingRepository{
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
 
         Estate estate = await this.LoadEstate(context, domainEvent, cancellationToken);
-
+        Operator @operator = await this.LoadOperator(context, domainEvent, cancellationToken);
         EstateOperator estateOperator = new EstateOperator{
                                                               EstateReportingId = estate.EstateReportingId,
-                                                              //Name = domainEvent.Name,
-                                                              OperatorId = domainEvent.OperatorId,
-                                                              //RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber,
-                                                              //RequireCustomTerminalNumber = domainEvent.RequireCustomTerminalNumber
+                                                              OperatorReportingId = @operator.OperatorReportingId,
                                                           };
 
         await context.EstateOperators.AddAsync(estateOperator, cancellationToken);
@@ -485,11 +501,11 @@ public class EstateReportingRepository : IEstateReportingRepository{
         Transaction transaction = await this.LoadTransaction(context, domainEvent, cancellationToken);
         Contract contract = await this.LoadContract(context, domainEvent, cancellationToken);
         ContractProduct contractProduct = await this.LoadContractProduct(context, domainEvent, cancellationToken);
-        EstateOperator estateOperator = await this.LoadEstateOperator(context, contract.OperatorId, cancellationToken);
+        Operator estateOperator = await this.LoadOperator(context, contract.OperatorId, cancellationToken);
 
         transaction.ContractReportingId = contract.ContractReportingId;
         transaction.ContractProductReportingId = contractProduct.ContractProductReportingId;
-        transaction.EstateOperatorReportingId = estateOperator.EstateOperatorReportingId;
+        transaction.EstateOperatorReportingId = estateOperator.OperatorReportingId;
 
         await context.SaveChangesAsync(cancellationToken);
     }
@@ -500,14 +516,15 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         // Find the corresponding transaction
         Transaction transaction = await this.LoadTransaction(context, domainEvent, cancellationToken);
-        EstateOperator estateOperator = await context.EstateOperators.SingleAsync(eo => eo.EstateOperatorReportingId == transaction.EstateOperatorReportingId, cancellationToken:cancellationToken);
+        EstateOperator estateOperator = await context.EstateOperators.SingleAsync(eo => eo.OperatorReportingId == transaction.EstateOperatorReportingId, cancellationToken:cancellationToken);
+        Operator @operator = await this.LoadOperator(context, domainEvent, cancellationToken);
         StatementHeader statementHeader = await this.LoadStatementHeader(context, domainEvent, cancellationToken);
 
         StatementLine line = new StatementLine{
                                                   StatementReportingId = statementHeader.StatementReportingId,
                                                   ActivityDateTime = domainEvent.SettledDateTime,
                                                   ActivityDate = domainEvent.SettledDateTime.Date,
-                                                  ActivityDescription = $"{estateOperator.Name} Transaction Fee",
+                                                  ActivityDescription = $"{@operator.Name} Transaction Fee",
                                                   ActivityType = 2, // Transaction Fee
                                                   TransactionReportingId = transaction.TransactionReportingId,
                                                   InAmount = domainEvent.SettledValue
@@ -562,14 +579,15 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         // Find the corresponding transaction
         Transaction transaction = await this.LoadTransaction(context, domainEvent, cancellationToken);
-        EstateOperator estateOperator = await context.EstateOperators.SingleAsync(eo => eo.EstateOperatorReportingId == transaction.EstateOperatorReportingId, cancellationToken:cancellationToken);
+        EstateOperator estateOperator = await context.EstateOperators.SingleAsync(eo => eo.OperatorReportingId == transaction.EstateOperatorReportingId, cancellationToken:cancellationToken);
+        Operator @operator = await this.LoadOperator(context, domainEvent, cancellationToken);
         StatementHeader statementHeader = await this.LoadStatementHeader(context, domainEvent, cancellationToken);
 
         StatementLine line = new StatementLine{
                                                   StatementReportingId = statementHeader.StatementReportingId,
                                                   ActivityDateTime = domainEvent.TransactionDateTime,
                                                   ActivityDate = domainEvent.TransactionDateTime.Date,
-                                                  ActivityDescription = $"{estateOperator.Name} Transaction",
+                                                  ActivityDescription = $"{@operator.Name} Transaction",
                                                   ActivityType = 1, // Transaction
                                                   TransactionReportingId = transaction.TransactionReportingId,
                                                   OutAmount = domainEvent.TransactionValue
@@ -1355,13 +1373,23 @@ public class EstateReportingRepository : IEstateReportingRepository{
         return estate;
     }
 
-    private async Task<EstateOperator> LoadEstateOperator(EstateManagementGenericContext context, Guid operatorId, CancellationToken cancellationToken){
-        EstateOperator estateOperator = await context.EstateOperators.SingleOrDefaultAsync(e => e.OperatorId == operatorId, cancellationToken:cancellationToken);
-        if (estateOperator == null){
-            throw new NotFoundException($"Estate Operator not found with Id {operatorId}");
+    private async Task<Operator> LoadOperator(EstateManagementGenericContext context, Guid operatorId, CancellationToken cancellationToken)
+    {
+        Operator @operator = await context.Operators.SingleOrDefaultAsync(e => e.OperatorId == operatorId, cancellationToken);
+        if (@operator == null)
+        {
+            throw new NotFoundException($"Operator not found with Id {operatorId}");
         }
 
-        return estateOperator;
+        return @operator;
+    }
+
+    private async Task<Operator> LoadOperator(EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid operatorId = DomainEventHelper.GetOperatorId(domainEvent);
+        Operator @operator = await this.LoadOperator(context, operatorId, cancellationToken);
+
+        return @operator;
     }
 
     private async Task<File> LoadFile(EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken){

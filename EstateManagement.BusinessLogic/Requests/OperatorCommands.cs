@@ -10,6 +10,6 @@ namespace EstateManagement.BusinessLogic.Requests
     using MediatR;
 
     public class OperatorCommands{
-        public record CreateOperatorCommand(Guid EstateId, CreateOperatorRequest RequestDto) : IRequest;
+        public record CreateOperatorCommand(CreateOperatorRequest RequestDto) : IRequest;
     }
 }

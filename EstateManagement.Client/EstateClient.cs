@@ -10,6 +10,7 @@
     using DataTransferObjects.Requests.Contract;
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
+    using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.Merchant;
@@ -383,12 +384,44 @@
             return response;
         }
 
-        public async Task<CreateEstateUserResponse> CreateEstateUser(String accessToken,
+        public async Task<CreateOperatorResponse> CreateOperator(String accessToken, CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken){
+            CreateOperatorResponse response = null;
+
+            String requestUri = this.BuildRequestUrl("/api/operators/");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(createOperatorRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<CreateOperatorResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error creating new operator {createOperatorRequest.Name}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        public async Task CreateEstateUser(String accessToken,
                                                                      Guid estateId,
                                                                      CreateEstateUserRequest createEstateUserRequest,
                                                                      CancellationToken cancellationToken){
-            CreateEstateUserResponse response = null;
-
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/users");
 
             try{
@@ -403,10 +436,7 @@
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
-
-                // call was successful so now deserialise the body to the response object
-                response = JsonConvert.DeserializeObject<CreateEstateUserResponse>(content);
+                await this.HandleResponse(httpResponse, cancellationToken);
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
@@ -414,8 +444,6 @@
 
                 throw exception;
             }
-
-            return response;
         }
 
         public async Task<CreateMerchantResponse> CreateMerchant(String accessToken,
@@ -453,12 +481,11 @@
             return response;
         }
 
-        public async Task<CreateMerchantUserResponse> CreateMerchantUser(String accessToken,
+        public async Task CreateMerchantUser(String accessToken,
                                                                          Guid estateId,
                                                                          Guid merchantId,
                                                                          CreateMerchantUserRequest createMerchantUserRequest,
                                                                          CancellationToken cancellationToken){
-            CreateMerchantUserResponse response = null;
 
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/users");
 
@@ -474,10 +501,7 @@
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                String content = await this.HandleResponse(httpResponse, cancellationToken);
-
-                // call was successful so now deserialise the body to the response object
-                response = JsonConvert.DeserializeObject<CreateMerchantUserResponse>(content);
+                await this.HandleResponse(httpResponse, cancellationToken);
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
@@ -486,8 +510,6 @@
 
                 throw exception;
             }
-
-            return response;
         }
 
         public async Task AssignOperatorToEstate(String accessToken,
