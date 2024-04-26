@@ -118,12 +118,9 @@
                 return this.Forbid();
             }
             
-            Estate estate = await this.EstateManagementManager.GetEstate(estateId, cancellationToken);
+            EstateQueries.GetEstateQuery query = new(estateId);
 
-            if (estate == null)
-            {
-                throw new NotFoundException($"Estate not found with estate Id {estateId}");
-            }
+            Estate estate = await this.Mediator.Send(query, cancellationToken);
 
             return this.Ok(ModelFactory.ConvertFrom(estate));
         }
@@ -149,17 +146,14 @@
                 return this.Forbid();
             }
 
-            List<Estate> estates = await this.EstateManagementManager.GetEstates(estateId, cancellationToken);
+            EstateQueries.GetEstatesQuery query = new(estateId);
 
-            if (estates.Any() == false)
-            {
-                throw new NotFoundException($"Estate not found with estate Id {estateId}");
-            }
+            List<Estate> estates = await this.Mediator.Send(query, cancellationToken);
 
-            var estate = estates.Single();
+            Estate estate = estates.Single();
 
-            EstateResponse estateReponse = ModelFactory.ConvertFrom(estate);
-            return this.Ok(new List<EstateResponse>() {estateReponse});
+            EstateResponse estateResponse = ModelFactory.ConvertFrom(estate);
+            return this.Ok(new List<EstateResponse>() {estateResponse});
         }
 
         /// <summary>
@@ -197,6 +191,12 @@
         [Route("{estateId}/operators")]
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId, [FromBody] AssignOperatorRequest assignOperatorRequest, CancellationToken cancellationToken)
         {
+            // Reject password tokens
+            if (ClaimsHelper.IsPasswordToken(this.User))
+            {
+                return this.Forbid();
+            }
+
             // Create the command
             EstateCommands.AddOperatorToEstateCommand command = new(estateId, assignOperatorRequest);
 

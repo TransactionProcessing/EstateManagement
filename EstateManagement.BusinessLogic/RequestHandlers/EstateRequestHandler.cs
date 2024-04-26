@@ -1,11 +1,16 @@
 ﻿namespace EstateManagement.BusinessLogic.RequestHandlers
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using EstateManagement.BusinessLogic.Manger;
     using MediatR;
+    using Models.Estate;
     using Requests;
     using Services;
+    using Shared.Exceptions;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
     /// <summary>
     /// 
@@ -15,7 +20,9 @@
     /// <seealso cref="AddOperatorToEstateRequest.String}" />
     public class EstateRequestHandler : IRequestHandler<EstateCommands.CreateEstateCommand>,
                                         IRequestHandler<EstateCommands.AddOperatorToEstateCommand>,
-                                        IRequestHandler<EstateCommands.CreateEstateUserCommand>
+                                        IRequestHandler<EstateCommands.CreateEstateUserCommand>,
+                                        IRequestHandler<EstateQueries.GetEstateQuery, Estate>,
+                                        IRequestHandler<EstateQueries.GetEstatesQuery, List<Estate>>
     {
         #region Fields
 
@@ -23,6 +30,8 @@
         /// The estate domain service
         /// </summary>
         private readonly IEstateDomainService EstateDomainService;
+
+        private readonly IEstateManagementManager EstateManagementManager;
 
         #endregion
 
@@ -32,9 +41,10 @@
         /// Initializes a new instance of the <see cref="EstateRequestHandler" /> class.
         /// </summary>
         /// <param name="estateDomainService">The estate domain service.</param>
-        public EstateRequestHandler(IEstateDomainService estateDomainService)
-        {
+        public EstateRequestHandler(IEstateDomainService estateDomainService,
+                                    IEstateManagementManager estateManagementManager){
             this.EstateDomainService = estateDomainService;
+            this.EstateManagementManager = estateManagementManager;
         }
 
         #endregion
@@ -58,5 +68,15 @@
         }
 
         #endregion
+
+        public async Task<Estate> Handle(EstateQueries.GetEstateQuery query, CancellationToken cancellationToken){
+            Estate estate = await this.EstateManagementManager.GetEstate(query.EstateId, cancellationToken);
+            return estate;
+        }
+
+        public async Task<List<Estate>> Handle(EstateQueries.GetEstatesQuery query, CancellationToken cancellationToken){
+            List<Estate> estates = await this.EstateManagementManager.GetEstates(query.EstateId, cancellationToken);
+            return estates;
+        }
     }
 }
