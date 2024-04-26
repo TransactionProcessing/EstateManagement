@@ -9,6 +9,7 @@
     using Database.Entities;
     using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Requests.Merchant;
+    using DataTransferObjects.Requests.Operator;
     using Estate.DomainEvents;
     using EstateAggregate;
     using FileProcessor.File.DomainEvents;
@@ -833,6 +834,16 @@
 
         public static EstateCommands.CreateEstateUserCommand CreateEstateUserCommand => new EstateCommands.CreateEstateUserCommand(TestData.EstateId, TestData.CreateEstateUserRequest);
 
+        public static CreateOperatorRequest CreateOperatorRequest =>
+            new CreateOperatorRequest(){
+                                           OperatorId = TestData.OperatorId,
+                                           EstateId = TestData.EstateId,
+                                           RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
+                                           RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                                           Name = TestData.OperatorName
+                                       };
+        public static OperatorCommands.CreateOperatorCommand CreateOperatorCommand => new(TestData.CreateOperatorRequest);
+
         public static CreateEstateUserRequest CreateEstateUserRequest =>
             new CreateEstateUserRequest{
                                            EmailAddress = TestData.EstateUserEmailAddress,
@@ -1117,6 +1128,10 @@
         public static MerchantQueries.GetMerchantQuery GetMerchantQuery => new MerchantQueries.GetMerchantQuery(TestData.EstateId, TestData.MerchantId);
 
         public static MerchantQueries.GetMerchantsQuery GetMerchantsQuery => new MerchantQueries.GetMerchantsQuery(TestData.EstateId);
+
+        public static EstateQueries.GetEstateQuery GetEstateQuery => new (TestData.EstateId);
+
+        public static EstateQueries.GetEstatesQuery GetEstatesQuery => new(TestData.EstateId);
 
         public static MerchantQueries.GetTransactionFeesForProductQuery GetTransactionFeesForProductQuery =>
             new MerchantQueries.GetTransactionFeesForProductQuery(TestData.EstateId,

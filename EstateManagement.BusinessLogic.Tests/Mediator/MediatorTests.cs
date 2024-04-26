@@ -45,11 +45,14 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.RemoveMerchantContractCommand);
             this.Requests.Add(TestData.CreateEstateCommand);
             this.Requests.Add(TestData.CreateEstateUserCommand);
+            this.Requests.Add(TestData.CreateOperatorCommand);
 
             this.Requests.Add(TestData.GetMerchantsQuery);
             this.Requests.Add(TestData.GetMerchantQuery);
             this.Requests.Add(TestData.GetMerchantContractsQuery);
             this.Requests.Add(TestData.GetTransactionFeesForProductQuery);
+            this.Requests.Add(TestData.GetEstateQuery);
+            this.Requests.Add(TestData.GetEstatesQuery);
 
             //this.Requests.Add(TestData.AddProductToContractRequest);
             //this.Requests.Add(TestData.AddSettledFeeToMerchantStatementRequest);
@@ -138,7 +141,8 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
                                           s.AddSingleton<IContractDomainService, DummyContractDomainService>();
                                           s.AddSingleton<IMerchantStatementDomainService, DummyMerchantStatementDomainService>();
                                           s.AddSingleton<IEstateManagementManager, DummyEstateManagementManager>();
-                                      });
+                                          s.AddSingleton<IOperatorDomainService, DummyOperatorDomainService>();
+            });
         }
     }
 }
