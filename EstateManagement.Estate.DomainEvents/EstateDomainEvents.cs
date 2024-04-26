@@ -8,10 +8,7 @@
     public record EstateReferenceAllocatedEvent(Guid EstateId, String EstateReference) : DomainEvent(EstateId, Guid.NewGuid());
 
     public record OperatorAddedToEstateEvent(Guid EstateId,
-                                             Guid OperatorId,
-                                             String Name,
-                                             Boolean RequireCustomMerchantNumber,
-                                             Boolean RequireCustomTerminalNumber) : DomainEvent(EstateId, Guid.NewGuid());
+                                             Guid OperatorId) : DomainEvent(EstateId, Guid.NewGuid());
 
     public record SecurityUserAddedToEstateEvent(Guid EstateId,
                                                  Guid SecurityUserId,

@@ -67,10 +67,23 @@ public static class Extensions{
         return modelBuilder;
     }
 
+    public static ModelBuilder SetupOperator(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Operator>().HasKey(t => new {
+                                                          t.OperatorReportingId
+                                                      });
+
+        modelBuilder.Entity<Operator>().HasIndex(t => new {
+                                                              t.OperatorId
+                                                          }).IsUnique();
+
+        return modelBuilder;
+    }
+
     public static ModelBuilder SetupEstateOperator(this ModelBuilder modelBuilder){
         modelBuilder.Entity<EstateOperator>().HasKey(t => new{
                                                                  t.EstateReportingId,
-                                                                 t.OperatorId
+                                                                 t.OperatorReportingId
                                                              });
         return modelBuilder;
     }

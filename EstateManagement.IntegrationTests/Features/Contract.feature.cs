@@ -170,25 +170,37 @@ namespace EstateManagement.IntegrationTests.Features
  await testRunner.GivenAsync("I have created the following operators", ((string)(null)), table7, "Given ");
 #line hidden
             Reqnroll.Table table8 = new Reqnroll.Table(new string[] {
+                        "EstateName",
+                        "OperatorName"});
+            table8.AddRow(new string[] {
+                        "Test Estate 1",
+                        "Test Operator 1"});
+            table8.AddRow(new string[] {
+                        "Test Estate 2",
+                        "Test Operator 1"});
+#line 36
+ await testRunner.AndAsync("I have assigned the following operators to the estates", ((string)(null)), table8, "And ");
+#line hidden
+            Reqnroll.Table table9 = new Reqnroll.Table(new string[] {
                         "EmailAddress",
                         "Password",
                         "GivenName",
                         "FamilyName",
                         "EstateName"});
-            table8.AddRow(new string[] {
+            table9.AddRow(new string[] {
                         "estateuser1@testestate1.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate 1"});
-            table8.AddRow(new string[] {
+            table9.AddRow(new string[] {
                         "estateuser1@testestate2.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate 2"});
-#line 36
- await testRunner.GivenAsync("I have created the following security users", ((string)(null)), table8, "Given ");
+#line 41
+ await testRunner.GivenAsync("I have created the following security users", ((string)(null)), table9, "Given ");
 #line hidden
         }
         
@@ -199,7 +211,7 @@ namespace EstateManagement.IntegrationTests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Get Merchant Contracts", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 41
+#line 46
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -212,7 +224,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 await this.FeatureBackgroundAsync();
 #line hidden
-                Reqnroll.Table table9 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table10 = new Reqnroll.Table(new string[] {
                             "MerchantName",
                             "AddressLine1",
                             "Town",
@@ -221,7 +233,7 @@ await this.FeatureBackgroundAsync();
                             "ContactName",
                             "EmailAddress",
                             "EstateName"});
-                table9.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Test Merchant 1",
                             "Address Line 1",
                             "TestTown",
@@ -230,7 +242,7 @@ await this.FeatureBackgroundAsync();
                             "Test Contact 1",
                             "testcontact1@merchant1.co.uk",
                             "Test Estate 1"});
-                table9.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Test Merchant 2",
                             "Address Line 1",
                             "TestTown",
@@ -239,25 +251,25 @@ await this.FeatureBackgroundAsync();
                             "Test Contact 1",
                             "testcontact1@merchant2.co.uk",
                             "Test Estate 2"});
-#line 43
- await testRunner.GivenAsync("I create the following merchants", ((string)(null)), table9, "Given ");
+#line 48
+ await testRunner.GivenAsync("I create the following merchants", ((string)(null)), table10, "Given ");
 #line hidden
-                Reqnroll.Table table10 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table11 = new Reqnroll.Table(new string[] {
                             "EstateName",
                             "OperatorName",
                             "ContractDescription"});
-                table10.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 1"});
-                table10.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 2"});
-#line 48
- await testRunner.GivenAsync("I create a contract with the following values", ((string)(null)), table10, "Given ");
+#line 53
+ await testRunner.GivenAsync("I create a contract with the following values", ((string)(null)), table11, "Given ");
 #line hidden
-                Reqnroll.Table table11 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table12 = new Reqnroll.Table(new string[] {
                             "EstateName",
                             "OperatorName",
                             "ContractDescription",
@@ -265,7 +277,7 @@ await this.FeatureBackgroundAsync();
                             "DisplayText",
                             "Value",
                             "ProductType"});
-                table11.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 1",
@@ -273,7 +285,7 @@ await this.FeatureBackgroundAsync();
                             "100 KES",
                             "100.00",
                             "MobileTopup"});
-                table11.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 1",
@@ -281,7 +293,7 @@ await this.FeatureBackgroundAsync();
                             "Custom",
                             "",
                             "MobileTopup"});
-                table11.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 2",
@@ -289,7 +301,7 @@ await this.FeatureBackgroundAsync();
                             "100 KES",
                             "100.00",
                             "MobileTopup"});
-                table11.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 2",
@@ -297,10 +309,10 @@ await this.FeatureBackgroundAsync();
                             "Custom",
                             "",
                             "MobileTopup"});
-#line 53
- await testRunner.WhenAsync("I create the following Products", ((string)(null)), table11, "When ");
+#line 58
+ await testRunner.WhenAsync("I create the following Products", ((string)(null)), table12, "When ");
 #line hidden
-                Reqnroll.Table table12 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table13 = new Reqnroll.Table(new string[] {
                             "EstateName",
                             "OperatorName",
                             "ContractDescription",
@@ -309,7 +321,7 @@ await this.FeatureBackgroundAsync();
                             "FeeDescription",
                             "Value",
                             "FeeType"});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 1",
@@ -318,7 +330,7 @@ await this.FeatureBackgroundAsync();
                             "Merchant Commission",
                             "1.00",
                             "Merchant"});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 1",
@@ -327,7 +339,7 @@ await this.FeatureBackgroundAsync();
                             "Merchant Commission",
                             "0.015",
                             "Merchant"});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 1",
@@ -336,7 +348,7 @@ await this.FeatureBackgroundAsync();
                             "Merchant Commission",
                             "1.50",
                             "Merchant"});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 2",
@@ -345,7 +357,7 @@ await this.FeatureBackgroundAsync();
                             "Merchant Commission",
                             "0.25",
                             "Merchant"});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Operator 1",
                             "Operator 1 Contract Estate 2",
@@ -354,94 +366,75 @@ await this.FeatureBackgroundAsync();
                             "Merchant Commission",
                             "2.25",
                             "Merchant"});
-#line 60
- await testRunner.WhenAsync("I add the following Transaction Fees", ((string)(null)), table12, "When ");
+#line 65
+ await testRunner.WhenAsync("I add the following Transaction Fees", ((string)(null)), table13, "When ");
 #line hidden
-                Reqnroll.Table table13 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table14 = new Reqnroll.Table(new string[] {
                             "EstateName",
                             "MerchantName",
                             "ContractDescription"});
-                table13.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "Test Estate 1",
                             "Test Merchant 1",
                             "Operator 1 Contract Estate 1"});
-                table13.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "Test Estate 2",
                             "Test Merchant 2",
                             "Operator 1 Contract Estate 2"});
-#line 68
- await testRunner.WhenAsync("I add the following contracts to the following merchants", ((string)(null)), table13, "When ");
-#line hidden
-                Reqnroll.Table table14 = new Reqnroll.Table(new string[] {
-                            "ContractDescription",
-                            "ProductName"});
-                table14.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "100 KES Topup"});
-                table14.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "Variable Topup 1"});
 #line 73
- await testRunner.ThenAsync("I get the Contracts for \'Test Estate 1\' the following contract details are return" +
-                        "ed", ((string)(null)), table14, "Then ");
+ await testRunner.WhenAsync("I add the following contracts to the following merchants", ((string)(null)), table14, "When ");
 #line hidden
                 Reqnroll.Table table15 = new Reqnroll.Table(new string[] {
                             "ContractDescription",
                             "ProductName"});
                 table15.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "200 KES Topup"});
+                            "Operator 1 Contract Estate 1",
+                            "100 KES Topup"});
                 table15.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "Variable Topup 2"});
+                            "Operator 1 Contract Estate 1",
+                            "Variable Topup 1"});
 #line 78
- await testRunner.ThenAsync("I get the Contracts for \'Test Estate 2\' the following contract details are return" +
+ await testRunner.ThenAsync("I get the Contracts for \'Test Estate 1\' the following contract details are return" +
                         "ed", ((string)(null)), table15, "Then ");
 #line hidden
                 Reqnroll.Table table16 = new Reqnroll.Table(new string[] {
                             "ContractDescription",
                             "ProductName"});
                 table16.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "100 KES Topup"});
+                            "Operator 1 Contract Estate 2",
+                            "200 KES Topup"});
                 table16.AddRow(new string[] {
-                            "Operator 1 Contract Estate 1",
-                            "Variable Topup 1"});
+                            "Operator 1 Contract Estate 2",
+                            "Variable Topup 2"});
 #line 83
- await testRunner.ThenAsync("I get the Merchant Contracts for \'Test Merchant 1\' for \'Test Estate 1\' the follow" +
-                        "ing contract details are returned", ((string)(null)), table16, "Then ");
+ await testRunner.ThenAsync("I get the Contracts for \'Test Estate 2\' the following contract details are return" +
+                        "ed", ((string)(null)), table16, "Then ");
 #line hidden
                 Reqnroll.Table table17 = new Reqnroll.Table(new string[] {
                             "ContractDescription",
                             "ProductName"});
                 table17.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "200 KES Topup"});
+                            "Operator 1 Contract Estate 1",
+                            "100 KES Topup"});
                 table17.AddRow(new string[] {
-                            "Operator 1 Contract Estate 2",
-                            "Variable Topup 2"});
+                            "Operator 1 Contract Estate 1",
+                            "Variable Topup 1"});
 #line 88
- await testRunner.ThenAsync("I get the Merchant Contracts for \'Test Merchant 2\' for \'Test Estate 2\' the follow" +
+ await testRunner.ThenAsync("I get the Merchant Contracts for \'Test Merchant 1\' for \'Test Estate 1\' the follow" +
                         "ing contract details are returned", ((string)(null)), table17, "Then ");
 #line hidden
                 Reqnroll.Table table18 = new Reqnroll.Table(new string[] {
-                            "CalculationType",
-                            "FeeDescription",
-                            "Value",
-                            "FeeType"});
+                            "ContractDescription",
+                            "ProductName"});
                 table18.AddRow(new string[] {
-                            "Fixed",
-                            "Merchant Commission",
-                            "1.00",
-                            "Merchant"});
+                            "Operator 1 Contract Estate 2",
+                            "200 KES Topup"});
                 table18.AddRow(new string[] {
-                            "Percentage",
-                            "Merchant Commission",
-                            "0.015",
-                            "Merchant"});
+                            "Operator 1 Contract Estate 2",
+                            "Variable Topup 2"});
 #line 93
- await testRunner.ThenAsync("I get the Transaction Fees for \'100 KES Topup\' on the \'Operator 1 Contract Estate" +
-                        " 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table18, "Then ");
+ await testRunner.ThenAsync("I get the Merchant Contracts for \'Test Merchant 2\' for \'Test Estate 2\' the follow" +
+                        "ing contract details are returned", ((string)(null)), table18, "Then ");
 #line hidden
                 Reqnroll.Table table19 = new Reqnroll.Table(new string[] {
                             "CalculationType",
@@ -451,11 +444,16 @@ await this.FeatureBackgroundAsync();
                 table19.AddRow(new string[] {
                             "Fixed",
                             "Merchant Commission",
-                            "1.50",
+                            "1.00",
+                            "Merchant"});
+                table19.AddRow(new string[] {
+                            "Percentage",
+                            "Merchant Commission",
+                            "0.015",
                             "Merchant"});
 #line 98
- await testRunner.ThenAsync("I get the Transaction Fees for \'Variable Topup 1\' on the \'Operator 1 Contract Est" +
-                        "ate 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table19, "Then ");
+ await testRunner.ThenAsync("I get the Transaction Fees for \'100 KES Topup\' on the \'Operator 1 Contract Estate" +
+                        " 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table19, "Then ");
 #line hidden
                 Reqnroll.Table table20 = new Reqnroll.Table(new string[] {
                             "CalculationType",
@@ -463,13 +461,13 @@ await this.FeatureBackgroundAsync();
                             "Value",
                             "FeeType"});
                 table20.AddRow(new string[] {
-                            "Percentage",
+                            "Fixed",
                             "Merchant Commission",
-                            "0.25",
+                            "1.50",
                             "Merchant"});
-#line 102
- await testRunner.ThenAsync("I get the Transaction Fees for \'200 KES Topup\' on the \'Operator 1 Contract Estate" +
-                        " 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table20, "Then ");
+#line 103
+ await testRunner.ThenAsync("I get the Transaction Fees for \'Variable Topup 1\' on the \'Operator 1 Contract Est" +
+                        "ate 1\' contract for \'Test Estate 1\' the following fees are returned", ((string)(null)), table20, "Then ");
 #line hidden
                 Reqnroll.Table table21 = new Reqnroll.Table(new string[] {
                             "CalculationType",
@@ -479,11 +477,25 @@ await this.FeatureBackgroundAsync();
                 table21.AddRow(new string[] {
                             "Percentage",
                             "Merchant Commission",
+                            "0.25",
+                            "Merchant"});
+#line 107
+ await testRunner.ThenAsync("I get the Transaction Fees for \'200 KES Topup\' on the \'Operator 1 Contract Estate" +
+                        " 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table21, "Then ");
+#line hidden
+                Reqnroll.Table table22 = new Reqnroll.Table(new string[] {
+                            "CalculationType",
+                            "FeeDescription",
+                            "Value",
+                            "FeeType"});
+                table22.AddRow(new string[] {
+                            "Percentage",
+                            "Merchant Commission",
                             "2.25",
                             "Merchant"});
-#line 106
+#line 111
  await testRunner.ThenAsync("I get the Transaction Fees for \'Variable Topup 2\' on the \'Operator 1 Contract Est" +
-                        "ate 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table21, "Then ");
+                        "ate 2\' contract for \'Test Estate 2\' the following fees are returned", ((string)(null)), table22, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

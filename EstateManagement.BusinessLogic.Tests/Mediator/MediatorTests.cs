@@ -43,6 +43,8 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.UpdateMerchantContactCommand);
             this.Requests.Add(TestData.RemoveOperatorFromMerchantCommand);
             this.Requests.Add(TestData.RemoveMerchantContractCommand);
+            this.Requests.Add(TestData.CreateEstateCommand);
+            this.Requests.Add(TestData.CreateEstateUserCommand);
 
             this.Requests.Add(TestData.GetMerchantsQuery);
             this.Requests.Add(TestData.GetMerchantQuery);
@@ -54,8 +56,6 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             //this.Requests.Add(TestData.AddTransactionFeeForProductToContractRequest);
             //this.Requests.Add(TestData.AddTransactionToMerchantStatementRequest);
             //this.Requests.Add(TestData.CreateContractRequest);
-            //this.Requests.Add(TestData.CreateEstateRequest);
-            //this.Requests.Add(TestData.CreateEstateUserRequest);
             //this.Requests.Add(TestData.DisableTransactionFeeForProductRequest);
             //this.Requests.Add(TestData.EmailMerchantStatementRequest);
             //this.Requests.Add(TestData.GenerateMerchantStatementRequest);

@@ -89,23 +89,26 @@
                 throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} is not supported on Estate [{estate.Name}]");
             }
 
+            // TODO: Reintroduce when we have an Operator Aggregate
+            // https://github.com/TransactionProcessing/EstateManagement/issues/558
             // Operator has been validated, now check the rules of the operator against the passed in data
-            if (@operator.RequireCustomMerchantNumber) {
-                // requested addition must have a merchant number supplied
-                if (String.IsNullOrEmpty(command.RequestDto.MerchantNumber)) {
-                    throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a merchant number is provided");
-                }
-            }
+            //if (@operator.RequireCustomMerchantNumber) {
+            //    // requested addition must have a merchant number supplied
+            //    if (String.IsNullOrEmpty(command.RequestDto.MerchantNumber)) {
+            //        throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a merchant number is provided");
+            //    }
+            //}
 
-            if (@operator.RequireCustomTerminalNumber) {
-                // requested addition must have a terminal number supplied
-                if (String.IsNullOrEmpty(command.RequestDto.TerminalNumber)) {
-                    throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a terminal number is provided");
-                }
-            }
+            //if (@operator.RequireCustomTerminalNumber) {
+            //    // requested addition must have a terminal number supplied
+            //    if (String.IsNullOrEmpty(command.RequestDto.TerminalNumber)) {
+            //        throw new InvalidOperationException($"Operator Id {command.RequestDto.OperatorId} requires that a terminal number is provided");
+            //    }
+            //}
 
             // Assign the operator
-            validateResults.merchantAggregate.AssignOperator(command.RequestDto.OperatorId, @operator.Name, command.RequestDto.MerchantNumber, command.RequestDto.TerminalNumber);
+            // TODO: Swap second parameter to name
+            validateResults.merchantAggregate.AssignOperator(command.RequestDto.OperatorId, @operator.OperatorId.ToString(), command.RequestDto.MerchantNumber, command.RequestDto.TerminalNumber);
 
             await this.MerchantAggregateRepository.SaveChanges(validateResults.merchantAggregate, cancellationToken);
 

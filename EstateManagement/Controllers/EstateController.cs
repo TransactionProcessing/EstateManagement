@@ -8,8 +8,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Manger;
+    using BusinessLogic.Requests;
     using Common.Examples;
-    using DataTransferObjects.Responses;
+    using DataTransferObjects.Requests.Estate;
     using DataTransferObjects.Responses.Estate;
     using Factories;
     using MediatR;
@@ -20,11 +21,7 @@
     using Shared.General;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
-    using CreateEstateRequest = BusinessLogic.Requests.CreateEstateRequest;
-    using CreateEstateRequestDTO = DataTransferObjects.Requests.Estate.CreateEstateRequest;
-    using CreateEstateUserRequest = BusinessLogic.Requests.CreateEstateUserRequest;
-    using CreateEstateUserRequestDTO = DataTransferObjects.Requests.Estate.CreateEstateUserRequest;
-
+    
     [ExcludeFromCodeCoverage]
     [Route(EstateController.ControllerRoute)]
     [ApiController]
@@ -68,7 +65,7 @@
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateEstateResponse))]
         [SwaggerResponseExample(201, typeof(CreateEstateResponseExample))]
-        public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequestDTO createEstateRequest,
+        public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequest createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
             // Reject password tokens
@@ -80,10 +77,10 @@
             Guid estateId = createEstateRequest.EstateId;
 
             // Create the command
-            CreateEstateRequest request = CreateEstateRequest.Create(estateId, createEstateRequest.EstateName);
+            EstateCommands.CreateEstateCommand command = new(createEstateRequest);
 
             // Route the command
-            await this.Mediator.Send(request, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
             // return the result
             return this.Created($"{EstateController.ControllerRoute}/{estateId}",
@@ -177,7 +174,7 @@
         [SwaggerResponse(201, "Created", typeof(CreateEstateUserResponse))]
         [SwaggerResponseExample(201, typeof(CreateEstateUserResponseExample))]
         public async Task<IActionResult> CreateEstateUser([FromRoute] Guid estateId,
-                                                          [FromBody] CreateEstateUserRequestDTO createEstateUserRequest,
+                                                          [FromBody] CreateEstateUserRequest createEstateUserRequest,
                                                           CancellationToken cancellationToken)
         {
             // Reject password tokens
@@ -187,23 +184,29 @@
             }
 
             // Create the command
-            CreateEstateUserRequest request = CreateEstateUserRequest.Create(estateId, createEstateUserRequest.EmailAddress,
-                                                                             createEstateUserRequest.Password,
-                                                                             createEstateUserRequest.GivenName,
-                                                                             createEstateUserRequest.MiddleName,
-                                                                             createEstateUserRequest.FamilyName);
+            EstateCommands.CreateEstateUserCommand command = new(estateId, createEstateUserRequest);
 
             // Route the command
-            Guid userId = await this.Mediator.Send(request, cancellationToken);
+            await this.Mediator.Send(command, cancellationToken);
 
             // return the result
-            return this.Created($"{EstateController.ControllerRoute}/{estateId}/users/{userId}",
-                                new CreateEstateUserResponse
-                                {
-                                    EstateId = estateId,
-                                    UserId = userId
-                                });
+            return this.Ok();
         }
+
+        [HttpPost]
+        [Route("{estateId}/operators")]
+        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId, [FromBody] AssignOperatorRequest assignOperatorRequest, CancellationToken cancellationToken)
+        {
+            // Create the command
+            EstateCommands.AddOperatorToEstateCommand command = new(estateId, assignOperatorRequest);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
+        }
+
         #endregion
 
         #region Others

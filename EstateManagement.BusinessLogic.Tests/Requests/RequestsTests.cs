@@ -12,22 +12,6 @@
         #region Methods
         
         [Fact]
-        public void AddOperatorToEstateRequest_CanBeCreated_IsCreated() {
-            AddOperatorToEstateRequest addOperatorToEstateRequest = AddOperatorToEstateRequest.Create(TestData.EstateId,
-                                                                                                      TestData.OperatorId,
-                                                                                                      TestData.OperatorName,
-                                                                                                      TestData.RequireCustomMerchantNumberTrue,
-                                                                                                      TestData.RequireCustomTerminalNumberTrue);
-
-            addOperatorToEstateRequest.ShouldNotBeNull();
-            addOperatorToEstateRequest.EstateId.ShouldBe(TestData.EstateId);
-            addOperatorToEstateRequest.OperatorId.ShouldBe(TestData.OperatorId);
-            addOperatorToEstateRequest.Name.ShouldBe(TestData.OperatorName);
-            addOperatorToEstateRequest.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumberTrue);
-            addOperatorToEstateRequest.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumberTrue);
-        }
-
-        [Fact]
         public void AddProductToContractRequest_WithFixedValue_CanBeCreated_IsCreated() {
             AddProductToContractRequest addProductToContractRequest =
                 AddProductToContractRequest.Create(TestData.ContractId,
@@ -138,33 +122,6 @@
             createContractRequest.EstateId.ShouldBe(TestData.EstateId);
             createContractRequest.OperatorId.ShouldBe(TestData.OperatorId);
             createContractRequest.Description.ShouldBe(TestData.ContractDescription);
-        }
-
-        [Fact]
-        public void CreateEstateRequest_CanBeCreated_IsCreated() {
-            CreateEstateRequest createEstateRequest = CreateEstateRequest.Create(TestData.EstateId, TestData.EstateName);
-
-            createEstateRequest.ShouldNotBeNull();
-            createEstateRequest.EstateId.ShouldBe(TestData.EstateId);
-            createEstateRequest.Name.ShouldBe(TestData.EstateName);
-        }
-
-        [Fact]
-        public void CreateEstateUserRequest_CanBeCreated_IsCreated() {
-            CreateEstateUserRequest createEstateUserRequest = CreateEstateUserRequest.Create(TestData.EstateId,
-                                                                                             TestData.EstateUserEmailAddress,
-                                                                                             TestData.EstateUserPassword,
-                                                                                             TestData.EstateUserGivenName,
-                                                                                             TestData.EstateUserMiddleName,
-                                                                                             TestData.EstateUserFamilyName);
-
-            createEstateUserRequest.ShouldNotBeNull();
-            createEstateUserRequest.EstateId.ShouldBe(TestData.EstateId);
-            createEstateUserRequest.EmailAddress.ShouldBe(TestData.EstateUserEmailAddress);
-            createEstateUserRequest.Password.ShouldBe(TestData.EstateUserPassword);
-            createEstateUserRequest.GivenName.ShouldBe(TestData.EstateUserGivenName);
-            createEstateUserRequest.MiddleName.ShouldBe(TestData.EstateUserMiddleName);
-            createEstateUserRequest.FamilyName.ShouldBe(TestData.EstateUserFamilyName);
         }
         
         [Fact]

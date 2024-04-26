@@ -45,27 +45,19 @@ namespace EstateManagement.Controllers
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateOperatorResponse))]
         [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
-        public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOperator([FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
             // Create the command
-            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
+            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(createOperatorRequest);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);
-
-            // Now as a shortcut atm assign this operator to the estate
-            AddOperatorToEstateRequest request = AddOperatorToEstateRequest.Create(estateId, 
-                                                                                   createOperatorRequest.OperatorId,
-                                                                                   createOperatorRequest.Name,
-                                                                                   createOperatorRequest.RequireCustomMerchantNumber.GetValueOrDefault(),
-                                                                                   createOperatorRequest.RequireCustomTerminalNumber.GetValueOrDefault());
-            await this.Mediator.Send(request, cancellationToken);
-
+            
             // return the result
             return this.Created($"{OperatorController.ControllerRoute}/{createOperatorRequest.OperatorId}",
                                 new CreateOperatorResponse
                                 {
-                                    EstateId = estateId,
+                                    EstateId = createOperatorRequest.EstateId,
                                     OperatorId = createOperatorRequest.OperatorId
                                 });
         }
@@ -80,7 +72,7 @@ namespace EstateManagement.Controllers
         /// <summary>
         /// The controller route
         /// </summary>
-        private const String ControllerRoute = "api/estates/{estateid}/" + OperatorController.ControllerName;
+        private const String ControllerRoute = "api/" + OperatorController.ControllerName;
 
         #endregion
     }

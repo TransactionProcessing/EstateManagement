@@ -82,7 +82,7 @@
             var query = await (from c in context.Contracts
                                join cp in context.ContractProducts on c.ContractReportingId equals cp.ContractReportingId into cps
                                from contractprouduct in cps.DefaultIfEmpty()
-                               join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
+                               join eo in context.Operators on c.OperatorId equals eo.OperatorId
                                join e in context.Estates on eo.EstateReportingId equals e.EstateReportingId
                                select new{
                                              Estate = e,
@@ -147,8 +147,9 @@
 
             List<EstateOperator> estateOperators = await context.EstateOperators.Where(eo => eo.EstateReportingId == estate.EstateReportingId).ToListAsync(cancellationToken);
             List<EstateSecurityUser> estateSecurityUsers = await context.EstateSecurityUsers.Where(esu => esu.EstateReportingId == estate.EstateReportingId).ToListAsync(cancellationToken);
+            List<Operator> operators = await context.Operators.Where(eo => eo.EstateReportingId == estate.EstateReportingId).ToListAsync(cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers);
+            return this.ModelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers, operators);
         }
 
         public async Task<List<ContractModel>> GetMerchantContracts(Guid estateId,
@@ -158,7 +159,7 @@
 
             var x = await (from c in context.Contracts
                            join cp in context.ContractProducts on c.ContractReportingId equals cp.ContractReportingId
-                           join eo in context.EstateOperators on c.OperatorId equals eo.OperatorId
+                           join eo in context.Operators on c.OperatorId equals eo.OperatorId
                            join m in context.Merchants on c.EstateReportingId equals m.EstateReportingId
                            join e in context.Estates on c.EstateReportingId equals e.EstateReportingId
                            join mc in context.MerchantContracts on new {c.ContractReportingId, m.MerchantReportingId} equals new {mc.ContractReportingId, mc.MerchantReportingId}

@@ -13,17 +13,13 @@
         #region Methods
 
         public static void AddOperator(this EstateAggregate aggregate,
-                                       Guid operatorId,
-                                       String operatorName,
-                                       Boolean requireCustomMerchantNumber,
-                                       Boolean requireCustomTerminalNumber){
-            Guard.ThrowIfNullOrEmpty(operatorName, typeof(ArgumentNullException), "Operator name must be provided when adding a new operator");
-
+                                       Guid operatorId){
+            
             aggregate.CheckEstateHasBeenCreated();
-            aggregate.CheckOperatorHasNotAlreadyBeenCreated(operatorId, operatorName);
+            aggregate.CheckOperatorHasNotAlreadyBeenCreated(operatorId);
 
             OperatorAddedToEstateEvent operatorAddedToEstateEvent =
-                new OperatorAddedToEstateEvent(aggregate.AggregateId, operatorId, operatorName, requireCustomMerchantNumber, requireCustomTerminalNumber);
+                new OperatorAddedToEstateEvent(aggregate.AggregateId, operatorId);
 
             aggregate.ApplyAndAppend(operatorAddedToEstateEvent);
         }
@@ -57,7 +53,7 @@
 
             aggregate.CheckEstateHasBeenCreated();
 
-            String reference = String.Format("{0:X}", aggregate.AggregateId.GetHashCode());
+            String reference = $"{aggregate.AggregateId.GetHashCode():X}";
 
             EstateReferenceAllocatedEvent estateReferenceAllocatedEvent = new EstateReferenceAllocatedEvent(aggregate.AggregateId, reference);
 
@@ -76,10 +72,7 @@
 
                 foreach (Operator @operator in aggregate.Operators){
                     estateModel.Operators.Add(new Models.Estate.Operator{
-                                                                            OperatorId = @operator.OperatorId,
-                                                                            Name = @operator.Name,
-                                                                            RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber,
-                                                                            RequireCustomTerminalNumber = @operator.RequireCustomterminalNumber
+                                                                            OperatorId = @operator.OperatorId
                                                                         });
                 }
             }
@@ -99,7 +92,7 @@
         }
 
         public static void PlayEvent(this EstateAggregate aggregate, SecurityUserAddedToEstateEvent domainEvent){
-            SecurityUser securityUser = SecurityUser.Create(domainEvent.SecurityUserId, domainEvent.EmailAddress);
+            SecurityUser securityUser = new SecurityUser(domainEvent.SecurityUserId, domainEvent.EmailAddress);
 
             aggregate.SecurityUsers.Add(securityUser);
         }
@@ -118,10 +111,7 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         public static void PlayEvent(this EstateAggregate aggregate, OperatorAddedToEstateEvent domainEvent){
-            Operator @operator = Operator.Create(domainEvent.OperatorId,
-                                                 domainEvent.Name,
-                                                 domainEvent.RequireCustomMerchantNumber,
-                                                 domainEvent.RequireCustomMerchantNumber);
+            Operator @operator = new (domainEvent.OperatorId);
 
             aggregate.Operators.Add(@operator);
         }
@@ -133,18 +123,11 @@
         }
 
         private static void CheckOperatorHasNotAlreadyBeenCreated(this EstateAggregate aggregate,
-                                                                  Guid operatorId,
-                                                                  String operatorName){
-            Operator operatorWithId = aggregate.Operators.SingleOrDefault(o => o.OperatorId == operatorId);
+                                                                  Guid operatorId){
+            Operator operatorRecord = aggregate.Operators.SingleOrDefault(o => o.OperatorId == operatorId);
 
-            if (operatorWithId != null){
+            if (operatorRecord != null){
                 throw new InvalidOperationException($"Duplicate operator details are not allowed, an operator already exists on this estate with Id [{operatorId}]");
-            }
-
-            Operator operatorWithName = aggregate.Operators.SingleOrDefault(o => o.Name == operatorName);
-
-            if (operatorWithName != null){
-                throw new InvalidOperationException($"Duplicate operator details are not allowed, an operator already exists on this estate with Name [{operatorName}]");
             }
         }
 

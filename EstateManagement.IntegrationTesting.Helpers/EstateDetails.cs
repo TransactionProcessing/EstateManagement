@@ -25,6 +25,7 @@
             this.EstateReference = estateReference;
             this.Merchants = new List<MerchantResponse>();
             this.Operators=new Dictionary<String, Guid>();
+            this.AssignedOperators = new List<Guid>();
             this.MerchantUsers = new Dictionary<String, Dictionary<String, String>>();
             this.Contracts = new List<Contract>();
             this.TransactionResponses = new Dictionary<(Guid merchantId, String transactionNumber), String>();
@@ -74,6 +75,11 @@
                                 String operatorName)
         {
             this.Operators.Add(operatorName,operatorId);
+        }
+
+        public void AddAssignedOperator(Guid operatorId)
+        {
+            this.AssignedOperators.Add(operatorId);
         }
 
         public void AddContract(Guid contractId,
@@ -229,6 +235,8 @@
         public String EstateName { get; private set; }
         public String EstateReference { get; private set; }
         private Dictionary<String, Guid> Operators;
+
+        private List<Guid> AssignedOperators;
 
         private List<MerchantResponse> Merchants;
         

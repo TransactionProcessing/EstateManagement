@@ -12,6 +12,7 @@
     using DataTransferObjects.Responses.Merchant;
     using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
+    using AssignOperatorRequest = DataTransferObjects.Requests.Merchant.AssignOperatorRequest;
 
     /// <summary>
     /// 
@@ -72,7 +73,11 @@
                                                 CreateEstateRequest createEstateRequest,
                                                 CancellationToken cancellationToken);
 
-        Task<CreateEstateUserResponse> CreateEstateUser(String accessToken,
+        Task<CreateOperatorResponse> CreateOperator(String accessToken,
+                                                CreateOperatorRequest createOperatorRequest,
+                                                CancellationToken cancellationToken);
+
+        Task CreateEstateUser(String accessToken,
                                                         Guid estateId,
                                                         CreateEstateUserRequest createEstateUserRequest,
                                                         CancellationToken cancellationToken);
@@ -82,16 +87,16 @@
                                                     CreateMerchantRequest createMerchantRequest,
                                                     CancellationToken cancellationToken);
 
-        Task<CreateMerchantUserResponse> CreateMerchantUser(String accessToken,
+        Task CreateMerchantUser(String accessToken,
                                                             Guid estateId,
                                                             Guid merchantId,
                                                             CreateMerchantUserRequest createMerchantUserRequest,
                                                             CancellationToken cancellationToken);
 
-        Task<CreateOperatorResponse> CreateOperator(String accessToken,
-                                                    Guid estateId,
-                                                    CreateOperatorRequest createOperatorRequest,
-                                                    CancellationToken cancellationToken);
+        Task AssignOperatorToEstate(String accessToken,
+                                    Guid estateId,
+                                    DataTransferObjects.Requests.Estate.AssignOperatorRequest assignOperatorRequest,
+                                    CancellationToken cancellationToken);
 
         Task DisableTransactionFeeForProduct(String accessToken,
                                              Guid estateId,

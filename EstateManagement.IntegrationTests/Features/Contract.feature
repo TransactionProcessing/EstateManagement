@@ -33,6 +33,11 @@ Background:
 	| Test Estate 1 | Test Operator 1 | True                        | True                        |
 	| Test Estate 2 | Test Operator 1 | True                        | True                        |
 
+	And I have assigned the following operators to the estates
+	| EstateName    | OperatorName    | 
+	| Test Estate 1 | Test Operator 1 |
+	| Test Estate 2 | Test Operator 1 |
+
 	Given I have created the following security users
 	| EmailAddress                  | Password | GivenName  | FamilyName | EstateName    |
 	| estateuser1@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate 1 |

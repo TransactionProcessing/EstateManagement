@@ -15,7 +15,7 @@ SELECT
 	m.MerchantId,
 	m.Name as MerchantName,
 	cptf.Description as FeeDescription,
-	estateoperator.Name as OperatorIdentifier,
+	o.Name as OperatorIdentifier,
 	CAST(ISNULL(tar.Amount,0) as decimal) as Amount,
 	f.IsSettled
 from settlement s 
@@ -26,4 +26,4 @@ inner join [estate] e on e.EstateReportingId = m.EstateReportingId
 left outer join contractproducttransactionfee cptf on f.TransactionFeeReportingId = cptf.TransactionFeeReportingId
 left outer join transactionadditionalrequestdata tar on tar.TransactionReportingId = t.TransactionReportingId
 inner join contract c on c.ContractReportingId = t.ContractReportingId
-inner join estateoperator on estateoperator.OperatorId = c.operatorid
+inner join operator o on o.OperatorId = c.operatorid

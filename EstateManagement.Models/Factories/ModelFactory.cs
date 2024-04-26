@@ -26,6 +26,7 @@
     using ContractProductEntity = EstateManagement.Database.Entities.ContractProduct;
     using ContractProductTransactionFeeEntity = EstateManagement.Database.Entities.ContractProductTransactionFee;
     using TransactionFee = Contract.TransactionFee;
+    using OperatorEntity = EstateManagement.Database.Entities.Operator;
 
     /// <summary>
     /// 
@@ -44,7 +45,8 @@
         /// <returns></returns>
         public EstateModel ConvertFrom(EstateEntity estate,
                                        List<EstateOperatorEntity> estateOperators,
-                                       List<EstateSecurityUserEntity> estateSecurityUsers)
+                                       List<EstateSecurityUserEntity> estateSecurityUsers,
+                                       List<OperatorEntity> operators)
         {
             EstateModel estateModel = new EstateModel();
             estateModel.EstateId = estate.EstateId;
@@ -55,13 +57,17 @@
             if (estateOperators != null && estateOperators.Any())
             {
                 estateModel.Operators = new List<EstateOperatorModel>();
-                estateOperators.ForEach(eo => estateModel.Operators.Add(new EstateOperatorModel
-                                                                        {
-                                                                            Name = eo.Name,
-                                                                            RequireCustomMerchantNumber = eo.RequireCustomMerchantNumber,
-                                                                            RequireCustomTerminalNumber = eo.RequireCustomTerminalNumber,
-                                                                            OperatorId = eo.OperatorId
-                                                                        }));
+                foreach (EstateOperatorEntity estateOperator in estateOperators){
+                    // Find the related "operator"
+                    OperatorEntity @operator = operators.Single(o => o.OperatorReportingId == estateOperator.OperatorReportingId);
+
+                    estateModel.Operators.Add(new EstateOperatorModel{
+                                                                         OperatorId = @operator.OperatorId,
+                                                                         Name = @operator.Name,
+                                                                         RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber,
+                                                                         RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber
+                                                                     });
+                }
             }
 
             if (estateSecurityUsers != null && estateSecurityUsers.Any())

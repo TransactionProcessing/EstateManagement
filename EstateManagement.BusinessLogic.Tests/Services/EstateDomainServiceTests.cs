@@ -30,9 +30,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.NotThrow(async () =>
             {
-                await domainService.CreateEstate(TestData.EstateId,
-                                                   TestData.EstateName,
-                                                   CancellationToken.None);
+                await domainService.CreateEstate(TestData.CreateEstateCommand, CancellationToken.None);
             });
         }
 
@@ -49,12 +47,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.NotThrow(async () =>
                             {
-                                await domainService.AddOperatorToEstate(TestData.EstateId,
-                                                                 TestData.OperatorId,
-                                                                 TestData.OperatorName,
-                                                                 TestData.RequireCustomMerchantNumberFalse,
-                                                                 TestData.RequireCustomTerminalNumberFalse,
-                                                                 CancellationToken.None);
+                                await domainService.AddOperatorToEstate(TestData.AddOperatorToEstateCommand, CancellationToken.None);
                             });
         }
 
@@ -75,13 +68,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.NotThrow(async () =>
                             {
-                                await domainService.CreateEstateUser(TestData.EstateId,
-                                                                        TestData.EstateUserEmailAddress,
-                                                                        TestData.EstateUserPassword,
-                                                                        TestData.EstateUserGivenName,
-                                                                        TestData.EstateUserMiddleName,
-                                                                        TestData.EstateUserFamilyName,
-                                                                        CancellationToken.None);
+                                await domainService.CreateEstateUser(TestData.CreateEstateUserCommand, CancellationToken.None);
                             });
         }
     }

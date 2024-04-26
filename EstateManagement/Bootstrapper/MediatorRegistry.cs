@@ -27,9 +27,9 @@
             this.AddTransient<IMediator, Mediator>();
 
             // request & notification handlers
-            this.AddSingleton<IRequestHandler<CreateEstateRequest>, EstateRequestHandler>();
-            this.AddSingleton<IRequestHandler<CreateEstateUserRequest, Guid>, EstateRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddOperatorToEstateRequest>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateCommand>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateUserCommand>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.AddOperatorToEstateCommand>, EstateRequestHandler>();
 
             this.AddSingleton<IRequestHandler<OperatorCommands.CreateOperatorCommand>, OperatorRequestHandler>();
 

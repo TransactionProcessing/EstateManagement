@@ -90,7 +90,7 @@
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
             aggregate.GenerateReference();
-            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+            aggregate.AddOperator(TestData.OperatorId);
 
             Estate model = aggregate.GetEstate();
 
@@ -101,9 +101,6 @@
             
             Operator @operator =model.Operators.Single();
             @operator.OperatorId.ShouldBe(TestData.OperatorId);
-            @operator.Name.ShouldBe(TestData.OperatorName);
-            @operator.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumberFalse);
-            @operator.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumberFalse);
         }
 
         [Fact]
@@ -147,7 +144,7 @@
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
 
-            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+            aggregate.AddOperator(TestData.OperatorId);
         }
 
         [Fact]
@@ -157,40 +154,25 @@
 
             InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
                                                                                   {
-                                                                                      aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+                                                                                      aggregate.AddOperator(TestData.OperatorId);
                                                                                   });
 
             exception.Message.ShouldContain("Estate has not been created");
         }
-
+        
         [Fact]
         public void EstateAggregate_AddOperatorToEstate_OperatorWithIdAlreadyAdded_ErrorThrown()
         {
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
-            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+            aggregate.AddOperator(TestData.OperatorId);
 
             InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
                                                                                   {
-                                                                                      aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+                                                                                      aggregate.AddOperator(TestData.OperatorId);
                                                                                   });
 
             exception.Message.ShouldContain($"Duplicate operator details are not allowed, an operator already exists on this estate with Id [{TestData.OperatorId}]");
-        }
-
-        [Fact]
-        public void EstateAggregate_AddOperatorToEstate_OperatorWithNameAlreadyAdded_ErrorThrown()
-        {
-            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
-            aggregate.Create(TestData.EstateName);
-            aggregate.AddOperator(TestData.OperatorId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
-
-            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
-                                                                                  {
-                                                                                      aggregate.AddOperator(TestData.OperatorId2, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
-                                                                                  });
-
-            exception.Message.ShouldContain($"Duplicate operator details are not allowed, an operator already exists on this estate with Name [{TestData.OperatorName}]");
         }
 
         [Fact]

@@ -44,6 +44,7 @@ public abstract class EstateManagementGenericContext : DbContext
     public DbSet<Contract> Contracts { get; set; }
 
     public DbSet<EstateOperator> EstateOperators { get; set; }
+    public DbSet<Operator> Operators { get; set; }
 
     public DbSet<Estate> Estates { get; set; }
     
@@ -202,7 +203,8 @@ public abstract class EstateManagementGenericContext : DbContext
                     .SetupVoucher()
                     .SetupMerchantContract()
                     .SetupFloat()
-                    .SetupFloatActivity();
+                    .SetupFloatActivity()
+                    .SetupOperator();
         
         modelBuilder.SetupViewEntities();
 
