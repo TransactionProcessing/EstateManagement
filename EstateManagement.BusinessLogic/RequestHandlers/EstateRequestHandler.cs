@@ -11,6 +11,7 @@
     using Services;
     using Shared.Exceptions;
     using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
     /// <summary>
     /// 
@@ -20,6 +21,7 @@
     /// <seealso cref="AddOperatorToEstateRequest.String}" />
     public class EstateRequestHandler : IRequestHandler<EstateCommands.CreateEstateCommand>,
                                         IRequestHandler<EstateCommands.AddOperatorToEstateCommand>,
+                                        IRequestHandler<EstateCommands.RemoveOperatorFromEstateCommand>,
                                         IRequestHandler<EstateCommands.CreateEstateUserCommand>,
                                         IRequestHandler<EstateQueries.GetEstateQuery, Estate>,
                                         IRequestHandler<EstateQueries.GetEstatesQuery, List<Estate>>
@@ -77,6 +79,10 @@
         public async Task<List<Estate>> Handle(EstateQueries.GetEstatesQuery query, CancellationToken cancellationToken){
             List<Estate> estates = await this.EstateManagementManager.GetEstates(query.EstateId, cancellationToken);
             return estates;
+        }
+
+        public async Task Handle(EstateCommands.RemoveOperatorFromEstateCommand command, CancellationToken cancellationToken){
+            await this.EstateDomainService.RemoveOperatorFromEstate(command, cancellationToken);
         }
     }
 }

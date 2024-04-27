@@ -105,9 +105,10 @@
             if (estate.Operators != null && estate.Operators.Any()){
                 estate.Operators.ForEach(o => estateResponse.Operators.Add(new EstateOperatorResponse{
                                                                                                          OperatorId = o.OperatorId,
-                                                                                                         RequireCustomTerminalNumber = o.RequireCustomTerminalNumber,
-                                                                                                         RequireCustomMerchantNumber = o.RequireCustomMerchantNumber,
+                                                                                                         //RequireCustomTerminalNumber = o.RequireCustomTerminalNumber,
+                                                                                                         //RequireCustomMerchantNumber = o.RequireCustomMerchantNumber,
                                                                                                          Name = o.Name,
+                                                                                                         IsDeleted = o.IsDeleted
                                                                                                      }));
             }
 

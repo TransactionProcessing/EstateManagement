@@ -289,6 +289,92 @@ await this.FeatureBackgroundAsync();
             }
             await this.ScenarioCleanupAsync();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Update Estate")]
+        public async System.Threading.Tasks.Task UpdateEstate()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Update Estate", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 68
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 4
+await this.FeatureBackgroundAsync();
+#line hidden
+                Reqnroll.Table table38 = new Reqnroll.Table(new string[] {
+                            "EstateName"});
+                table38.AddRow(new string[] {
+                            "Test Estate 1"});
+#line 69
+ await testRunner.GivenAsync("I have created the following estates", ((string)(null)), table38, "Given ");
+#line hidden
+                Reqnroll.Table table39 = new Reqnroll.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "RequireCustomMerchantNumber",
+                            "RequireCustomTerminalNumber"});
+                table39.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "True",
+                            "True"});
+                table39.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 2",
+                            "True",
+                            "True"});
+#line 72
+ await testRunner.AndAsync("I have created the following operators", ((string)(null)), table39, "And ");
+#line hidden
+                Reqnroll.Table table40 = new Reqnroll.Table(new string[] {
+                            "EstateName",
+                            "OperatorName"});
+                table40.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1"});
+                table40.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 2"});
+#line 76
+ await testRunner.AndAsync("I have assigned the following operators to the estates", ((string)(null)), table40, "And ");
+#line hidden
+                Reqnroll.Table table41 = new Reqnroll.Table(new string[] {
+                            "EmailAddress",
+                            "Password",
+                            "GivenName",
+                            "FamilyName",
+                            "EstateName"});
+                table41.AddRow(new string[] {
+                            "estateuser1@testestate1.co.uk",
+                            "123456",
+                            "TestEstate",
+                            "User1",
+                            "Test Estate 1"});
+                table41.AddRow(new string[] {
+                            "estateuser2@testestate1.co.uk",
+                            "123456",
+                            "TestEstate",
+                            "User2",
+                            "Test Estate 1"});
+#line 80
+ await testRunner.AndAsync("I have created the following security users", ((string)(null)), table41, "And ");
+#line hidden
+#line 84
+ await testRunner.WhenAsync("I remove the operator \'Test Operator 1\' from estate \'Test Estate 1\' the operator " +
+                        "is removed", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
     }
 }
 #pragma warning restore

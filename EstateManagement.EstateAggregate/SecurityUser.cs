@@ -2,5 +2,5 @@
 
 namespace EstateManagement.EstateAggregate
 {
-    internal record SecurityUser(Guid SecurityUserId, String EmailAddress);
+    internal record SecurityUser(String EmailAddress);
 }

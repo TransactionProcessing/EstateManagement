@@ -133,6 +133,16 @@ namespace EstateManagement.IntegrationTests.Shared
             await this.EstateManagementSteps.WhenICreateTheFollowingSecurityUsers(this.TestingContext.AccessToken, createUserRequests, this.TestingContext.Estates);
         }
 
+        [When("I remove the operator {string} from estate {string} the operator is removed")]
+        public async Task WhenIRemoveTheOperatorFromEstateTheOperatorIsRemoved(string operatorName, string estateName)
+        {
+            await this.EstateManagementSteps.WhenIRemoveTheOperatorFromEstateTheOperatorIsRemoved(this.TestingContext.AccessToken,
+                                                                                                  this.TestingContext.Estates,
+                                                                                                  estateName,
+                                                                                                  operatorName);
+        }
+
+
         [Given(@"the following security roles exist")]
         public async Task GivenTheFollowingSecurityRolesExist(DataTable table) {
             List<CreateRoleRequest> requests = table.Rows.ToCreateRoleRequests();

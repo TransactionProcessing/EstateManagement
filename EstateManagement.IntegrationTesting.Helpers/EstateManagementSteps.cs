@@ -713,10 +713,7 @@ public class EstateManagementSteps{
         estateDetails.ShouldNotBeNull();
         Guid operatorId = estateDetails.GetOperatorId(operatorName);
         MerchantResponse merchant = estateDetails.GetMerchant(merchantName);
-
-        //MerchantContractResponse? contract = merchant.Contracts.SingleOrDefault(c => c.ContractId == estateContract.ContractId);
-        //contract.ShouldNotBeNull();
-
+        
         await this.EstateClient.RemoveOperatorFromMerchant(accessToken, estateDetails.EstateId, merchant.MerchantId, operatorId, CancellationToken.None);
 
         await Retry.For(async () => {
@@ -835,5 +832,22 @@ public class EstateManagementSteps{
         }
 
         return responses;
+    }
+
+    public async Task WhenIRemoveTheOperatorFromEstateTheOperatorIsRemoved(String accessToken, List<EstateDetails> estateDetailsList, String estateName, String operatorName){
+        EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+        estateDetails.ShouldNotBeNull();
+        Guid operatorId = estateDetails.GetOperatorId(operatorName);
+        
+        await this.EstateClient.RemoveOperatorFromEstate(accessToken, estateDetails.EstateId, operatorId, CancellationToken.None);
+
+        await Retry.For(async () => {
+                            EstateResponse? estateResponse = await this.EstateClient.GetEstate(accessToken, estateDetails.EstateId, CancellationToken.None);
+                            estateResponse.ShouldNotBeNull();
+
+                            EstateOperatorResponse? operatorResponse = estateResponse.Operators.SingleOrDefault(c => c.OperatorId == operatorId);
+                            operatorResponse.ShouldNotBeNull();
+                            operatorResponse.IsDeleted.ShouldBeTrue();
+                        });
     }
 }

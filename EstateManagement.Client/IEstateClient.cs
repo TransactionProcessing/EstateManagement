@@ -58,6 +58,11 @@
                                         Guid operatorId,
                                         CancellationToken cancellationToken);
 
+        Task RemoveOperatorFromEstate(String accessToken,
+                                        Guid estateId,
+                                        Guid operatorId,
+                                        CancellationToken cancellationToken);
+
         Task RemoveContractFromMerchant(String accessToken,
                                         Guid estateId,
                                         Guid merchantId,

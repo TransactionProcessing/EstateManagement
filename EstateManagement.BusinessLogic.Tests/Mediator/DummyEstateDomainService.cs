@@ -17,4 +17,8 @@ public class DummyEstateDomainService : IEstateDomainService
 
     public async Task CreateEstateUser(EstateCommands.CreateEstateUserCommand command, CancellationToken cancellationToken) {
     }
+
+    public async Task RemoveOperatorFromEstate(EstateCommands.RemoveOperatorFromEstateCommand command, CancellationToken cancellationToken){
+        
+    }
 }

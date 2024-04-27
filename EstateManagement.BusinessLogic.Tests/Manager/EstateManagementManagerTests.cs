@@ -75,7 +75,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
         [Fact]
         public async Task EstateManagementManager_GetEstate_EstateIsReturned(){
-            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator);
             this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
             this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(TestData.CreatedOperatorAggregate);
 
@@ -84,6 +84,10 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(TestData.EstateModel.EstateId);
             estateModel.Name.ShouldBe(TestData.EstateModel.Name);
+            estateModel.Operators.ShouldHaveSingleItem();
+            estateModel.Operators.Single().OperatorId.ShouldBe(TestData.OperatorId);
+            estateModel.Operators.Single().Name.ShouldBe(TestData.OperatorName);
+            estateModel.Operators.Single().IsDeleted.ShouldBeFalse();
         }
 
         [Fact]

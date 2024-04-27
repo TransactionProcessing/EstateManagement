@@ -99,6 +99,14 @@
             await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
         }
 
+        public async Task RemoveOperatorFromEstate(EstateCommands.RemoveOperatorFromEstateCommand command, CancellationToken cancellationToken){
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
+
+            estateAggregate.RemoveOperator(command.OperatorId);
+
+            await this.EstateAggregateRepository.SaveChanges(estateAggregate, cancellationToken);
+        }
+
         #endregion
     }
 }

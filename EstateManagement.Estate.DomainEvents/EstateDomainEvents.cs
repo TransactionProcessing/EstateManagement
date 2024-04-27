@@ -10,6 +10,9 @@
     public record OperatorAddedToEstateEvent(Guid EstateId,
                                              Guid OperatorId) : DomainEvent(EstateId, Guid.NewGuid());
 
+    public record OperatorRemovedFromEstateEvent(Guid EstateId,
+                                             Guid OperatorId) : DomainEvent(EstateId, Guid.NewGuid());
+
     public record SecurityUserAddedToEstateEvent(Guid EstateId,
                                                  Guid SecurityUserId,
                                                  String EmailAddress) : DomainEvent(EstateId, Guid.NewGuid());
