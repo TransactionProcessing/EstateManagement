@@ -17,5 +17,7 @@ namespace EstateManagement.BusinessLogic.Requests
         public record CreateEstateUserCommand(Guid EstateId, CreateEstateUserRequest RequestDto) : IRequest;
 
         public record AddOperatorToEstateCommand(Guid EstateId, AssignOperatorRequest RequestDto) : IRequest;
+
+        public record RemoveOperatorFromEstateCommand(Guid EstateId, Guid OperatorId) : IRequest;
     }
 }

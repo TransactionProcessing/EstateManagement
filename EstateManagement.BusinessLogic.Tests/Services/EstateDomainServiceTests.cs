@@ -38,6 +38,23 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         public async Task EstateDomainService_AddOperatorEstate_OperatorIsAdded()
         {
             Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
+            estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator);
+            estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+
+            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
+
+            Should.NotThrow(async () =>
+                            {
+                                await domainService.RemoveOperatorFromEstate(TestData.RemoveOperatorFromEstateCommand, CancellationToken.None);
+                            });
+        }
+
+        [Fact]
+        public async Task EstateDomainService_RemoceOperatorFromEstate_OperatorIsRemoved()
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
             estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 

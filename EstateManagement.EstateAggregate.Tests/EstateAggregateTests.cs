@@ -145,6 +145,11 @@
             aggregate.Create(TestData.EstateName);
 
             aggregate.AddOperator(TestData.OperatorId);
+
+            var estate = aggregate.GetEstate();
+            estate.Operators.ShouldHaveSingleItem();
+            estate.Operators.Single().OperatorId.ShouldBe(TestData.OperatorId);
+            estate.Operators.Single().IsDeleted.ShouldBeFalse();
         }
 
         [Fact]
@@ -181,6 +186,10 @@
             EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
             aggregate.Create(TestData.EstateName);
             aggregate.AddSecurityUser(TestData.SecurityUserId, TestData.EstateUserEmailAddress);
+
+            var estate = aggregate.GetEstate();
+            estate.SecurityUsers.ShouldHaveSingleItem();
+            estate.SecurityUsers.Single().EmailAddress.ShouldBe(TestData.EstateUserEmailAddress);
         }
 
         [Fact]
@@ -194,6 +203,47 @@
                                                                                           });
 
             exception.Message.ShouldContain("Estate has not been created");
+        }
+
+        [Fact]
+        public void EstateAggregate_RemoveOperatorFromEstate_OperatorIsAdded()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+            aggregate.AddOperator(TestData.OperatorId);
+
+            aggregate.RemoveOperator(TestData.OperatorId);
+
+            var estate = aggregate.GetEstate();
+            estate.Operators.ShouldHaveSingleItem();
+            estate.Operators.Single().IsDeleted.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void EstateAggregate_RemoveOperatorFromEstate_EstateNotCreated_ErrorThrown()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+                                                                                          {
+                                                                                              aggregate.RemoveOperator(TestData.OperatorId);
+                                                                                          });
+
+            exception.Message.ShouldContain("Estate has not been created");
+        }
+
+        [Fact]
+        public void EstateAggregate_RemoveOperatorFromEstate_OperatorWithIdNotAlreadyAdded_ErrorThrown()
+        {
+            EstateAggregate aggregate = EstateAggregate.Create(TestData.EstateId);
+            aggregate.Create(TestData.EstateName);
+
+            InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+                                                                                          {
+                                                                                              aggregate.RemoveOperator(TestData.OperatorId);
+                                                                                          });
+
+            exception.Message.ShouldContain($"Operator not added to this Estate with Id [{TestData.OperatorId}]");
         }
     }
 }

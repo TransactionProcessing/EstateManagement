@@ -2,5 +2,5 @@
 {
     using System;
 
-    internal record Operator(Guid OperatorId);
+    internal record Operator(Boolean IsDeleted = false);
 }

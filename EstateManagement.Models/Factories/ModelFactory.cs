@@ -64,8 +64,8 @@
                     estateModel.Operators.Add(new EstateOperatorModel{
                                                                          OperatorId = @operator.OperatorId,
                                                                          Name = @operator.Name,
-                                                                         RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber,
-                                                                         RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber
+                                                                         //RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber,
+                                                                         //RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber
                                                                      });
                 }
             }

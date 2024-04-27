@@ -34,21 +34,14 @@
         /// The mediator
         /// </summary>
         private readonly IMediator Mediator;
-
-        /// <summary>
-        /// The estate management manager
-        /// </summary>
-        private readonly IEstateManagementManager EstateManagementManager;
-
+        
         #endregion
 
         #region Constructors
 
-        public EstateController(IMediator mediator,
-                                IEstateManagementManager estateManagementManager)
+        public EstateController(IMediator mediator)
         {
             this.Mediator = mediator;
-            this.EstateManagementManager = estateManagementManager;
         }
 
         #endregion
@@ -199,6 +192,27 @@
 
             // Create the command
             EstateCommands.AddOperatorToEstateCommand command = new(estateId, assignOperatorRequest);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
+        }
+
+        [HttpDelete]
+        [Route("{estateId}/operators/{operatorId}")]
+        public async Task<IActionResult> RemoveOperator([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid operatorId,
+                                                        CancellationToken cancellationToken)
+        {
+            // Reject password tokens
+            if (ClaimsHelper.IsPasswordToken(this.User))
+            {
+                return this.Forbid();
+            }
+
+            EstateCommands.RemoveOperatorFromEstateCommand command = new(estateId, operatorId);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);

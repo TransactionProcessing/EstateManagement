@@ -24,6 +24,19 @@
             aggregate.ApplyAndAppend(operatorAddedToEstateEvent);
         }
 
+        public static void RemoveOperator(this EstateAggregate aggregate,
+                                       Guid operatorId)
+        {
+
+            aggregate.CheckEstateHasBeenCreated();
+            aggregate.CheckOperatorHasBeenAdded(operatorId);
+
+            OperatorRemovedFromEstateEvent operatorRemovedFromEstateEvent =
+                new OperatorRemovedFromEstateEvent(aggregate.AggregateId, operatorId);
+
+            aggregate.ApplyAndAppend(operatorRemovedFromEstateEvent);
+        }
+
         public static void AddSecurityUser(this EstateAggregate aggregate,
                                            Guid securityUserId,
                                            String emailAddress){
@@ -70,9 +83,10 @@
             if (aggregate.Operators.Any()){
                 estateModel.Operators = new List<Models.Estate.Operator>();
 
-                foreach (Operator @operator in aggregate.Operators){
+                foreach (KeyValuePair<Guid, Operator> @operator in aggregate.Operators){
                     estateModel.Operators.Add(new Models.Estate.Operator{
-                                                                            OperatorId = @operator.OperatorId
+                                                                            OperatorId = @operator.Key,
+                                                                            IsDeleted = @operator.Value.IsDeleted,
                                                                         });
                 }
             }
@@ -80,10 +94,10 @@
             if (aggregate.SecurityUsers.Any()){
                 estateModel.SecurityUsers = new List<Models.SecurityUser>();
 
-                foreach (SecurityUser securityUser in aggregate.SecurityUsers){
+                foreach (KeyValuePair<Guid, SecurityUser> securityUser in aggregate.SecurityUsers){
                     estateModel.SecurityUsers.Add(new Models.SecurityUser{
-                                                                             EmailAddress = securityUser.EmailAddress,
-                                                                             SecurityUserId = securityUser.SecurityUserId
+                                                                             EmailAddress = securityUser.Value.EmailAddress,
+                                                                             SecurityUserId = securityUser.Key
                                                                          });
                 }
             }
@@ -92,9 +106,9 @@
         }
 
         public static void PlayEvent(this EstateAggregate aggregate, SecurityUserAddedToEstateEvent domainEvent){
-            SecurityUser securityUser = new SecurityUser(domainEvent.SecurityUserId, domainEvent.EmailAddress);
+            SecurityUser securityUser = new (domainEvent.EmailAddress);
 
-            aggregate.SecurityUsers.Add(securityUser);
+            aggregate.SecurityUsers.Add(domainEvent.SecurityUserId,securityUser);
         }
 
         public static void PlayEvent(this EstateAggregate aggregate, EstateCreatedEvent domainEvent){
@@ -111,9 +125,16 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         public static void PlayEvent(this EstateAggregate aggregate, OperatorAddedToEstateEvent domainEvent){
-            Operator @operator = new (domainEvent.OperatorId);
+            Operator @operator = new ();
 
-            aggregate.Operators.Add(@operator);
+            aggregate.Operators.Add(domainEvent.OperatorId, @operator);
+        }
+
+        public static void PlayEvent(this EstateAggregate aggregate, OperatorRemovedFromEstateEvent domainEvent){
+            KeyValuePair<Guid, Operator> @operator = aggregate.Operators.Single(o => o.Key == domainEvent.OperatorId);
+            aggregate.Operators[domainEvent.OperatorId] = @operator.Value with{
+                                                                                  IsDeleted = true
+                                                                              };
         }
 
         private static void CheckEstateHasBeenCreated(this EstateAggregate aggregate){
@@ -124,10 +145,21 @@
 
         private static void CheckOperatorHasNotAlreadyBeenCreated(this EstateAggregate aggregate,
                                                                   Guid operatorId){
-            Operator operatorRecord = aggregate.Operators.SingleOrDefault(o => o.OperatorId == operatorId);
+            Boolean operatorRecord = aggregate.Operators.ContainsKey(operatorId);
 
-            if (operatorRecord != null){
+            if (operatorRecord == true){
                 throw new InvalidOperationException($"Duplicate operator details are not allowed, an operator already exists on this estate with Id [{operatorId}]");
+            }
+        }
+
+        private static void CheckOperatorHasBeenAdded(this EstateAggregate aggregate,
+                                                      Guid operatorId)
+        {
+            Boolean operatorRecord = aggregate.Operators.ContainsKey(operatorId);
+
+            if (operatorRecord == false)
+            {
+                throw new InvalidOperationException($"Operator not added to this Estate with Id [{operatorId}]");
             }
         }
 
@@ -137,9 +169,9 @@
     public record EstateAggregate : Aggregate{
         #region Fields
 
-        internal readonly List<Operator> Operators;
+        internal readonly Dictionary<Guid, Operator> Operators;
 
-        internal readonly List<SecurityUser> SecurityUsers;
+        internal readonly Dictionary<Guid, SecurityUser> SecurityUsers;
 
         #endregion
 
@@ -148,16 +180,16 @@
         [ExcludeFromCodeCoverage]
         public EstateAggregate(){
             // Nothing here
-            this.Operators = new List<Operator>();
-            this.SecurityUsers = new List<SecurityUser>();
+            this.Operators = new Dictionary<Guid, Operator>();
+            this.SecurityUsers = new Dictionary<Guid, SecurityUser>();
         }
         
         private EstateAggregate(Guid aggregateId){
             Guard.ThrowIfInvalidGuid(aggregateId, "Aggregate Id cannot be an Empty Guid");
 
             this.AggregateId = aggregateId;
-            this.Operators = new List<Operator>();
-            this.SecurityUsers = new List<SecurityUser>();
+            this.Operators = new Dictionary<Guid, Operator>();
+            this.SecurityUsers = new Dictionary<Guid, SecurityUser>();
         }
 
         #endregion

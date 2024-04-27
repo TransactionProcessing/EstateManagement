@@ -46,6 +46,8 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.CreateEstateCommand);
             this.Requests.Add(TestData.CreateEstateUserCommand);
             this.Requests.Add(TestData.CreateOperatorCommand);
+            this.Requests.Add(TestData.RemoveOperatorFromEstateCommand);
+            this.Requests.Add(TestData.AddOperatorToEstateCommand);
 
             this.Requests.Add(TestData.GetMerchantsQuery);
             this.Requests.Add(TestData.GetMerchantQuery);

@@ -290,6 +290,31 @@
             }
         }
 
+        public async Task RemoveOperatorFromEstate(String accessToken, Guid estateId, Guid operatorId, CancellationToken cancellationToken){
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators/{operatorId}");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.DeleteAsync(requestUri, cancellationToken);
+
+                // Process the response
+                await this.HandleResponse(httpResponse, cancellationToken);
+
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error removing operator Id {operatorId} from estate {estateId}.",
+                                                    ex);
+
+                throw exception;
+            }
+        }
+
         public async Task RemoveContractFromMerchant(String accessToken, Guid estateId, Guid merchantId, Guid contractId, CancellationToken cancellationToken){
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/contracts/{contractId}");
 

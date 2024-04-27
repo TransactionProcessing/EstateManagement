@@ -15,6 +15,8 @@
 
         Task CreateEstateUser(EstateCommands.CreateEstateUserCommand command, CancellationToken cancellationToken);
 
+        Task RemoveOperatorFromEstate(EstateCommands.RemoveOperatorFromEstateCommand command, CancellationToken cancellationToken);
+
         #endregion
     }
 }

@@ -45,6 +45,9 @@
         [JsonProperty("require_custom_terminal_number")]
         public Boolean RequireCustomTerminalNumber { get; set; }
 
+        [JsonProperty("is_deleted")]
+        public Boolean IsDeleted { get; set; }
+
         #endregion
     }
 }

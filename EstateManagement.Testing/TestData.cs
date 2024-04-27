@@ -1525,6 +1525,7 @@
                                                                TestData.MerchantId,
                                                                TestData.ContractId);
 
+        public static EstateCommands.RemoveOperatorFromEstateCommand RemoveOperatorFromEstateCommand => new (TestData.EstateId, TestData.OperatorId);
         public static MerchantCommands.RemoveOperatorFromMerchantCommand RemoveOperatorFromMerchantCommand => new MerchantCommands.RemoveOperatorFromMerchantCommand(TestData.EstateId, TestData.MerchantId, TestData.OperatorId);
 
         public static SettledFee SettledFee1 =>

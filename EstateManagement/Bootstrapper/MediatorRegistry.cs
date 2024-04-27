@@ -31,6 +31,7 @@
             this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateCommand>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateUserCommand>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<EstateCommands.AddOperatorToEstateCommand>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.RemoveOperatorFromEstateCommand>, EstateRequestHandler>();
 
             this.AddSingleton<IRequestHandler<EstateQueries.GetEstateQuery, Estate>, EstateRequestHandler>();
             this.AddSingleton<IRequestHandler<EstateQueries.GetEstatesQuery, List<Estate>>, EstateRequestHandler>();
