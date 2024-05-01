@@ -1008,7 +1008,6 @@ namespace EstateManagement.Database.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("OperatorIdentifier")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("RecipientEmail")
