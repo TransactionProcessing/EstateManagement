@@ -20,7 +20,7 @@
 
         public Boolean IsRedeemed { get; set; }
 
-        public String OperatorIdentifier { get; set; }
+        public String? OperatorIdentifier { get; set; }
 
         public String? RecipientEmail { get; set; }
 
