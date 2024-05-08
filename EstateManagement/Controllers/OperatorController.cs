@@ -48,10 +48,10 @@ namespace EstateManagement.Controllers
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateOperatorResponse))]
         [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
-        public async Task<IActionResult> CreateOperator([FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId,  [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
             // Create the command
-            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(createOperatorRequest);
+            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);
@@ -60,7 +60,7 @@ namespace EstateManagement.Controllers
             return this.Created($"{OperatorController.ControllerRoute}/{createOperatorRequest.OperatorId}",
                                 new CreateOperatorResponse
                                 {
-                                    EstateId = createOperatorRequest.EstateId,
+                                    EstateId = estateId,
                                     OperatorId = createOperatorRequest.OperatorId
                                 });
         }

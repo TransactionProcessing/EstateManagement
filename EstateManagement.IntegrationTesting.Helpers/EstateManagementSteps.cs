@@ -168,6 +168,7 @@ public class EstateManagementSteps{
         foreach ((EstateDetails estate, CreateOperatorRequest request) request in requests){
             CreateOperatorResponse response = await this.EstateClient
                                                         .CreateOperator(accessToken,
+                                                                        request.estate.EstateId,
                                                                         request.request,
                                                                         CancellationToken.None).ConfigureAwait(false);
 

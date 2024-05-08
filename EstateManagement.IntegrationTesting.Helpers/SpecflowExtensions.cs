@@ -405,7 +405,6 @@ public static class ReqnrollExtensions
 
             CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
                                                           {
-                                                              EstateId = estateDetails.EstateId,
                                                               OperatorId = operatorId,
                                                               Name = operatorName,
                                                               RequireCustomMerchantNumber = requireCustomMerchantNumber,

@@ -11,7 +11,7 @@ namespace EstateManagement.BusinessLogic.Requests
     using Models.Operator;
 
     public class OperatorCommands{
-        public record CreateOperatorCommand(CreateOperatorRequest RequestDto) : IRequest;
+        public record CreateOperatorCommand(Guid EstateId, CreateOperatorRequest RequestDto) : IRequest;
     }
 
     public class OperatorQueries{

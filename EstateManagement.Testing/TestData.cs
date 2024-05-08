@@ -837,12 +837,11 @@
         public static CreateOperatorRequest CreateOperatorRequest =>
             new CreateOperatorRequest(){
                                            OperatorId = TestData.OperatorId,
-                                           EstateId = TestData.EstateId,
                                            RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
                                            RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
                                            Name = TestData.OperatorName
                                        };
-        public static OperatorCommands.CreateOperatorCommand CreateOperatorCommand => new(TestData.CreateOperatorRequest);
+        public static OperatorCommands.CreateOperatorCommand CreateOperatorCommand => new(TestData.EstateId,  TestData.CreateOperatorRequest);
 
         public static CreateEstateUserRequest CreateEstateUserRequest =>
             new CreateEstateUserRequest{
