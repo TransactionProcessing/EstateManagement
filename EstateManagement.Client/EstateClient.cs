@@ -1012,10 +1012,11 @@
         public async Task SwapDeviceForMerchant(String accessToken,
                                                                             Guid estateId,
                                                                             Guid merchantId,
+                                                                            String deviceIdentifier,
                                                                             SwapMerchantDeviceRequest swapMerchantDeviceRequest,
                                                                             CancellationToken cancellationToken){
 
-            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices");
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices/{deviceIdentifier}");
 
             try{
                 String requestSerialised = JsonConvert.SerializeObject(swapMerchantDeviceRequest);

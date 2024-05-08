@@ -213,9 +213,9 @@ public static class ReqnrollExtensions
         return requests;
     }
 
-    public static List<(EstateDetails, Guid, SwapMerchantDeviceRequest)> ToSwapMerchantDeviceRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList){
+    public static List<(EstateDetails, Guid,String, SwapMerchantDeviceRequest)> ToSwapMerchantDeviceRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList){
 
-        List<(EstateDetails, Guid, SwapMerchantDeviceRequest)> requests = new List<(EstateDetails, Guid, SwapMerchantDeviceRequest)>();
+        List<(EstateDetails, Guid, String, SwapMerchantDeviceRequest)> requests = new List<(EstateDetails, Guid,String, SwapMerchantDeviceRequest)>();
         foreach (DataTableRow tableRow in tableRows){
             String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
             EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
@@ -229,10 +229,9 @@ public static class ReqnrollExtensions
             String newDeviceIdentifier = ReqnrollTableHelper.GetStringRowValue(tableRow, "NewDeviceIdentifier");
 
             SwapMerchantDeviceRequest swapMerchantDeviceRequest = new SwapMerchantDeviceRequest{
-                                                                                                   OriginalDeviceIdentifier = originalDeviceIdentifier,
                                                                                                    NewDeviceIdentifier = newDeviceIdentifier
                                                                                                };
-            requests.Add((estateDetails, merchantId, swapMerchantDeviceRequest));
+            requests.Add((estateDetails, merchantId, originalDeviceIdentifier, swapMerchantDeviceRequest));
         }
 
         return requests;

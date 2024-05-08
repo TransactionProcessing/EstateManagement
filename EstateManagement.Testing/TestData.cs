@@ -1616,12 +1616,11 @@
 
         public static StatementGeneratedEvent StatementGeneratedEvent => new StatementGeneratedEvent(TestData.MerchantStatementId, TestData.EstateId, TestData.MerchantId, TestData.StatementGeneratedDate);
 
-        public static MerchantCommands.SwapMerchantDeviceCommand SwapMerchantDeviceCommand => new MerchantCommands.SwapMerchantDeviceCommand(TestData.EstateId, TestData.MerchantId, TestData.SwapMerchantDeviceRequest);
+        public static MerchantCommands.SwapMerchantDeviceCommand SwapMerchantDeviceCommand => new MerchantCommands.SwapMerchantDeviceCommand(TestData.EstateId, TestData.MerchantId, TestData.DeviceIdentifier, TestData.SwapMerchantDeviceRequest);
 
         public static SwapMerchantDeviceRequest SwapMerchantDeviceRequest =>
             new SwapMerchantDeviceRequest{
-                                             NewDeviceIdentifier = TestData.NewDeviceIdentifier,
-                                             OriginalDeviceIdentifier = TestData.DeviceIdentifier
+                                             NewDeviceIdentifier = TestData.NewDeviceIdentifier
                                          };
 
         public static Models.MerchantStatement.Transaction Transaction1 =>

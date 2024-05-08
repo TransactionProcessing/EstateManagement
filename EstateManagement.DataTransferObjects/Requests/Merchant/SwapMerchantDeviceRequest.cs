@@ -5,9 +5,6 @@
 
     public class SwapMerchantDeviceRequest
     {
-        [JsonProperty("original_device_identifier")]
-        public String OriginalDeviceIdentifier { get; set; }
-
         /// <summary>
         /// Gets or sets the device identifier.
         /// </summary>

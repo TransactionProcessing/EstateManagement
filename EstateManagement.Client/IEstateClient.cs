@@ -183,6 +183,7 @@
         Task SwapDeviceForMerchant(String accessToken,
                                                                Guid estateId,
                                                                Guid merchantId,
+                                                               String deviceIdentifier,
                                                                SwapMerchantDeviceRequest request,
                                                                CancellationToken cancellationToken);
 

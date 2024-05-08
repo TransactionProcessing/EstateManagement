@@ -294,11 +294,12 @@
         }
 
         [HttpPatch]
-        [Route("{merchantId}/devices")]
+        [Route("{merchantId}/devices/{deviceIdentifier}")]
         [SwaggerResponse(201, "Created", typeof(SwapMerchantDeviceResponse))]
         [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
         public async Task<IActionResult> SwapMerchantDevice([FromRoute] Guid estateId,
                                                             [FromRoute] Guid merchantId,
+                                                            [FromRoute] String deviceIdentifier,
                                                             [FromBody] SwapMerchantDeviceRequest swapMerchantDeviceRequest,
                                                             CancellationToken cancellationToken)
         {
@@ -308,7 +309,7 @@
                 return this.Forbid();
             }
 
-            MerchantCommands.SwapMerchantDeviceCommand command = new(estateId, merchantId, swapMerchantDeviceRequest);
+            MerchantCommands.SwapMerchantDeviceCommand command = new(estateId, merchantId, deviceIdentifier, swapMerchantDeviceRequest);
 
             await this.Mediator.Send(command, cancellationToken);
 

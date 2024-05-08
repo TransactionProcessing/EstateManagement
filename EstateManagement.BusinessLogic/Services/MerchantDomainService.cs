@@ -421,7 +421,7 @@
                 throw new InvalidOperationException($"Estate Id {command.EstateId} has not been created");
             }
             
-            merchantAggregate.SwapDevice(command.RequestDto.OriginalDeviceIdentifier, command.RequestDto.NewDeviceIdentifier);
+            merchantAggregate.SwapDevice(command.DeviceIdentifier, command.RequestDto.NewDeviceIdentifier);
 
             await this.MerchantAggregateRepository.SaveChanges(merchantAggregate, cancellationToken);
         }
