@@ -217,6 +217,15 @@
                                    Contact updatedContactRequest,
                                    CancellationToken cancellationToken);
 
+        Task<OperatorResponse> GetOperator(String accessToken,
+                                       Guid estateId,
+                                       Guid operatorId,
+                                       CancellationToken cancellationToken);
+
+        Task<List<OperatorResponse>> GetOperators(String accessToken,
+                                                  Guid estateId,
+                                                  CancellationToken cancellationToken);
+
         #endregion
     }
 }

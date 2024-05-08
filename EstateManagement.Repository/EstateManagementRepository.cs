@@ -384,7 +384,27 @@
 
             return result;
         }
-        
+
+        public async Task<List<Models.Operator.Operator>> GetOperators(Guid estateId, CancellationToken cancellationToken){
+            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
+
+            Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken: cancellationToken);
+            List<Operator> operators = await (from o in context.Operators where o.EstateReportingId == estate.EstateReportingId select o).ToListAsync(cancellationToken);
+
+            List<Models.Operator.Operator> models = new();
+
+            foreach (Operator @operator in operators){
+                models.Add(new Models.Operator.Operator{
+                                                           OperatorId = @operator.OperatorId,
+                                                           RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber,
+                                                           RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber,
+                                                           Name = @operator.Name,
+                                                       });
+            }
+
+            return models;
+        }
+
         #endregion
 
         #region Others

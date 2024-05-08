@@ -17,4 +17,16 @@
                    };
         }
     }
+
+    [ExcludeFromCodeCoverage]
+    public class OperatorResponseExample : IExamplesProvider<OperatorResponse>{
+        public OperatorResponse GetExamples(){
+            return new OperatorResponse{
+                                           OperatorId = ExampleData.OperatorId,
+                                           Name = ExampleData.OperatorName,
+                                           RequireCustomMerchantNumber = true,
+                                           RequireCustomTerminalNumber = true
+                                       };
+        }
+    }
 }

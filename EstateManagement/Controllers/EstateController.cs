@@ -154,8 +154,7 @@
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="createEstateUserRequest">The create estate user request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">The cancellation token.</param>/// <returns></returns>
         [HttpPost]
         [Route("{estateId}/users")]
         [SwaggerResponse(201, "Created", typeof(CreateEstateUserResponse))]

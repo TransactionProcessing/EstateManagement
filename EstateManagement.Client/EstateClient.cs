@@ -1121,6 +1121,66 @@
             }
         }
 
+        public async Task<OperatorResponse> GetOperator(String accessToken, Guid estateId, Guid operatorId, CancellationToken cancellationToken){
+            OperatorResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators/{operatorId}");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<OperatorResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting operator id {operatorId} for estate Id {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        public async Task<List<OperatorResponse>> GetOperators(String accessToken, Guid estateId, CancellationToken cancellationToken){
+            List<OperatorResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<OperatorResponse>>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting all operators for estate Id {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
         /// <summary>
         /// Builds the request URL.
         /// </summary>
