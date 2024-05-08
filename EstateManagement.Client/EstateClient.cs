@@ -409,10 +409,10 @@
             return response;
         }
 
-        public async Task<CreateOperatorResponse> CreateOperator(String accessToken, CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken){
+        public async Task<CreateOperatorResponse> CreateOperator(String accessToken, Guid estateId,  CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken){
             CreateOperatorResponse response = null;
 
-            String requestUri = this.BuildRequestUrl("/api/operators/");
+            String requestUri = this.BuildRequestUrl($"/api/operators/estates/{estateId}");
 
             try
             {

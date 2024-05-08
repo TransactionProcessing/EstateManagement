@@ -79,6 +79,7 @@
                                                 CancellationToken cancellationToken);
 
         Task<CreateOperatorResponse> CreateOperator(String accessToken,
+                                                    Guid estateId,
                                                 CreateOperatorRequest createOperatorRequest,
                                                 CancellationToken cancellationToken);
 
