@@ -82,7 +82,7 @@
 
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("{merchantId}/operators")]
         [ProducesResponseType(typeof(AssignOperatorResponse), 201)]
         [SwaggerResponse(201, "Created", typeof(AssignOperatorResponse))]
@@ -135,7 +135,7 @@
             return this.Ok();
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("{merchantId}/devices")]
         [SwaggerResponse(201, "Created", typeof(AddMerchantDeviceResponse))]
         [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
@@ -165,7 +165,7 @@
                                 });
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("{merchantId}/contracts")]
         public async Task<IActionResult> AddContract([FromRoute] Guid estateId,
                                                      [FromRoute] Guid merchantId,
@@ -209,7 +209,7 @@
             return this.Ok();
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("{merchantId}/users")]
         [SwaggerResponse(201, "Created", typeof(CreateMerchantUserResponse))]
         [SwaggerResponseExample(201, typeof(CreateMerchantUserResponseExample))]
@@ -505,7 +505,7 @@
         }
 
         [Route("{merchantId}/addresses")]
-        [HttpPost]
+        [HttpPatch]
         //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
         public async Task<IActionResult> AddMerchantAddress([FromRoute] Guid estateId,
@@ -549,7 +549,7 @@
         }
 
         [Route("{merchantId}/contacts")]
-        [HttpPost]
+        [HttpPatch]
         //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
         public async Task<IActionResult> AddMerchantContact([FromRoute] Guid estateId,

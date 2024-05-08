@@ -143,7 +143,7 @@
         /// <param name="addProductToContractRequest">The add product to contract request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPatch]
         [Route("{contractId}/products")]
         [SwaggerResponse(201, "Created", typeof(AddProductToContractResponse))]
         [SwaggerResponseExample(201, typeof(AddProductToContractResponseExample))]
@@ -201,7 +201,7 @@
         /// <param name="addTransactionFeeForProductToContractRequest">The add transaction fee for product to contract request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPatch]
         [Route("{contractId}/products/{productId}/transactionFees")]
         [SwaggerResponse(201, "Created", typeof(AddTransactionFeeForProductToContractResponse))]
         [SwaggerResponseExample(201, typeof(AddTransactionFeeForProductToContractResponseExample))]
@@ -262,7 +262,7 @@
         /// <param name="transactionFeeId">The transaction fee identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpDelete]
         [Route("{contractId}/products/{productId}/transactionFees/{transactionFeeId}")]
         [SwaggerResponse(200, "OK")]
         public async Task<IActionResult> DisableTransactionFeeForProduct([FromRoute] Guid estateId,
