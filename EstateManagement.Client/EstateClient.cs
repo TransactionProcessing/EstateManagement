@@ -412,7 +412,7 @@
         public async Task<CreateOperatorResponse> CreateOperator(String accessToken, Guid estateId,  CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken){
             CreateOperatorResponse response = null;
 
-            String requestUri = this.BuildRequestUrl($"/api/operators/estates/{estateId}");
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators");
 
             try
             {
