@@ -12,7 +12,7 @@
     using MerchantContractResponse = DataTransferObjects.Responses.Merchant.MerchantContractResponse;
     using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
     using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
-    using SettlementSchedule = DataTransferObjects.Responses.SettlementSchedule;
+    using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
 
     //using TransactionProcessor.DataTransferObjects;
 
@@ -93,63 +93,7 @@
                                    OperatorId = operatorId,
                                });
         }
-
-        public void AddMerchant(DataTransferObjects.Responses.MerchantResponse oldmerchant){
-            var merchant = new MerchantResponse{
-                                                   EstateId = oldmerchant.EstateId,
-                                                   MerchantId = oldmerchant.MerchantId,
-                                                   Devices = oldmerchant.Devices,
-                                                   EstateReportingId = oldmerchant.EstateReportingId,
-                                                   MerchantName = oldmerchant.MerchantName,
-                                                   MerchantReference = oldmerchant.MerchantReference,
-                                                   MerchantReportingId = oldmerchant.MerchantReportingId,
-                                                   NextStatementDate = oldmerchant.NextStatementDate,
-                                                   Addresses = new List<AddressResponse>(),
-                                                   Contacts = new List<ContactResponse>(),
-                                                   Contracts = new List<MerchantContractResponse>(),
-                                                   Operators = new List<MerchantOperatorResponse>()
-                                               };
-
-            merchant.SettlementSchedule = oldmerchant.SettlementSchedule switch{
-                SettlementSchedule.Immediate => DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate,
-                SettlementSchedule.Monthly => DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly,
-                SettlementSchedule.Weekly => DataTransferObjects.Responses.Merchant.SettlementSchedule.Weekly,
-                _ => DataTransferObjects.Responses.Merchant.SettlementSchedule.NotSet
-            };
-
-            foreach (DataTransferObjects.Responses.AddressResponse oldmerchantAddress in oldmerchant.Addresses){
-                merchant.Addresses.Add(new AddressResponse{
-                                                              AddressId = oldmerchantAddress.AddressId,
-                                                              AddressLine1 = oldmerchantAddress.AddressLine1,
-                                                              AddressLine2 = oldmerchantAddress.AddressLine2,
-                                                              AddressLine3 = oldmerchantAddress.AddressLine3,
-                                                              AddressLine4 = oldmerchantAddress.AddressLine4,
-                                                              Country = oldmerchantAddress.Country,
-                                                              PostalCode = oldmerchantAddress.PostalCode,
-                                                              Region = oldmerchantAddress.Region,
-                                                              Town = oldmerchantAddress.Town
-                                                          });
-            }
-
-            foreach (ContactResponse oldmerchantContact in oldmerchant.Contacts){
-                merchant.Contacts.Add(new ContactResponse{
-                                                             ContactId = oldmerchantContact.ContactId,
-                                                             ContactName = oldmerchantContact.ContactName,
-                                                             ContactEmailAddress = oldmerchantContact.ContactEmailAddress,
-                                                             ContactPhoneNumber = oldmerchantContact.ContactPhoneNumber
-                                                         });
-            }
-
-            foreach (DataTransferObjects.Responses.MerchantContractResponse merchantContractResponse in oldmerchant.Contracts){
-                merchant.Contracts.Add(new MerchantContractResponse{
-                                                                       ContractId = merchantContractResponse.ContractId,
-                                                                       ContractProducts = merchantContractResponse.ContractProducts
-                                                                   });
-            }
-
-            this.Merchants.Add(merchant);
-        }
-
+        
         public void AddMerchant(MerchantResponse merchant)
         {
             this.Merchants.Add(merchant);
