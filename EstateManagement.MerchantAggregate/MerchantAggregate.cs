@@ -7,6 +7,7 @@
     using System.Runtime.CompilerServices;
     using ContractAggregate;
     using Merchant.DomainEvents;
+    using Microsoft.AspNetCore.Components.Web;
     using Models;
     using Models.Contract;
     using Models.Merchant;
@@ -613,124 +614,116 @@
             aggregate.Addresses.Add(addressAddedEvent.AddressId,address);
         }
 
+        private static void UpdateAddress(this MerchantAggregate aggregate, Guid addressId, IDomainEvent domainEvent){
+            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressId);
+
+            // Now update the record
+            Address updatedAddress = domainEvent switch{
+                MerchantAddressLine1UpdatedEvent addressLine1UpdatedEvent => address.Value with{
+                                                                                                   AddressLine1 = addressLine1UpdatedEvent.AddressLine1
+                                                                                               },
+                MerchantAddressLine2UpdatedEvent addressLine2UpdatedEvent => address.Value with
+                                                                             {
+                                                                                 AddressLine2 = addressLine2UpdatedEvent.AddressLine2
+                                                                             },
+                MerchantAddressLine3UpdatedEvent addressLine3UpdatedEvent => address.Value with
+                                                                             {
+                                                                                 AddressLine3 = addressLine3UpdatedEvent.AddressLine3
+                                                                             },
+                MerchantAddressLine4UpdatedEvent addressLine4UpdatedEvent => address.Value with
+                                                                             {
+                                                                                 AddressLine4 = addressLine4UpdatedEvent.AddressLine4
+                                                                             },
+                MerchantPostalCodeUpdatedEvent merchantPostalCodeUpdatedEvent => address.Value with
+                                                                                 {
+                                                                                     PostalCode = merchantPostalCodeUpdatedEvent.PostalCode
+                                                                                 },
+                MerchantTownUpdatedEvent merchantTownUpdatedEvent => address.Value with
+                                                                     {
+                                                                         Town = merchantTownUpdatedEvent.Town
+                                                                     },
+                MerchantRegionUpdatedEvent merchantRegionUpdatedEvent => address.Value with
+                                                                         {
+                                                                             Region = merchantRegionUpdatedEvent.Region
+                                                                         },
+                MerchantCountyUpdatedEvent merchantCountyUpdatedEvent => address.Value with
+                                                                         {
+                                                                             Country = merchantCountyUpdatedEvent.Country
+                                                                         },
+                                _ => address.Value,
+            };
+
+            aggregate.Addresses[addressId] = updatedAddress;
+        }
+
+        private static void UpdateContact(this MerchantAggregate aggregate, Guid contactId, IDomainEvent domainEvent)
+        {
+            KeyValuePair<Guid, Contact> contact = aggregate.Contacts.Single(a => a.Key == contactId);
+
+            // Now update the record
+            Contact updatedContact = domainEvent switch
+            {
+                MerchantContactNameUpdatedEvent merchantContactNameUpdatedEvent => contact.Value with
+                                                                                   {
+                                                                                       ContactName = merchantContactNameUpdatedEvent.ContactName
+                                                                                   },
+                MerchantContactEmailAddressUpdatedEvent merchantContactEmailAddressUpdatedEvent => contact.Value with
+                                                                                                   {
+                                                                                                       ContactEmailAddress = merchantContactEmailAddressUpdatedEvent.ContactEmailAddress
+                                                                                                   },
+                MerchantContactPhoneNumberUpdatedEvent merchantContactPhoneNumberUpdatedEvent => contact.Value with
+                                                                                                 {
+                                                                                                     ContactPhoneNumber = merchantContactPhoneNumberUpdatedEvent.ContactPhoneNumber
+                                                                                                 },
+               
+                _ => contact.Value,
+            };
+
+            aggregate.Contacts[contactId] = updatedContact;
+        }
+
         public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine1UpdatedEvent addressLine1UpdatedEvent){
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine1UpdatedEvent.AddressId);
-            
-            Address updatedAddress = address.Value with
-                                     {
-                                         AddressLine1 = addressLine1UpdatedEvent.AddressLine1
-                                     };
-            aggregate.Addresses[addressLine1UpdatedEvent.AddressId] = updatedAddress;
+            aggregate.UpdateAddress(addressLine1UpdatedEvent.AddressId, addressLine1UpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine2UpdatedEvent addressLine2UpdatedEvent)
-        {
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine2UpdatedEvent.AddressId);
-
-            Address updatedAddress = address.Value with
-                                     {
-                                         AddressLine2 = addressLine2UpdatedEvent.AddressLine2
-                                     };
-            aggregate.Addresses[addressLine2UpdatedEvent.AddressId] = updatedAddress;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine2UpdatedEvent addressLine2UpdatedEvent){
+            aggregate.UpdateAddress(addressLine2UpdatedEvent.AddressId, addressLine2UpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine3UpdatedEvent addressLine3UpdatedEvent)
-        {
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine3UpdatedEvent.AddressId);
-
-            Address updatedAddress = address.Value with
-                                     {
-                                         AddressLine3 = addressLine3UpdatedEvent.AddressLine3
-                                     };
-            aggregate.Addresses[addressLine3UpdatedEvent.AddressId] = updatedAddress;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine3UpdatedEvent addressLine3UpdatedEvent){
+            aggregate.UpdateAddress(addressLine3UpdatedEvent.AddressId, addressLine3UpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine4UpdatedEvent addressLine4UpdatedEvent)
-        {
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == addressLine4UpdatedEvent.AddressId);
-
-            Address updatedAddress = address.Value with
-                                     {
-                                         AddressLine4 = addressLine4UpdatedEvent.AddressLine4
-                                     };
-            aggregate.Addresses[addressLine4UpdatedEvent.AddressId] = updatedAddress;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantAddressLine4UpdatedEvent addressLine4UpdatedEvent){
+            aggregate.UpdateAddress(addressLine4UpdatedEvent.AddressId, addressLine4UpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantPostalCodeUpdatedEvent merchantPostalCodeUpdatedEvent)
-        {
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantPostalCodeUpdatedEvent.AddressId);
-
-            Address updatedAddress = address.Value with
-                                     {
-                                         PostalCode = merchantPostalCodeUpdatedEvent.PostalCode
-                                     };
-            aggregate.Addresses[merchantPostalCodeUpdatedEvent.AddressId] = updatedAddress;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantPostalCodeUpdatedEvent merchantPostalCodeUpdatedEvent){
+            aggregate.UpdateAddress(merchantPostalCodeUpdatedEvent.AddressId, merchantPostalCodeUpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactNameUpdatedEvent merchantContactNameUpdatedEvent)
-        {
-            KeyValuePair<Guid, Contact> contact = aggregate.Contacts.Single(a => a.Key == merchantContactNameUpdatedEvent.ContactId);
-
-            Contact updatedContact= contact.Value with
-                                     {
-                                         ContactName = merchantContactNameUpdatedEvent.ContactName
-                                     };
-            aggregate.Contacts[merchantContactNameUpdatedEvent.ContactId] = updatedContact;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactNameUpdatedEvent merchantContactNameUpdatedEvent){
+            aggregate.UpdateContact(merchantContactNameUpdatedEvent.ContactId, merchantContactNameUpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactEmailAddressUpdatedEvent merchantContactEmailAddressUpdatedEvent)
-        {
-            KeyValuePair<Guid, Contact> contact = aggregate.Contacts.Single(a => a.Key == merchantContactEmailAddressUpdatedEvent.ContactId);
-
-            Contact updatedContact = contact.Value with
-                                     {
-                                         ContactEmailAddress = merchantContactEmailAddressUpdatedEvent.ContactEmailAddress
-                                     };
-            aggregate.Contacts[merchantContactEmailAddressUpdatedEvent.ContactId] = updatedContact;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactEmailAddressUpdatedEvent merchantContactEmailAddressUpdatedEvent){
+            aggregate.UpdateContact(merchantContactEmailAddressUpdatedEvent.ContactId, merchantContactEmailAddressUpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactPhoneNumberUpdatedEvent merchantContactPhoneNumberUpdatedEvent)
-        {
-            KeyValuePair<Guid, Contact> contact = aggregate.Contacts.Single(a => a.Key == merchantContactPhoneNumberUpdatedEvent.ContactId);
-
-            Contact updatedContact = contact.Value with
-                                     {
-                                         ContactPhoneNumber = merchantContactPhoneNumberUpdatedEvent.ContactPhoneNumber
-                                     };
-            aggregate.Contacts[merchantContactPhoneNumberUpdatedEvent.ContactId] = updatedContact;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantContactPhoneNumberUpdatedEvent merchantContactPhoneNumberUpdatedEvent){
+            aggregate.UpdateContact(merchantContactPhoneNumberUpdatedEvent.ContactId, merchantContactPhoneNumberUpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantTownUpdatedEvent merchantTownUpdatedEvent)
-        {
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantTownUpdatedEvent.AddressId);
-
-            Address updatedAddress = address.Value with
-                                     {
-                                         Town = merchantTownUpdatedEvent.Town
-                                     };
-            aggregate.Addresses[merchantTownUpdatedEvent.AddressId] = updatedAddress;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantTownUpdatedEvent merchantTownUpdatedEvent){
+            aggregate.UpdateAddress(merchantTownUpdatedEvent.AddressId, merchantTownUpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantRegionUpdatedEvent merchantRegionUpdatedEvent)
-        {
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantRegionUpdatedEvent.AddressId);
-
-            Address updatedAddress = address.Value with
-                                     {
-                                         Region = merchantRegionUpdatedEvent.Region
-                                     };
-            aggregate.Addresses[merchantRegionUpdatedEvent.AddressId] = updatedAddress;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantRegionUpdatedEvent merchantRegionUpdatedEvent){
+            aggregate.UpdateAddress(merchantRegionUpdatedEvent.AddressId, merchantRegionUpdatedEvent);
         }
 
-        public static void PlayEvent(this MerchantAggregate aggregate, MerchantCountyUpdatedEvent merchantCountyUpdatedEvent)
-        {
-            KeyValuePair<Guid, Address> address = aggregate.Addresses.Single(a => a.Key == merchantCountyUpdatedEvent.AddressId);
-
-            Address updatedAddress = address.Value with
-                                     {
-                                         Country = merchantCountyUpdatedEvent.Country
-                                     };
-            aggregate.Addresses[merchantCountyUpdatedEvent.AddressId] = updatedAddress;
+        public static void PlayEvent(this MerchantAggregate aggregate, MerchantCountyUpdatedEvent merchantCountyUpdatedEvent){
+            aggregate.UpdateAddress(merchantCountyUpdatedEvent.AddressId, merchantCountyUpdatedEvent);
         }
 
         public static void PlayEvent(this MerchantAggregate aggregate, ContactAddedEvent contactAddedEvent)
