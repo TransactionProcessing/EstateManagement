@@ -29,10 +29,10 @@ namespace EstateManagement.BusinessLogic.Services
         }
 
         public async Task CreateOperator(OperatorCommands.CreateOperatorCommand command, CancellationToken cancellationToken){
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.RequestDto.EstateId, cancellationToken);
+            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(command.EstateId, cancellationToken);
 
             if (estateAggregate.IsCreated == false){
-                throw new InvalidOperationException($"Estate with Id {command.RequestDto.EstateId} not created");
+                throw new InvalidOperationException($"Estate with Id {command.EstateId} not created");
             }
 
             OperatorAggregate operatorAggregate = await this.OperatorAggregateRepository.GetLatestVersion(command.RequestDto.OperatorId, cancellationToken);
@@ -40,7 +40,7 @@ namespace EstateManagement.BusinessLogic.Services
                 throw new InvalidOperationException($"Operator with Id {command.RequestDto.OperatorId} already created");
             }
 
-            operatorAggregate.Create(command.RequestDto.EstateId, command.RequestDto.Name, command.RequestDto.RequireCustomMerchantNumber.GetValueOrDefault(), command.RequestDto.RequireCustomTerminalNumber.GetValueOrDefault());
+            operatorAggregate.Create(command.EstateId, command.RequestDto.Name, command.RequestDto.RequireCustomMerchantNumber.GetValueOrDefault(), command.RequestDto.RequireCustomTerminalNumber.GetValueOrDefault());
 
             await this.OperatorAggregateRepository.SaveChanges(operatorAggregate, cancellationToken);
         }

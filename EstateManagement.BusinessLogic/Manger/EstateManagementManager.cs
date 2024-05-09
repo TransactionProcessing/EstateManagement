@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using ContractAggregate;
     using EstateAggregate;
+    using EstateManagement.Database.Entities;
     using MerchantAggregate;
     using Models.Contract;
     using Models.Estate;
@@ -20,6 +21,9 @@
     using Shared.Exceptions;
     using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
     using Contract = Models.Contract.Contract;
+    using Estate = Models.Estate.Estate;
+    using File = Models.File.File;
+    using Merchant = Models.Merchant.Merchant;
     using Operator = Models.Estate.Operator;
 
     /// <summary>
@@ -185,7 +189,30 @@
         }
 
         public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){
-            return await this.EstateManagementRepository.GetFileDetails(estateId, fileId, cancellationToken);
+            File fileDetails = await this.EstateManagementRepository.GetFileDetails(estateId, fileId, cancellationToken);
+            return fileDetails;
+        }
+
+        public async Task<Models.Operator.Operator> GetOperator(Guid estateId, Guid operatorId, CancellationToken cancellationToken){
+            OperatorAggregate operatorAggregate = await this.OperatorAggregateRepository.GetLatestVersion(operatorId, cancellationToken);
+            if (operatorAggregate.IsCreated == false){
+                throw new NotFoundException($"No operator found with Id [{operatorId}]");
+            }
+
+            Models.Operator.Operator @operator = operatorAggregate.GetOperator();
+
+            return @operator;
+        }
+
+        public async Task<List<Models.Operator.Operator>> GetOperators(Guid estateId, CancellationToken cancellationToken){
+            List<Models.Operator.Operator> operators = await this.EstateManagementRepository.GetOperators(estateId, cancellationToken);
+
+            if (operators == null || operators.Any() == false)
+            {
+                throw new NotFoundException($"No Operators found for estate Id {estateId}");
+            }
+
+            return operators;
         }
 
         #endregion

@@ -79,6 +79,7 @@
                                                 CancellationToken cancellationToken);
 
         Task<CreateOperatorResponse> CreateOperator(String accessToken,
+                                                    Guid estateId,
                                                 CreateOperatorRequest createOperatorRequest,
                                                 CancellationToken cancellationToken);
 
@@ -182,6 +183,7 @@
         Task SwapDeviceForMerchant(String accessToken,
                                                                Guid estateId,
                                                                Guid merchantId,
+                                                               String deviceIdentifier,
                                                                SwapMerchantDeviceRequest request,
                                                                CancellationToken cancellationToken);
 
@@ -216,6 +218,15 @@
                                    Guid contactId,
                                    Contact updatedContactRequest,
                                    CancellationToken cancellationToken);
+
+        Task<OperatorResponse> GetOperator(String accessToken,
+                                       Guid estateId,
+                                       Guid operatorId,
+                                       CancellationToken cancellationToken);
+
+        Task<List<OperatorResponse>> GetOperators(String accessToken,
+                                                  Guid estateId,
+                                                  CancellationToken cancellationToken);
 
         #endregion
     }

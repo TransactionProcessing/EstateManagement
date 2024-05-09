@@ -12,6 +12,7 @@ using Models.File;
 using Models.Merchant;
 using Requests;
 using Contract = Models.Contract.Contract;
+using Operator = Models.Operator.Operator;
 
 public class DummyMerchantStatementDomainService : IMerchantStatementDomainService{
     public async Task AddTransactionToStatement(Guid estateId,
@@ -80,5 +81,13 @@ public class DummyEstateManagementManager : IEstateManagementManager{
 
     public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){
         return new File();
+    }
+
+    public async Task<Operator> GetOperator(Guid estateId, Guid operatorId, CancellationToken cancellationToken){
+        return new Operator();
+    }
+
+    public async Task<List<Operator>> GetOperators(Guid estateId, CancellationToken cancellationToken){
+        return new List<Operator>();
     }
 }

@@ -9,6 +9,7 @@
     using Models.Merchant;
     using Models.MerchantStatement;
     using Contract = Models.Contract.Contract;
+    using Operator = Models.Merchant.Operator;
 
     /// <summary>
     /// 
@@ -17,56 +18,22 @@
     {
         #region Methods
 
-        /// <summary>
-        /// Gets the contract.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="includeProducts">if set to <c>true</c> [include products].</param>
-        /// <param name="includeProductsWithFees">if set to <c>true</c> [include products with fees].</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task<Contract> GetContract(Guid estateId,
                                    Guid contractId,
                                    Boolean includeProducts,
                                    Boolean includeProductsWithFees,
                                    CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the contracts.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task<List<Contract>> GetContracts(Guid estateId,
                                    CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the estate.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task<Estate> GetEstate(Guid estateId,
                                CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the merchant contracts.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task<List<Contract>> GetMerchantContracts(Guid estateId,
                                                   Guid merchantId,
                                                   CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the merchants.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task<List<Merchant>> GetMerchants(Guid estateId,
                                           CancellationToken cancellationToken);
 
@@ -74,13 +41,6 @@
                                          Guid merchantId,
                                          CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the merchant from reference.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="reference">The reference.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         Task<Merchant> GetMerchantFromReference(Guid estateId, 
                                                 String reference,
                                                 CancellationToken cancellationToken);
@@ -90,6 +50,9 @@
                                            CancellationToken cancellationToken);
 
         Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken);
+
+        Task<List<Models.Operator.Operator>> GetOperators(Guid estateId,
+                                          CancellationToken cancellationToken);
 
         #endregion
     }

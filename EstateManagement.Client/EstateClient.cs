@@ -60,7 +60,7 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 await this.HandleResponse(httpResponse, cancellationToken);
@@ -90,7 +90,7 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 await this.HandleResponse(httpResponse, cancellationToken);
@@ -174,7 +174,7 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 String content = await this.HandleResponse(httpResponse, cancellationToken);
@@ -213,7 +213,7 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 String content = await this.HandleResponse(httpResponse, cancellationToken);
@@ -251,7 +251,7 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 await this.HandleResponse(httpResponse, cancellationToken);
@@ -409,10 +409,10 @@
             return response;
         }
 
-        public async Task<CreateOperatorResponse> CreateOperator(String accessToken, CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken){
+        public async Task<CreateOperatorResponse> CreateOperator(String accessToken, Guid estateId,  CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken){
             CreateOperatorResponse response = null;
 
-            String requestUri = this.BuildRequestUrl("/api/operators/");
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators");
 
             try
             {
@@ -458,7 +458,7 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 await this.HandleResponse(httpResponse, cancellationToken);
@@ -523,14 +523,14 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 await this.HandleResponse(httpResponse, cancellationToken);
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
-                Exception exception = new Exception($"Error creating new mercant user Merchant Id {estateId} Email Address {createMerchantUserRequest.EmailAddress}.",
+                Exception exception = new Exception($"Error creating new merchant user Merchant Id {estateId} Email Address {createMerchantUserRequest.EmailAddress}.",
                                                     ex);
 
                 throw exception;
@@ -552,7 +552,7 @@
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
                 await this.HandleResponse(httpResponse, cancellationToken);
@@ -574,15 +574,11 @@
             String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/contracts/{contractId}/products/{productId}/transactionFees/{transactionFeeId}");
 
             try{
-                String requestSerialised = String.Empty;
-
-                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
-
                 // Add the access token to the client headers
                 this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 // Make the Http Call here
-                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+                HttpResponseMessage httpResponse = await this.HttpClient.DeleteAsync(requestUri, cancellationToken);
 
                 // Process the response
                 await this.HandleResponse(httpResponse, cancellationToken);
@@ -1016,10 +1012,11 @@
         public async Task SwapDeviceForMerchant(String accessToken,
                                                                             Guid estateId,
                                                                             Guid merchantId,
+                                                                            String deviceIdentifier,
                                                                             SwapMerchantDeviceRequest swapMerchantDeviceRequest,
                                                                             CancellationToken cancellationToken){
 
-            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices");
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/merchants/{merchantId}/devices/{deviceIdentifier}");
 
             try{
                 String requestSerialised = JsonConvert.SerializeObject(swapMerchantDeviceRequest);
@@ -1119,6 +1116,66 @@
 
                 throw exception;
             }
+        }
+
+        public async Task<OperatorResponse> GetOperator(String accessToken, Guid estateId, Guid operatorId, CancellationToken cancellationToken){
+            OperatorResponse response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators/{operatorId}");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<OperatorResponse>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting operator id {operatorId} for estate Id {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
+        }
+
+        public async Task<List<OperatorResponse>> GetOperators(String accessToken, Guid estateId, CancellationToken cancellationToken){
+            List<OperatorResponse> response = null;
+
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators");
+
+            try
+            {
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
+
+                // Process the response
+                String content = await this.HandleResponse(httpResponse, cancellationToken);
+
+                // call was successful so now deserialise the body to the response object
+                response = JsonConvert.DeserializeObject<List<OperatorResponse>>(content);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error getting all operators for estate Id {estateId}.", ex);
+
+                throw exception;
+            }
+
+            return response;
         }
 
         /// <summary>

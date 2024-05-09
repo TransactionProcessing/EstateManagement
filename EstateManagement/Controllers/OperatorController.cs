@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace EstateManagement.Controllers
 {
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using BusinessLogic.Requests;
@@ -10,8 +11,10 @@ namespace EstateManagement.Controllers
     using DataTransferObjects.Requests.Operator;
     using DataTransferObjects.Responses;
     using DataTransferObjects.Responses.Operator;
+    using Factories;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using Models.Operator;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
 
@@ -45,10 +48,10 @@ namespace EstateManagement.Controllers
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateOperatorResponse))]
         [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
-        public async Task<IActionResult> CreateOperator([FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId,  [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
             // Create the command
-            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(createOperatorRequest);
+            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
 
             // Route the command
             await this.Mediator.Send(command, cancellationToken);
@@ -57,9 +60,42 @@ namespace EstateManagement.Controllers
             return this.Created($"{OperatorController.ControllerRoute}/{createOperatorRequest.OperatorId}",
                                 new CreateOperatorResponse
                                 {
-                                    EstateId = createOperatorRequest.EstateId,
+                                    EstateId = estateId,
                                     OperatorId = createOperatorRequest.OperatorId
                                 });
+        }
+
+        [HttpGet]
+        [Route("{operatorId}")]
+        [SwaggerResponse(200, "OK", typeof(OperatorResponse))]
+        [SwaggerResponseExample(201, typeof(OperatorResponseExample))]
+        public async Task<IActionResult> GetOperator([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid operatorId,
+                                                     CancellationToken cancellationToken)
+        {
+            // Create the command
+            OperatorQueries.GetOperatorQuery query = new(estateId, operatorId);
+
+            // Route the command
+            Operator @operator = await this.Mediator.Send(query, cancellationToken);
+
+            return this.Ok(ModelFactory.ConvertFrom(@operator));
+        }
+
+        [HttpGet]
+        [Route("")]
+        [SwaggerResponse(200, "OK", typeof(OperatorResponse))]
+        [SwaggerResponseExample(201, typeof(OperatorResponseExample))]
+        public async Task<IActionResult> GetOperators([FromRoute] Guid estateId,
+                                                     CancellationToken cancellationToken)
+        {
+            // Create the command
+            OperatorQueries.GetOperatorsQuery query = new(estateId);
+
+            // Route the command
+            List<Operator> @operatorList = await this.Mediator.Send(query, cancellationToken);
+
+            return this.Ok(ModelFactory.ConvertFrom(@operatorList));
         }
 
         #region Others
@@ -72,7 +108,7 @@ namespace EstateManagement.Controllers
         /// <summary>
         /// The controller route
         /// </summary>
-        private const String ControllerRoute = "api/" + OperatorController.ControllerName;
+        private const String ControllerRoute = "api/estates/{estateid}/" + OperatorController.ControllerName;
 
         #endregion
     }

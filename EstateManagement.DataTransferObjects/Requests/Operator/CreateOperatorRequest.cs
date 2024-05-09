@@ -22,11 +22,7 @@
         [Required]
         [JsonProperty("name")]
         public String Name { get; set; }
-
-        [Required]
-        [JsonProperty("estate_id")]
-        public Guid EstateId { get; set; }
-
+        
         [Required]
         [JsonProperty("operator_id")]
         public Guid OperatorId { get; set; }

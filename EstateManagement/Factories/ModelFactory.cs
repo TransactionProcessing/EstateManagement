@@ -7,6 +7,7 @@
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.File;
     using DataTransferObjects.Responses.Merchant;
+    using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
     using Models;
     using Models.Contract;
@@ -20,9 +21,11 @@
     using MerchantContractResponse = DataTransferObjects.Responses.Merchant.MerchantContractResponse;
     using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
     using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
+    using Operator = Models.Operator.Operator;
     using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
     using ProductType = DataTransferObjects.Responses.Contract.ProductType;
-    
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -333,5 +336,33 @@
         }
 
         #endregion
+
+        public static OperatorResponse ConvertFrom(Operator model){
+            if (model == null){
+                return null;
+            }
+
+            OperatorResponse response = new();
+            response.OperatorId = model.OperatorId;
+            response.RequireCustomTerminalNumber = model.RequireCustomTerminalNumber;
+            response.RequireCustomMerchantNumber = model.RequireCustomMerchantNumber;
+            response.Name = model.Name;
+
+            return response;
+        }
+
+        public static List<OperatorResponse> ConvertFrom(List<Operator> models)
+        {
+            if (models == null || models.Any() == false)
+            {
+                return new List<OperatorResponse>();
+            }
+
+            List<OperatorResponse> response = new();
+
+            models.ForEach(o => response.Add(ModelFactory.ConvertFrom(o)));
+
+            return response;
+        }
     }
 }

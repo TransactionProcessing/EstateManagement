@@ -168,6 +168,7 @@ public class EstateManagementSteps{
         foreach ((EstateDetails estate, CreateOperatorRequest request) request in requests){
             CreateOperatorResponse response = await this.EstateClient
                                                         .CreateOperator(accessToken,
+                                                                        request.estate.EstateId,
                                                                         request.request,
                                                                         CancellationToken.None).ConfigureAwait(false);
 
@@ -627,13 +628,14 @@ public class EstateManagementSteps{
         exception.InnerException.ShouldBeOfType<KeyNotFoundException>();
     }
 
-    public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(String accessToken, List<(EstateDetails, Guid, SwapMerchantDeviceRequest)> requests){
-        foreach ((EstateDetails, Guid, SwapMerchantDeviceRequest) request in requests){
+    public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(String accessToken, List<(EstateDetails, Guid,String, SwapMerchantDeviceRequest)> requests){
+        foreach ((EstateDetails, Guid,String, SwapMerchantDeviceRequest) request in requests){
             await this.EstateClient
                                                                               .SwapDeviceForMerchant(accessToken,
                                                                                                      request.Item1.EstateId,
                                                                                                      request.Item2,
                                                                                                      request.Item3,
+                                                                                                         request.Item4,
                                                                                                      CancellationToken.None).ConfigureAwait(false);
 
             //this.TestingContext.Logger.LogInformation($"Device {newDeviceIdentifier} assigned to Merchant {merchantName}");
@@ -643,7 +645,7 @@ public class EstateManagementSteps{
                                                                                .GetMerchant(accessToken, request.Item1.EstateId, request.Item2, CancellationToken.None)
                                                                                .ConfigureAwait(false);
 
-                                merchantResponse.Devices.ContainsValue(request.Item3.NewDeviceIdentifier);
+                                merchantResponse.Devices.ContainsValue(request.Item4.NewDeviceIdentifier);
                             });
         }
     }

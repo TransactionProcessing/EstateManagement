@@ -154,9 +154,8 @@
         /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="createEstateUserRequest">The create estate user request.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpPost]
+        /// <param name="cancellationToken">The cancellation token.</param>/// <returns></returns>
+        [HttpPatch]
         [Route("{estateId}/users")]
         [SwaggerResponse(201, "Created", typeof(CreateEstateUserResponse))]
         [SwaggerResponseExample(201, typeof(CreateEstateUserResponseExample))]
@@ -180,7 +179,7 @@
             return this.Ok();
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("{estateId}/operators")]
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId, [FromBody] AssignOperatorRequest assignOperatorRequest, CancellationToken cancellationToken)
         {

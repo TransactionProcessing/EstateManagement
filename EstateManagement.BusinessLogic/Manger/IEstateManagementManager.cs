@@ -9,6 +9,7 @@
     using Models.File;
     using Models.Merchant;
     using Contract = Models.Contract.Contract;
+    using Operator = Models.Operator.Operator;
 
     public interface IEstateManagementManager
     {
@@ -78,6 +79,11 @@
                                                                 CancellationToken cancellationToken);
 
         Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken);
+
+        Task<Operator> GetOperator(Guid estateId,Guid operatorId,
+                               CancellationToken cancellationToken);
+
+        Task<List<Operator>> GetOperators(Guid estateId, CancellationToken cancellationToken);
 
         #endregion
     }

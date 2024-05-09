@@ -8,8 +8,15 @@ namespace EstateManagement.BusinessLogic.Requests
 {
     using DataTransferObjects.Requests.Operator;
     using MediatR;
+    using Models.Operator;
 
     public class OperatorCommands{
-        public record CreateOperatorCommand(CreateOperatorRequest RequestDto) : IRequest;
+        public record CreateOperatorCommand(Guid EstateId, CreateOperatorRequest RequestDto) : IRequest;
+    }
+
+    public class OperatorQueries{
+        public record GetOperatorQuery(Guid EstateId, Guid OperatorId) : IRequest<Operator>;
+
+        public record GetOperatorsQuery(Guid EstateId) : IRequest<List<Operator>>;
     }
 }

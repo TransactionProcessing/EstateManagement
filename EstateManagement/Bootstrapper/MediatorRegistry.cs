@@ -10,6 +10,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Models.Estate;
     using Models.Merchant;
+    using Operator = Models.Operator.Operator;
 
     /// <summary>
     /// 
@@ -37,6 +38,8 @@
             this.AddSingleton<IRequestHandler<EstateQueries.GetEstatesQuery, List<Estate>>, EstateRequestHandler>();
 
             this.AddSingleton<IRequestHandler<OperatorCommands.CreateOperatorCommand>, OperatorRequestHandler>();
+            this.AddSingleton<IRequestHandler<OperatorQueries.GetOperatorQuery, Operator>, OperatorRequestHandler>();
+            this.AddSingleton<IRequestHandler<OperatorQueries.GetOperatorsQuery, List<Operator>>, OperatorRequestHandler>();
 
             this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>, MerchantRequestHandler>();
