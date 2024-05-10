@@ -3,6 +3,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Estate.DomainEvents;
+using EstateManagement.Merchant.DomainEvents;
 using Operator.DomainEvents;
 using Repository;
 using Shared.DomainDrivenDesign.EventSourcing;
@@ -40,20 +41,13 @@ public class OperatorDomainEventHandler : IDomainEventHandler
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task Handle(IDomainEvent domainEvent,
-                             CancellationToken cancellationToken)
-    {
-        await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
-    }
-
-    /// <summary>
-    /// Handles the specific domain event.
-    /// </summary>
-    /// <param name="domainEvent">The domain event.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(OperatorCreatedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
-    {
-        await this.EstateReportingRepository.AddOperator(domainEvent, cancellationToken);
+                             CancellationToken cancellationToken){
+        Task t = domainEvent switch{
+            OperatorCreatedEvent oce => this.EstateReportingRepository.AddOperator(oce, cancellationToken),
+            _ => null
+        };
+        if (t != null)
+            await t;
     }
     
     #endregion

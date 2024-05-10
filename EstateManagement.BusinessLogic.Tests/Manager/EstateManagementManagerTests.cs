@@ -25,6 +25,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Testing;
     using Xunit;
     using Contract = Models.Contract.Contract;
+    using Operator = Models.Operator.Operator;
 
     public class EstateManagementManagerTests
     {
@@ -330,6 +331,59 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             var fileDetails = await this.EstateManagementManager.GetFileDetails(TestData.EstateId, TestData.FileId, CancellationToken.None);
 
             fileDetails.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetOperator_OperatorDetailsAreReturned()
+        {
+            this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedOperatorAggregate);
+
+            Operator operatorDetails = await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
+
+            operatorDetails.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetOperator_OperatorNotCreated_ExceptionThrown()
+        {
+            this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyOperatorAggregate);
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
+                                            });
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetOperators_OperatorDetailsAreReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Operator>{
+                                                                                                                                                           TestData.OperatorModel
+                                                                                                                                                       });
+
+            List<Operator> operators = await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
+            operators.ShouldNotBeNull();
+            operators.ShouldHaveSingleItem();
+            operators.Single().OperatorId.ShouldBe(TestData.OperatorId);
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetOperators_NullList_ExceptionThrown(){
+
+            List<Operator> operators = null;
+            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(operators);
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
+                                            });
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetOperators_EmptyList_ExceptionThrown()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Operator>());
+
+            Should.Throw<NotFoundException>(async () => {
+                                                await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
+                                            });
         }
     }
 }
