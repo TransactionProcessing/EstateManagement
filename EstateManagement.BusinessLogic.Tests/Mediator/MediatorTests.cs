@@ -55,6 +55,9 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.GetTransactionFeesForProductQuery);
             this.Requests.Add(TestData.GetEstateQuery);
             this.Requests.Add(TestData.GetEstatesQuery);
+            this.Requests.Add(TestData.GetOperatorQuery);
+            this.Requests.Add(TestData.GetOperatorsQuery);
+
 
             //this.Requests.Add(TestData.AddProductToContractRequest);
             //this.Requests.Add(TestData.AddSettledFeeToMerchantStatementRequest);

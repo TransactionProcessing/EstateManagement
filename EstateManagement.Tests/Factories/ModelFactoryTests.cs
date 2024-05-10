@@ -8,6 +8,7 @@ namespace EstateManagement.Tests.Factories{
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.File;
     using DataTransferObjects.Responses.Merchant;
+    using DataTransferObjects.Responses.Operator;
     using DataTransferObjects.Responses.Settlement;
     using EstateManagement.Factories;
     using Models;
@@ -22,6 +23,7 @@ namespace EstateManagement.Tests.Factories{
     using Contract = Models.Contract.Contract;
     using MerchantOperatorResponse = DataTransferObjects.Responses.Merchant.MerchantOperatorResponse;
     using MerchantResponse = DataTransferObjects.Responses.Merchant.MerchantResponse;
+    using Operator = Models.Operator.Operator;
     using ProductType = DataTransferObjects.Responses.Contract.ProductType;
     using SettlementSchedule = Models.SettlementSchedule;
 
@@ -532,6 +534,66 @@ namespace EstateManagement.Tests.Factories{
             FileDetailsResponse response = ModelFactory.ConvertFrom(fileModel);
 
             response.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_Operator_ModelConverted(){
+            OperatorResponse operatorResponse = ModelFactory.ConvertFrom(TestData.OperatorModel);
+
+            operatorResponse.ShouldNotBeNull();
+            operatorResponse.OperatorId.ShouldBe(TestData.OperatorId);
+            operatorResponse.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumber);
+            operatorResponse.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumber);
+            operatorResponse.Name.ShouldBe(TestData.OperatorName);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorModelIsNull_ModelConverted(){
+            Operator operatorModel = null;
+
+            OperatorResponse operatorResponse = ModelFactory.ConvertFrom(operatorModel);
+
+            operatorResponse.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorList_ModelConverted()
+        {
+            List<Operator> operatorList = new List<Operator>{
+                                                                TestData.OperatorModel
+                                                            };
+
+            List<OperatorResponse> operatorResponses = ModelFactory.ConvertFrom(operatorList);
+            operatorResponses.ShouldNotBeNull();
+            operatorResponses.ShouldNotBeEmpty();
+            operatorResponses.Count.ShouldBe(operatorList.Count);
+            foreach (OperatorResponse operatorResponse in operatorResponses){
+                Operator @operator = operatorList.SingleOrDefault(o => o.OperatorId == operatorResponse.OperatorId);
+                @operator.ShouldNotBeNull();
+                @operator.OperatorId.ShouldBe(operatorResponse.OperatorId);
+                @operator.RequireCustomTerminalNumber.ShouldBe(operatorResponse.RequireCustomTerminalNumber);
+                @operator.RequireCustomMerchantNumber.ShouldBe(operatorResponse.RequireCustomMerchantNumber);
+                @operator.Name.ShouldBe(operatorResponse.Name);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_NullOperatorList_ModelConverted(){
+            List<Operator> operatorList = null;
+
+            List<OperatorResponse> operatorResponses = ModelFactory.ConvertFrom(operatorList);
+            operatorResponses.ShouldBeEmpty();
+           
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_EmptyOperatorList_ModelConverted()
+        {
+            List<Operator> operatorList = new List<Operator>();
+
+            List<OperatorResponse> operatorResponses = ModelFactory.ConvertFrom(operatorList);
+            operatorResponses.ShouldBeEmpty();
+
         }
     }
 }

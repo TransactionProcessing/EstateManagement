@@ -23,6 +23,7 @@
             aggregate.Name = domainEvent.Name;
             aggregate.RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber;
             aggregate.RequireCustomTerminalNumber = domainEvent.RequireCustomTerminalNumber;
+            aggregate.EstateId = domainEvent.EstateId;
         }
 
         public static void Create(this OperatorAggregate aggregate,
@@ -43,6 +44,7 @@
     public record OperatorAggregate : Aggregate
     {
         public Boolean IsCreated { get; internal set; }
+        public Guid EstateId { get; internal set; }
 
         public String Name { get; internal set; }
         public Boolean RequireCustomMerchantNumber { get; internal set; }

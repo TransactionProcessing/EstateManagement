@@ -24,6 +24,7 @@
     using Models.Merchant;
     using Models.MerchantStatement;
     using Newtonsoft.Json;
+    using Operator.DomainEvents;
     using OperatorAggregate;
     using SecurityService.DataTransferObjects.Responses;
     using Shared.ValueObjects;
@@ -734,6 +735,12 @@
 
         public static ContractCreatedEvent ContractCreatedEvent => new ContractCreatedEvent(TestData.ContractId, TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
+        public static OperatorCreatedEvent OperatorCreatedEvent = new OperatorCreatedEvent(TestData.OperatorId,
+                                                                                           TestData.EstateId,
+                                                                                           TestData.OperatorName,
+                                                                                           TestData.RequireCustomMerchantNumber,
+                                                                                           TestData.RequireCustomTerminalNumber);
+
         public static Contract ContractEntity =>
             new Contract{
                             OperatorId = TestData.OperatorId,
@@ -1130,6 +1137,8 @@
 
         public static EstateQueries.GetEstateQuery GetEstateQuery => new (TestData.EstateId);
 
+        public static OperatorQueries.GetOperatorQuery GetOperatorQuery => new(TestData.EstateId, TestData.OperatorId);
+        public static OperatorQueries.GetOperatorsQuery GetOperatorsQuery => new(TestData.EstateId);
         public static EstateQueries.GetEstatesQuery GetEstatesQuery => new(TestData.EstateId);
 
         public static MerchantQueries.GetTransactionFeesForProductQuery GetTransactionFeesForProductQuery =>
@@ -2066,8 +2075,18 @@
 
         #endregion
 
-        //public static Guid MerchantAddressId = Guid.Parse("F463D464-CD2F-4293-98F1-A31529B12426");
+        public static Models.Operator.Operator OperatorModel =>
+            new Models.Operator.Operator(){
+                                              OperatorId = TestData.OperatorId,
+                                              RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
+                                              RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                                              Name = TestData.OperatorName
+                                          };
 
-        //public static Guid MerchantContactId = Guid.Parse("37B08E8A-8B1E-482A-AE9C-C87DC3B36026");
+        public static OperatorAggregate EmptyOperatorAggregate(){
+            OperatorAggregate operatorAggregate = OperatorAggregate.Create(TestData.OperatorId);
+
+            return operatorAggregate;
+        }
     }
 }
