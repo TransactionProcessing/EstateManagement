@@ -12,5 +12,7 @@ namespace EstateManagement.BusinessLogic.Requests
     [ExcludeFromCodeCoverage]
     public class OperatorCommands{
         public record CreateOperatorCommand(Guid EstateId, CreateOperatorRequest RequestDto) : IRequest;
+
+        public record UpdateOperatorCommand(Guid EstateId, Guid OperatorId, UpdateOperatorRequest RequestDto) : IRequest;
     }
 }

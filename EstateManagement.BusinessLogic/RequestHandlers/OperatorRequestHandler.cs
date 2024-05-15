@@ -15,7 +15,8 @@ namespace EstateManagement.BusinessLogic.RequestHandlers
 
     public class OperatorRequestHandler : IRequestHandler<OperatorCommands.CreateOperatorCommand>,
                                           IRequestHandler<OperatorQueries.GetOperatorQuery, Operator>,
-                                          IRequestHandler<OperatorQueries.GetOperatorsQuery, List<Operator>>
+                                          IRequestHandler<OperatorQueries.GetOperatorsQuery, List<Operator>>,
+                                          IRequestHandler<OperatorCommands.UpdateOperatorCommand>
     {
         private readonly IOperatorDomainService OperatorDomainService;
 
@@ -38,6 +39,10 @@ namespace EstateManagement.BusinessLogic.RequestHandlers
         {
             List<Operator> operators = await this.EstateManagementManager.GetOperators(query.EstateId, cancellationToken);
             return operators;
+        }
+
+        public async Task Handle(OperatorCommands.UpdateOperatorCommand command, CancellationToken cancellationToken){
+            await this.OperatorDomainService.UpdateOperator(command, cancellationToken);
         }
     }
 }

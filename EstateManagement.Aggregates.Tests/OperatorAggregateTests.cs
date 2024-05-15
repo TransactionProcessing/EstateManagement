@@ -1,8 +1,7 @@
+namespace EstateManagement.Aggregates.Tests;
+
+using EstateManagement.Models.Operator;
 using EstateManagement.Testing;
-
-namespace EstateManagement.ContractAggregate.Tests;
-
-using Models.Operator;
 using OperatorAggregate;
 using Shouldly;
 
@@ -44,5 +43,22 @@ public class OperatorAggregateTests{
         @operator.Name.ShouldBe(TestData.OperatorName);
         @operator.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomTerminalNumber);
         @operator.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomMerchantNumber);
+    }
+
+    [Fact]
+    public void OperatorAggregate_UpdateOperator_IsUpdated()
+    {
+        OperatorAggregate aggregate = OperatorAggregate.Create(TestData.OperatorId);
+        aggregate.Create(TestData.EstateId, TestData.OperatorName, TestData.RequireCustomMerchantNumberFalse, TestData.RequireCustomTerminalNumberFalse);
+
+        aggregate.Name.ShouldBe(TestData.OperatorName);
+        aggregate.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomMerchantNumberFalse);
+        aggregate.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomTerminalNumberFalse);
+
+        aggregate.UpdateOperator(TestData.OperatorName2, TestData.RequireCustomMerchantNumberTrue, TestData.RequireCustomTerminalNumberTrue);
+
+        aggregate.Name.ShouldBe(TestData.OperatorName2);
+        aggregate.RequireCustomTerminalNumber.ShouldBe(TestData.RequireCustomMerchantNumberTrue);
+        aggregate.RequireCustomMerchantNumber.ShouldBe(TestData.RequireCustomTerminalNumberTrue);
     }
 }

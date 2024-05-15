@@ -1,14 +1,14 @@
-namespace EstateManagement.MerchantDepositListAggregate.Tests
+namespace EstateManagement.Aggregates.Tests
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using MerchantAggregate;
-    using Models;
-    using Models.Merchant;
+    using EstateManagement.MerchantAggregate;
+    using EstateManagement.Models;
+    using EstateManagement.Models.Merchant;
+    using EstateManagement.Testing;
     using Shared.ValueObjects;
     using Shouldly;
-    using Testing;
     using Xunit;
 
     public class MerchantDepositListAggregateTests

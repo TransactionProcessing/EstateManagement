@@ -1,10 +1,11 @@
-﻿namespace EstateManagement.EstateAggregate.Tests
+﻿namespace EstateManagement.Aggregates.Tests
 {
     using System;
     using System.Linq;
+    using EstateAggregate;
+    using EstateManagement.Models;
+    using EstateManagement.Models.Estate;
     using EstateManagement.Testing;
-    using Models;
-    using Models.Estate;
     using Shouldly;
     using Xunit;
 

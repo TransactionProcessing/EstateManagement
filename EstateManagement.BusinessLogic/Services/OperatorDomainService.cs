@@ -15,6 +15,8 @@ namespace EstateManagement.BusinessLogic.Services
 
     public interface IOperatorDomainService{
         Task CreateOperator(OperatorCommands.CreateOperatorCommand command, CancellationToken cancellationToken);
+
+        Task UpdateOperator(OperatorCommands.UpdateOperatorCommand command, CancellationToken cancellationToken);
     }
 
     public class OperatorDomainService : IOperatorDomainService{
@@ -41,6 +43,18 @@ namespace EstateManagement.BusinessLogic.Services
             }
 
             operatorAggregate.Create(command.EstateId, command.RequestDto.Name, command.RequestDto.RequireCustomMerchantNumber.GetValueOrDefault(), command.RequestDto.RequireCustomTerminalNumber.GetValueOrDefault());
+
+            await this.OperatorAggregateRepository.SaveChanges(operatorAggregate, cancellationToken);
+        }
+
+        public async Task UpdateOperator(OperatorCommands.UpdateOperatorCommand command, CancellationToken cancellationToken){
+            OperatorAggregate operatorAggregate = await this.OperatorAggregateRepository.GetLatestVersion(command.OperatorId, cancellationToken);
+            if (operatorAggregate.IsCreated == false)
+            {
+                throw new InvalidOperationException($"Operator with Id {command.OperatorId} has not been created");
+            }
+
+            operatorAggregate.UpdateOperator(command.RequestDto.Name, command.RequestDto.RequireCustomMerchantNumber.GetValueOrDefault(), command.RequestDto.RequireCustomTerminalNumber.GetValueOrDefault());
 
             await this.OperatorAggregateRepository.SaveChanges(operatorAggregate, cancellationToken);
         }

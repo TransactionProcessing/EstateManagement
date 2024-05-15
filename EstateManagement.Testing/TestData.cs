@@ -848,7 +848,18 @@
                                            RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
                                            Name = TestData.OperatorName
                                        };
+
+        public static UpdateOperatorRequest UpdateOperatorRequest =>
+            new UpdateOperatorRequest()
+            {
+                RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
+                RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                Name = TestData.OperatorName
+            };
+
         public static OperatorCommands.CreateOperatorCommand CreateOperatorCommand => new(TestData.EstateId,  TestData.CreateOperatorRequest);
+
+        public static OperatorCommands.UpdateOperatorCommand UpdateOperatorCommand => new(TestData.EstateId,TestData.OperatorId, TestData.UpdateOperatorRequest);
 
         public static CreateEstateUserRequest CreateEstateUserRequest =>
             new CreateEstateUserRequest{

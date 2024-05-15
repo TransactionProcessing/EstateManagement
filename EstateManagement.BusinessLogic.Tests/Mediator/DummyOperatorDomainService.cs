@@ -9,4 +9,8 @@ public class DummyOperatorDomainService : IOperatorDomainService{
     public async Task CreateOperator(OperatorCommands.CreateOperatorCommand command, CancellationToken cancellationToken){
         
     }
+
+    public async Task UpdateOperator(OperatorCommands.UpdateOperatorCommand command, CancellationToken cancellationToken){
+        
+    }
 }

@@ -1,13 +1,13 @@
-using System;
-using Xunit;
-
-namespace EstateManagement.ContractAggregate.Tests
+namespace EstateManagement.Aggregates.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Models.Contract;
+    using ContractAggregate;
+    using EstateManagement.Models.Contract;
+    using EstateManagement.Testing;
     using Shouldly;
-    using Testing;
+    using Xunit;
 
     public class ContractAggregateTests
     {

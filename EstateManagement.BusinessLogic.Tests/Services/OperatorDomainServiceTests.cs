@@ -60,4 +60,22 @@ public class OperatorDomainServiceTests{
                                                     await this.OperatorDomainService.CreateOperator(TestData.CreateOperatorCommand, CancellationToken.None);
                                                 });
     }
+
+    [Fact]
+    public async Task OperatorDomainService_UpdateOperator_OperatorIsUpdated()
+    {
+        this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedOperatorAggregate);
+
+        await this.OperatorDomainService.UpdateOperator(TestData.UpdateOperatorCommand, CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task OperatorDomainService_UpdateOperator_OperatorNotCreated_ExceptionThrown()
+    {
+        this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyOperatorAggregate);
+        
+        Should.Throw<InvalidOperationException>(async () => {
+            await this.OperatorDomainService.UpdateOperator(TestData.UpdateOperatorCommand, CancellationToken.None);
+        });
+    }
 }

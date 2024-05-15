@@ -17,6 +17,7 @@ namespace EstateManagement.IntegrationTests.Shared
     using DataTransferObjects.Responses.Contract;
     using DataTransferObjects.Responses.Estate;
     using DataTransferObjects.Responses.Merchant;
+    using DataTransferObjects.Responses.Operator;
     using global::Shared.IntegrationTesting;
     using IntegrationTesting.Helpers;
     using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -85,6 +86,19 @@ namespace EstateManagement.IntegrationTests.Shared
             foreach ((Guid, EstateOperatorResponse) result in results)
             {
                 this.TestingContext.Logger.LogInformation($"Operator {result.Item2.Name} created with Id {result.Item2.OperatorId} for Estate {result.Item1}");
+            }
+        }
+
+        [When("I update the operators with the following details")]
+        public async Task WhenIUpdateTheOperatorsWithTheFollowingDetails(DataTable table)
+        {
+            List<(EstateDetails, Guid, UpdateOperatorRequest)> requests = table.Rows.ToUpdateOperatorRequests(this.TestingContext.Estates);
+
+            List<OperatorResponse> verifiedOperators = await this.EstateManagementSteps.WhenIUpdateTheOperatorsWithTheFollowingDetails(this.TestingContext.AccessToken, requests);
+
+            foreach (OperatorResponse verifiedOperator in verifiedOperators)
+            {
+                this.TestingContext.Logger.LogInformation($"Operator {verifiedOperator.Name} updated");
             }
         }
 
@@ -280,7 +294,7 @@ namespace EstateManagement.IntegrationTests.Shared
             foreach (MerchantResponse verifiedMerchant in verifiedMerchants)
             {
                 EstateDetails estateDetails = this.TestingContext.GetEstateDetails(verifiedMerchant.EstateId);
-                this.TestingContext.Logger.LogInformation($"Merchant {verifiedMerchant.MerchantName} created with Id {verifiedMerchant.MerchantId} for Estate {estateDetails.EstateName}");
+                this.TestingContext.Logger.LogInformation($"Merchant {verifiedMerchant.MerchantName} updated for Estate {estateDetails.EstateName}");
             }
         }
         
