@@ -741,6 +741,10 @@
                                                                                            TestData.RequireCustomMerchantNumber,
                                                                                            TestData.RequireCustomTerminalNumber);
 
+        public static OperatorNameUpdatedEvent OperatorNameUpdatedEvent => new(TestData.OperatorId, TestData.EstateId, TestData.OperatorName2);
+        public static OperatorRequireCustomMerchantNumberChangedEvent OperatorRequireCustomMerchantNumberChangedEvent => new(TestData.OperatorId, TestData.EstateId, TestData.RequireCustomMerchantNumberFalse);
+        public static OperatorRequireCustomTerminalNumberChangedEvent OperatorRequireCustomTerminalNumberChangedEvent => new(TestData.OperatorId, TestData.EstateId, TestData.RequireCustomTerminalNumberFalse);
+
         public static Contract ContractEntity =>
             new Contract{
                             OperatorId = TestData.OperatorId,

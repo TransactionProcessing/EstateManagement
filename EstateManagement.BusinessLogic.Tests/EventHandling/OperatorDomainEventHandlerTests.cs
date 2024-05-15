@@ -30,7 +30,31 @@ public class OperatorDomainEventHandlerTests{
     }
 
     [Fact]
-    public void MerchantDomainEventHandler_EstateCreatedEvent_EventIsHandled()
+    public void OperatorDomainEventHandler_OperatorNameUpdatedEvent_EventIsHandled()
+    {
+        OperatorNameUpdatedEvent operatorCreatedEvent = TestData.OperatorNameUpdatedEvent;
+
+        Should.NotThrow(async () => { await this.DomainEventHandler.Handle(operatorCreatedEvent, CancellationToken.None); });
+    }
+
+    [Fact]
+    public void OperatorDomainEventHandler_OperatorRequireCustomMerchantNumberChangedEvent_EventIsHandled()
+    {
+        OperatorRequireCustomMerchantNumberChangedEvent operatorCreatedEvent = TestData.OperatorRequireCustomMerchantNumberChangedEvent;
+
+        Should.NotThrow(async () => { await this.DomainEventHandler.Handle(operatorCreatedEvent, CancellationToken.None); });
+    }
+
+    [Fact]
+    public void OperatorDomainEventHandler_OperatorRequireCustomTerminalNumberChangedEvent_EventIsHandled()
+    {
+        OperatorRequireCustomTerminalNumberChangedEvent operatorCreatedEvent = TestData.OperatorRequireCustomTerminalNumberChangedEvent;
+
+        Should.NotThrow(async () => { await this.DomainEventHandler.Handle(operatorCreatedEvent, CancellationToken.None); });
+    }
+
+    [Fact]
+    public void OperatorDomainEventHandler_EstateCreatedEvent_EventIsHandled()
     {
         EstateCreatedEvent domainEvent = TestData.EstateCreatedEvent;
 

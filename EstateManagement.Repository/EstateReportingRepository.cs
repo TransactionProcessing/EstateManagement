@@ -62,6 +62,36 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
     #region Methods
 
+    public async Task UpdateOperator(OperatorNameUpdatedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Operator @operator = await this.LoadOperator(context, domainEvent, cancellationToken);
+
+        @operator.Name = domainEvent.Name;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateOperator(OperatorRequireCustomMerchantNumberChangedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Operator @operator = await this.LoadOperator(context, domainEvent, cancellationToken);
+
+        @operator.RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateOperator(OperatorRequireCustomTerminalNumberChangedEvent domainEvent, CancellationToken cancellationToken){
+        EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
+
+        Operator @operator = await this.LoadOperator(context, domainEvent, cancellationToken);
+
+        @operator.RequireCustomTerminalNumber = domainEvent.RequireCustomTerminalNumber;
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task AddOperator(OperatorCreatedEvent domainEvent, CancellationToken cancellationToken){
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
 

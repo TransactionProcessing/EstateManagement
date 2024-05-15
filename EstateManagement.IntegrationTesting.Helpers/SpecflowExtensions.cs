@@ -13,6 +13,7 @@ using DataTransferObjects.Requests.Merchant;
 using DataTransferObjects.Requests.Operator;
 using DataTransferObjects.Responses.Contract;
 using DataTransferObjects.Responses.Merchant;
+using DataTransferObjects.Responses.Operator;
 using Ductus.FluentDocker.Model.Compose;
 using Newtonsoft.Json.Bson;
 using Reqnroll;
@@ -548,6 +549,34 @@ public static class ReqnrollExtensions
                                                                                    };
 
             result.Add((estateDetails, merchantId,updateMerchantRequest));
+        }
+
+        return result;
+    }
+
+    public static List<(EstateDetails, Guid, OperatorResponse)> ToOperatorResponses(this DataTableRows tableRows, List<EstateDetails> estateDetailsList){
+        List<(EstateDetails, Guid, OperatorResponse)> result = new();
+
+        foreach (DataTableRow tableRow in tableRows)
+        {
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
+
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            Boolean requireCustomMerchantNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
+            Boolean requireCustomTerminalNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
+            Guid operatorId = estateDetails.GetOperatorId(operatorName);
+
+
+            OperatorResponse operatorResponse = new(){
+                                                         RequireCustomTerminalNumber = requireCustomTerminalNumber,
+                                                         RequireCustomMerchantNumber = requireCustomMerchantNumber,
+                                                         Name = operatorName,
+                                                         OperatorId = operatorId
+                                                     };
+
+            result.Add((estateDetails, operatorId, operatorResponse));
         }
 
         return result;
