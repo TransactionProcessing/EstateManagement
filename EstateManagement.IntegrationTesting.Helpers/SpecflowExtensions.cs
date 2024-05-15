@@ -552,7 +552,37 @@ public static class ReqnrollExtensions
 
         return result;
     }
-    
+
+    public static List<(EstateDetails, Guid, UpdateOperatorRequest)> ToUpdateOperatorRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
+    {
+        List<(EstateDetails, Guid, UpdateOperatorRequest)> result = new();
+
+        foreach (DataTableRow tableRow in tableRows)
+        {
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName");
+            EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
+            estateDetails.ShouldNotBeNull();
+
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            Guid operatorId = estateDetails.GetOperatorId(merchantName);
+
+            String updateOperatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "UpdateOperatorName");
+            Boolean requireCustomMerchantNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
+            Boolean requireCustomTerminalNumber = ReqnrollTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
+
+
+            UpdateOperatorRequest updateOperatorRequest = new UpdateOperatorRequest{
+                                                                                       RequireCustomTerminalNumber = requireCustomTerminalNumber,
+                                                                                       RequireCustomMerchantNumber = requireCustomMerchantNumber,
+                                                                                       Name = updateOperatorName
+                                                                                   };
+
+            result.Add((estateDetails, operatorId, updateOperatorRequest));
+        }
+
+        return result;
+    }
+
     public static List<(EstateDetails, Guid, AddMerchantDeviceRequest)> ToAddMerchantDeviceRequests(this DataTableRows tableRows, List<EstateDetails> estateDetailsList)
     {
         List<(EstateDetails, Guid, AddMerchantDeviceRequest)> result = new List<(EstateDetails, Guid, AddMerchantDeviceRequest)>();

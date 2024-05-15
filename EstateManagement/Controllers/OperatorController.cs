@@ -65,6 +65,22 @@ namespace EstateManagement.Controllers
                                 });
         }
 
+        [HttpPost]
+        [Route("{operatorId}")]
+        [SwaggerResponse(200, "OK")]
+        public async Task<IActionResult> UpdateOperator([FromRoute] Guid estateId, [FromRoute] Guid operatorId, [FromBody] UpdateOperatorRequest updateOperatorRequest, CancellationToken cancellationToken)
+        {
+            // Create the command
+            OperatorCommands.UpdateOperatorCommand command = new OperatorCommands.UpdateOperatorCommand(estateId, operatorId, updateOperatorRequest);
+
+            // Route the command
+            await this.Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return this.Ok();
+        }
+
+
         [HttpGet]
         [Route("{operatorId}")]
         [SwaggerResponse(200, "OK", typeof(OperatorResponse))]

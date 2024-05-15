@@ -1118,6 +1118,33 @@
             }
         }
 
+        public async Task UpdateOperator(String accessToken, Guid estateId, Guid operatorId, UpdateOperatorRequest updateOperatorRequest, CancellationToken cancellationToken){
+            String requestUri = this.BuildRequestUrl($"/api/estates/{estateId}/operators/{operatorId}");
+
+            try
+            {
+                String requestSerialised = JsonConvert.SerializeObject(updateOperatorRequest);
+
+                StringContent httpContent = new StringContent(requestSerialised, Encoding.UTF8, "application/json");
+
+                // Add the access token to the client headers
+                this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                // Make the Http Call here
+                HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
+
+                // Process the response
+                await this.HandleResponse(httpResponse, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                // An exception has occurred, add some additional information to the message
+                Exception exception = new Exception($"Error updating operator id {operatorId}.", ex);
+
+                throw exception;
+            }
+        }
+
         public async Task<OperatorResponse> GetOperator(String accessToken, Guid estateId, Guid operatorId, CancellationToken cancellationToken){
             OperatorResponse response = null;
 

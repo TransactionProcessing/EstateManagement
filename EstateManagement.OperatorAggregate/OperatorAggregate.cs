@@ -6,8 +6,7 @@
     using Shared.EventStore.Aggregate;
     using Shared.General;
 
-    public static class OperatorAggregateExtensions
-    {
+    public static class OperatorAggregateExtensions{
         public static EstateManagement.Models.Operator.Operator GetOperator(this OperatorAggregate aggregate){
             return new EstateManagement.Models.Operator.Operator{
                                                                     OperatorId = aggregate.AggregateId,
@@ -17,8 +16,7 @@
                                                                 };
         }
 
-        public static void PlayEvent(this OperatorAggregate aggregate, OperatorCreatedEvent domainEvent)
-        {
+        public static void PlayEvent(this OperatorAggregate aggregate, OperatorCreatedEvent domainEvent){
             aggregate.IsCreated = true;
             aggregate.Name = domainEvent.Name;
             aggregate.RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber;
@@ -26,18 +24,52 @@
             aggregate.EstateId = domainEvent.EstateId;
         }
 
-        public static void Create(this OperatorAggregate aggregate,
-            Guid estateId,
-            String name,
-            Boolean requireCustomMerchantNumber,
-            Boolean requireCustomTerminalNumber)
+        public static void PlayEvent(this OperatorAggregate aggregate, OperatorNameUpdatedEvent domainEvent){
+            aggregate.Name = domainEvent.Name;
+        }
+
+        public static void PlayEvent(this OperatorAggregate aggregate, OperatorRequireCustomMerchantNumberChangedEvent domainEvent){
+            aggregate.RequireCustomMerchantNumber = domainEvent.RequireCustomMerchantNumber;
+        }
+
+        public static void PlayEvent(this OperatorAggregate aggregate, OperatorRequireCustomTerminalNumberChangedEvent domainEvent)
         {
+            aggregate.IsCreated = true;
+            aggregate.RequireCustomTerminalNumber = domainEvent.RequireCustomTerminalNumber;
+        }
+
+        public static void Create(this OperatorAggregate aggregate,
+                                  Guid estateId,
+                                  String name,
+                                  Boolean requireCustomMerchantNumber,
+                                  Boolean requireCustomTerminalNumber){
             Guard.ThrowIfInvalidGuid(estateId, typeof(ArgumentNullException), "Estate Id must not be an empty Guid");
             Guard.ThrowIfNullOrEmpty(name, typeof(ArgumentNullException), "Operator name must not be null or empty");
 
             OperatorCreatedEvent operatorCreatedEvent = new(aggregate.AggregateId, estateId, name, requireCustomMerchantNumber, requireCustomTerminalNumber);
 
             aggregate.ApplyAndAppend(operatorCreatedEvent);
+        }
+
+        public static void UpdateOperator(this OperatorAggregate aggregate,
+                                          String name,
+                                          Boolean requireCustomMerchantNumber,
+                                          Boolean requireCustomTerminalNumber){
+            if (String.Compare(name, aggregate.Name, StringComparison.InvariantCultureIgnoreCase) != 0 &&
+                String.IsNullOrEmpty(name) == false){
+                OperatorNameUpdatedEvent operatorNameUpdatedEvent = new(aggregate.AggregateId, aggregate.EstateId, name);
+                aggregate.ApplyAndAppend(operatorNameUpdatedEvent);
+            }
+
+            if (requireCustomMerchantNumber != aggregate.RequireCustomMerchantNumber){
+                OperatorRequireCustomMerchantNumberChangedEvent operatorRequireCustomMerchantNumberChangedEvent = new(aggregate.AggregateId, aggregate.EstateId, requireCustomMerchantNumber);
+                aggregate.ApplyAndAppend(operatorRequireCustomMerchantNumberChangedEvent);
+            }
+
+            if (requireCustomTerminalNumber != aggregate.RequireCustomTerminalNumber){
+                OperatorRequireCustomTerminalNumberChangedEvent operatorRequireCustomTerminalNumberChangedEvent = new(aggregate.AggregateId, aggregate.EstateId, requireCustomTerminalNumber);
+                aggregate.ApplyAndAppend(operatorRequireCustomTerminalNumberChangedEvent);
+            }
         }
     }
 

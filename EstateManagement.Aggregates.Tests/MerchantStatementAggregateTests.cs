@@ -1,11 +1,11 @@
-using System;
-using Xunit;
-
-namespace EstateManagement.MerchantStatementAggregate.Tests
+namespace EstateManagement.Aggregates.Tests
 {
-    using Models.MerchantStatement;
+    using System;
+    using EstateManagement.Models.MerchantStatement;
+    using EstateManagement.Testing;
+    using MerchantStatementAggregate;
     using Shouldly;
-    using Testing;
+    using Xunit;
 
     public class MerchantStatementAggregateTests
     {

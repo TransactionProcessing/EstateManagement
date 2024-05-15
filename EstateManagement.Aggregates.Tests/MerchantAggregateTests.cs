@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EstateManagement.MerchantAggregate.Tests
+﻿namespace EstateManagement.Aggregates.Tests
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using ContractAggregate;
+    using EstateManagement.ContractAggregate;
     using EstateManagement.Models;
-    using Models.Merchant;
+    using EstateManagement.Models.Merchant;
+    using EstateManagement.Testing;
+    using MerchantAggregate;
     using Shared.DomainDrivenDesign.EventSourcing;
-    using Shared.EventStore.Aggregate;
     using Shouldly;
-    using Testing;
     using Xunit;
 
     public class MerchantAggregateTests{

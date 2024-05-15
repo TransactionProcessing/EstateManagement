@@ -852,4 +852,30 @@ public class EstateManagementSteps{
                             operatorResponse.IsDeleted.ShouldBeTrue();
                         });
     }
+
+    public async Task<List<OperatorResponse>> WhenIUpdateTheOperatorsWithTheFollowingDetails(string accessToken, List<(EstateDetails estate, Guid operatorId, UpdateOperatorRequest request)> requests)
+    {
+        List<OperatorResponse> responses = new List<OperatorResponse>();
+
+        foreach ((EstateDetails estate, Guid operatorId, UpdateOperatorRequest request) request in requests)
+        {
+            await this.EstateClient.UpdateOperator(accessToken, request.estate.EstateId, request.operatorId, request.request, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        foreach ((EstateDetails estate, Guid operatorId, UpdateOperatorRequest request) request in requests)
+        {
+            await Retry.For(async () => {
+                                OperatorResponse? operatorResponse = await this.EstateClient
+                                                                       .GetOperator(accessToken, request.estate.EstateId, request.operatorId, CancellationToken.None)
+                                                                       .ConfigureAwait(false);
+
+                                operatorResponse.Name.ShouldBe(request.request.Name);
+                                operatorResponse.RequireCustomTerminalNumber.ShouldBe(request.request.RequireCustomTerminalNumber.Value);
+                                operatorResponse.RequireCustomMerchantNumber.ShouldBe(request.request.RequireCustomMerchantNumber.Value);
+                                responses.Add(operatorResponse);
+                            });
+        }
+
+        return responses;
+    }
 }
