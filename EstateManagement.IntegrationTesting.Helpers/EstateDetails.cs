@@ -77,6 +77,15 @@
             this.Operators.Add(operatorName,operatorId);
         }
 
+        public void UpdateOperator(Guid operatorId,
+                                String newOperatorName)
+        {
+            KeyValuePair<String, Guid> originalOperator = this.Operators.SingleOrDefault(o => o.Value == operatorId);
+
+            this.Operators.Remove(originalOperator.Key);
+            this.Operators.Add(newOperatorName, operatorId);
+        }
+
         public void AddAssignedOperator(Guid operatorId)
         {
             this.AssignedOperators.Add(operatorId);

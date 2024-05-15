@@ -102,6 +102,15 @@ namespace EstateManagement.IntegrationTests.Shared
             }
         }
 
+        [When("I get all the operators the following details are returned")]
+        public async Task WhenIGetAllTheOperatorsTheFollowingDetailsAreReturned(DataTable dataTable){
+            List<(EstateDetails, Guid, OperatorResponse)> expectedOperatorResponses = dataTable.Rows.ToOperatorResponses(this.TestingContext.Estates);
+
+            await this.EstateManagementSteps.WhenIGetAllTheOperatorsTheFollowingDetailsAreReturned(this.TestingContext.AccessToken,expectedOperatorResponses);
+        }
+
+
+
         [Given("I have assigned the following operators to the estates")]
         public async Task GivenIHaveAssignedTheFollowingOperatorsToTheEstates(DataTable dataTable){
             List<(EstateDetails estate, DataTransferObjects.Requests.Estate.AssignOperatorRequest request)> requests = dataTable.Rows.ToAssignOperatorToEstateRequests(this.TestingContext.Estates);

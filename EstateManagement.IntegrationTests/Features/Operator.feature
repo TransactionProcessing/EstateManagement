@@ -37,3 +37,7 @@ Scenario: Update Operator
 	When I update the operators with the following details
 	| UpdateOperatorName | RequireCustomMerchantNumber | RequireCustomTerminalNumber | EstateName    | OperatorName    |
 	| Update Operator 1  | False                       | False                       | Test Estate 1 | Test Operator 1 |
+
+	When I get all the operators the following details are returned
+	| EstateName    | OperatorName    | RequireCustomMerchantNumber | RequireCustomTerminalNumber |
+	| Test Estate 1 | Update Operator 1 | False                        | False                        |

@@ -44,6 +44,9 @@ public class OperatorDomainEventHandler : IDomainEventHandler
                              CancellationToken cancellationToken){
         Task t = domainEvent switch{
             OperatorCreatedEvent oce => this.EstateReportingRepository.AddOperator(oce, cancellationToken),
+            OperatorNameUpdatedEvent onue => this.EstateReportingRepository.UpdateOperator(onue, cancellationToken),
+            OperatorRequireCustomMerchantNumberChangedEvent oprcmnce => this.EstateReportingRepository.UpdateOperator(oprcmnce, cancellationToken),
+            OperatorRequireCustomTerminalNumberChangedEvent oprctnce => this.EstateReportingRepository.UpdateOperator(oprctnce, cancellationToken),
             _ => null
         };
         if (t != null)

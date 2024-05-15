@@ -193,13 +193,26 @@ await this.FeatureBackgroundAsync();
                             "EstateName",
                             "OperatorName"});
                 table91.AddRow(new string[] {
-                            "Update Merchant 1",
+                            "Update Operator 1",
                             "False",
                             "False",
                             "Test Estate 1",
                             "Test Operator 1"});
 #line 37
  await testRunner.WhenAsync("I update the operators with the following details", ((string)(null)), table91, "When ");
+#line hidden
+                Reqnroll.Table table92 = new Reqnroll.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "RequireCustomMerchantNumber",
+                            "RequireCustomTerminalNumber"});
+                table92.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Update Operator 1",
+                            "False",
+                            "False"});
+#line 41
+ await testRunner.WhenAsync("I get all the operators the following details are returned", ((string)(null)), table92, "When ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
