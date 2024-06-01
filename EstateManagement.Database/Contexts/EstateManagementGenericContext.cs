@@ -227,7 +227,7 @@ public abstract class EstateManagementGenericContext : DbContext
         catch (UniqueConstraintException uex)
         {
             // Swallow the error
-            // TODO: maybe log some trace
+            Logger.LogWarning($"Unique Constraint Exception. Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
         }
     }
 
