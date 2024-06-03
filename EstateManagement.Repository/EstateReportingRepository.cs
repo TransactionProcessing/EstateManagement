@@ -107,7 +107,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.Operators.AddAsync(@operator, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddContract(ContractCreatedEvent domainEvent,
@@ -125,7 +125,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.Contracts.AddAsync(contract, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddContractProduct(VariableValueProductAddedToContractEvent domainEvent,
@@ -145,7 +145,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.ContractProducts.AddAsync(contractProduct, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddContractProduct(FixedValueProductAddedToContractEvent domainEvent,
@@ -165,7 +165,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.ContractProducts.AddAsync(contractProduct, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddContractProductTransactionFee(TransactionFeeForProductAddedToContractEvent domainEvent,
@@ -186,7 +186,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.ContractProductTransactionFees.AddAsync(contractProductTransactionFee, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddEstate(EstateCreatedEvent domainEvent,
@@ -201,7 +201,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
                                   };
         await context.Estates.AddAsync(estate, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddEstateOperator(OperatorAddedToEstateEvent domainEvent,
@@ -217,7 +217,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.EstateOperators.AddAsync(estateOperator, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddEstateSecurityUser(SecurityUserAddedToEstateEvent domainEvent,
@@ -235,7 +235,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.EstateSecurityUsers.AddAsync(estateSecurityUser, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddFile(FileCreatedEvent domainEvent,
@@ -262,7 +262,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.Files.AddAsync(file, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddFileImportLog(ImportLogCreatedEvent domainEvent,
@@ -280,7 +280,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.FileImportLogs.AddAsync(fileImportLog, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddFileLineToFile(FileLineAddedEvent domainEvent,
@@ -298,7 +298,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.FileLines.AddAsync(fileLine, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddFileToImportLog(FileAddedToImportLogEvent domainEvent,
@@ -325,7 +325,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.FileImportLogFiles.AddAsync(fileImportLogFile, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddGeneratedVoucher(VoucherGeneratedEvent domainEvent,
@@ -350,7 +350,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.Vouchers.AddAsync(voucher, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddMerchant(MerchantCreatedEvent domainEvent,
@@ -370,7 +370,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.Merchants.AddAsync(merchant, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task UpdateMerchant(MerchantNameUpdatedEvent domainEvent, CancellationToken cancellationToken){
@@ -380,7 +380,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         merchant.Name = domainEvent.MerchantName;
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddMerchantAddress(AddressAddedEvent domainEvent,
@@ -404,7 +404,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.MerchantAddresses.AddAsync(merchantAddress, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddMerchantContact(ContactAddedEvent domainEvent,
@@ -423,7 +423,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.MerchantContacts.AddAsync(merchantContact, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddMerchantDevice(DeviceAddedToMerchantEvent domainEvent,
@@ -440,7 +440,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.MerchantDevices.AddAsync(merchantDevice, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task SwapMerchantDevice(DeviceSwappedForMerchantEvent domainEvent, CancellationToken cancellationToken){
@@ -476,7 +476,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.MerchantOperators.AddAsync(merchantOperator, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddMerchantSecurityUser(SecurityUserAddedToMerchantEvent domainEvent,
@@ -493,7 +493,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.MerchantSecurityUsers.AddAsync(merchantSecurityUser, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddPendingMerchantFeeToSettlement(MerchantFeeAddedPendingSettlementEvent domainEvent,
@@ -521,7 +521,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddProductDetailsToTransaction(ProductDetailsAddedToTransactionEvent domainEvent,
@@ -562,7 +562,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.StatementLines.AddAsync(line, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
@@ -589,7 +589,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
                                                                                };
         await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task AddSourceDetailsToTransaction(TransactionSourceAddedToTransactionEvent domainEvent,
@@ -625,7 +625,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.StatementLines.AddAsync(line, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task CompleteReconciliation(ReconciliationHasCompletedEvent domainEvent,
@@ -729,7 +729,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.Settlements.AddAsync(settlement, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task CreateStatement(StatementCreatedEvent domainEvent,
@@ -747,7 +747,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.StatementHeaders.AddAsync(header, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DisableContractProductTransactionFee(TransactionFeeForProductDisabledEvent domainEvent,
@@ -856,7 +856,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.TransactionsAdditionalRequestData.AddAsync(additionalRequestData, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task RecordTransactionAdditionalResponseData(AdditionalResponseDataRecordedEvent domainEvent,
@@ -883,7 +883,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.TransactionsAdditionalResponseData.AddAsync(additionalResponseData, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task SetTransactionAmount(AdditionalRequestDataRecordedEvent domainEvent,
@@ -923,7 +923,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
 
         await context.Reconciliations.AddAsync(reconciliation, cancellationToken);
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task StartTransaction(TransactionHasStartedEvent domainEvent,
@@ -961,7 +961,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
             t.TransactionAmount = domainEvent.TransactionAmount.Value;
         }
 
-        await context.SaveChangesWithDuplicateHandling(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task UpdateEstate(EstateReferenceAllocatedEvent domainEvent,
@@ -1544,7 +1544,7 @@ public class EstateReportingRepository : IEstateReportingRepository{
                                                                EstateOperatorReportingId = 0
                                                            };
             await context.Transactions.AddAsync(defaultTransaction, cancellationToken);
-            await context.SaveChangesWithDuplicateHandling(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
             return defaultTransaction;
         }
 

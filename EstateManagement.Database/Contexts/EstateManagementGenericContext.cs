@@ -231,5 +231,18 @@ public abstract class EstateManagementGenericContext : DbContext
         }
     }
 
+    //public virtual async Task SaveChangesWithDuplicateHandling(String tableName, CancellationToken cancellationToken)
+    //{
+    //    try
+    //    {
+    //        await this.SaveChangesAsync(cancellationToken);
+    //    }
+    //    catch (UniqueConstraintException uex)
+    //    {
+    //        // Swallow the error
+    //        Logger.LogWarning($"Unique Constraint Exception. Table [{tableName}] Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
+    //    }
+    //}
+
     #endregion
 }
