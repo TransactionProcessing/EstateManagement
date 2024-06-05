@@ -13,7 +13,7 @@
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 ContractReportingId { get; set; }
 
-        public Int32 EstateReportingId { get; set; }
+        public Guid EstateId { get; set; }
 
         public Guid OperatorId { get; set; }
 

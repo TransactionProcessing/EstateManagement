@@ -25,7 +25,7 @@
 
         public DateTime CreatedDateTime { get; set; }
         
-        public Int32 MerchantReportingId { get; set; }
+        public Guid MerchantId { get; set; }
 
         public String? PostalCode { get; set; }
 

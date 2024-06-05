@@ -8,11 +8,11 @@
     {
         #region Properties
 
-        public Int32 ContractReportingId { get; set; }
+        public Guid ContractId { get; set; }
 
         public String DisplayText { get; set; }
         
-        public Guid ProductId { get; set; }
+        public Guid ContractProductId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 ContractProductReportingId { get; set; }

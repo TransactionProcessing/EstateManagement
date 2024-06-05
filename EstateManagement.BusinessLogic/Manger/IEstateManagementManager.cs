@@ -72,7 +72,7 @@
         /// <param name="productId">The product identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<List<TransactionFee>> GetTransactionFeesForProduct(Guid estateId,
+        Task<List<ContractProductTransactionFee>> GetTransactionFeesForProduct(Guid estateId,
                                                                 Guid merchantId,
                                                                 Guid contractId,
                                                                 Guid productId,

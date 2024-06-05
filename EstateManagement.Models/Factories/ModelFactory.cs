@@ -7,7 +7,6 @@
     using Merchant;
     using EstateModel = Estate.Estate;
     using EstateEntity = EstateManagement.Database.Entities.Estate;
-    using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;
     using EstateSecurityUserEntity = EstateManagement.Database.Entities.EstateSecurityUser;
     using EstateOperatorModel = Estate.Operator;
     using SecurityUserModel = SecurityUser;
@@ -25,7 +24,7 @@
     using ContractEntity = EstateManagement.Database.Entities.Contract;
     using ContractProductEntity = EstateManagement.Database.Entities.ContractProduct;
     using ContractProductTransactionFeeEntity = EstateManagement.Database.Entities.ContractProductTransactionFee;
-    using TransactionFee = Contract.TransactionFee;
+    using ContractProductTransactionFeeTransactionFeeModel = Contract.ContractProductTransactionFee;
     using OperatorEntity = EstateManagement.Database.Entities.Operator;
 
     /// <summary>
@@ -44,7 +43,6 @@
         /// <param name="estateSecurityUsers">The estate security users.</param>
         /// <returns></returns>
         public EstateModel ConvertFrom(EstateEntity estate,
-                                       List<EstateOperatorEntity> estateOperators,
                                        List<EstateSecurityUserEntity> estateSecurityUsers,
                                        List<OperatorEntity> operators)
         {
@@ -54,21 +52,21 @@
             estateModel.Name = estate.Name;
             estateModel.Reference = estate.Reference;
 
-            if (estateOperators != null && estateOperators.Any())
-            {
-                estateModel.Operators = new List<EstateOperatorModel>();
-                foreach (EstateOperatorEntity estateOperator in estateOperators){
-                    // Find the related "operator"
-                    OperatorEntity @operator = operators.Single(o => o.OperatorReportingId == estateOperator.OperatorReportingId);
+            //if (estateOperators != null && estateOperators.Any())
+            //{
+            //    estateModel.Operators = new List<EstateOperatorModel>();
+            //    foreach (EstateOperatorEntity estateOperator in estateOperators){
+            //        // Find the related "operator"
+            //        OperatorEntity @operator = operators.Single(o => o.OperatorReportingId == estateOperator.OperatorReportingId);
 
-                    estateModel.Operators.Add(new EstateOperatorModel{
-                                                                         OperatorId = @operator.OperatorId,
-                                                                         Name = @operator.Name,
-                                                                         //RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber,
-                                                                         //RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber
-                                                                     });
-                }
-            }
+            //        estateModel.Operators.Add(new EstateOperatorModel{
+            //                                                             OperatorId = @operator.OperatorId,
+            //                                                             Name = @operator.Name,
+            //                                                             //RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber,
+            //                                                             //RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber
+            //                                                         });
+            //    }
+            //}
 
             if (estateSecurityUsers != null && estateSecurityUsers.Any())
             {
@@ -86,7 +84,6 @@
         public MerchantModel ConvertFrom(Guid estateId, MerchantEntity merchant){
             MerchantModel merchantModel = new MerchantModel();
             merchantModel.EstateId = estateId;
-            merchantModel.EstateReportingId = merchant.EstateReportingId;
             merchantModel.MerchantReportingId = merchant.MerchantReportingId;
             merchantModel.MerchantId = merchant.MerchantId;
             merchantModel.MerchantName = merchant.Name;
@@ -193,7 +190,6 @@
         {
             ContractModel contractModel = new ContractModel();
             contractModel.EstateId = estateId;
-            contractModel.EstateReportingId = contract.EstateReportingId;
             contractModel.OperatorId = contract.OperatorId;
             contractModel.Description = contract.Description;
             contractModel.IsCreated = true; // Should this be stored at RM or is the fact its in RM mean true???
@@ -207,7 +203,7 @@
                 contractProducts.ForEach(p => contractModel.Products.Add(new Product
                                                                          {
                                                                              ContractProductReportingId = p.ContractProductReportingId,
-                                                                             ProductId = p.ProductId,
+                                                                             ContractProductId = p.ContractProductId,
                                                                              Value = p.Value,
                                                                              Name = p.ProductName,
                                                                              DisplayText = p.DisplayText,
@@ -219,12 +215,12 @@
             {
                 productTransactionFees.ForEach(f =>
                                                {
-                                                   Product product = contractModel.Products.Single(p => p.ContractProductReportingId == f.ContractProductReportingId);
+                                                   Product product = contractModel.Products.Single(p => p.ContractProductId == f.ContractProductId);
 
-                                                   product.TransactionFees.Add(new TransactionFee
+                                                   product.TransactionFees.Add(new ContractProductTransactionFee()
                                                                                {
-                                                                                   TransactionFeeReportingId = f.TransactionFeeReportingId,
-                                                                                   TransactionFeeId = f.TransactionFeeId,
+                                                                                   ContractProductTransactionFeeReportingId = f.ContractProductTransactionFeeReportingId,
+                                                                                   TransactionFeeId = f.ContractProductTransactionFeeId,
                                                                                    Value = f.Value,
                                                                                    Description = f.Description,
                                                                                    CalculationType = (CalculationType)f.CalculationType
@@ -240,16 +236,16 @@
         /// </summary>
         /// <param name="productTransactionFees">The product transaction fees.</param>
         /// <returns></returns>
-        public List<TransactionFee> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees)
+        public List<ContractProductTransactionFeeTransactionFeeModel> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees)
         {
-            List<TransactionFee> productTransactionFeesModelList = new List<TransactionFee>();
+            List<ContractProductTransactionFeeTransactionFeeModel> productTransactionFeesModelList = new List<ContractProductTransactionFeeTransactionFeeModel>();
 
             productTransactionFees.ForEach(f =>
                                            {
-                                               productTransactionFeesModelList.Add(new TransactionFee
-                                                                                   {
-                                                                                       TransactionFeeId = f.TransactionFeeId,
-                                                                                       TransactionFeeReportingId = f.TransactionFeeReportingId,
+                                               productTransactionFeesModelList.Add(new ContractProductTransactionFeeTransactionFeeModel
+                                               {
+                                                                                       TransactionFeeId = f.ContractProductTransactionFeeId,
+                                                                                       ContractProductTransactionFeeReportingId = f.ContractProductTransactionFeeReportingId,
                                                                                        Value = f.Value,
                                                                                        Description = f.Description,
                                                                                        CalculationType = (CalculationType)f.CalculationType,

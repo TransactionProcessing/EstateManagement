@@ -27,7 +27,7 @@ public static class Extensions{
 
     public static ModelBuilder SetupContract(this ModelBuilder modelBuilder){
         modelBuilder.Entity<Contract>().HasKey(c => new {
-                                                            c.EstateReportingId,
+                                                            c.EstateId,
                                                             c.OperatorId,
                                                             c.ContractId
                                                         });
@@ -37,18 +37,26 @@ public static class Extensions{
 
     public static ModelBuilder SetupContractProduct(this ModelBuilder modelBuilder){
         modelBuilder.Entity<ContractProduct>().HasKey(c => new {
-                                                                   c.ContractReportingId,
-                                                                   c.ProductId
+                                                                   c.ContractProductReportingId,
                                                                });
+
+        modelBuilder.Entity<ContractProduct>().HasIndex(c => new {
+            c.ContractProductId,
+            c.ContractId
+        }).IsUnique(true);
 
         return modelBuilder;
     }
 
     public static ModelBuilder SetupContractProductTransactionFee(this ModelBuilder modelBuilder){
         modelBuilder.Entity<ContractProductTransactionFee>().HasKey(c => new {
-                                                                                 c.ContractProductReportingId,
-                                                                                 c.TransactionFeeId
+                                                                                 c.ContractProductTransactionFeeReportingId,
                                                                              });
+
+        modelBuilder.Entity<ContractProductTransactionFee>().HasIndex(c => new {
+            c.ContractProductTransactionFeeId,
+            c.ContractProductId
+        }).IsUnique(true);
 
         modelBuilder.Entity<ContractProductTransactionFee>().Property(p => p.Value).DecimalPrecision(18, 4);
 
@@ -80,30 +88,21 @@ public static class Extensions{
         return modelBuilder;
     }
 
-    public static ModelBuilder SetupEstateOperator(this ModelBuilder modelBuilder){
-        modelBuilder.Entity<EstateOperator>().HasKey(t => new{
-                                                                 t.EstateReportingId,
-                                                                 t.OperatorReportingId
-                                                             });
-        return modelBuilder;
-    }
-
     public static ModelBuilder SetupEstateSecurityUser(this ModelBuilder modelBuilder){
         modelBuilder.Entity<EstateSecurityUser>().HasKey(t => new{
                                                                      t.SecurityUserId,
-                                                                     t.EstateReportingId
+                                                                     t.EstateId
                                                                  });
         return modelBuilder;
     }
 
     public static ModelBuilder SetupMerchant(this ModelBuilder modelBuilder){
         modelBuilder.Entity<Merchant>().HasKey(t => new {
-                                                            t.EstateReportingId,
                                                             t.MerchantReportingId
         });
 
         modelBuilder.Entity<Merchant>().HasIndex(t => new {
-                                                              t.EstateReportingId,
+                                                              t.EstateId,
                                                               t.MerchantId
                                                           }).IsUnique();
 
@@ -114,7 +113,7 @@ public static class Extensions{
     
     public static ModelBuilder SetupMerchantAddress(this ModelBuilder modelBuilder){
         modelBuilder.Entity<MerchantAddress>().HasKey(t => new {
-                                                                   t.MerchantReportingId,
+                                                                   t.MerchantId,
                                                                    t.AddressId
                                                                });
         return modelBuilder;
@@ -123,7 +122,7 @@ public static class Extensions{
     public static ModelBuilder SetupMerchantContact(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MerchantContact>().HasKey(t => new {
-                                                                   t.MerchantReportingId,
+                                                                   t.MerchantId,
                                                                    t.ContactId
                                                                });
         return modelBuilder;
@@ -132,7 +131,7 @@ public static class Extensions{
     public static ModelBuilder SetupMerchantDevice(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MerchantDevice>().HasKey(t => new {
-                                                                  t.MerchantReportingId,
+                                                                  t.MerchantId,
                                                                   t.DeviceId
                                                               });
         return modelBuilder;
@@ -141,7 +140,7 @@ public static class Extensions{
     public static ModelBuilder SetupMerchantSecurityUser(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MerchantSecurityUser>().HasKey(t => new {
-                                                                        t.MerchantReportingId,
+                                                                        t.MerchantId,
                                                                         t.SecurityUserId
                                                                     });
         return modelBuilder;
@@ -150,7 +149,7 @@ public static class Extensions{
     public static ModelBuilder SetupMerchantOperator(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MerchantOperator>().HasKey(t => new {
-                                                                    t.MerchantReportingId,
+                                                                    t.MerchantId,
                                                                     t.OperatorId
                                                                 });
         return modelBuilder;
@@ -169,13 +168,12 @@ public static class Extensions{
                                                           }).IsClustered(false);
 
         modelBuilder.Entity<Settlement>().HasIndex(s => new {
-                                                                s.EstateReportingId,
+                                                                s.EstateId,
                                                                 s.SettlementId
                                                             }).IsClustered(false).IsUnique(true);
 
         modelBuilder.Entity<Settlement>().HasIndex(s => new {
                                                                 s.SettlementDate,
-                                                                s.EstateReportingId,
                                                             }).IsClustered(true);
 
         modelBuilder.Entity<Settlement>(e => { e.Property(p => p.SettlementDate).IsDateOnly(); });
@@ -187,14 +185,10 @@ public static class Extensions{
         
 
         modelBuilder.Entity<MerchantSettlementFee>().HasKey(s => new{
-                                                                        s.SettlementReportingId,
-                                                                        s.TransactionReportingId,
-                                                                        s.TransactionFeeReportingId
+                                                                        s.SettlementId,
+                                                                        s.TransactionId,
+                                                                        s.ContractProductTransactionFeeId
                                                                     });
-
-        modelBuilder.Entity<MerchantSettlementFee>().HasIndex(s => new{
-                                                                          s.TransactionReportingId
-                                                                      }).IsUnique(false);
 
         return modelBuilder;
     }
@@ -208,15 +202,10 @@ public static class Extensions{
                                                                  t.TransactionId
                                                              }).IsClustered(false).IsUnique(true);
 
-        modelBuilder.Entity<Transaction>().HasIndex(t => new {
-                                                                 t.TransactionId,
-                                                                 t.MerchantReportingId,
-                                                             }).IsClustered(false).IsUnique(true);
-
-        modelBuilder.Entity<Transaction>().HasIndex(t => new {
-                                                                 t.TransactionDate,
-                                                                 t.MerchantReportingId,
-                                                                 }).IsClustered(true);
+        modelBuilder.Entity<Transaction>().HasIndex(t => new
+        {
+            t.TransactionDate
+        }).IsClustered(true);
 
         modelBuilder.Entity<Transaction>(e => { e.Property(p => p.TransactionDate).IsDateOnly(); });
 
@@ -226,7 +215,7 @@ public static class Extensions{
     public static ModelBuilder SetupTransactionAdditionalRequestData(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TransactionAdditionalRequestData>().HasKey(t => new {
-                                                                                    t.TransactionReportingId
+                                                                                    t.TransactionId
                                                                                 });
 
 
@@ -236,8 +225,8 @@ public static class Extensions{
     public static ModelBuilder SetupTransactionAdditionalResponseData(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TransactionAdditionalResponseData>().HasKey(t => new {
-                                                                                     t.TransactionReportingId
-                                                                                 });
+                                                                                     t.TransactionId
+        });
 
 
         return modelBuilder;
@@ -253,8 +242,8 @@ public static class Extensions{
                                                        });
 
         modelBuilder.Entity<Voucher>().HasIndex(t => new {
-                                                             t.TransactionReportingId
-                                                         });
+                                                             t.TransactionId
+        });
 
         modelBuilder.Entity<Voucher>(e => { e.Property(p => p.IssuedDate).IsDateOnly(); });
         modelBuilder.Entity<Voucher>(e => { e.Property(p => p.GenerateDate).IsDateOnly(); });
@@ -271,12 +260,11 @@ public static class Extensions{
 
         modelBuilder.Entity<Reconciliation>().HasIndex(t => new {
                                                                     t.TransactionId,
-                                                                    t.MerchantReportingId,
+                                                                    t.MerchantId,
                                                                 }).IsClustered(false).IsUnique(true);
 
         modelBuilder.Entity<Reconciliation>().HasIndex(t => new {
-                                                                    t.TransactionDate,
-                                                                    t.MerchantReportingId,
+                                                                    t.TransactionDate
                                                                 }).IsClustered(true);
 
         modelBuilder.Entity<Reconciliation>(e => { e.Property(p => p.TransactionDate).IsDateOnly(); });
@@ -286,12 +274,11 @@ public static class Extensions{
 
     public static ModelBuilder SetupStatementHeader(this ModelBuilder modelBuilder){
         modelBuilder.Entity<StatementHeader>().HasKey(s => new {
-                                                                   s.MerchantReportingId,
+                                                                   s.MerchantId,
                                                                    s.StatementId
                                                                }).IsClustered(false);
 
         modelBuilder.Entity<StatementHeader>().HasIndex(s => new {
-                                                                     s.MerchantReportingId,
                                                                      s.StatementGeneratedDate,
                                                                  }).IsClustered();
 
@@ -304,8 +291,8 @@ public static class Extensions{
     public static ModelBuilder SetupStatementLine(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<StatementLine>().HasKey(t => new {
-                                                                 t.StatementReportingId,
-                                                                 t.TransactionReportingId,
+                                                                 t.StatementId,
+                                                                 t.TransactionId,
                                                                  t.ActivityDateTime,
                                                                  t.ActivityType
                                                              });
@@ -324,12 +311,12 @@ public static class Extensions{
 
     public static ModelBuilder SetupFileImportLog(this ModelBuilder modelBuilder){
         modelBuilder.Entity<FileImportLog>().HasKey(f => new{
-                                                                f.EstateReportingId,
+                                                                f.EstateId,
                                                                 f.FileImportLogReportingId
                                                             });
 
         modelBuilder.Entity<FileImportLog>().HasIndex(f => new {
-                                                                   f.EstateReportingId,
+                                                                   f.EstateId,
                                                                    f.FileImportLogId
                                                                }).IsUnique();
 
@@ -340,8 +327,8 @@ public static class Extensions{
 
     public static ModelBuilder SetupFileImportLogFile(this ModelBuilder modelBuilder){
         modelBuilder.Entity<FileImportLogFile>().HasKey(f => new {
-                                                                     f.FileImportLogReportingId,
-                                                                     f.FileReportingId,
+                                                                     f.FileImportLogId,
+                                                                     f.FileId,
                                                                  });
 
         modelBuilder.Entity<FileImportLogFile>(e => { e.Property(p => p.FileUploadedDate).IsDateOnly(); });
@@ -366,21 +353,21 @@ public static class Extensions{
     public static ModelBuilder SetupFileLine(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FileLine>().HasKey(f => new {
-            f.FileReportingId,
+            f.FileId,
             f.LineNumber
         }).IsClustered();
 
-        modelBuilder.Entity<FileLine>().HasIndex(f => new {
-            f.TransactionReportingId
-        }).IsUnique(false);
+        //modelBuilder.Entity<FileLine>().HasIndex(f => new {
+        //    f.TransactionId
+        //}).IsUnique(true);
         
         return modelBuilder;
     }
 
     public static ModelBuilder SetupMerchantContract(this ModelBuilder modelBuilder){
         modelBuilder.Entity<MerchantContract>().HasKey(mc => new{
-                                                                    mc.MerchantReportingId,
-                                                                    mc.ContractReportingId
+                                                                    mc.MerchantId,
+                                                                    mc.ContractId
                                                                 });
 
         return modelBuilder;

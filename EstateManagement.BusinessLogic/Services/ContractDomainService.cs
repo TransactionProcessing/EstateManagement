@@ -83,7 +83,7 @@
             }
 
             List<Product> products = contractAggregate.GetProducts();
-            Product product = products.SingleOrDefault(p => p.ProductId == productId);
+            Product product = products.SingleOrDefault(p => p.ContractProductId == productId);
             if (product == null)
             {
                 throw new InvalidOperationException($"Product Id [{productId}] not added to contract [{contractAggregate.Description}]");

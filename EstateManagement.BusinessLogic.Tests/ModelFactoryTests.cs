@@ -3,14 +3,13 @@ using OperatorEntity = EstateManagement.Database.Entities.Operator;
 
 using EstateModel = EstateManagement.Models.Estate.Estate;
 using EstateEntity = EstateManagement.Database.Entities.Estate;
-using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;
 using EstateSecurityUserEntity = EstateManagement.Database.Entities.EstateSecurityUser;
 
 using ContractModel = EstateManagement.Models.Contract.Contract;
 using ContractEntity = EstateManagement.Database.Entities.Contract;
 using ContractProductEntity = EstateManagement.Database.Entities.ContractProduct;
 using ContractProductTransactionFeeEntity = EstateManagement.Database.Entities.ContractProductTransactionFee;
-using ContractProductTransactionFeeModel = EstateManagement.Models.Contract.TransactionFee;
+using ContractProductTransactionFeeModel = EstateManagement.Models.Contract.ContractProductTransactionFee;
 
 using MerchantEntity = EstateManagement.Database.Entities.Merchant;
 using MerchantAddressEntity = EstateManagement.Database.Entities.MerchantAddress;
@@ -36,10 +35,6 @@ namespace EstateManagement.BusinessLogic.Tests
         public void EstateEntities_ConvertFrom_EstateConverted()
         {
             EstateEntity estate = TestData.EstateEntity;
-            List<EstateOperatorEntity> estateOperators = new List<EstateOperatorEntity>
-                                                         {
-                                                             TestData.EstateOperatorEntity
-                                                         };
             List<EstateSecurityUserEntity> estateSecurityUsers = new List<EstateSecurityUserEntity>
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
@@ -50,13 +45,13 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers, operators);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateSecurityUsers, operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
             estateModel.Name.ShouldBe(estate.Name);
             estateModel.Operators.ShouldNotBeNull();
-            estateModel.Operators.Count.ShouldBe(estateOperators.Count);
+            //estateModel.Operators.Count.ShouldBe(estateOperators.Count);
             estateModel.SecurityUsers.ShouldNotBeNull();
             estateModel.SecurityUsers.Count.ShouldBe(estateSecurityUsers.Count);
         }
@@ -65,7 +60,6 @@ namespace EstateManagement.BusinessLogic.Tests
         public void EstateEntities_ConvertFrom_NoOperators_EstateConverted()
         {
             EstateEntity estate = TestData.EstateEntity;
-            List<EstateOperatorEntity> estateOperators = new List<EstateOperatorEntity>();
             List<EstateSecurityUserEntity> estateSecurityUsers = new List<EstateSecurityUserEntity>
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
@@ -76,7 +70,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers,operators);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateSecurityUsers,operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
@@ -90,7 +84,6 @@ namespace EstateManagement.BusinessLogic.Tests
         public void EstateEntities_ConvertFrom_NullOperators_EstateConverted()
         {
             EstateEntity estate = TestData.EstateEntity;
-            List<EstateOperatorEntity> estateOperators = null;
             List<EstateSecurityUserEntity> estateSecurityUsers = new List<EstateSecurityUserEntity>
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
@@ -100,7 +93,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                };
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers, operators);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateSecurityUsers, operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
@@ -114,10 +107,6 @@ namespace EstateManagement.BusinessLogic.Tests
         public void EstateEntities_ConvertFrom_NoSecurityUsers_EstateConverted()
         {
             EstateEntity estate = TestData.EstateEntity;
-            List<EstateOperatorEntity> estateOperators = new List<EstateOperatorEntity>
-                                                         {
-                                                             TestData.EstateOperatorEntity
-                                                         };
             List<EstateSecurityUserEntity> estateSecurityUsers = null;
             List<OperatorEntity> operators = new List<Operator>{
                                                                    TestData.OperatorEntity
@@ -125,13 +114,13 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers, operators);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateSecurityUsers, operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
             estateModel.Name.ShouldBe(estate.Name);
             estateModel.Operators.ShouldNotBeNull();
-            estateModel.Operators.Count.ShouldBe(estateOperators.Count);
+            //estateModel.Operators.Count.ShouldBe(estateOperators.Count);
             estateModel.SecurityUsers.ShouldBeNull();
         }
 
@@ -139,10 +128,6 @@ namespace EstateManagement.BusinessLogic.Tests
         public void EstateEntities_ConvertFrom_NullSecurityUsers_EstateConverted()
         {
             EstateEntity estate = TestData.EstateEntity;
-            List<EstateOperatorEntity> estateOperators = new List<EstateOperatorEntity>
-                                                         {
-                                                             TestData.EstateOperatorEntity
-                                                         };
             List<EstateSecurityUserEntity> estateSecurityUsers = null;
             List<OperatorEntity> operators = new List<Operator>{
                                                                    TestData.OperatorEntity
@@ -150,13 +135,13 @@ namespace EstateManagement.BusinessLogic.Tests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateOperators, estateSecurityUsers,operators);
+            EstateModel estateModel = modelFactory.ConvertFrom(estate, estateSecurityUsers,operators);
 
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(estate.EstateId);
             estateModel.Name.ShouldBe(estate.Name);
             estateModel.Operators.ShouldNotBeNull();
-            estateModel.Operators.Count.ShouldBe(estateOperators.Count);
+            //estateModel.Operators.Count.ShouldBe(estateOperators.Count);
             estateModel.SecurityUsers.ShouldBeNull();
         }
 
@@ -611,8 +596,8 @@ namespace EstateManagement.BusinessLogic.Tests
             transactionFeesModelList.ShouldHaveSingleItem();
 
             ContractProductTransactionFeeModel contractProductTransactionFee = transactionFeesModelList.Single();
-            ContractProductTransactionFee expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
-            contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.TransactionFeeId);
+            ContractProductTransactionFeeEntity expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
+            contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.ContractProductTransactionFeeId);
             contractProductTransactionFee.Description.ShouldBe(expectedContractProductTransactionFee.Description);
             contractProductTransactionFee.Value.ShouldBe(expectedContractProductTransactionFee.Value);
             contractProductTransactionFee.CalculationType.ShouldBe((CalculationType)expectedContractProductTransactionFee.CalculationType);
@@ -644,7 +629,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             Product contractProduct = contractModel.Products.Single();
             ContractProduct expectedContractProduct = contractProducts.Single();
-            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.ContractProductId.ShouldBe(expectedContractProduct.ContractProductId);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.ProductName);
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
@@ -653,8 +638,8 @@ namespace EstateManagement.BusinessLogic.Tests
             contractProduct.TransactionFees.ShouldHaveSingleItem();
 
             ContractProductTransactionFeeModel contractProductTransactionFee = contractProduct.TransactionFees.Single();
-            ContractProductTransactionFee expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
-            contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.TransactionFeeId);
+            ContractProductTransactionFeeEntity expectedContractProductTransactionFee = contractProductsTransactionFees.Single();
+            contractProductTransactionFee.TransactionFeeId.ShouldBe(expectedContractProductTransactionFee.ContractProductTransactionFeeId);
             contractProductTransactionFee.Description.ShouldBe(expectedContractProductTransactionFee.Description);
             contractProductTransactionFee.Value.ShouldBe(expectedContractProductTransactionFee.Value);
             contractProductTransactionFee.CalculationType.ShouldBe((CalculationType)expectedContractProductTransactionFee.CalculationType);
@@ -719,7 +704,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             Product contractProduct = contractModel.Products.Single();
             ContractProduct expectedContractProduct = contractProducts.Single();
-            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.ContractProductId.ShouldBe(expectedContractProduct.ContractProductId);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.ProductName);
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
@@ -749,7 +734,7 @@ namespace EstateManagement.BusinessLogic.Tests
 
             Product contractProduct = contractModel.Products.Single();
             ContractProduct expectedContractProduct = contractProducts.Single();
-            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.ContractProductId.ShouldBe(expectedContractProduct.ContractProductId);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.ProductName);
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);

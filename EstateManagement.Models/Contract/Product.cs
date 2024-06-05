@@ -13,7 +13,7 @@
         #region Constructors
 
         public Product() {
-            this.TransactionFees = new List<TransactionFee>();
+            this.TransactionFees = new List<ContractProductTransactionFee>();
         }
 
         #endregion
@@ -24,13 +24,13 @@
 
         public String Name { get; set; }
 
-        public Guid ProductId { get; set; }
+        public Guid ContractProductId { get; set; }
 
         public Int32 ContractProductReportingId { get; set; }
 
         public ProductType ProductType { get; set; }
 
-        public List<TransactionFee> TransactionFees { get; set; }
+        public List<ContractProductTransactionFee> TransactionFees { get; set; }
 
         public Decimal? Value { get; set; }
 

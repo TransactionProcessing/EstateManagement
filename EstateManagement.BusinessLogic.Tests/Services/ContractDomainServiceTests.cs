@@ -127,7 +127,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.NotThrow(async () =>
                             {
-                                await domainService.AddProductToContract(TestData.ProductId,
+                                await domainService.AddProductToContract(TestData.ContractProductId,
                                                                          TestData.ContractId,
                                                                          TestData.ProductName,
                                                                          TestData.ProductDisplayText,
@@ -148,7 +148,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.Throw<InvalidOperationException>(async () =>
                             {
-                                await domainService.AddProductToContract(TestData.ProductId,
+                                await domainService.AddProductToContract(TestData.ContractProductId,
                                                                          TestData.ContractId,
                                                                          TestData.ProductName,
                                                                          TestData.ProductDisplayText,
@@ -168,7 +168,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.NotThrow(async () =>
             {
-                await domainService.AddProductToContract(TestData.ProductId,
+                await domainService.AddProductToContract(TestData.ContractProductId,
                                                          TestData.ContractId,
                                                          TestData.ProductName,
                                                          TestData.ProductDisplayText,
@@ -188,7 +188,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Should.Throw<InvalidOperationException>(async () =>
             {
-                await domainService.AddProductToContract(TestData.ProductId,
+                await domainService.AddProductToContract(TestData.ContractProductId,
                                                          TestData.ContractId,
                                                          TestData.ProductName,
                                                          TestData.ProductDisplayText,
@@ -214,7 +214,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                             {
                                 await domainService.AddTransactionFeeForProductToContract(TestData.TransactionFeeId,
                                                                                           TestData.ContractId,
-                                                                                          TestData.ProductId,
+                                                                                          TestData.ContractProductId,
                                                                                           TestData.TransactionFeeDescription,
                                                                                           calculationType,
                                                                                           feeType,
@@ -240,7 +240,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                             {
                                 await domainService.AddTransactionFeeForProductToContract(TestData.TransactionFeeId,
                                                                                           TestData.ContractId,
-                                                                                          TestData.ProductId,
+                                                                                          TestData.ContractProductId,
                                                                                           TestData.TransactionFeeDescription,
                                                                                           calculationType,
                                                                                           feeType,
@@ -292,7 +292,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                             {
                                 await domainService.DisableTransactionFeeForProduct(TestData.TransactionFeeId,
                                                                                           TestData.ContractId,
-                                                                                          TestData.ProductId,
+                                                                                          TestData.ContractProductId,
                                                                                           CancellationToken.None);
                             });
         }

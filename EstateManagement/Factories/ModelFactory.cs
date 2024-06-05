@@ -62,17 +62,17 @@
                 contract.Products.ForEach(p => {
                                               ContractProduct contractProduct = new ContractProduct{
                                                                                                        ProductReportingId = p.ContractProductReportingId,
-                                                                                                       ProductId = p.ProductId,
+                                                                                                       ProductId = p.ContractProductId,
                                                                                                        Value = p.Value,
                                                                                                        DisplayText = p.DisplayText,
                                                                                                        Name = p.Name,
                                                                                                        ProductType = Enum.Parse<ProductType>(p.ProductType.ToString())
                                                                                                    };
                                               if (p.TransactionFees != null && p.TransactionFees.Any()){
-                                                  contractProduct.TransactionFees = new List<ContractProductTransactionFee>();
+                                                  contractProduct.TransactionFees = new List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee>();
                                                   p.TransactionFees.ForEach(tf => {
-                                                                                ContractProductTransactionFee transactionFee = new ContractProductTransactionFee{
-                                                                                                                                                                    TransactionFeeReportingId = tf.TransactionFeeReportingId,
+                                                      DataTransferObjects.Responses.Contract.ContractProductTransactionFee transactionFee = new DataTransferObjects.Responses.Contract.ContractProductTransactionFee
+                                                      {
                                                                                                                                                                     TransactionFeeId = tf.TransactionFeeId,
                                                                                                                                                                     Value = tf.Value,
                                                                                                                                                                     Description = tf.Description,
@@ -219,12 +219,12 @@
             return result;
         }
 
-        public static List<ContractProductTransactionFee> ConvertFrom(List<TransactionFee> transactionFees){
-            List<ContractProductTransactionFee> result = new List<ContractProductTransactionFee>();
+        public static List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee> ConvertFrom(List<Models.Contract.ContractProductTransactionFee> transactionFees){
+            List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee> result = new ();
             transactionFees.ForEach(tf => {
-                                        ContractProductTransactionFee transactionFee = new ContractProductTransactionFee{
-                                                                                                                            TransactionFeeId = tf.TransactionFeeId,
-                                                                                                                            TransactionFeeReportingId = tf.TransactionFeeReportingId,
+                                        DataTransferObjects.Responses.Contract.ContractProductTransactionFee transactionFee = new DataTransferObjects.Responses.Contract.ContractProductTransactionFee
+                                        {
+                                            TransactionFeeId = tf.TransactionFeeId,
                                                                                                                             Value = tf.Value,
                                                                                                                             Description = tf.Description,
                                                                                                                         };

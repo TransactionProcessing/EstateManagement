@@ -242,7 +242,7 @@
                 ContractProductAddedToMerchantEvent contractProductAddedToMerchantEvent = new ContractProductAddedToMerchantEvent(aggregate.AggregateId,
                                                                                                                                   aggregate.EstateId,
                                                                                                                                   contractAggregate.AggregateId,
-                                                                                                                                  product.ProductId);
+                                                                                                                                  product.ContractProductId);
                 aggregate.ApplyAndAppend(contractProductAddedToMerchantEvent);
             }
         }

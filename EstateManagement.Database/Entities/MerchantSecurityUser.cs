@@ -15,7 +15,7 @@
 
         public String EmailAddress { get; set; }
 
-        public Int32 MerchantReportingId { get; set; }
+        public Guid MerchantId { get; set; }
 
         public Guid SecurityUserId { get; set; }
 

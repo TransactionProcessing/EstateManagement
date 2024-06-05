@@ -13,7 +13,7 @@
 
         public DateTime CreatedDateTime { get; set; }
 
-        public Int32 EstateReportingId { get; set; }
+        public Guid EstateId { get; set; }
 
         public Guid MerchantId { get; set; }
 

@@ -8,8 +8,8 @@
     {
         #region Properties
 
-        public Int32 EstateReportingId { get; set; }
-        public Int32 MerchantReportingId { get; set; }
+        public Guid EstateId { get; set; }
+        public Guid MerchantId { get; set; }
 
         public Boolean ProcessingStarted { get; set; }
         public DateTime ProcessingStartedDateTIme { get; set; }

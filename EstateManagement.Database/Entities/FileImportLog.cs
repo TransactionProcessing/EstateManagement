@@ -9,7 +9,7 @@
     [Table("fileimportlog")]
     public class FileImportLog
     {
-        public Int32 EstateReportingId { get; set; }
+        public Guid EstateId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 FileImportLogReportingId { get; set; }

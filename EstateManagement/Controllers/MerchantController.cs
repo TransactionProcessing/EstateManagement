@@ -412,8 +412,8 @@
 
         [Route("{merchantId}/contracts/{contractId}/products/{productId}/transactionFees")]
         [HttpGet]
-        [ProducesResponseType(typeof(List<ContractProductTransactionFee>), 200)]
-        [SwaggerResponse(200, "OK", typeof(List<ContractProductTransactionFee>))]
+        [ProducesResponseType(typeof(List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee>), 200)]
+        [SwaggerResponse(200, "OK", typeof(List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee>))]
         [SwaggerResponseExample(200, typeof(ContractProductTransactionFeeResponseListExample))]
         public async Task<IActionResult> GetTransactionFeesForProduct([FromRoute] Guid estateId,
                                                                       [FromRoute] Guid merchantId,
@@ -429,7 +429,7 @@
 
             MerchantQueries.GetTransactionFeesForProductQuery query = new (estateId, merchantId, contractId, productId);
 
-            List<TransactionFee> transactionFees = await this.Mediator.Send(query, cancellationToken);
+            List<Models.Contract.ContractProductTransactionFee> transactionFees = await this.Mediator.Send(query, cancellationToken);
 
             return this.Ok(ModelFactory.ConvertFrom(transactionFees));
         }

@@ -253,7 +253,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             contractModel.Description.ShouldBe(TestData.ContractDescription);
             contractModel.OperatorId.ShouldBe(TestData.OperatorId);
             contractModel.Products.ShouldNotBeNull();
-            contractModel.Products.First().ProductId.ShouldBe(TestData.ProductId);
+            contractModel.Products.First().ContractProductId.ShouldBe(TestData.ContractProductId);
             contractModel.Products.First().TransactionFees.ShouldNotBeNull();
             contractModel.Products.First().TransactionFees.First().TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
         }
@@ -284,7 +284,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         {
             this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed, FeeType.Merchant));
 
-            List<TransactionFee> transactionFees = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId,TestData.ProductId, CancellationToken.None);
+            List<ContractProductTransactionFee> transactionFees = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId,TestData.ContractProductId, CancellationToken.None);
 
             transactionFees.ShouldNotBeNull();
             transactionFees.ShouldHaveSingleItem();
@@ -297,7 +297,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
 
             Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ProductId, CancellationToken.None);
+                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId, CancellationToken.None);
                                             });
         }
 
@@ -307,7 +307,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
 
             Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ProductId, CancellationToken.None);
+                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId, CancellationToken.None);
                                             });
         }
 

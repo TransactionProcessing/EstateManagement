@@ -8,7 +8,7 @@
     {
         #region Properties
 
-        public Int32 ContractProductReportingId { get; set; }
+        public Guid ContractProductId { get; set; }
 
         public Int32 CalculationType { get; set; }
 
@@ -16,10 +16,10 @@
 
         public Boolean IsEnabled { get; set; }
 
-        public Guid TransactionFeeId { get; set; }
+        public Guid ContractProductTransactionFeeId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Int32 TransactionFeeReportingId { get; set; }
+        public Int32 ContractProductTransactionFeeReportingId { get; set; }
 
         public String Description { get; set; }
 
