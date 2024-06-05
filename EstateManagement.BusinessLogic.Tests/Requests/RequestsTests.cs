@@ -16,7 +16,7 @@
             AddProductToContractRequest addProductToContractRequest =
                 AddProductToContractRequest.Create(TestData.ContractId,
                                                    TestData.EstateId,
-                                                   TestData.ProductId,
+                                                   TestData.ContractProductId,
                                                    TestData.ProductName,
                                                    TestData.ProductDisplayText,
                                                    TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
@@ -24,7 +24,7 @@
             addProductToContractRequest.ShouldNotBeNull();
             addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
             addProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
-            addProductToContractRequest.ProductId.ShouldBe(TestData.ProductId);
+            addProductToContractRequest.ProductId.ShouldBe(TestData.ContractProductId);
             addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
             addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
             addProductToContractRequest.Value.ShouldBe(TestData.ProductFixedValue);
@@ -34,12 +34,12 @@
         [Fact]
         public void AddProductToContractRequest_WithVariableValue_CanBeCreated_IsCreated() {
             AddProductToContractRequest addProductToContractRequest =
-                AddProductToContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, null, TestData.ProductTypeMobileTopup);
+                AddProductToContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, null, TestData.ProductTypeMobileTopup);
 
             addProductToContractRequest.ShouldNotBeNull();
             addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
             addProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
-            addProductToContractRequest.ProductId.ShouldBe(TestData.ProductId);
+            addProductToContractRequest.ProductId.ShouldBe(TestData.ContractProductId);
             addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
             addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
             addProductToContractRequest.Value.ShouldBeNull();
@@ -75,7 +75,7 @@
             AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest =
                 AddTransactionFeeForProductToContractRequest.Create(TestData.ContractId,
                                                                     TestData.EstateId,
-                                                                    TestData.ProductId,
+                                                                    TestData.ContractProductId,
                                                                     TestData.TransactionFeeId,
                                                                     TestData.TransactionFeeDescription,
                                                                     calculationType,
@@ -85,7 +85,7 @@
             addTransactionFeeForProductToContractRequest.ShouldNotBeNull();
             addTransactionFeeForProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
             addTransactionFeeForProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
-            addTransactionFeeForProductToContractRequest.ProductId.ShouldBe(TestData.ProductId);
+            addTransactionFeeForProductToContractRequest.ProductId.ShouldBe(TestData.ContractProductId);
             addTransactionFeeForProductToContractRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
             addTransactionFeeForProductToContractRequest.Description.ShouldBe(TestData.TransactionFeeDescription);
             addTransactionFeeForProductToContractRequest.CalculationType.ShouldBe(calculationType);
@@ -127,12 +127,12 @@
         [Fact]
         public void DisableTransactionFeeForProductRequest_CanBeCreated_IsCreated() {
             DisableTransactionFeeForProductRequest disableTransactionFeeForProductRequest =
-                DisableTransactionFeeForProductRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ProductId, TestData.TransactionFeeId);
+                DisableTransactionFeeForProductRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ContractProductId, TestData.TransactionFeeId);
 
             disableTransactionFeeForProductRequest.ShouldNotBeNull();
             disableTransactionFeeForProductRequest.ContractId.ShouldBe(TestData.ContractId);
             disableTransactionFeeForProductRequest.EstateId.ShouldBe(TestData.EstateId);
-            disableTransactionFeeForProductRequest.ProductId.ShouldBe(TestData.ProductId);
+            disableTransactionFeeForProductRequest.ProductId.ShouldBe(TestData.ContractProductId);
             disableTransactionFeeForProductRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
         }
         

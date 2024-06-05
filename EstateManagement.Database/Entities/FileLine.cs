@@ -15,8 +15,8 @@
 
         public string Status { get; set; } // Success/Failed/Ignored (maybe first char?)
 
-        public Int32 TransactionReportingId { get; set; }
+        public Guid TransactionId { get; set; }
 
-        public Int32 FileReportingId { get; set; }
+        public Guid FileId { get; set; }
     }
 }

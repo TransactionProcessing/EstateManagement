@@ -18,7 +18,7 @@ namespace EstateManagement.BusinessLogic.Requests{
 
         public record GetMerchantsQuery(Guid EstateId) : IRequest<List<Models.Merchant.Merchant>>;
 
-        public record GetTransactionFeesForProductQuery(Guid EstateId, Guid MerchantId, Guid ContractId, Guid ProductId) : IRequest<List<TransactionFee>>;
+        public record GetTransactionFeesForProductQuery(Guid EstateId, Guid MerchantId, Guid ContractId, Guid ProductId) : IRequest<List<ContractProductTransactionFee>>;
 
     }
 }

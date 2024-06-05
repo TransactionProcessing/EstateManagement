@@ -1,6 +1,5 @@
 ﻿using EstateModel = EstateManagement.Models.Estate.Estate;
 using EstateEntity = EstateManagement.Database.Entities.Estate;
-using EstateOperatorEntity = EstateManagement.Database.Entities.EstateOperator;
 using EstateSecurityUserEntity = EstateManagement.Database.Entities.EstateSecurityUser;
 using MerchantModel = EstateManagement.Models.Merchant.Merchant;
 using MerchantEntity = EstateManagement.Database.Entities.Merchant;
@@ -10,13 +9,13 @@ using MerchantOperatorEntity = EstateManagement.Database.Entities.MerchantOperat
 using MerchantDeviceEntity = EstateManagement.Database.Entities.MerchantDevice;
 using MerchantSecurityUserEntity = EstateManagement.Database.Entities.MerchantSecurityUser;
 using ContractModel = EstateManagement.Models.Contract.Contract;
-using TransactionFeeModel = EstateManagement.Models.Contract.TransactionFee;
 using ContractEntity = EstateManagement.Database.Entities.Contract;
 using ContractProductEntity = EstateManagement.Database.Entities.ContractProduct;
 using ContractProductTransactionFeeEntity = EstateManagement.Database.Entities.ContractProductTransactionFee;
 using StatementLineEntity = EstateManagement.Database.Entities.StatementLine;
 using StatementLineModel = EstateManagement.Models.MerchantStatement.StatementLine;
 using OperatorEntity = EstateManagement.Database.Entities.Operator;
+using ContractProductTransactionFeeModel = EstateManagement.Models.Contract.ContractProductTransactionFee;
 
 namespace EstateManagement.Models.Factories
 {
@@ -39,7 +38,6 @@ namespace EstateManagement.Models.Factories
         /// <param name="estateSecurityUsers">The estate security users.</param>
         /// <returns></returns>
         EstateModel ConvertFrom(EstateEntity estate,
-                                List<EstateOperatorEntity> estateOperators,
                                 List<EstateSecurityUserEntity> estateSecurityUsers,
                                 List<OperatorEntity> operators);
         
@@ -70,7 +68,7 @@ namespace EstateManagement.Models.Factories
         /// </summary>
         /// <param name="productTransactionFees">The product transaction fees.</param>
         /// <returns></returns>
-        List<TransactionFeeModel> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees);
+        List<ContractProductTransactionFeeModel> ConvertFrom(List<ContractProductTransactionFeeEntity> productTransactionFees);
 
         #endregion
     }

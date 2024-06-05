@@ -322,7 +322,7 @@ namespace EstateManagement.Tests.Factories{
             ContractProduct contractProduct = contractResponse.Products.Single();
             Product expectedContractProduct = contractModel.Products.Single();
 
-            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.ProductId.ShouldBe(expectedContractProduct.ContractProductId);
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.Name);
@@ -346,7 +346,7 @@ namespace EstateManagement.Tests.Factories{
             ContractProduct contractProduct = contractResponse.Products.Single();
             Product expectedContractProduct = contractModel.Products.Single();
 
-            contractProduct.ProductId.ShouldBe(expectedContractProduct.ProductId);
+            contractProduct.ProductId.ShouldBe(expectedContractProduct.ContractProductId);
             contractProduct.Value.ShouldBe(expectedContractProduct.Value);
             contractProduct.DisplayText.ShouldBe(expectedContractProduct.DisplayText);
             contractProduct.Name.ShouldBe(expectedContractProduct.Name);
@@ -354,12 +354,12 @@ namespace EstateManagement.Tests.Factories{
             contractProduct.TransactionFees.ShouldNotBeNull();
             contractProduct.TransactionFees.ShouldHaveSingleItem();
 
-            ContractProductTransactionFee productTransactionFee = contractProduct.TransactionFees.Single();
-            ContractProductTransactionFee expectedProductTransactionFee = contractProduct.TransactionFees.Single();
+            DataTransferObjects.Responses.Contract.ContractProductTransactionFee productTransactionFee = contractProduct.TransactionFees.Single();
+            Models.Contract.ContractProductTransactionFee expectedProductTransactionFee = expectedContractProduct.TransactionFees.Single();
 
             productTransactionFee.TransactionFeeId.ShouldBe(expectedProductTransactionFee.TransactionFeeId);
             productTransactionFee.Value.ShouldBe(expectedProductTransactionFee.Value);
-            productTransactionFee.CalculationType.ShouldBe(expectedProductTransactionFee.CalculationType);
+            productTransactionFee.CalculationType.ShouldBe(Enum.Parse<DataTransferObjects.Responses.Contract.CalculationType>(expectedProductTransactionFee.CalculationType.ToString()));
             productTransactionFee.Description.ShouldBe(expectedProductTransactionFee.Description);
         }
 
@@ -375,9 +375,9 @@ namespace EstateManagement.Tests.Factories{
 
         [Fact]
         public void ModelFactory_TransactionFeeList_IsConverted(){
-            List<TransactionFee> transactionFeeModelList = TestData.ProductTransactionFees;
+            List<Models.Contract.ContractProductTransactionFee> transactionFeeModelList = TestData.ProductTransactionFees;
 
-            List<ContractProductTransactionFee> transactionFeeResponseList = ModelFactory.ConvertFrom(transactionFeeModelList);
+            List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee> transactionFeeResponseList = ModelFactory.ConvertFrom(transactionFeeModelList);
 
             transactionFeeResponseList.ShouldNotBeNull();
             transactionFeeResponseList.ShouldNotBeEmpty();

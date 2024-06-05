@@ -2,8 +2,8 @@
 {
     public class MerchantContract
     {
-        public Int32 MerchantReportingId { get; set; }
-        public Int32 ContractReportingId { get; set; }
+        public Guid MerchantId { get; set; }
+        public Guid ContractId { get; set; }
         public Boolean IsDeleted{ get; set; }
     }
 }

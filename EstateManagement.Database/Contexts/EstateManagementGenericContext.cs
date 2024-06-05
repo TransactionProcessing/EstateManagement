@@ -43,7 +43,6 @@ public abstract class EstateManagementGenericContext : DbContext
 
     public DbSet<Contract> Contracts { get; set; }
 
-    public DbSet<EstateOperator> EstateOperators { get; set; }
     public DbSet<Operator> Operators { get; set; }
 
     public DbSet<Estate> Estates { get; set; }
@@ -176,7 +175,6 @@ public abstract class EstateManagementGenericContext : DbContext
     {
         modelBuilder.SetupResponseCodes()
                     .SetupEstate()
-                    .SetupEstateOperator()
                     .SetupEstateSecurityUser()
                     .SetupMerchant()
                     .SetupMerchantAddress()
@@ -227,7 +225,8 @@ public abstract class EstateManagementGenericContext : DbContext
         catch (UniqueConstraintException uex)
         {
             // Swallow the error
-            Logger.LogWarning($"Unique Constraint Exception. Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
+            // TODO: handle PK exceptions uex.ConstraintName and uex.ConstraintProperties are both null
+            //Logger.LogWarning($"Unique Constraint Exception. Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
         }
     }
 

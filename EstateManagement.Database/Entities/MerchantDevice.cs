@@ -17,7 +17,7 @@
 
         public String DeviceIdentifier { get; set; }
         
-        public Int32 MerchantReportingId { get; set; }
+        public Guid MerchantId { get; set; }
 
         #endregion
     }

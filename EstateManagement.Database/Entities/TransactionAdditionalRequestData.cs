@@ -17,7 +17,7 @@
         public String? CustomerAccountNumber { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Int32 TransactionReportingId { get; set; }
+        public Guid TransactionId { get; set; }
 
         #endregion
     }

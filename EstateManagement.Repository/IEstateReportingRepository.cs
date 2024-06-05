@@ -46,9 +46,6 @@
         Task AddEstate(EstateCreatedEvent domainEvent,
                        CancellationToken cancellationToken);
 
-        Task AddEstateOperator(OperatorAddedToEstateEvent domainEvent,
-                               CancellationToken cancellationToken);
-
         Task AddEstateSecurityUser(SecurityUserAddedToEstateEvent domainEvent,
                                    CancellationToken cancellationToken);
 

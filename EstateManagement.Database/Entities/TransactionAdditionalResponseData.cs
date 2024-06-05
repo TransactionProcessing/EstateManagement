@@ -13,6 +13,9 @@
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Int32 TransactionReportingId { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Guid TransactionId { get; set; }
+
         #endregion
     }
 }

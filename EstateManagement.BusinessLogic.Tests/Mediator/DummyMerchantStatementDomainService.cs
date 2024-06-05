@@ -75,8 +75,8 @@ public class DummyEstateManagementManager : IEstateManagementManager{
                                  };
     }
 
-    public async Task<List<TransactionFee>> GetTransactionFeesForProduct(Guid estateId, Guid merchantId, Guid contractId, Guid productId, CancellationToken cancellationToken){
-        return new List<TransactionFee>();
+    public async Task<List<ContractProductTransactionFee>> GetTransactionFeesForProduct(Guid estateId, Guid merchantId, Guid contractId, Guid productId, CancellationToken cancellationToken){
+        return new List<ContractProductTransactionFee>();
     }
 
     public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){

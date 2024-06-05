@@ -41,14 +41,6 @@ public class EstateDomainEventHandlerTests
     }
 
     [Fact]
-    public void EstateDomainEventHandler_OperatorAddedToEstateEvent_EventIsHandled()
-    {
-        OperatorAddedToEstateEvent operatorAddedToEstateEvent = TestData.OperatorAddedToEstateEvent;
-
-        Should.NotThrow(async () => { await this.DomainEventHandler.Handle(operatorAddedToEstateEvent, CancellationToken.None); });
-    }
-
-    [Fact]
     public void EstateDomainEventHandler_SecurityUserAddedEvent_EventIsHandled()
     {
         SecurityUserAddedToEstateEvent securityUserAddedEvent = TestData.EstateSecurityUserAddedEvent;

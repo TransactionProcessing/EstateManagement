@@ -48,15 +48,15 @@
             Guard.ThrowIfZero(value, typeof(ArgumentOutOfRangeException), "Transaction Fee value cannot be zero");
             Guard.ThrowIfNegative(value, typeof(ArgumentOutOfRangeException), "Transaction Fee value cannot be negative");
 
-            if (aggregate.Products.Any(p => p.ProductId == product.ProductId) == false){
-                throw new InvalidOperationException($"Product Id {product.ProductId} is not a valid product on this contract");
+            if (aggregate.Products.Any(p => p.ContractProductId == product.ContractProductId) == false){
+                throw new InvalidOperationException($"Product Id {product.ContractProductId} is not a valid product on this contract");
             }
 
             Guard.ThrowIfInvalidEnum(typeof(CalculationType), calculationType, nameof(calculationType));
             Guard.ThrowIfInvalidEnum(typeof(FeeType), feeType, nameof(feeType));
 
             TransactionFeeForProductAddedToContractEvent transactionFeeForProductAddedToContractEvent =
-                new TransactionFeeForProductAddedToContractEvent(aggregate.AggregateId, aggregate.EstateId, product.ProductId, transactionFeeId, description, (Int32)calculationType, (Int32)feeType, value);
+                new TransactionFeeForProductAddedToContractEvent(aggregate.AggregateId, aggregate.EstateId, product.ContractProductId, transactionFeeId, description, (Int32)calculationType, (Int32)feeType, value);
 
             aggregate.ApplyAndAppend(transactionFeeForProductAddedToContractEvent);
         }
@@ -95,11 +95,11 @@
         public static void DisableTransactionFee(this ContractAggregate aggregate,
                                                  Guid productId,
                                                  Guid transactionFeeId){
-            if (aggregate.Products.Any(p => p.ProductId == productId) == false){
+            if (aggregate.Products.Any(p => p.ContractProductId == productId) == false){
                 throw new InvalidOperationException($"Product Id {productId} is not a valid product on this contract");
             }
 
-            Product product = aggregate.Products.Single(p => p.ProductId == productId);
+            Product product = aggregate.Products.Single(p => p.ContractProductId == productId);
 
             if (product.TransactionFees.Any(f => f.TransactionFeeId == transactionFeeId) == false){
                 throw new InvalidOperationException($"Transaction Fee Id {transactionFeeId} is not a valid for product {product.Name} on this contract");
@@ -136,8 +136,8 @@
 
         public static void PlayEvent(this ContractAggregate aggregate, TransactionFeeForProductDisabledEvent domainEvent){
             // Find the product
-            Product product = aggregate.Products.Single(p => p.ProductId == domainEvent.ProductId);
-            TransactionFee transactionFee = product.TransactionFees.Single(t => t.TransactionFeeId == domainEvent.TransactionFeeId);
+            Product product = aggregate.Products.Single(p => p.ContractProductId == domainEvent.ProductId);
+            ContractProductTransactionFee transactionFee = product.TransactionFees.Single(t => t.TransactionFeeId == domainEvent.TransactionFeeId);
 
             transactionFee.IsEnabled = false;
         }
@@ -151,7 +151,7 @@
 
         public static void PlayEvent(this ContractAggregate aggregate, FixedValueProductAddedToContractEvent domainEvent){
             aggregate.Products.Add(new Product{
-                                                  ProductId = domainEvent.ProductId,
+                                                  ContractProductId = domainEvent.ProductId,
                                                   Name = domainEvent.ProductName,
                                                   DisplayText = domainEvent.DisplayText,
                                                   Value = domainEvent.Value,
@@ -161,7 +161,7 @@
 
         public static void PlayEvent(this ContractAggregate aggregate, VariableValueProductAddedToContractEvent domainEvent){
             aggregate.Products.Add(new Product{
-                                                  ProductId = domainEvent.ProductId,
+                                                  ContractProductId = domainEvent.ProductId,
                                                   Name = domainEvent.ProductName,
                                                   DisplayText = domainEvent.DisplayText,
                                                   ProductType = (ProductType)domainEvent.ProductType
@@ -170,9 +170,9 @@
 
         public static void PlayEvent(this ContractAggregate aggregate, TransactionFeeForProductAddedToContractEvent domainEvent){
             // Find the product
-            Product product = aggregate.Products.Single(p => p.ProductId == domainEvent.ProductId);
+            Product product = aggregate.Products.Single(p => p.ContractProductId == domainEvent.ProductId);
 
-            product.TransactionFees.Add(new TransactionFee{
+            product.TransactionFees.Add(new ContractProductTransactionFee(){
                                                               Description = domainEvent.Description,
                                                               CalculationType = (CalculationType)domainEvent.CalculationType,
                                                               TransactionFeeId = domainEvent.TransactionFeeId,

@@ -73,7 +73,7 @@ namespace EstateManagement.Aggregates.Tests
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
-            aggregate.AddFixedValueProduct(TestData.ProductId,
+            aggregate.AddFixedValueProduct(TestData.ContractProductId,
                                            TestData.ProductName,
                                            TestData.ProductDisplayText,
                                            TestData.ProductFixedValue,
@@ -82,7 +82,7 @@ namespace EstateManagement.Aggregates.Tests
             List<Product> products = aggregate.GetProducts();
             products.Count.ShouldBe(1);
             Product product= products.Single();
-            product.ProductId.ShouldNotBe(Guid.Empty);
+            product.ContractProductId.ShouldNotBe(Guid.Empty);
             product.Name.ShouldBe(TestData.ProductName);
             product.DisplayText.ShouldBe(TestData.ProductDisplayText);
             product.Value.ShouldBe(TestData.ProductFixedValue);
@@ -96,11 +96,11 @@ namespace EstateManagement.Aggregates.Tests
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
-            aggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
+            aggregate.AddFixedValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
 
             Should.Throw<InvalidOperationException>(() =>
                                                 {
-                                                    aggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
+                                                    aggregate.AddFixedValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
                                                 });
         }
 
@@ -114,7 +114,7 @@ namespace EstateManagement.Aggregates.Tests
             
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.AddFixedValueProduct(TestData.ProductId, productName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
+                                                    aggregate.AddFixedValueProduct(TestData.ContractProductId, productName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
                                                 });
         }
 
@@ -128,7 +128,7 @@ namespace EstateManagement.Aggregates.Tests
 
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    aggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, displayText, TestData.ProductFixedValue,TestData.ProductTypeMobileTopup);
+                                                    aggregate.AddFixedValueProduct(TestData.ContractProductId, TestData.ProductName, displayText, TestData.ProductFixedValue,TestData.ProductTypeMobileTopup);
                                                 });
         }
 
@@ -142,7 +142,7 @@ namespace EstateManagement.Aggregates.Tests
 
             Should.Throw<ArgumentOutOfRangeException>(() =>
                                                 {
-                                                    aggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, value, TestData.ProductTypeMobileTopup);
+                                                    aggregate.AddFixedValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, value, TestData.ProductTypeMobileTopup);
                                                 });
         }
 
@@ -152,12 +152,12 @@ namespace EstateManagement.Aggregates.Tests
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
             
             List<Product> products = aggregate.GetProducts();
             products.Count.ShouldBe(1);
             Product product = products.Single();
-            product.ProductId.ShouldNotBe(Guid.Empty);
+            product.ContractProductId.ShouldNotBe(Guid.Empty);
             product.Name.ShouldBe(TestData.ProductName);
             product.DisplayText.ShouldBe(TestData.ProductDisplayText);
             product.Value.ShouldBeNull();
@@ -171,11 +171,11 @@ namespace EstateManagement.Aggregates.Tests
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             Should.Throw<InvalidOperationException>(() =>
             {
-                aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+                aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
             });
         }
 
@@ -189,7 +189,7 @@ namespace EstateManagement.Aggregates.Tests
 
             Should.Throw<ArgumentNullException>(() =>
             {
-                aggregate.AddVariableValueProduct(TestData.ProductId, productName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+                aggregate.AddVariableValueProduct(TestData.ContractProductId, productName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
             });
         }
 
@@ -203,7 +203,7 @@ namespace EstateManagement.Aggregates.Tests
 
             Should.Throw<ArgumentNullException>(() =>
             {
-                aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, displayText, TestData.ProductTypeMobileTopup);
+                aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, displayText, TestData.ProductTypeMobileTopup);
             });
         }
 
@@ -230,7 +230,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
+            aggregate.AddFixedValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
             
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -241,7 +241,7 @@ namespace EstateManagement.Aggregates.Tests
             Product productWithFees = productsAfterFeeAdded.Single();
 
             productWithFees.TransactionFees.ShouldHaveSingleItem();
-            TransactionFee fee = productWithFees.TransactionFees.Single();
+            ContractProductTransactionFee? fee = productWithFees.TransactionFees.Single();
             fee.Description.ShouldBe(TestData.TransactionFeeDescription);
             fee.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
             fee.CalculationType.ShouldBe(calculationType);
@@ -258,7 +258,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
+            aggregate.AddFixedValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -282,7 +282,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddFixedValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
+            aggregate.AddFixedValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -302,7 +302,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -313,7 +313,7 @@ namespace EstateManagement.Aggregates.Tests
             Product productWithFees = productsAfterFeeAdded.Single();
 
             productWithFees.TransactionFees.ShouldHaveSingleItem();
-            TransactionFee fee = productWithFees.TransactionFees.Single();
+            ContractProductTransactionFee? fee = productWithFees.TransactionFees.Single();
             fee.Description.ShouldBe(TestData.TransactionFeeDescription);
             fee.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
             fee.CalculationType.ShouldBe(calculationType);
@@ -330,7 +330,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -354,7 +354,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -390,7 +390,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddFixedValueProduct(TestData.ProductId,TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
+            aggregate.AddFixedValueProduct(TestData.ContractProductId,TestData.ProductName, TestData.ProductDisplayText, TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
 
             Should.Throw<InvalidOperationException>(() =>
                                                 {
@@ -405,7 +405,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -423,7 +423,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -447,7 +447,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -471,7 +471,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -489,7 +489,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -507,7 +507,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -527,7 +527,7 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
 
             List<Product> products = aggregate.GetProducts();
             Product product = products.Single();
@@ -537,10 +537,10 @@ namespace EstateManagement.Aggregates.Tests
             List<Product> productsAfterFeeAdded = aggregate.GetProducts();
             Product productWithFees = productsAfterFeeAdded.Single();
             productWithFees.TransactionFees.ShouldHaveSingleItem();
-            TransactionFee fee = productWithFees.TransactionFees.Single();
+            ContractProductTransactionFee? fee = productWithFees.TransactionFees.Single();
             fee.IsEnabled.ShouldBeTrue();
 
-            aggregate.DisableTransactionFee(TestData.ProductId, TestData.TransactionFeeId);
+            aggregate.DisableTransactionFee(TestData.ContractProductId, TestData.TransactionFeeId);
 
             productsAfterFeeAdded = aggregate.GetProducts();
             productWithFees = productsAfterFeeAdded.Single();
@@ -557,7 +557,7 @@ namespace EstateManagement.Aggregates.Tests
 
             Should.Throw<InvalidOperationException>(() =>
                                                     {
-                                                        aggregate.DisableTransactionFee(TestData.ProductId, TestData.TransactionFeeId);
+                                                        aggregate.DisableTransactionFee(TestData.ContractProductId, TestData.TransactionFeeId);
                                                     });
         }
 
@@ -566,11 +566,11 @@ namespace EstateManagement.Aggregates.Tests
         {
             ContractAggregate aggregate = ContractAggregate.Create(TestData.ContractId);
             aggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            aggregate.AddVariableValueProduct(TestData.ProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
+            aggregate.AddVariableValueProduct(TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, TestData.ProductTypeMobileTopup);
             
             Should.Throw<InvalidOperationException>(() =>
                                                     {
-                                                        aggregate.DisableTransactionFee(TestData.ProductId, TestData.TransactionFeeId);
+                                                        aggregate.DisableTransactionFee(TestData.ContractProductId, TestData.TransactionFeeId);
                                                     });
         }
     }

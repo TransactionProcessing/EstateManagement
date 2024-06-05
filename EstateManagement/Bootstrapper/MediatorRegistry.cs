@@ -62,7 +62,7 @@
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantQuery, Merchant>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>, MerchantRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantsQuery, List<Models.Merchant.Merchant>>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.ContractProductTransactionFee>>, MerchantRequestHandler>();
 
             this.AddSingleton<IRequestHandler<CreateContractRequest>, ContractRequestHandler>();
             this.AddSingleton<IRequestHandler<AddProductToContractRequest>, ContractRequestHandler>();

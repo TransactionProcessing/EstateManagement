@@ -9,9 +9,9 @@
     [Table("fileimportlogfile")]
     public class FileImportLogFile
     {
-        public Int32 FileReportingId { get; set; }
+        public Guid FileId { get; set; }
 
-        public Int32 FileImportLogReportingId { get; set; }
+        public Guid FileImportLogId { get; set; }
 
         public string FilePath { get; set; }
 
@@ -21,7 +21,7 @@
 
         public DateTime FileUploadedDate { get; set; }
 
-        public Int32 MerchantReportingId { get; set; }
+        public Guid MerchantId { get; set; }
 
         public string OriginalFileName { get; set; }
         

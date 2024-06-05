@@ -14,13 +14,10 @@
 
         public String EmailAddress { get; set; }
 
-        public Int32 EstateReportingId { get; set; }
+        public Guid EstateId { get; set; }
         
         public Guid SecurityUserId { get; set; }
-
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //public Int32 EstateSecurityUserReportingId { get; set; }
-
+        
         #endregion
     }
 }

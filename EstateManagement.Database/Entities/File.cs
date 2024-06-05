@@ -9,14 +9,14 @@
     [Table("file")]
     public class File
     {
-        public Int32 EstateReportingId { get; set; }
+        public Guid EstateId { get; set; }
 
         public Guid FileId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 FileReportingId{ get; set; }
 
-        public Int32 FileImportLogReportingId { get; set; }
+        public Guid FileImportLogId { get; set; }
 
         public string FileLocation { get; set; }
 
@@ -26,7 +26,7 @@
 
         public DateTime FileReceivedDate { get; set; }
 
-        public Int32 MerchantReportingId { get; set; }
+        public Guid MerchantId { get; set; }
 
         public Guid UserId { get; set; }
 

@@ -7,7 +7,7 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class TransactionFee
+    public class ContractProductTransactionFee
     {
         #region Properties
 
@@ -51,7 +51,7 @@
         /// </value>
         public Guid TransactionFeeId { get; set; }
 
-        public Int32 TransactionFeeReportingId { get; set; }
+        public Int32 ContractProductTransactionFeeReportingId { get; set; }
 
         /// <summary>
         /// Gets or sets the value.

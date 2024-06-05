@@ -29,7 +29,7 @@
                                           IRequestHandler<MerchantQueries.GetMerchantQuery, Models.Merchant.Merchant>,
                                           IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>,
                                           IRequestHandler<MerchantQueries.GetMerchantsQuery, List<Models.Merchant.Merchant>>,
-                                          IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.TransactionFee>>,
+                                          IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.ContractProductTransactionFee>>,
                                           IRequestHandler<MerchantCommands.UpdateMerchantCommand>,
                                           IRequestHandler<MerchantCommands.AddMerchantAddressCommand>,
                                           IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand>,
@@ -123,8 +123,8 @@
             return merchants;
         }
 
-        public async Task<List<TransactionFee>> Handle(MerchantQueries.GetTransactionFeesForProductQuery query, CancellationToken cancellationToken){
-            List<TransactionFee> transactionFees =
+        public async Task<List<Models.Contract.ContractProductTransactionFee>> Handle(MerchantQueries.GetTransactionFeesForProductQuery query, CancellationToken cancellationToken){
+            List<Models.Contract.ContractProductTransactionFee> transactionFees =
                     await this.EstateManagementManager.GetTransactionFeesForProduct(query.EstateId, query.MerchantId, query.ContractId, query.ProductId, cancellationToken);
 
             return transactionFees;

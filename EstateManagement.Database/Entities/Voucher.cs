@@ -32,7 +32,7 @@
 
         public Guid VoucherId { get; set; }
 
-        public Int32 TransactionReportingId { get; set; }
+        public Guid TransactionId { get; set; }
 
         public DateTime GenerateDateTime { get; set; }
 

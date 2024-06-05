@@ -12,21 +12,22 @@
         #region Properties
         
         public String? AuthorisationCode { get; set; }
-        
-        public Int32 ContractReportingId { get; set; }
-        
+
+        //public Int32 ContractReportingId { get; set; }
+        public Guid ContractId { get; set; }
+
         public String? DeviceIdentifier { get; set; }
         
         public Boolean IsAuthorised { get; set; }
         
         public Boolean IsCompleted { get; set; }
         
-        public Int32 MerchantReportingId { get; set; }
+        public Guid MerchantId { get; set; }
 
-        public Int32 EstateOperatorReportingId { get; set; }
+        public Guid OperatorId { get; set; }
         
-        public Int32 ContractProductReportingId { get; set; }
-        
+        public Guid ContractProductId { get; set; }
+
         public String? ResponseCode { get; set; }
         
         public String? ResponseMessage { get; set; }

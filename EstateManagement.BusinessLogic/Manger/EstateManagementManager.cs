@@ -162,7 +162,7 @@
             return merchants;
         }
         
-        public async Task<List<TransactionFee>> GetTransactionFeesForProduct(Guid estateId,
+        public async Task<List<Models.Contract.ContractProductTransactionFee>> GetTransactionFeesForProduct(Guid estateId,
                                                                              Guid merchantId,
                                                                              Guid contractId,
                                                                              Guid productId,
@@ -178,7 +178,7 @@
 
             List<Product> products = contract.GetProducts();
 
-            Product product = products.SingleOrDefault(p => p.ProductId == productId);
+            Product product = products.SingleOrDefault(p => p.ContractProductId == productId);
 
             if (product == null){
                 throw new NotFoundException($"No product found with Id [{productId}] on contract Id [{contractId}]");

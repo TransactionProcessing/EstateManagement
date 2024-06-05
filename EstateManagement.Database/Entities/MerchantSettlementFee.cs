@@ -12,17 +12,17 @@
 
         public DateTime FeeCalculatedDateTime { get; set; }
 
-        public Int32 TransactionFeeReportingId { get; set; }
+        public Guid ContractProductTransactionFeeId { get; set; }
 
         public Decimal FeeValue { get; set; }
 
         public Boolean IsSettled { get; set; }
 
-        public Int32 MerchantReportingId { get; set; }
+        public Guid MerchantId { get; set; }
 
-        public Int32 SettlementReportingId { get; set; }
+        public Guid SettlementId { get; set; }
 
-        public Int32 TransactionReportingId { get; set; }
+        public Guid TransactionId { get; set; }
 
         #endregion
     }
