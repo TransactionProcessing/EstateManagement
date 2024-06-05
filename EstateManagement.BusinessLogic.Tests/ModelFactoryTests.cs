@@ -51,7 +51,7 @@ namespace EstateManagement.BusinessLogic.Tests
             estateModel.EstateId.ShouldBe(estate.EstateId);
             estateModel.Name.ShouldBe(estate.Name);
             estateModel.Operators.ShouldNotBeNull();
-            //estateModel.Operators.Count.ShouldBe(estateOperators.Count);
+            estateModel.Operators.Count.ShouldBe(operators.Count);
             estateModel.SecurityUsers.ShouldNotBeNull();
             estateModel.SecurityUsers.Count.ShouldBe(estateSecurityUsers.Count);
         }
@@ -64,9 +64,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
                                                                  };
-            List<OperatorEntity> operators = new List<Operator>{
-                                                                   TestData.OperatorEntity
-                                                               };
+            List<OperatorEntity> operators = new List<Operator>();
 
             ModelFactory modelFactory = new ModelFactory();
 
@@ -88,9 +86,7 @@ namespace EstateManagement.BusinessLogic.Tests
                                                                  {
                                                                      TestData.EstateSecurityUserEntity
                                                                  };
-            List<OperatorEntity> operators = new List<Operator>{
-                                                                   TestData.OperatorEntity
-                                                               };
+            List<OperatorEntity> operators = null;
             ModelFactory modelFactory = new ModelFactory();
 
             EstateModel estateModel = modelFactory.ConvertFrom(estate, estateSecurityUsers, operators);
@@ -120,7 +116,7 @@ namespace EstateManagement.BusinessLogic.Tests
             estateModel.EstateId.ShouldBe(estate.EstateId);
             estateModel.Name.ShouldBe(estate.Name);
             estateModel.Operators.ShouldNotBeNull();
-            //estateModel.Operators.Count.ShouldBe(estateOperators.Count);
+            estateModel.Operators.Count.ShouldBe(operators.Count);
             estateModel.SecurityUsers.ShouldBeNull();
         }
 
@@ -141,7 +137,7 @@ namespace EstateManagement.BusinessLogic.Tests
             estateModel.EstateId.ShouldBe(estate.EstateId);
             estateModel.Name.ShouldBe(estate.Name);
             estateModel.Operators.ShouldNotBeNull();
-            //estateModel.Operators.Count.ShouldBe(estateOperators.Count);
+            estateModel.Operators.Count.ShouldBe(operators.Count);
             estateModel.SecurityUsers.ShouldBeNull();
         }
 

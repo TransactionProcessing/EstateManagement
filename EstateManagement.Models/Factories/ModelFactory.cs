@@ -52,21 +52,16 @@
             estateModel.Name = estate.Name;
             estateModel.Reference = estate.Reference;
 
-            //if (estateOperators != null && estateOperators.Any())
-            //{
-            //    estateModel.Operators = new List<EstateOperatorModel>();
-            //    foreach (EstateOperatorEntity estateOperator in estateOperators){
-            //        // Find the related "operator"
-            //        OperatorEntity @operator = operators.Single(o => o.OperatorReportingId == estateOperator.OperatorReportingId);
-
-            //        estateModel.Operators.Add(new EstateOperatorModel{
-            //                                                             OperatorId = @operator.OperatorId,
-            //                                                             Name = @operator.Name,
-            //                                                             //RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber,
-            //                                                             //RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber
-            //                                                         });
-            //    }
-            //}
+            if (operators != null && operators.Any())
+            {
+                estateModel.Operators = new List<EstateOperatorModel>();
+                foreach (var @operator in operators){
+                estateModel.Operators.Add(new EstateOperatorModel{
+                                                                         OperatorId = @operator.OperatorId,
+                                                                         Name = @operator.Name
+                                                                     });
+                }
+            }
 
             if (estateSecurityUsers != null && estateSecurityUsers.Any())
             {

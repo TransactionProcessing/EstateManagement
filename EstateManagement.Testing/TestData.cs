@@ -832,7 +832,8 @@
                                                  Value = TestData.ProductFixedValue,
                                                  ContractProductTransactionFeeId = TestData.TransactionFeeId,
                                                  Description = TestData.TransactionFeeDescription,
-                                                 CalculationType = 0
+                                                 CalculationType = 0,
+                                                 ContractProductId = TestData.ContractProductId
                                              };
 
         public static CreateContractRequest CreateContractRequest => CreateContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
