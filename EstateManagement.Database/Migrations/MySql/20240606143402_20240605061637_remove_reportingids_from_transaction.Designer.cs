@@ -4,6 +4,7 @@ using EstateManagement.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstateManagement.Database.Migrations.MySql
 {
     [DbContext(typeof(EstateManagementMySqlContext))]
-    partial class EstateManagementMySqlContextModelSnapshot : ModelSnapshot
+    [Migration("20240606143402_20240605061637_remove_reportingids_from_transaction")]
+    partial class _20240605061637_remove_reportingids_from_transaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
