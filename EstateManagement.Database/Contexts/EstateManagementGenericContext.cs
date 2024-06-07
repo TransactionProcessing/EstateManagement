@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Database.Contexts;
+﻿using EstateManagement.Database.Entities.Summary;
+
+namespace EstateManagement.Database.Contexts;
 
 using System.Reflection;
 using Entities;
@@ -95,10 +97,46 @@ public abstract class EstateManagementGenericContext : DbContext
 
     public DbSet<MerchantContract> MerchantContracts { get; set; }
 
+    public DbSet<SettlementSummary> SettlementSummary { get; set; }
+    public DbSet<TodayTransaction> TodayTransactions { get; set; }
+    public DbSet<TransactionHistory> TransactionHistory { get; set; }
+
     #endregion
 
     #region Methods
-    
+
+    private async Task CreateStoredProcedures(CancellationToken cancellationToken)
+    {
+        String executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
+        String executingAssemblyFolder = Path.GetDirectoryName(executingAssemblyLocation);
+
+        String scriptsFolder = $@"{executingAssemblyFolder}/StoredProcedures/{this.DatabaseEngine}";
+
+        String[] directiories = Directory.GetDirectories(scriptsFolder);
+        directiories = directiories.OrderBy(d => d).ToArray();
+
+        foreach (String directiory in directiories)
+        {
+            String[] sqlFiles = Directory.GetFiles(directiory, "*View.sql");
+            foreach (String sqlFile in sqlFiles.OrderBy(x => x))
+            {
+                Logger.LogDebug($"About to create Stored Procedure [{sqlFile}]");
+                String sql = System.IO.File.ReadAllText(sqlFile);
+
+                // Check here is we need to replace a Database Name
+                if (sql.Contains("{DatabaseName}"))
+                {
+                    sql = sql.Replace("{DatabaseName}", this.Database.GetDbConnection().Database);
+                }
+
+                // Create the new view using the original sql from file
+                await this.Database.ExecuteSqlRawAsync(sql, cancellationToken);
+
+                Logger.LogDebug($"Created Stored Procedure [{sqlFile}] successfully.");
+            }
+        }
+    }
+
     private async Task CreateViews(CancellationToken cancellationToken)
     {
         String executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
@@ -169,6 +207,11 @@ public abstract class EstateManagementGenericContext : DbContext
             await this.CreateViews(cancellationToken);
             await this.SeedStandingData(cancellationToken);
         }
+
+        if (this.Database.IsSqlServer())
+        {
+            await this.CreateStoredProcedures(cancellationToken);
+        }
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -202,7 +245,10 @@ public abstract class EstateManagementGenericContext : DbContext
                     .SetupMerchantContract()
                     .SetupFloat()
                     .SetupFloatActivity()
-                    .SetupOperator();
+                    .SetupOperator()
+                    .SetupSettlementSummary()
+                    .SetupTransactionHistory()
+                    .SetupTodaysTransactions();
         
         modelBuilder.SetupViewEntities();
 
@@ -230,18 +276,6 @@ public abstract class EstateManagementGenericContext : DbContext
         }
     }
 
-    //public virtual async Task SaveChangesWithDuplicateHandling(String tableName, CancellationToken cancellationToken)
-    //{
-    //    try
-    //    {
-    //        await this.SaveChangesAsync(cancellationToken);
-    //    }
-    //    catch (UniqueConstraintException uex)
-    //    {
-    //        // Swallow the error
-    //        Logger.LogWarning($"Unique Constraint Exception. Table [{tableName}] Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
-    //    }
-    //}
 
     #endregion
 }

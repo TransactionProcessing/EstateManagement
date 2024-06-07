@@ -30,6 +30,15 @@
 	  <None Update="SeedingScripts\ResponseCodeSeeding.sql">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="StoredProcedures\SqlServer\spBuildHistoricTransactions.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="StoredProcedures\SqlServer\spBuildSettlementSummary.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="StoredProcedures\SqlServer\spBuildTodaysTransactions.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Views\MySql\Priority1\uvwSettlements.View.sql">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -41,5 +50,6 @@
 	<ItemGroup>
 	  <Folder Include="Migrations\MySql\" />
 	  <Folder Include="Migrations\SqlServer\" />
+	  <Folder Include="StoredProcedures\SqlServer\" />
 	</ItemGroup>
 </Project>

@@ -1,4 +1,7 @@
-﻿namespace EstateManagement.Database.Contexts;
+﻿using EstateManagement.Database.Entities.Summary;
+using NLog.LayoutRenderers.Wrappers;
+
+namespace EstateManagement.Database.Contexts;
 
 using Entities;
 using Microsoft.EntityFrameworkCore;
@@ -84,6 +87,65 @@ public static class Extensions{
         modelBuilder.Entity<Operator>().HasIndex(t => new {
                                                               t.OperatorId
                                                           }).IsUnique();
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupTransactionHistory(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TransactionHistory>().HasNoKey();
+        modelBuilder.Entity<TransactionHistory>().HasIndex(s => new
+        {
+            s.TransactionDate
+        }).IsClustered(true);
+
+        modelBuilder.Entity<TransactionHistory>(s => { s.Property(p => p.TransactionDate).IsDateOnly(); });
+
+        modelBuilder.Entity<TransactionHistory>().HasIndex(s => new
+        {
+            s.TransactionId
+        }).IsUnique(true);
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupTodaysTransactions(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TodayTransaction>().HasNoKey();
+        modelBuilder.Entity<TodayTransaction>().HasIndex(s => new
+        {
+            s.TransactionDate
+        }).IsClustered(true);
+
+        modelBuilder.Entity<TodayTransaction>(s => { s.Property(p => p.TransactionDate).IsDateOnly(); });
+
+        modelBuilder.Entity<TodayTransaction>().HasIndex(s => new
+        {
+            s.TransactionId
+        }).IsUnique(true);
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder SetupSettlementSummary(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SettlementSummary>().HasNoKey();
+        modelBuilder.Entity<SettlementSummary>().HasIndex(s => new
+        {
+            s.SettlementDate
+        }).IsClustered(true);
+
+        modelBuilder.Entity<SettlementSummary>(s => { s.Property(p => p.SettlementDate).IsDateOnly(); });
+
+        modelBuilder.Entity<SettlementSummary>().HasIndex(s => new
+        {
+            s.SettlementDate,
+            s.MerchantReportingId,
+            s.OperatorReportingId,
+            s.ContractProductReportingId,
+            s.IsCompleted,
+            s.IsSettled
+        }).IsUnique(true);
 
         return modelBuilder;
     }
