@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE spBuildSettlementSummary @date date
+CREATE OR ALTER   PROCEDURE [dbo].[spBuildSettlementSummary] @date date
 AS
 
 declare @weekNumber int
@@ -28,5 +28,3 @@ inner join estate on estate.EstateId = merchant.EstateId
 inner join operator on operator.OperatorId = contract.OperatorId
 where settlementdate BETWEEN @startDate and @enddate
 group by settlement.IsCompleted, IsSettled, SettlementDate, merchant.merchantreportingid, operator.operatorreportingid, contractproduct.contractproductreportingid
-go 
-

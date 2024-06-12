@@ -1,7 +1,7 @@
-CREATE OR ALTER PROCEDURE spBuildHistoricTransactions
+CREATE OR ALTER   PROCEDURE [dbo].[spBuildHistoricTransactions] @date date
 AS
 
-insert into TransactionsHistory(MerchantReportingId, ContractProductReportingId,ContractReportingId,OperatorReportingId,
+insert into TransactionHistory(MerchantReportingId, ContractProductReportingId,ContractReportingId,OperatorReportingId,
 TransactionId,
 AuthorisationCode,
 DeviceIdentifier,
@@ -19,10 +19,10 @@ TransactionType,
 TransactionReportingId,
 TransactionAmount,
 Hour)
-select merchant.MerchantReportingId,
-ISNULL(contractproduct.ContractProductReportingId,0) as ContractProductReportingId,
-ISNULL(contract.ContractReportingId,0) as ContractReportingId,
-ISNULL(operator.OperatorReportingId,0) as OperatorReportingId,
+select t.MerchantReportingId,
+t.ContractProductReportingId,
+t.ContractReportingId,
+t.OperatorReportingId,
 t.TransactionId,
 t.AuthorisationCode,
 t.DeviceIdentifier,
@@ -40,12 +40,7 @@ t.TransactionType,
 t.TransactionReportingId,
 t.TransactionAmount,
 t.Hour
-from TodaysTransactions t
-where TransactionReportingId not in (select distinct TransactionReportingId from TodaysTransactions)
+from TodayTransactions t
+where t.TransactionDate = @date
 
-delete from TodaysTransactions
-
-GO
-
-
-
+delete from TodayTransactions where TransactionDate = @date
