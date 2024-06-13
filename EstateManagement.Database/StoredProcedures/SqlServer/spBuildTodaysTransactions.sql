@@ -1,7 +1,7 @@
-CREATE OR ALTER PROCEDURE spBuildTodaysTransactions
+CREATE OR ALTER   PROCEDURE [dbo].[spBuildTodaysTransactions] @date date
 AS
 
-insert into TodaysTransactions(MerchantReportingId, ContractProductReportingId,ContractReportingId,OperatorReportingId,
+insert into TodayTransactions(MerchantReportingId, ContractProductReportingId,ContractReportingId,OperatorReportingId,
 TransactionId,
 AuthorisationCode,
 DeviceIdentifier,
@@ -24,7 +24,7 @@ ISNULL(contractproduct.ContractProductReportingId,0) as ContractProductReporting
 ISNULL(contract.ContractReportingId,0) as ContractReportingId,
 ISNULL(operator.OperatorReportingId,0) as OperatorReportingId,
 t.TransactionId,
-t.AuthorisationCode,
+ISNULL(t.AuthorisationCode,'') as AuthorisationCode,
 t.DeviceIdentifier,
 t.IsAuthorised,
 t.IsCompleted,
@@ -45,10 +45,5 @@ inner join merchant on merchant.MerchantId = t.MerchantId
 left outer join contractproduct on contractproduct.ContractProductId = t.ContractProductId
 left outer join contract on contract.ContractId = t.ContractId
 left outer join operator on operator.OperatorId= t.OperatorId
-where transactiondate = convert(date, getdate())
-and TransactionReportingId not in (select distinct TransactionReportingId from TodaysTransactions)
-
-GO
-
-
-
+where transactiondate = @date
+and TransactionReportingId not in (select distinct TransactionReportingId from TodayTransactions)

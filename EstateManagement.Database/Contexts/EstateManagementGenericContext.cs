@@ -112,15 +112,20 @@ public abstract class EstateManagementGenericContext : DbContext
 
         String scriptsFolder = $@"{executingAssemblyFolder}/StoredProcedures/{this.DatabaseEngine}";
 
-        String[] directiories = Directory.GetDirectories(scriptsFolder);
-        directiories = directiories.OrderBy(d => d).ToArray();
-
-        foreach (String directiory in directiories)
+        String[] directories = Directory.GetDirectories(scriptsFolder);
+        if (directories.Length == 0)
         {
-            String[] sqlFiles = Directory.GetFiles(directiory, "*View.sql");
+            var list = new List<string> { scriptsFolder };
+            directories = list.ToArray();
+        }
+        directories = directories.OrderBy(d => d).ToArray();
+
+        foreach (String directiory in directories)
+        {
+            String[] sqlFiles = Directory.GetFiles(directiory, "*.sql");
             foreach (String sqlFile in sqlFiles.OrderBy(x => x))
             {
-                Logger.LogDebug($"About to create Stored Procedure [{sqlFile}]");
+                Logger.LogInformation($"About to create Stored Procedure [{sqlFile}]");
                 String sql = System.IO.File.ReadAllText(sqlFile);
 
                 // Check here is we need to replace a Database Name
@@ -132,7 +137,7 @@ public abstract class EstateManagementGenericContext : DbContext
                 // Create the new view using the original sql from file
                 await this.Database.ExecuteSqlRawAsync(sql, cancellationToken);
 
-                Logger.LogDebug($"Created Stored Procedure [{sqlFile}] successfully.");
+                Logger.LogInformation($"Created Stored Procedure [{sqlFile}] successfully.");
             }
         }
     }
@@ -152,7 +157,7 @@ public abstract class EstateManagementGenericContext : DbContext
             String[] sqlFiles = Directory.GetFiles(directiory, "*View.sql");
             foreach (String sqlFile in sqlFiles.OrderBy(x => x))
             {
-                Logger.LogDebug($"About to create View [{sqlFile}]");
+                Logger.LogInformation($"About to create View [{sqlFile}]");
                 String sql = System.IO.File.ReadAllText(sqlFile);
 
                 // Check here is we need to replace a Database Name
@@ -164,7 +169,7 @@ public abstract class EstateManagementGenericContext : DbContext
                 // Create the new view using the original sql from file
                 await this.Database.ExecuteSqlRawAsync(sql, cancellationToken);
 
-                Logger.LogDebug($"Created View [{sqlFile}] successfully.");
+                Logger.LogInformation($"Created View [{sqlFile}] successfully.");
             }
         }
     }
@@ -191,7 +196,7 @@ public abstract class EstateManagementGenericContext : DbContext
             // Create the new view using the original sql from file
             await this.Database.ExecuteSqlRawAsync(sql, cancellationToken);
 
-            Logger.LogDebug($"Run Seeding Script [{sqlFile}] successfully.");
+            Logger.LogInformation($"Run Seeding Script [{sqlFile}] successfully.");
         }
     }
 
