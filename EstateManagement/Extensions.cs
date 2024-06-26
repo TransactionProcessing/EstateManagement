@@ -80,10 +80,8 @@ public static class Extensions
 
         applicationBuilder.ConfigureSubscriptionService(subscriptionWorkersRoot,
                                                         eventStoreConnectionString,
-                                                        EventStoreClientSettings.Create(eventStoreConnectionString),
                                                         eventHandlerResolvers,
                                                         Extensions.log,
-                                                        subscriptionRepositoryResolver,
-                                                        CancellationToken.None).Wait(CancellationToken.None);
+                                                        subscriptionRepositoryResolver).Wait(CancellationToken.None);
     }
 }
