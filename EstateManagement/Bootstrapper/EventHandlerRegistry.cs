@@ -7,6 +7,8 @@
     using Lamar;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Shared.DomainDrivenDesign.EventSourcing;
+    using Shared.EventStore.Aggregate;
     using Shared.EventStore.EventHandling;
 
     /// <summary>
@@ -63,7 +65,8 @@
             this.For<IDomainEventHandlerResolver>().Use<DomainEventHandlerResolver>().Named("Main")
                 .Ctor<Dictionary<String, String[]>>().Is(eventHandlersConfiguration).Singleton();
             this.For<IDomainEventHandlerResolver>().Use<DomainEventHandlerResolver>().Named("Ordered")
-                .Ctor<Dictionary<String, String[]>>().Is(eventHandlersConfigurationOrdered).Singleton();
+                .Ctor<Dictionary<String, String[]>>().Is(eventHandlersConfigurationOrdered).Singleton(); 
+            this.AddSingleton<IDomainEventFactory<IDomainEvent>, DomainEventFactory>();
         }
 
         #endregion
