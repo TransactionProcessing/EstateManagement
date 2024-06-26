@@ -229,7 +229,20 @@
                                 retryInterval:TimeSpan.FromSeconds(30));
             }
         }
-        
+
+        protected override List<String> GetRequiredProjections()
+        {
+            List<String> requiredProjections = new List<String>();
+
+            requiredProjections.Add("CallbackHandlerEnricher.js");
+            requiredProjections.Add("EstateAggregator.js");
+            requiredProjections.Add("MerchantAggregator.js");
+            requiredProjections.Add("MerchantBalanceCalculator.js");
+            requiredProjections.Add("MerchantBalanceProjection.js");
+
+            return requiredProjections;
+        }
+
         #endregion
     }
 }
