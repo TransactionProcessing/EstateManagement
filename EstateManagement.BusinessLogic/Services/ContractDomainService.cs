@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Services
+﻿using Shared.EventStore.EventStore;
+
+namespace EstateManagement.BusinessLogic.Services
 {
     using System;
     using System.Collections.Generic;
@@ -9,6 +11,7 @@
     using EstateAggregate;
     using Models.Contract;
     using Models.Estate;
+    using Newtonsoft.Json.Linq;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
     
@@ -17,6 +20,7 @@
         #region Fields
         
         private readonly IAggregateRepository<ContractAggregate, DomainEvent> ContractAggregateRepository;
+        private readonly IEventStoreContext Context;
 
         private readonly IAggregateRepository<EstateAggregate, DomainEvent> EstateAggregateRepository;
 
@@ -25,10 +29,12 @@
         #region Constructors
 
         public ContractDomainService(IAggregateRepository<EstateAggregate, DomainEvent> estateAggregateRepository,
-                                     IAggregateRepository<ContractAggregate, DomainEvent> contractAggregateRepository)
+                                     IAggregateRepository<ContractAggregate, DomainEvent> contractAggregateRepository,
+                                     IEventStoreContext context)
         {
             this.EstateAggregateRepository = estateAggregateRepository;
             this.ContractAggregateRepository = contractAggregateRepository;
+            Context = context;
         }
 
         #endregion
@@ -126,6 +132,27 @@
             if (estate.Operators == null || estate.Operators.Any(o => o.OperatorId == operatorId) == false)
             {
                 throw new InvalidOperationException($"Unable to create a contract for an operator that is not setup on estate [{estate.Name}]");
+            }
+
+            // Validate a duplicate name
+            String projection =
+                $"fromCategory(\"ContractAggregate\")\n.when({{\n    $init: function (s, e) {{\n                        return {{\n                            total: 0,\n                            contractId: 0\n                        }};\n                    }},\n    'ContractCreatedEvent': function(s,e){{\n        // Check if it matches\n        if (e.data.description === '{description}' \n            && e.data.operatorId === '{operatorId}'){{\n            s.total += 1;\n            s.contractId = e.data.contractId\n        }}\n    }}\n}})";
+            
+            var resultString = await this.Context.RunTransientQuery(projection, cancellationToken);
+            
+            if (String.IsNullOrEmpty(resultString) == false)
+            {
+                JObject jsonResult = JObject.Parse(resultString);
+
+                String contractIdString = jsonResult.Property("contractId").Values<String>().Single();
+
+                Guid.TryParse(contractIdString, out Guid contractIdResult);
+
+                if (contractIdResult != Guid.Empty)
+                {
+                    throw new InvalidOperationException(
+                        $"Contract Description {description} already in use for operator {operatorId}");
+                }
             }
 
             // Get the contract aggregate

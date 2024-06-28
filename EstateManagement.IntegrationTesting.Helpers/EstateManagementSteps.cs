@@ -310,6 +310,19 @@ public class EstateManagementSteps{
         return result;
     }
 
+    public async Task WhenICreateAnotherContractWithTheSameValuesItShouldBeRejected(string accessToken, List<(EstateDetails, CreateContractRequest)> requests)
+    {
+        var createContractRequest = requests.Single();
+
+        var ex = Should.Throw<Exception>(async () =>
+        {
+            await this.EstateClient.CreateContract(accessToken, createContractRequest.Item1.EstateId,
+                createContractRequest.Item2, CancellationToken.None);
+        });
+
+        ex.InnerException.ShouldBeOfType(typeof(InvalidOperationException));
+    }
+
     public async Task WhenICreateTheFollowingProducts(String accessToken, List<(EstateDetails, Contract, AddProductToContractRequest)> requests){
         List<(EstateDetails, Contract, AddProductToContractRequest, AddProductToContractResponse)> estateContractProducts = new();
         foreach ((EstateDetails, Contract, AddProductToContractRequest) request in requests){
