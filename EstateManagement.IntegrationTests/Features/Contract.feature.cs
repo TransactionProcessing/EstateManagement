@@ -500,6 +500,52 @@ await this.FeatureBackgroundAsync();
             }
             await this.ScenarioCleanupAsync();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Prevent Duplicate Contracts")]
+        public async System.Threading.Tasks.Task PreventDuplicateContracts()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Prevent Duplicate Contracts", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 116
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 4
+await this.FeatureBackgroundAsync();
+#line hidden
+                Reqnroll.Table table23 = new Reqnroll.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "ContractDescription"});
+                table23.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract"});
+#line 118
+ await testRunner.GivenAsync("I create a contract with the following values", ((string)(null)), table23, "Given ");
+#line hidden
+                Reqnroll.Table table24 = new Reqnroll.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "ContractDescription"});
+                table24.AddRow(new string[] {
+                            "Test Estate 1",
+                            "Test Operator 1",
+                            "Operator 1 Contract"});
+#line 122
+ await testRunner.WhenAsync("I create another contract with the same values it should be rejected", ((string)(null)), table24, "When ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
     }
 }
 #pragma warning restore

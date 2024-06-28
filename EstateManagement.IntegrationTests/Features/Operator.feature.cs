@@ -81,73 +81,73 @@ namespace EstateManagement.IntegrationTests.Features
         {
 #line 4
 #line hidden
-            Reqnroll.Table table84 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table86 = new Reqnroll.Table(new string[] {
                         "Role Name"});
-            table84.AddRow(new string[] {
+            table86.AddRow(new string[] {
                         "Estate"});
 #line 5
- await testRunner.GivenAsync("the following security roles exist", ((string)(null)), table84, "Given ");
+ await testRunner.GivenAsync("the following security roles exist", ((string)(null)), table86, "Given ");
 #line hidden
-            Reqnroll.Table table85 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table87 = new Reqnroll.Table(new string[] {
                         "Name",
                         "DisplayName",
                         "Description"});
-            table85.AddRow(new string[] {
+            table87.AddRow(new string[] {
                         "estateManagement",
                         "Estate Managememt REST Scope",
                         "A scope for Estate Managememt REST"});
 #line 9
- await testRunner.GivenAsync("I create the following api scopes", ((string)(null)), table85, "Given ");
+ await testRunner.GivenAsync("I create the following api scopes", ((string)(null)), table87, "Given ");
 #line hidden
-            Reqnroll.Table table86 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table88 = new Reqnroll.Table(new string[] {
                         "Name",
                         "DisplayName",
                         "Secret",
                         "Scopes",
                         "UserClaims"});
-            table86.AddRow(new string[] {
+            table88.AddRow(new string[] {
                         "estateManagement",
                         "Estate Managememt REST",
                         "Secret1",
                         "estateManagement",
                         "merchantId, estateId, role"});
 #line 13
- await testRunner.GivenAsync("the following api resources exist", ((string)(null)), table86, "Given ");
+ await testRunner.GivenAsync("the following api resources exist", ((string)(null)), table88, "Given ");
 #line hidden
-            Reqnroll.Table table87 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table89 = new Reqnroll.Table(new string[] {
                         "ClientId",
                         "ClientName",
                         "Secret",
                         "Scopes",
                         "GrantTypes"});
-            table87.AddRow(new string[] {
+            table89.AddRow(new string[] {
                         "serviceClient",
                         "Service Client",
                         "Secret1",
                         "estateManagement",
                         "client_credentials"});
-            table87.AddRow(new string[] {
+            table89.AddRow(new string[] {
                         "estateClient",
                         "Estate Client",
                         "Secret1",
                         "estateManagement",
                         "password"});
 #line 17
- await testRunner.GivenAsync("the following clients exist", ((string)(null)), table87, "Given ");
+ await testRunner.GivenAsync("the following clients exist", ((string)(null)), table89, "Given ");
 #line hidden
-            Reqnroll.Table table88 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table90 = new Reqnroll.Table(new string[] {
                         "ClientId"});
-            table88.AddRow(new string[] {
+            table90.AddRow(new string[] {
                         "serviceClient"});
 #line 22
- await testRunner.GivenAsync("I have a token to access the estate management resource", ((string)(null)), table88, "Given ");
+ await testRunner.GivenAsync("I have a token to access the estate management resource", ((string)(null)), table90, "Given ");
 #line hidden
-            Reqnroll.Table table89 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table91 = new Reqnroll.Table(new string[] {
                         "EstateName"});
-            table89.AddRow(new string[] {
+            table91.AddRow(new string[] {
                         "Test Estate 1"});
 #line 26
- await testRunner.GivenAsync("I have created the following estates", ((string)(null)), table89, "Given ");
+ await testRunner.GivenAsync("I have created the following estates", ((string)(null)), table91, "Given ");
 #line hidden
         }
         
@@ -173,34 +173,6 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 await this.FeatureBackgroundAsync();
 #line hidden
-                Reqnroll.Table table90 = new Reqnroll.Table(new string[] {
-                            "EstateName",
-                            "OperatorName",
-                            "RequireCustomMerchantNumber",
-                            "RequireCustomTerminalNumber"});
-                table90.AddRow(new string[] {
-                            "Test Estate 1",
-                            "Test Operator 1",
-                            "True",
-                            "True"});
-#line 33
- await testRunner.GivenAsync("I have created the following operators", ((string)(null)), table90, "Given ");
-#line hidden
-                Reqnroll.Table table91 = new Reqnroll.Table(new string[] {
-                            "UpdateOperatorName",
-                            "RequireCustomMerchantNumber",
-                            "RequireCustomTerminalNumber",
-                            "EstateName",
-                            "OperatorName"});
-                table91.AddRow(new string[] {
-                            "Update Operator 1",
-                            "False",
-                            "False",
-                            "Test Estate 1",
-                            "Test Operator 1"});
-#line 37
- await testRunner.WhenAsync("I update the operators with the following details", ((string)(null)), table91, "When ");
-#line hidden
                 Reqnroll.Table table92 = new Reqnroll.Table(new string[] {
                             "EstateName",
                             "OperatorName",
@@ -208,11 +180,39 @@ await this.FeatureBackgroundAsync();
                             "RequireCustomTerminalNumber"});
                 table92.AddRow(new string[] {
                             "Test Estate 1",
+                            "Test Operator 1",
+                            "True",
+                            "True"});
+#line 33
+ await testRunner.GivenAsync("I have created the following operators", ((string)(null)), table92, "Given ");
+#line hidden
+                Reqnroll.Table table93 = new Reqnroll.Table(new string[] {
+                            "UpdateOperatorName",
+                            "RequireCustomMerchantNumber",
+                            "RequireCustomTerminalNumber",
+                            "EstateName",
+                            "OperatorName"});
+                table93.AddRow(new string[] {
+                            "Update Operator 1",
+                            "False",
+                            "False",
+                            "Test Estate 1",
+                            "Test Operator 1"});
+#line 37
+ await testRunner.WhenAsync("I update the operators with the following details", ((string)(null)), table93, "When ");
+#line hidden
+                Reqnroll.Table table94 = new Reqnroll.Table(new string[] {
+                            "EstateName",
+                            "OperatorName",
+                            "RequireCustomMerchantNumber",
+                            "RequireCustomTerminalNumber"});
+                table94.AddRow(new string[] {
+                            "Test Estate 1",
                             "Update Operator 1",
                             "False",
                             "False"});
 #line 41
- await testRunner.WhenAsync("I get all the operators the following details are returned", ((string)(null)), table92, "When ");
+ await testRunner.WhenAsync("I get all the operators the following details are returned", ((string)(null)), table94, "When ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

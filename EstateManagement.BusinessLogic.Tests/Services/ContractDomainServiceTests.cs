@@ -1,4 +1,5 @@
 ﻿using System;
+using Shared.EventStore.EventStore;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
 {
@@ -26,7 +27,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.NotThrow(async () =>
                             {
@@ -39,6 +44,32 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         }
 
         [Fact]
+        public async Task ContractDomainService_CreateContract_DuplicateContractNameForOperator_ErrorThrown()
+        {
+            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
+            estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestData.EstateAggregateWithOperator());
+            Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
+            contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
+            String queryResult =
+                "{\r\n  \"total\": 1,\r\n  \"contractId\": \"3015e4d0-e9a9-49e5-bd55-a5492f193b62\"\r\n}";
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+            
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
+
+            Should.Throw<InvalidOperationException>(async () =>
+            {
+                await domainService.CreateContract(TestData.ContractId,
+                    TestData.EstateId,
+                    TestData.OperatorId,
+                    TestData.ContractDescription,
+                    CancellationToken.None);
+            });
+        }
+
+        [Fact]
         public void ContractDomainService_CreateContract_ContractAlreadyCreated_ErrorThrown()
         {
             Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
@@ -47,7 +78,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
@@ -66,7 +102,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
@@ -85,7 +125,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
@@ -104,7 +148,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             estateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
@@ -123,7 +171,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.NotThrow(async () =>
                             {
@@ -144,7 +196,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
                             {
@@ -164,7 +220,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.NotThrow(async () =>
             {
@@ -184,7 +244,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Mock<IAggregateRepository<ContractAggregate, DomainEvent>> contractAggregateRepository = new Mock<IAggregateRepository<ContractAggregate, DomainEvent>>();
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
 
             Should.Throw<InvalidOperationException>(async () =>
             {
@@ -209,7 +273,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.CreatedContractAggregateWithAProduct);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
+
             Should.NotThrow(async () =>
                             {
                                 await domainService.AddTransactionFeeForProductToContract(TestData.TransactionFeeId,
@@ -235,7 +304,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.EmptyContractAggregate);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
+
             Should.Throw<InvalidOperationException>(async () =>
                             {
                                 await domainService.AddTransactionFeeForProductToContract(TestData.TransactionFeeId,
@@ -261,7 +335,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.CreatedContractAggregateWithAProduct);
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
+
             Should.Throw<InvalidOperationException>(async () =>
                                                     {
                                                         await domainService.AddTransactionFeeForProductToContract(TestData.TransactionFeeId,
@@ -287,7 +366,12 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             contractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(calculationType, feeType));
 
-            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object);
+            Mock<IEventStoreContext> eventStoreContext = new Mock<IEventStoreContext>();
+            eventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractDomainService domainService = new ContractDomainService(estateAggregateRepository.Object, contractAggregateRepository.Object, eventStoreContext.Object);
+
             Should.NotThrow(async () =>
                             {
                                 await domainService.DisableTransactionFeeForProduct(TestData.TransactionFeeId,

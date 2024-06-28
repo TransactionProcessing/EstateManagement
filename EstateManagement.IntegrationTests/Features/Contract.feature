@@ -113,4 +113,13 @@ Scenario: Get Merchant Contracts
 	| Percentage      | Merchant Commission | 2.25  | Merchant |
 
 
+Scenario: Prevent Duplicate Contracts
+	
+	Given I create a contract with the following values
+	| EstateName    | OperatorName    | ContractDescription |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
+
+	When I create another contract with the same values it should be rejected
+	| EstateName    | OperatorName    | ContractDescription |
+	| Test Estate 1 | Test Operator 1 | Operator 1 Contract |
 	

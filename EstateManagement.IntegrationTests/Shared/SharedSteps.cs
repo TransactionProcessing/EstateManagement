@@ -506,6 +506,12 @@ namespace EstateManagement.IntegrationTests.Shared
                                                                                                       operatorName);
         }
 
+        [When("I create another contract with the same values it should be rejected")]
+        public async Task WhenICreateAnotherContractWithTheSameValuesItShouldBeRejected(DataTable table)
+        {
+            List<(EstateDetails, CreateContractRequest)> requests = table.Rows.ToCreateContractRequests(this.TestingContext.Estates);
+            await this.EstateManagementSteps.WhenICreateAnotherContractWithTheSameValuesItShouldBeRejected(this.TestingContext.AccessToken, requests);
+        }
     }
 
     public static class Extensions
