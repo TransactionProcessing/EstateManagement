@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Services
+﻿using EstateManagement.BusinessLogic.Common;
+
+namespace EstateManagement.BusinessLogic.Services
 {
     using System;
     using System.Collections.Generic;
@@ -234,7 +236,7 @@
             }
 
             // Now we need to check the merchants balance to ensure they have funds to withdraw
-            this.TokenResponse = await this.GetToken(cancellationToken);
+            this.TokenResponse = await Helpers.GetToken(this.TokenResponse, this.SecurityServiceClient, cancellationToken);
             MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(this.TokenResponse.AccessToken, command.EstateId, command.MerchantId, cancellationToken);
 
             if (command.RequestDto.Amount > merchantBalance.Balance) {
@@ -260,38 +262,6 @@
         /// The token response
         /// </summary>
         private TokenResponse TokenResponse;
-
-        /// <summary>
-        /// Gets the token.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [ExcludeFromCodeCoverage]
-        private async Task<TokenResponse> GetToken(CancellationToken cancellationToken)
-        {
-            // Get a token to talk to the estate service
-            String clientId = ConfigurationReader.GetValue("AppSettings", "ClientId");
-            String clientSecret = ConfigurationReader.GetValue("AppSettings", "ClientSecret");
-            Logger.LogInformation($"Client Id is {clientId}");
-            Logger.LogInformation($"Client Secret is {clientSecret}");
-
-            if (this.TokenResponse == null)
-            {
-                TokenResponse token = await this.SecurityServiceClient.GetToken(clientId, clientSecret, cancellationToken);
-                Logger.LogInformation($"Token is {token.AccessToken}");
-                return token;
-            }
-
-            if (this.TokenResponse.Expires.UtcDateTime.Subtract(DateTime.UtcNow) < TimeSpan.FromMinutes(2))
-            {
-                Logger.LogInformation($"Token is about to expire at {this.TokenResponse.Expires.DateTime:O}");
-                TokenResponse token = await this.SecurityServiceClient.GetToken(clientId, clientSecret, cancellationToken);
-                Logger.LogInformation($"Token is {token.AccessToken}");
-                return token;
-            }
-
-            return this.TokenResponse;
-        }
         
         public async Task AddContractToMerchant(MerchantCommands.AddMerchantContractCommand command, CancellationToken cancellationToken){
             ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(command.RequestDto.ContractId, cancellationToken);
