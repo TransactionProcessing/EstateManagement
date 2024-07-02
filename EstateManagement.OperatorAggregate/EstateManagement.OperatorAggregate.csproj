@@ -7,9 +7,9 @@
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Grpc.Net.Client" Version="2.62.0-pre1" />
-		<PackageReference Include="Shared.DomainDrivenDesign" Version="2024.6.4" />
+		<PackageReference Include="Shared.DomainDrivenDesign" Version="2024.7.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.3" />
-		<PackageReference Include="Shared.EventStore" Version="2024.6.4" />
+		<PackageReference Include="Shared.EventStore" Version="2024.7.1" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\EstateManagement.Models\EstateManagement.Models.csproj" />

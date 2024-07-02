@@ -93,8 +93,15 @@ namespace EstateManagement
 
             if (env.IsDevelopment())
             {
+                var developmentNlogConfigFilename = "nlog.development.config";
+                if (File.Exists(Path.Combine(env.ContentRootPath, developmentNlogConfigFilename)))
+                {
+                    nlogConfigFilename = developmentNlogConfigFilename;
+                }
+                
                 app.UseDeveloperExceptionPage();
             }
+
 
             loggerFactory.ConfigureNLog(Path.Combine(env.ContentRootPath, nlogConfigFilename));
             loggerFactory.AddNLog();
@@ -103,11 +110,7 @@ namespace EstateManagement
 
             Logger.Initialise(logger);
 
-            Action<String> loggerAction = message =>
-                                          {
-                                              Logger.LogInformation(message);
-                                          };
-            Startup.Configuration.LogConfiguration(loggerAction);
+            Startup.Configuration.LogConfiguration(Logger.LogWarning);
 
             ConfigurationReader.Initialise(Startup.Configuration);
 

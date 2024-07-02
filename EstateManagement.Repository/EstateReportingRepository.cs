@@ -324,7 +324,7 @@ public class EstateReportingRepository : IEstateReportingRepository
             ExpiryDate = domainEvent.ExpiryDateTime.Date,
             IsGenerated = true,
             IsIssued = false,
-            OperatorIdentifier = domainEvent.OperatorIdentifier,
+            OperatorIdentifier = domainEvent.OperatorId.ToString(),
             Value = domainEvent.Value,
             VoucherCode = domainEvent.VoucherCode,
             VoucherId = domainEvent.VoucherId,
@@ -697,7 +697,7 @@ public class EstateReportingRepository : IEstateReportingRepository
         // Ensure the db is at the latest version
         await context.MigrateAsync(cancellationToken);
 
-        Logger.LogInformation($"Read Model database for estate [{domainEvent.EstateId}] migrated to latest version");
+        Logger.LogWarning($"Read Model database for estate [{domainEvent.EstateId}] migrated to latest version");
     }
 
     public async Task CreateSettlement(SettlementCreatedForDateEvent domainEvent,
@@ -821,12 +821,12 @@ public class EstateReportingRepository : IEstateReportingRepository
 
         foreach (String additionalRequestField in this.AdditionalRequestFields)
         {
-            Logger.LogInformation($"Field to look for [{additionalRequestField}]");
+            Logger.LogDebug($"Field to look for [{additionalRequestField}]");
         }
 
         foreach (KeyValuePair<String, String> additionalRequestField in domainEvent.AdditionalTransactionRequestMetadata)
         {
-            Logger.LogInformation($"Key: [{additionalRequestField.Key}] Value: [{additionalRequestField.Value}]");
+            Logger.LogDebug($"Key: [{additionalRequestField.Key}] Value: [{additionalRequestField.Value}]");
         }
 
         foreach (String additionalRequestField in this.AdditionalRequestFields)
@@ -840,12 +840,6 @@ public class EstateReportingRepository : IEstateReportingRepository
                 {
                     String value = domainEvent.AdditionalTransactionRequestMetadata.Single(m => m.Key.ToLower() == additionalRequestField.ToLower()).Value;
                     propertyInfo.SetValue(additionalRequestData, value);
-
-                    //if (additionalRequestField == "Amount")
-                    //{
-                    //    // Load this value to the transaction as well
-                    //    transaction.TransactionAmount = Decimal.Parse(value);
-                    //}
                 }
                 else
                 {
@@ -963,7 +957,7 @@ public class EstateReportingRepository : IEstateReportingRepository
         await context.AddAsync(t, cancellationToken);
         await context.SaveChangesWithDuplicateHandling(cancellationToken);
 
-        Logger.LogInformation($"Transaction Loaded with Id [{domainEvent.TransactionId}]");
+        Logger.LogDebug($"Transaction Loaded with Id [{domainEvent.TransactionId}]");
     }
 
     public async Task UpdateEstate(EstateReferenceAllocatedEvent domainEvent,

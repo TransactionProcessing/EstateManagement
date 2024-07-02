@@ -588,7 +588,7 @@
                                               { "CustomerAccountNumber", "123456789" }
                                           };
 
-        public static AdditionalRequestDataRecordedEvent AdditionalRequestDataRecordedEvent => new AdditionalRequestDataRecordedEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.OperatorName, TestData.AdditionalRequestData);
+        public static AdditionalRequestDataRecordedEvent AdditionalRequestDataRecordedEvent => new AdditionalRequestDataRecordedEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.OperatorId, TestData.AdditionalRequestData, TestData.TransactionDateTime);
 
         public static Dictionary<String, String> AdditionalResponseData =>
             new Dictionary<String, String>{
@@ -600,8 +600,8 @@
             new AdditionalResponseDataRecordedEvent(TestData.TransactionId,
                                                     TestData.EstateId,
                                                     TestData.MerchantId,
-                                                    TestData.OperatorName,
-                                                    TestData.AdditionalResponseData);
+                                                    TestData.OperatorId,
+                                                    TestData.AdditionalResponseData, TestData.TransactionDateTime);
 
         public static MerchantCommands.AddMerchantAddressCommand AddMerchantAddressCommand =>
             new MerchantCommands.AddMerchantAddressCommand(TestData.EstateId,
@@ -1050,7 +1050,8 @@
                                  TestData.UserId,
                                  TestData.FileProfileId,
                                  TestData.FileLocation,
-                                 TestData.FileUploadedDateTime);
+                                 TestData.FileUploadedDateTime,
+                                 TestData.OperatorId);
 
         public static FileLineAddedEvent FileLineAddedEvent => new FileLineAddedEvent(TestData.FileId, TestData.EstateId, TestData.MerchantId, TestData.LineNumber, TestData.FileLine);
 
@@ -1278,7 +1279,7 @@
                                                           TestData.FeeValue,
                                                           TestData.FeeCalculatedDateTime,
                                                           TestData.SettledDate,
-                                                          TestData.SettlementId);
+                                                          TestData.SettlementId, TestData.TransactionDateTime);
 
         public static MerchantFeeSettledEvent MerchantFeeSettledEvent =>
             new MerchantFeeSettledEvent(TestData.SettlementId,
@@ -1502,9 +1503,10 @@
                                            TestData.EstateId,
                                            TestData.MerchantId,
                                            TestData.ReconcilationTransactionCount,
-                                           TestData.ReconcilationTransactionValue);
+                                           TestData.ReconcilationTransactionValue, TestData.TransactionDateTime);
 
-        public static ProductDetailsAddedToTransactionEvent ProductDetailsAddedToTransactionEvent => new ProductDetailsAddedToTransactionEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId);
+        public static ProductDetailsAddedToTransactionEvent ProductDetailsAddedToTransactionEvent => new ProductDetailsAddedToTransactionEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId,
+            TestData.TransactionDateTime);
 
         public static List<ContractProductTransactionFeeModel> ProductTransactionFees =>
             new List<ContractProductTransactionFeeModel>{
@@ -1521,16 +1523,19 @@
                                                             TestData.EstateId,
                                                             TestData.MerchantId,
                                                             TestData.ResponseCode,
-                                                            TestData.ResponseMessage);
+                                                            TestData.ResponseMessage,
+                                                            TestData.TransactionDateTime);
 
         public static ReconciliationHasBeenLocallyDeclinedEvent ReconciliationHasBeenLocallyDeclinedEvent =>
             new ReconciliationHasBeenLocallyDeclinedEvent(TestData.TransactionId,
                                                           TestData.EstateId,
                                                           TestData.MerchantId,
                                                           TestData.ResponseCode,
-                                                          TestData.ResponseMessage);
+                                                          TestData.ResponseMessage,
+                                                          TestData.TransactionDateTime);
 
-        public static ReconciliationHasCompletedEvent ReconciliationHasCompletedEvent => new ReconciliationHasCompletedEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId);
+        public static ReconciliationHasCompletedEvent ReconciliationHasCompletedEvent => new ReconciliationHasCompletedEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId,
+            TestData.TransactionDateTime);
 
         public static ReconciliationHasStartedEvent ReconciliationHasStartedEvent => new ReconciliationHasStartedEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.TransactionDateTime);
 
@@ -1665,23 +1670,25 @@
             new TransactionAuthorisedByOperatorEvent(TestData.TransactionId,
                                                      TestData.EstateId,
                                                      TestData.MerchantId,
-                                                     TestData.OperatorName,
+                                                     TestData.OperatorId,
                                                      TestData.AuthorisationCode,
                                                      TestData.OperatorResponseCode,
                                                      TestData.OperatorResponseMessage,
                                                      TestData.OperatorTransactionId,
                                                      TestData.ResponseCode,
-                                                     TestData.ResponseMessage);
+                                                     TestData.ResponseMessage,
+                                                     TestData.TransactionDateTime);
 
         public static TransactionDeclinedByOperatorEvent TransactionDeclinedByOperatorEvent =>
             new TransactionDeclinedByOperatorEvent(TestData.TransactionId,
                                                    TestData.EstateId,
                                                    TestData.MerchantId,
-                                                   TestData.OperatorName,
+                                                   TestData.OperatorId,
                                                    TestData.DeclinedOperatorResponseCode,
                                                    TestData.DeclinedOperatorResponseMessage,
                                                    TestData.DeclinedResponseCode,
-                                                   TestData.DeclinedResponseMessage);
+                                                   TestData.DeclinedResponseMessage,
+                                                   TestData.TransactionDateTime);
 
         public static TransactionFeeForProductAddedToContractEvent TransactionFeeForProductAddedToContractEvent =>
             new TransactionFeeForProductAddedToContractEvent(TestData.ContractId,
@@ -1703,7 +1710,8 @@
                                                  TestData.ResponseMessage,
                                                  TestData.IsAuthorisedTrue,
                                                  TestData.TransactionDateTime1,
-                                                 TestData.TransactionAmount1);
+                                                 TestData.TransactionAmount1,
+                                                 TestData.TransactionDateTime);
 
         public static TransactionHasBeenLocallyAuthorisedEvent TransactionHasBeenLocallyAuthorisedEvent =>
             new TransactionHasBeenLocallyAuthorisedEvent(TestData.TransactionId,
@@ -1711,14 +1719,16 @@
                                                          TestData.MerchantId,
                                                          TestData.AuthorisationCode,
                                                          TestData.ResponseCode,
-                                                         TestData.ResponseMessage);
+                                                         TestData.ResponseMessage,
+                                                         TestData.TransactionDateTime);
 
         public static TransactionHasBeenLocallyDeclinedEvent TransactionHasBeenLocallyDeclinedEvent =>
             new TransactionHasBeenLocallyDeclinedEvent(TestData.TransactionId,
                                                        TestData.EstateId,
                                                        TestData.MerchantId,
                                                        TestData.DeclinedResponseCode,
-                                                       TestData.DeclinedResponseMessage);
+                                                       TestData.DeclinedResponseMessage,
+                                                       TestData.TransactionDateTime);
 
         public static TransactionHasStartedEvent TransactionHasStartedEvent =>
             new TransactionHasStartedEvent(TestData.TransactionId,
@@ -1731,7 +1741,8 @@
                                            TestData.DeviceIdentifier,
                                            TestData.TransactionAmount);
 
-        public static TransactionSourceAddedToTransactionEvent TransactionSourceAddedToTransactionEvent => new TransactionSourceAddedToTransactionEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.TransactionSource);
+        public static TransactionSourceAddedToTransactionEvent TransactionSourceAddedToTransactionEvent => new TransactionSourceAddedToTransactionEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.TransactionSource,
+            TestData.TransactionDateTime);
 
         public static MerchantCommands.UpdateMerchantAddressCommand UpdateMerchantAddressCommand =>
             new MerchantCommands.UpdateMerchantAddressCommand(TestData.EstateId,
@@ -1764,7 +1775,7 @@
                                       TestData.EstateId,
                                       TestData.TransactionId,
                                       TestData.VoucherGeneratedDate,
-                                      TestData.OperatorIdentifier,
+                                      TestData.OperatorId,
                                       TestData.VoucherValue,
                                       TestData.VoucherCode,
                                       TestData.VoucherExpiryDate,
