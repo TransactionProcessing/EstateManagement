@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Controllers
+﻿using SimpleResults;
+
+namespace EstateManagement.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -26,8 +28,9 @@
     [Route(EstateController.ControllerRoute)]
     [ApiController]
     [Authorize]
-    public class EstateController : ControllerBase
-    {
+    public class EstateController : ControllerBase {
+        public EstateManagement.Controllers.v2.EstateController V2EstateController;
+
         #region Fields
 
         /// <summary>
@@ -42,6 +45,7 @@
         public EstateController(IMediator mediator)
         {
             this.Mediator = mediator;
+            this.V2EstateController = new v2.EstateController(mediator);
         }
 
         #endregion
@@ -60,27 +64,10 @@
         [SwaggerResponseExample(201, typeof(CreateEstateResponseExample))]
         public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequest createEstateRequest,
                                                       CancellationToken cancellationToken)
-        {
-            // Reject password tokens
-            if (ClaimsHelper.IsPasswordToken(this.User))
-            {
-                return this.Forbid();
-            }
-
-            Guid estateId = createEstateRequest.EstateId;
-
-            // Create the command
-            EstateCommands.CreateEstateCommand command = new(createEstateRequest);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{EstateController.ControllerRoute}/{estateId}",
-                                new CreateEstateResponse
-                                {
-                                    EstateId = estateId
-                                });
+        {   
+            this.V2EstateController.SetContextOverride(this.HttpContext);
+            ActionResult<Result> result = await this.V2EstateController.CreateEstate(createEstateRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         /// <summary>
@@ -97,25 +84,9 @@
         public async Task<IActionResult> GetEstate([FromRoute] Guid estateId,
                                                    CancellationToken cancellationToken)
         {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-            
-            EstateQueries.GetEstateQuery query = new(estateId);
-
-            Estate estate = await this.Mediator.Send(query, cancellationToken);
-
-            return this.Ok(ModelFactory.ConvertFrom(estate));
+            this.V2EstateController.SetContextOverride(this.HttpContext);
+            ActionResult<Result<EstateResponse>> result = await this.V2EstateController.GetEstate(estateId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpGet]
@@ -125,28 +96,9 @@
         public async Task<IActionResult> GetEstates([FromRoute] Guid estateId,
                                                    CancellationToken cancellationToken)
         {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
-
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            EstateQueries.GetEstatesQuery query = new(estateId);
-
-            List<Estate> estates = await this.Mediator.Send(query, cancellationToken);
-
-            Estate estate = estates.Single();
-
-            EstateResponse estateResponse = ModelFactory.ConvertFrom(estate);
-            return this.Ok(new List<EstateResponse>() {estateResponse});
+            this.V2EstateController.SetContextOverride(this.HttpContext);
+            ActionResult<Result<List<EstateResponse>>> result = await this.V2EstateController.GetEstates(estateId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         /// <summary>
@@ -163,40 +115,18 @@
                                                           [FromBody] CreateEstateUserRequest createEstateUserRequest,
                                                           CancellationToken cancellationToken)
         {
-            // Reject password tokens
-            if (ClaimsHelper.IsPasswordToken(this.User))
-            {
-                return this.Forbid();
-            }
-
-            // Create the command
-            EstateCommands.CreateEstateUserCommand command = new(estateId, createEstateUserRequest);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2EstateController.SetContextOverride(this.HttpContext);
+            ActionResult<Result> result = await this.V2EstateController.CreateEstateUser(estateId, createEstateUserRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPatch]
         [Route("{estateId}/operators")]
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId, [FromBody] AssignOperatorRequest assignOperatorRequest, CancellationToken cancellationToken)
         {
-            // Reject password tokens
-            if (ClaimsHelper.IsPasswordToken(this.User))
-            {
-                return this.Forbid();
-            }
-
-            // Create the command
-            EstateCommands.AddOperatorToEstateCommand command = new(estateId, assignOperatorRequest);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2EstateController.SetContextOverride(this.HttpContext);
+            ActionResult<Result> result = await this.V2EstateController.AssignOperator(estateId, assignOperatorRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpDelete]
@@ -205,19 +135,9 @@
                                                         [FromRoute] Guid operatorId,
                                                         CancellationToken cancellationToken)
         {
-            // Reject password tokens
-            if (ClaimsHelper.IsPasswordToken(this.User))
-            {
-                return this.Forbid();
-            }
-
-            EstateCommands.RemoveOperatorFromEstateCommand command = new(estateId, operatorId);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2EstateController.SetContextOverride(this.HttpContext);
+            ActionResult<Result> result = await this.V2EstateController.RemoveOperator(estateId, operatorId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         #endregion

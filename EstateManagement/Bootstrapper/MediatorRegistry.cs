@@ -1,10 +1,13 @@
-﻿namespace EstateManagement.Bootstrapper
+﻿using SimpleResults;
+
+namespace EstateManagement.Bootstrapper
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using BusinessLogic.RequestHandlers;
     using BusinessLogic.Requests;
+    using EstateManagement.Models;
     using Lamar;
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
@@ -29,50 +32,58 @@
             this.AddTransient<IMediator, Mediator>();
 
             // request & notification handlers
-            this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateCommand>, EstateRequestHandler>();
-            this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateUserCommand>, EstateRequestHandler>();
-            this.AddSingleton<IRequestHandler<EstateCommands.AddOperatorToEstateCommand>, EstateRequestHandler>();
-            this.AddSingleton<IRequestHandler<EstateCommands.RemoveOperatorFromEstateCommand>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateCommand,Result>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.CreateEstateUserCommand, Result>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.AddOperatorToEstateCommand, Result>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateCommands.RemoveOperatorFromEstateCommand, Result>, EstateRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<EstateQueries.GetEstateQuery, Estate>, EstateRequestHandler>();
-            this.AddSingleton<IRequestHandler<EstateQueries.GetEstatesQuery, List<Estate>>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateQueries.GetEstateQuery, Result<Estate>>, EstateRequestHandler>();
+            this.AddSingleton<IRequestHandler<EstateQueries.GetEstatesQuery, Result<List<Estate>>>, EstateRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<OperatorCommands.CreateOperatorCommand>, OperatorRequestHandler>();
-            this.AddSingleton<IRequestHandler<OperatorCommands.UpdateOperatorCommand>, OperatorRequestHandler>();
+            this.AddSingleton<IRequestHandler<OperatorCommands.CreateOperatorCommand, Result>, OperatorRequestHandler>();
+            this.AddSingleton<IRequestHandler<OperatorCommands.UpdateOperatorCommand, Result>, OperatorRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<OperatorQueries.GetOperatorQuery, Operator>, OperatorRequestHandler>();
-            this.AddSingleton<IRequestHandler<OperatorQueries.GetOperatorsQuery, List<Operator>>, OperatorRequestHandler>();
+            this.AddSingleton<IRequestHandler<OperatorQueries.GetOperatorQuery, Result<Operator>>, OperatorRequestHandler>();
+            this.AddSingleton<IRequestHandler<OperatorQueries.GetOperatorsQuery, Result<List<Operator>>>, OperatorRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantCommand,Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantUserCommand, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantDeviceCommand, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantDepositCommand, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Guid>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContractCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantAddressCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContactCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantContactCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.RemoveOperatorFromMerchantCommand>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.RemoveMerchantContractCommand>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantCommand,Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AssignOperatorToMerchantCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.CreateMerchantUserCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantDeviceCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantDepositCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.MakeMerchantWithdrawalCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.SwapMerchantDeviceCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContractCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantAddressCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantAddressCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.AddMerchantContactCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.UpdateMerchantContactCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.RemoveOperatorFromMerchantCommand, Result>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.RemoveMerchantContractCommand, Result>, MerchantRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantQuery, Merchant>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantContractsQuery, List<Models.Contract.Contract>>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantsQuery, List<Models.Merchant.Merchant>>, MerchantRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, List<Models.Contract.ContractProductTransactionFee>>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantQuery, Result<Merchant>>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantContractsQuery, Result<List<Models.Contract.Contract>>>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetMerchantsQuery, Result<List<Models.Merchant.Merchant>>>, MerchantRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantQueries.GetTransactionFeesForProductQuery, Result<List<Models.Contract.ContractProductTransactionFee>>>, MerchantRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<CreateContractRequest>, ContractRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddProductToContractRequest>, ContractRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddTransactionFeeForProductToContractRequest>, ContractRequestHandler>();
-            this.AddSingleton<IRequestHandler<DisableTransactionFeeForProductRequest>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<ContractCommands.CreateContractCommand,Result>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<ContractCommands.AddProductToContractCommand, Result>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<ContractCommands.DisableTransactionFeeForProductCommand,Result>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<ContractCommands.AddTransactionFeeForProductToContractCommand,Result>, ContractRequestHandler>();
+            
+            this.AddSingleton<IRequestHandler<ContractQueries.GetContractQuery, Result<Models.Contract.Contract>>, ContractRequestHandler>();
+            this.AddSingleton<IRequestHandler<ContractQueries.GetContractsQuery, Result<List<Models.Contract.Contract>>>, ContractRequestHandler>();
 
             this.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest>, MerchantStatementRequestHandler>();
             this.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest>, MerchantStatementRequestHandler>();
-            this.AddSingleton<IRequestHandler<MerchantCommands.GenerateMerchantStatementCommand, Guid>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantCommands.GenerateMerchantStatementCommand, Result>, MerchantStatementRequestHandler>();
             this.AddSingleton<IRequestHandler<EmailMerchantStatementRequest>, MerchantStatementRequestHandler>();
+
+            this.AddSingleton<IRequestHandler<SettlementQueries.GetSettlementQuery, Result<SettlementModel>>,
+                SettlementRequestHandler>();
+            this.AddSingleton<IRequestHandler<SettlementQueries.GetSettlementsQuery, Result<List<SettlementModel>>>,
+                SettlementRequestHandler>();
         }
 
         #endregion

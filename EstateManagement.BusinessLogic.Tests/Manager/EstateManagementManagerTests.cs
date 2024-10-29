@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Tests.Manager
 {
@@ -27,6 +28,7 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
     using Contract = Models.Contract.Contract;
     using Operator = Models.Operator.Operator;
 
+    
     public class EstateManagementManagerTests
     {
         private readonly Mock<IEstateManagementRepository> EstateManagementRepository;
@@ -63,11 +65,12 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetEstates_EstatesAreReturned()
         {
-            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.EstateModel));
 
-            List<Estate> estateModels = await this.EstateManagementManager.GetEstates(TestData.EstateId, CancellationToken.None);
-
+            var getEstatesResult = await this.EstateManagementManager.GetEstates(TestData.EstateId, CancellationToken.None);
+            getEstatesResult.IsSuccess.ShouldBeTrue();
+            var estateModels = getEstatesResult.Data;
             estateModels.ShouldNotBeNull();
             estateModels.ShouldHaveSingleItem();
             estateModels.Single().EstateId.ShouldBe(TestData.EstateModel.EstateId);
@@ -76,12 +79,13 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
         [Fact]
         public async Task EstateManagementManager_GetEstate_EstateIsReturned(){
-            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator);
-            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
-            this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(TestData.CreatedOperatorAggregate);
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EstateAggregateWithOperator()));
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.EstateModel));
+            this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedOperatorAggregate()));
 
-            Estate estateModel =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
-            
+            var getEstateResult =  await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
+            getEstateResult.IsSuccess.ShouldBeTrue();
+            var estateModel = getEstateResult.Data;
             estateModel.ShouldNotBeNull();
             estateModel.EstateId.ShouldBe(TestData.EstateModel.EstateId);
             estateModel.Name.ShouldBe(TestData.EstateModel.Name);
@@ -92,24 +96,25 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
-        public async Task EstateManagementManager_GetEstate_InvalidEstateId_ErrorisThrown()
+        public async Task EstateManagementManager_GetEstate_InvalidEstateId_ErrorIsThrown()
         {
-            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyEstateAggregate);
-            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateModel);
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.EstateModel));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
-                                            });
+            var getEstateResult = await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
+            getEstateResult.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetMerchant_MerchantIsReturned(){
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithEverything(SettlementSchedule.Monthly));
-            this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(TestData.CreatedOperatorAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.MerchantAggregateWithEverything(SettlementSchedule.Monthly)));
+            this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedOperatorAggregate()));
 
             Merchant expectedModel = TestData.MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts(SettlementSchedule.Monthly);
 
-            Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            var getMerchantResult = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            getMerchantResult.IsSuccess.ShouldBeTrue();
+            var merchantModel = getMerchantResult.Data;
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantReportingId.ShouldBe(expectedModel.MerchantReportingId);
@@ -152,11 +157,13 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_MerchantIsReturnedWithNullAddressesAndContacts()
         {
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithOperator);
-            this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullAddressesAndContacts);
-            this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(new OperatorAggregate());
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.MerchantAggregateWithOperator()));
+            this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.MerchantModelWithNullAddressesAndContacts));
+            this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyOperatorAggregate()));
 
-            Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            var getMerchantResult = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            getMerchantResult.IsSuccess.ShouldBeTrue();
+            var merchantModel = getMerchantResult.Data;
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
@@ -168,9 +175,11 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_WithAddress_MerchantIsReturnedWithNullContacts()
         {
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithAddress);
-            
-            Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.MerchantAggregateWithAddress()));
+
+            var getMerchantResult = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            getMerchantResult.IsSuccess.ShouldBeTrue();
+            var merchantModel = getMerchantResult.Data;
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
@@ -182,11 +191,11 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_WithContact_MerchantIsReturnedWithNullAddresses()
         {
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantAggregateWithContact);
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.MerchantAggregateWithContact()));
 
-            //this.EstateManagementRepository.Setup(m => m.GetMerchant(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantModelWithNullAddresses);
-
-            Merchant merchantModel = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            var getMerchantResult = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            getMerchantResult.IsSuccess.ShouldBeTrue();
+            var merchantModel = getMerchantResult.Data;
 
             merchantModel.ShouldNotBeNull();
             merchantModel.MerchantId.ShouldBe(TestData.MerchantId);
@@ -198,23 +207,24 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchant_MerchantNotCreated_ErrorThrown()
         {
-            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyMerchantAggregate);
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyMerchantAggregate()));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
-                                            });
+            var result = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetMerchants_MerchantListIsReturned()
         {
-            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Merchant>
+            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(new List<Merchant>
                                                                                                                                      {
                                                                                                                                          TestData
                                                                                                                                              .MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts()
-                                                                                                                                     });
+                                                                                                                                     }));
 
-            List<Merchant> merchantList = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+            Result<List<Merchant>> getMerchantsResult = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+            getMerchantsResult.IsSuccess.ShouldBeTrue();
+            var merchantList = getMerchantsResult.Data;
 
             merchantList.ShouldNotBeNull();
             merchantList.ShouldNotBeEmpty();
@@ -224,29 +234,29 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetMerchants_NullMerchants_ExceptionThrown(){
             List<Merchant> merchants = null;
-            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchants);
+            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(merchants));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
-                                            });
+            Result<List<Merchant>> getMerchantsResult = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+            getMerchantsResult.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetMerchants_EmptyMerchants_ExceptionThrown()
         {
             List<Merchant> merchants = new List<Merchant>();
-            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(merchants);
+            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(merchants));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
-                                            });
+            Result<List<Merchant>> getMerchantsResult = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+            getMerchantsResult.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetContract_ContractIsReturned(){
-            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed,FeeType.Merchant));
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed,FeeType.Merchant)));
             
-            Contract contractModel = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, CancellationToken.None);
+            Result<Contract> getContractResult = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, CancellationToken.None);
+            getContractResult.IsSuccess.ShouldBeTrue();
+            var contractModel = getContractResult.Data;
 
             contractModel.ShouldNotBeNull();
             contractModel.ContractId.ShouldBe(TestData.ContractId);
@@ -261,20 +271,20 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetContract_ContractNotCreated_ErrorIsThrown()
         {
-            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                        Contract contractModel = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, CancellationToken.None);
-                                                    });
+            Result<Contract> getContractResult = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, CancellationToken.None);
+            getContractResult.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetContracts_ContractAreReturned()
         {
-            this.EstateManagementRepository.Setup(e => e.GetContracts(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Contract>() {TestData.ContractModelWithProductsAndTransactionFees});
+            this.EstateManagementRepository.Setup(e => e.GetContracts(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(new List<Contract>() {TestData.ContractModelWithProductsAndTransactionFees}));
 
-            List<Contract> contractModelList = await this.EstateManagementManager.GetContracts(TestData.EstateId, CancellationToken.None);
-
+            var getContractsResult = await this.EstateManagementManager.GetContracts(TestData.EstateId, CancellationToken.None);
+            getContractsResult.IsSuccess.ShouldBeTrue();
+            var contractModelList = getContractsResult.Data;
             contractModelList.ShouldNotBeNull();
             contractModelList.ShouldNotBeEmpty();
         }
@@ -282,10 +292,11 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetTransactionFeesForProduct_TransactionFeesAreReturned()
         {
-            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed, FeeType.Merchant));
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed, FeeType.Merchant)));
 
-            List<ContractProductTransactionFee> transactionFees = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId,TestData.ContractProductId, CancellationToken.None);
-
+            var getTransactionFeesForProductResult = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId,TestData.ContractProductId, CancellationToken.None);
+            getTransactionFeesForProductResult.IsSuccess.ShouldBeTrue();
+            var transactionFees = getTransactionFeesForProductResult.Data;
             transactionFees.ShouldNotBeNull();
             transactionFees.ShouldHaveSingleItem();
             transactionFees.First().TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
@@ -294,30 +305,29 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetTransactionFeesForProduct_ContractNotFound_ErrorThrown()
         {
-            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyContractAggregate);
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId, CancellationToken.None);
-                                            });
+            var result = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetTransactionFeesForProduct_ProductNotFound_ErrorThrown()
         {
-            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedContractAggregate);
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregate()));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId, CancellationToken.None);
-                                            });
+            var result = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetMerchantContracts_MerchantContractsReturned()
         {
-            this.EstateManagementRepository.Setup(e => e.GetMerchantContracts(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.MerchantContracts);
+            this.EstateManagementRepository.Setup(e => e.GetMerchantContracts(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.MerchantContracts));
 
-            List<Contract> merchantContracts = await this.EstateManagementManager.GetMerchantContracts(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
-
+            var getMerchantContractsResult= await this.EstateManagementManager.GetMerchantContracts(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            getMerchantContractsResult.IsSuccess.ShouldBeTrue();
+            var merchantContracts = getMerchantContractsResult.Data;
             merchantContracts.ShouldNotBeNull();
             merchantContracts.ShouldHaveSingleItem();
             merchantContracts.Single().ContractId.ShouldBe(TestData.ContractId);
@@ -326,64 +336,56 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         [Fact]
         public async Task EstateManagementManager_GetFileDetails_FileDetailsAreReturned()
         {
-            this.EstateManagementRepository.Setup(e => e.GetFileDetails(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.FileModel);
+            this.EstateManagementRepository.Setup(e => e.GetFileDetails(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.FileModel));
 
-            var fileDetails = await this.EstateManagementManager.GetFileDetails(TestData.EstateId, TestData.FileId, CancellationToken.None);
-
+            var getFileDetailsResult = await this.EstateManagementManager.GetFileDetails(TestData.EstateId, TestData.FileId, CancellationToken.None);
+            getFileDetailsResult.IsSuccess.ShouldBeTrue();
+            var fileDetails = getFileDetailsResult.Data;
             fileDetails.ShouldNotBeNull();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetOperator_OperatorDetailsAreReturned()
         {
-            this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedOperatorAggregate);
+            this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedOperatorAggregate()));
 
-            Operator operatorDetails = await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
-
+            var getOperatorResult = await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
+            getOperatorResult.IsSuccess.ShouldBeTrue();
+            var operatorDetails = getOperatorResult.Data;
             operatorDetails.ShouldNotBeNull();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetOperator_OperatorNotCreated_ExceptionThrown()
         {
-            this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EmptyOperatorAggregate);
+            this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyOperatorAggregate()));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
-                                            });
+            var getOperatorResult = await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
+            getOperatorResult.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
         public async Task EstateManagementManager_GetOperators_OperatorDetailsAreReturned()
         {
-            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Operator>{
+            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(new List<Operator>{
                                                                                                                                                            TestData.OperatorModel
-                                                                                                                                                       });
+                                                                                                                                                       }));
 
-            List<Operator> operators = await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
+            var getOperatorsResult = await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
+            getOperatorsResult.IsSuccess.ShouldBeTrue();
+            var operators = getOperatorsResult.Data;
             operators.ShouldNotBeNull();
             operators.ShouldHaveSingleItem();
             operators.Single().OperatorId.ShouldBe(TestData.OperatorId);
         }
-
-        [Fact]
-        public async Task EstateManagementManager_GetOperators_NullList_ExceptionThrown(){
-
-            List<Operator> operators = null;
-            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(operators);
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
-                                            });
-        }
-
+        
         [Fact]
         public async Task EstateManagementManager_GetOperators_EmptyList_ExceptionThrown()
         {
-            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Operator>());
+            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(new List<Operator>()));
 
-            Should.Throw<NotFoundException>(async () => {
-                                                await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
-                                            });
+            var getOperatorsResult = await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
+            getOperatorsResult.IsSuccess.ShouldBeTrue();
         }
     }
 }

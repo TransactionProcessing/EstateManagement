@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 namespace EstateManagement.BusinessLogic.Requests
 {
     using MediatR;
+    using SimpleResults;
 
     [ExcludeFromCodeCoverage]
     public class EstateQueries
     {
-        public record GetEstateQuery(Guid EstateId) : IRequest<Models.Estate.Estate>;
-        public record GetEstatesQuery(Guid EstateId) : IRequest<List<Models.Estate.Estate>>;
+        public record GetEstateQuery(Guid EstateId) : IRequest<Result<Models.Estate.Estate>>;
+        public record GetEstatesQuery(Guid EstateId) : IRequest<Result<List<Models.Estate.Estate>>>;
     }
 }

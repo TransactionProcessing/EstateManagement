@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Factories{
+﻿using SimpleResults;
+
+namespace EstateManagement.Factories{
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -24,6 +26,7 @@
     using Operator = Models.Operator.Operator;
     using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
     using ProductType = DataTransferObjects.Responses.Contract.ProductType;
+    using EstateManagement.Database.Entities;
 
 
     /// <summary>
@@ -33,17 +36,20 @@
     public static class ModelFactory{
         #region Methods
 
-        public static List<ContractResponse> ConvertFrom(List<Contract> contracts){
-            List<ContractResponse> result = new List<ContractResponse>();
+        public static Result<List<ContractResponse>> ConvertFrom(List<Contract> contracts){
+            List<Result<ContractResponse>> result = new();
 
             contracts.ForEach(c => result.Add(ModelFactory.ConvertFrom(c)));
 
-            return result;
+            if (result.Any(c => c.IsFailed))
+                return Result.Failure("Failed converting contracts");
+
+            return Result.Success(result.Select(r => r.Data).ToList());
         }
 
-        public static ContractResponse ConvertFrom(Contract contract){
+        public static Result<ContractResponse> ConvertFrom(Contract contract){
             if (contract == null){
-                return null;
+                return Result.Invalid("contract cannot be null");
             }
 
             ContractResponse contractResponse = new ContractResponse{
@@ -57,10 +63,10 @@
                                                                     };
 
             if (contract.Products != null && contract.Products.Any()){
-                contractResponse.Products = new List<ContractProduct>();
+                contractResponse.Products = new List<DataTransferObjects.Responses.Contract.ContractProduct>();
 
                 contract.Products.ForEach(p => {
-                                              ContractProduct contractProduct = new ContractProduct{
+                                              DataTransferObjects.Responses.Contract.ContractProduct contractProduct = new DataTransferObjects.Responses.Contract.ContractProduct{
                                                                                                        ProductReportingId = p.ContractProductReportingId,
                                                                                                        ProductId = p.ContractProductId,
                                                                                                        Value = p.Value,
@@ -88,12 +94,24 @@
                                           });
             }
 
-            return contractResponse;
+            return Result.Success(contractResponse);
         }
 
-        public static EstateResponse ConvertFrom(Estate estate){
+        public static Result<List<EstateResponse>> ConvertFrom(List<Models.Estate.Estate> estates) {
+            List<Result<EstateResponse>> result = new();
+
+            estates.ForEach(c => result.Add(ModelFactory.ConvertFrom(c)));
+
+            if (result.Any(c => c.IsFailed))
+                return Result.Failure("Failed converting estates");
+
+            return Result.Success(result.Select(r => r.Data).ToList());
+
+        }
+
+        public static Result<EstateResponse> ConvertFrom(Models.Estate.Estate estate){
             if (estate == null){
-                return null;
+                return Result.Invalid("estate cannot be null");
             }
 
             EstateResponse estateResponse = new EstateResponse{
@@ -122,12 +140,12 @@
                                                                                                            }));
             }
 
-            return estateResponse;
+            return Result.Success(estateResponse);
         }
 
-        public static MerchantResponse ConvertFrom(Merchant merchant){
+        public static Result<MerchantResponse> ConvertFrom(Models.Merchant.Merchant merchant){
             if (merchant == null){
-                return null;
+                return Result.Invalid("merchant cannot be null");
             }
 
             MerchantResponse merchantResponse = new MerchantResponse{
@@ -211,15 +229,18 @@
             };
         }
 
-        public static List<MerchantResponse> ConvertFrom(List<Merchant> merchants){
-            List<MerchantResponse> result = new List<MerchantResponse>();
+        public static Result<List<MerchantResponse>> ConvertFrom(List<Models.Merchant.Merchant> merchants){
+            List<Result<MerchantResponse>> result = new();
 
-            merchants.ForEach(m => result.Add(ModelFactory.ConvertFrom(m)));
+            merchants.ForEach(c => result.Add(ModelFactory.ConvertFrom(c)));
 
-            return result;
+            if (result.Any(c => c.IsFailed))
+                return Result.Failure("Failed converting merchants");
+
+            return Result.Success(result.Select(r => r.Data).ToList());
         }
 
-        public static List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee> ConvertFrom(List<Models.Contract.ContractProductTransactionFee> transactionFees){
+        public static Result<List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee>> ConvertFrom(List<Models.Contract.ContractProductTransactionFee> transactionFees){
             List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee> result = new ();
             transactionFees.ForEach(tf => {
                                         DataTransferObjects.Responses.Contract.ContractProductTransactionFee transactionFee = new DataTransferObjects.Responses.Contract.ContractProductTransactionFee
@@ -234,7 +255,7 @@
                                         result.Add(transactionFee);
                                     });
 
-            return result;
+            return Result.Success(result);
         }
 
         public static SettlementFeeResponse ConvertFrom(SettlementFeeModel model){
@@ -257,63 +278,62 @@
             return response;
         }
 
-        public static List<SettlementFeeResponse> ConvertFrom(List<SettlementFeeModel> model){
-            if (model == null || model.Any() == false){
-                return new List<SettlementFeeResponse>();
-            }
+        //public static List<SettlementFeeResponse> ConvertFrom(List<SettlementFeeModel> model){
+        //    if (model == null || model.Any() == false){
+        //        return new List<SettlementFeeResponse>();
+        //    }
 
-            List<SettlementFeeResponse> response = new List<SettlementFeeResponse>();
+        //    List<SettlementFeeResponse> response = new List<SettlementFeeResponse>();
 
-            model.ForEach(m => response.Add(ModelFactory.ConvertFrom(m)));
+        //    model.ForEach(m => response.Add(ModelFactory.ConvertFrom(m)));
 
-            return response;
-        }
+        //    return response;
+        //}
 
-        public static SettlementResponse ConvertFrom(SettlementModel model){
-            if (model == null){
-                return null;
+        public static Result<SettlementResponse> ConvertFrom(SettlementModel settlementModel){
+            if (settlementModel == null){
+                return Result.Invalid("settlementModel cannot be null");
             }
 
             SettlementResponse response = new SettlementResponse{
-                                                                    SettlementDate = model.SettlementDate,
-                                                                    IsCompleted = model.IsCompleted,
-                                                                    NumberOfFeesSettled = model.NumberOfFeesSettled,
-                                                                    SettlementId = model.SettlementId,
-                                                                    ValueOfFeesSettled = model.ValueOfFeesSettled,
+                                                                    SettlementDate = settlementModel.SettlementDate,
+                                                                    IsCompleted = settlementModel.IsCompleted,
+                                                                    NumberOfFeesSettled = settlementModel.NumberOfFeesSettled,
+                                                                    SettlementId = settlementModel.SettlementId,
+                                                                    ValueOfFeesSettled = settlementModel.ValueOfFeesSettled,
                                                                 };
 
-            model.SettlementFees.ForEach(f => response.SettlementFees.Add(ModelFactory.ConvertFrom(f)));
+            settlementModel.SettlementFees.ForEach(f => response.SettlementFees.Add(ModelFactory.ConvertFrom(f)));
 
-            return response;
+            return Result.Success(response);
         }
 
-        public static List<SettlementResponse> ConvertFrom(List<SettlementModel> model){
-            if (model == null || model.Any() == false){
-                return new List<SettlementResponse>();
+        public static Result<List<SettlementResponse>> ConvertFrom(List<SettlementModel> settlementModels){
+            List<Result<SettlementResponse>> result = new();
+            if (settlementModels == null) {
+                return Result.Invalid("settlement models cannot be null");
             }
+            settlementModels.ForEach(c => result.Add(ModelFactory.ConvertFrom(c)));
 
-            List<SettlementResponse> response = new List<SettlementResponse>();
+            if (result.Any(c => c.IsFailed))
+                return Result.Failure("Failed converting settlementModels");
 
-            model.ForEach(m => response.Add(ModelFactory.ConvertFrom(m)));
-
-            return response;
+            return Result.Success(result.Select(r => r.Data).ToList());
         }
 
-        public static FileDetailsResponse ConvertFrom(File model){
-            if (model == null){
-                return null;
+        public static Result<FileDetailsResponse> ConvertFrom(Models.File.File file){
+            if (file == null){
+                return Result.Invalid("file cannot be null");
             }
 
-            FileDetailsResponse response = new FileDetailsResponse();
+            FileDetailsResponse response = new() {
+                Merchant = ModelFactory.ConvertFrom(file.Merchant), FileId = file.FileId, FileReceivedDate = file.FileReceivedDate,
+                FileReceivedDateTime = file.FileReceivedDateTime,
+                FileLineDetails = []
+            };
 
-            response.Merchant = ModelFactory.ConvertFrom(model.Merchant);
-            response.FileId = model.FileId;
-            response.FileReceivedDate = model.FileReceivedDate;
-            response.FileReceivedDateTime = model.FileReceivedDateTime;
-            response.FileLineDetails = new List<FileLineDetailsResponse>();
-
-            foreach (FileLineDetails modelFileLineDetail in model.FileLineDetails){
-                FileLineDetailsResponse fileLineDetailsResponse = new FileLineDetailsResponse();
+            foreach (FileLineDetails modelFileLineDetail in file.FileLineDetails){
+                FileLineDetailsResponse fileLineDetailsResponse = new();
                 fileLineDetailsResponse.FileLineData = modelFileLineDetail.FileLineData;
                 fileLineDetailsResponse.Status = modelFileLineDetail.Status;
                 fileLineDetailsResponse.FileLineNumber = modelFileLineDetail.FileLineNumber;
@@ -332,37 +352,40 @@
                 response.FileLineDetails.Add(fileLineDetailsResponse);
             }
 
-            return response;
+            return Result.Success(response);
         }
 
         #endregion
 
-        public static OperatorResponse ConvertFrom(Operator model){
-            if (model == null){
-                return null;
+        public static Result<OperatorResponse> ConvertFrom(Operator @operator){
+            if (@operator == null){
+                return Result.Invalid("operator cannot be null");
             }
 
             OperatorResponse response = new();
-            response.OperatorId = model.OperatorId;
-            response.RequireCustomTerminalNumber = model.RequireCustomTerminalNumber;
-            response.RequireCustomMerchantNumber = model.RequireCustomMerchantNumber;
-            response.Name = model.Name;
+            response.OperatorId = @operator.OperatorId;
+            response.RequireCustomTerminalNumber = @operator.RequireCustomTerminalNumber;
+            response.RequireCustomMerchantNumber = @operator.RequireCustomMerchantNumber;
+            response.Name = @operator.Name;
 
-            return response;
+            return Result.Success(response);
         }
 
-        public static List<OperatorResponse> ConvertFrom(List<Operator> models)
+        public static Result<List<OperatorResponse>> ConvertFrom(List<Operator> @operators)
         {
-            if (models == null || models.Any() == false)
+            if (@operators == null || @operators.Any() == false)
             {
-                return new List<OperatorResponse>();
+                return Result.Success(new List<OperatorResponse>());
             }
 
-            List<OperatorResponse> response = new();
+            List<Result<OperatorResponse>> result = new();
 
-            models.ForEach(o => response.Add(ModelFactory.ConvertFrom(o)));
+            @operators.ForEach(c => result.Add(ModelFactory.ConvertFrom(c)));
 
-            return response;
+            if (result.Any(c => c.IsFailed))
+                return Result.Failure("Failed converting operators");
+
+            return Result.Success(result.Select(r => r.Data).ToList());
         }
     }
 }

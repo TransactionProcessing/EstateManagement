@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using EstateManagement.DataTransferObjects.Responses.File;
+using MediatR;
 
 namespace EstateManagement.Controllers
 {
@@ -12,6 +14,7 @@ namespace EstateManagement.Controllers
     using Factories;
     using Models.File;
     using Shared.General;
+    using SimpleResults;
 
     //[Route("api/[controller]")]
     //[ApiController]
@@ -19,13 +22,15 @@ namespace EstateManagement.Controllers
     [Route(FileController.ControllerRoute)]
     [ApiController]
     [Authorize]
-    public class FileController : ControllerBase
-    {
+    public class FileController : ControllerBase {
+        private EstateManagement.Controllers.v2.FileController V2FileController;
+
         private readonly IEstateManagementManager EstateManagementManager;
 
-        public FileController(IEstateManagementManager estateManagementManager)
+        public FileController(IEstateManagementManager estateManagementManager, IMediator mediator)
         {
             this.EstateManagementManager = estateManagementManager;
+            this.V2FileController = new v2.FileController(mediator);
         }
 
         #region Others
@@ -50,23 +55,10 @@ namespace EstateManagement.Controllers
                                                      [FromRoute] Guid fileId,
                                                      CancellationToken cancellationToken)
         {
-            // Get the Estate Id claim from the user
-            Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.User, "EstateId", estateId.ToString());
+            this.V2FileController.SetContextOverride(this.HttpContext);
+            ActionResult<Result<FileDetailsResponse>> result = await this.V2FileController.GetFile(estateId, fileId, cancellationToken);
 
-            String estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
-            if (ClaimsHelper.IsUserRolesValid(this.User, new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
-            {
-                return this.Forbid();
-            }
-
-            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
-            {
-                return this.Forbid();
-            }
-
-            File file = await this.EstateManagementManager.GetFileDetails(estateId, fileId, cancellationToken);
-            
-            return this.Ok(ModelFactory.ConvertFrom(file));
+            return ActionResultHelpers.HandleResult(result, "");
         }
 
     }

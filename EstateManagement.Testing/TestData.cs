@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Testing{
+﻿using EstateManagement.DataTransferObjects.Requests.Contract;
+
+namespace EstateManagement.Testing{
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -211,11 +213,7 @@
         public static String EmailAddress = "testuser1@testestate1.co.uk";
 
         public static Guid EstateId = Guid.Parse("488AAFDE-D1DF-4CE0-A0F7-819E42C4885C");
-
-        public static EstateAggregate EmptyEstateAggregate = EstateAggregate.Create(TestData.EstateId);
-
-        public static MerchantDepositListAggregate EmptyMerchantDepositListAggregate = new MerchantDepositListAggregate();
-
+        
         public static String EndDate = "20210105";
 
         public static DateTime EntryDateTime = new DateTime(2021, 2, 18);
@@ -603,38 +601,42 @@
                                                     TestData.OperatorId,
                                                     TestData.AdditionalResponseData, TestData.TransactionDateTime);
 
-        public static MerchantCommands.AddMerchantAddressCommand AddMerchantAddressCommand =>
-            new MerchantCommands.AddMerchantAddressCommand(TestData.EstateId,
-                                                           TestData.MerchantId,
-                                                           TestData.Address);
-
-        public static MerchantCommands.AddMerchantContactCommand AddMerchantContactCommand =>
-            new MerchantCommands.AddMerchantContactCommand(TestData.EstateId,
-                                                           TestData.MerchantId,
-                                                           TestData.Contact);
-
-        public static MerchantCommands.AddMerchantContractCommand AddMerchantContractCommand => new(TestData.EstateId, TestData.MerchantId, TestData.AddMerchantContractRequest);
-
+        
         public static AddMerchantContractRequest AddMerchantContractRequest =>
             new AddMerchantContractRequest{
                                               ContractId = TestData.ContractId
                                           };
 
-        public static MerchantCommands.AddMerchantDeviceCommand AddMerchantDeviceCommand => new(TestData.EstateId, TestData.MerchantId, TestData.AddMerchantDeviceRequest);
-
         public static AddMerchantDeviceRequest AddMerchantDeviceRequest =>
             new AddMerchantDeviceRequest{
                                             DeviceIdentifier = TestData.DeviceIdentifier
                                         };
+
         
-        public static AddProductToContractRequest AddProductToContractRequest =>
-            AddProductToContractRequest.Create(TestData.ContractId,
-                                               TestData.EstateId,
-                                               TestData.ContractProductId,
-                                               TestData.ProductName,
-                                               TestData.ProductDisplayText,
-                                               TestData.ProductFixedValue,
-                                               TestData.ProductTypeMobileTopup);
+        public static AddProductToContractRequest AddProductToContractRequest_FixedValue =>
+            new AddProductToContractRequest {
+                Value = ProductFixedValue,
+                DisplayText = ProductDisplayText,
+                ProductName = ProductName,
+                ProductType = DataTransferObjects.Responses.Contract.ProductType.MobileTopup
+            };
+
+        
+
+        public static AddProductToContractRequest AddProductToContractRequest_VariableValue =>
+            new AddProductToContractRequest
+            {
+                Value = null,
+                DisplayText = ProductDisplayText,
+                ProductName = ProductName,
+                ProductType = DataTransferObjects.Responses.Contract.ProductType.MobileTopup
+            };
+        
+
+        public static DataTransferObjects.Requests.Contract.CreateContractRequest CreateContractRequest =
+            new DataTransferObjects.Requests.Contract.CreateContractRequest {
+                Description = ContractDescription, OperatorId = OperatorId
+            };
 
         public static Address Address =>
             new Address{
@@ -672,15 +674,15 @@
                                                            TestData.TransactionId1,
                                                            TestData.SettledFeeId1);
 
-        public static AddTransactionFeeForProductToContractRequest AddTransactionFeeForProductToContractRequest =>
-            AddTransactionFeeForProductToContractRequest.Create(TestData.ContractId,
-                                                                TestData.EstateId,
-                                                                TestData.ContractProductId,
-                                                                TestData.TransactionFeeId,
-                                                                TestData.TransactionFeeDescription,
-                                                                CalculationType.Fixed,
-                                                                Models.Contract.FeeType.Merchant,
-                                                                TestData.TransactionFeeValue);
+        public static DataTransferObjects.Requests.Contract.AddTransactionFeeForProductToContractRequest
+            AddTransactionFeeForProductToContractRequest =>
+            new()
+            {
+                Description = TransactionFeeDescription,
+                CalculationType = DataTransferObjects.Responses.Contract.CalculationType.Fixed,
+                Value = TransactionFeeValue,
+                FeeType = DataTransferObjects.Responses.Contract.FeeType.Merchant
+            };
 
         public static AddTransactionToMerchantStatementRequest AddTransactionToMerchantStatementRequest =>
             AddTransactionToMerchantStatementRequest.Create(TestData.EstateId,
@@ -697,10 +699,7 @@
                                          TerminalNumber = TestData.OperatorTerminalNumber
                                      };
 
-        public static MerchantCommands.AssignOperatorToMerchantCommand AssignOperatorToMerchantCommand =>
-            new MerchantCommands.AssignOperatorToMerchantCommand(TestData.EstateId,
-                                                                 TestData.MerchantId,
-                                                                 TestData.AssignOperatorRequestToMerchant);
+        
 
         public static CallbackReceivedEnrichedEvent CallbackReceivedEnrichedEvent =>
             new CallbackReceivedEnrichedEvent(TestData.CallbackId){
@@ -836,9 +835,6 @@
                                                  ContractProductId = TestData.ContractProductId
                                              };
 
-        public static CreateContractRequest CreateContractRequest => CreateContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-
-        public static EstateCommands.CreateEstateCommand CreateEstateCommand => new EstateCommands.CreateEstateCommand(TestData.CreateEstateRequest);
 
         public static CreateEstateRequest CreateEstateRequest =>
             new CreateEstateRequest{
@@ -846,8 +842,7 @@
                                        EstateName = TestData.EstateName,
                                    };
 
-        public static EstateCommands.CreateEstateUserCommand CreateEstateUserCommand => new EstateCommands.CreateEstateUserCommand(TestData.EstateId, TestData.CreateEstateUserRequest);
-
+        
         public static CreateOperatorRequest CreateOperatorRequest =>
             new CreateOperatorRequest(){
                                            OperatorId = TestData.OperatorId,
@@ -864,9 +859,7 @@
                 Name = TestData.OperatorName
             };
 
-        public static OperatorCommands.CreateOperatorCommand CreateOperatorCommand => new(TestData.EstateId,  TestData.CreateOperatorRequest);
 
-        public static OperatorCommands.UpdateOperatorCommand UpdateOperatorCommand => new(TestData.EstateId,TestData.OperatorId, TestData.UpdateOperatorRequest);
 
         public static CreateEstateUserRequest CreateEstateUserRequest =>
             new CreateEstateUserRequest{
@@ -876,9 +869,7 @@
                                            MiddleName = TestData.EstateUserMiddleName,
                                            Password = TestData.EstateUserPassword
                                        };
-
-        public static MerchantCommands.CreateMerchantCommand CreateMerchantCommand => new(TestData.EstateId, TestData.CreateMerchantRequest);
-
+        
         public static CreateMerchantRequest CreateMerchantRequest =>
             new CreateMerchantRequest{
                                          Address = new Address{
@@ -901,9 +892,7 @@
                                          Name = TestData.MerchantName,
                                          SettlementSchedule = TestData.SettlementScheduleDTO
                                      };
-
-        public static MerchantCommands.CreateMerchantUserCommand CreateMerchantUserCommand => new(TestData.EstateId, TestData.MerchantId, TestData.CreateMerchantUserRequest);
-
+        
         public static CreateMerchantUserRequest CreateMerchantUserRequest =>
             new CreateMerchantUserRequest{
                                              EmailAddress = TestData.EmailAddress,
@@ -942,13 +931,7 @@
                                               TestData.DeviceId,
                                               TestData.DeviceIdentifier,
                                               TestData.NewDeviceIdentifier);
-
-        public static DisableTransactionFeeForProductRequest DisableTransactionFeeForProductRequest =>
-            DisableTransactionFeeForProductRequest.Create(TestData.ContractId,
-                                                          TestData.EstateId,
-                                                          TestData.ContractProductId,
-                                                          TestData.TransactionFeeId);
-
+        
         public static EmailMerchantStatementRequest EmailMerchantStatementRequest => EmailMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.MerchantStatementId);
 
         /// <summary>
@@ -1137,30 +1120,9 @@
             new GenerateMerchantStatementRequest{
                                                     MerchantStatementDate = TestData.StatementCreateDate
                                                 };
-        public static MerchantQueries.GetMerchantContractsQuery GetMerchantContractsQuery => new MerchantQueries.GetMerchantContractsQuery(TestData.EstateId, TestData.MerchantId);
-        public static MerchantQueries.GetMerchantQuery GetMerchantQuery => new MerchantQueries.GetMerchantQuery(TestData.EstateId, TestData.MerchantId);
-
-        public static MerchantQueries.GetMerchantsQuery GetMerchantsQuery => new MerchantQueries.GetMerchantsQuery(TestData.EstateId);
-
-        public static EstateQueries.GetEstateQuery GetEstateQuery => new (TestData.EstateId);
-
-        public static OperatorQueries.GetOperatorQuery GetOperatorQuery => new(TestData.EstateId, TestData.OperatorId);
-        public static OperatorQueries.GetOperatorsQuery GetOperatorsQuery => new(TestData.EstateId);
-        public static EstateQueries.GetEstatesQuery GetEstatesQuery => new(TestData.EstateId);
-
-        public static MerchantQueries.GetTransactionFeesForProductQuery GetTransactionFeesForProductQuery =>
-            new MerchantQueries.GetTransactionFeesForProductQuery(TestData.EstateId,
-                                                                  TestData.MerchantId,
-                                                                  TestData.ContractId,
-                                                                  TestData.ContractProductId);
+       
 
         public static ImportLogCreatedEvent ImportLogCreatedEvent => new ImportLogCreatedEvent(TestData.FileImportLogId, TestData.EstateId, TestData.ImportLogDateTime);
-
-        public static MerchantCommands.MakeMerchantDepositCommand MakeMerchantDepositCommand =>
-            new(TestData.EstateId,
-                TestData.MerchantId,
-                TestData.MerchantDepositSourceManual,
-                TestData.MakeMerchantDepositRequest);
 
         public static MakeMerchantDepositRequest MakeMerchantDepositRequest =>
             new MakeMerchantDepositRequest{
@@ -1169,10 +1131,7 @@
                                               Reference = TestData.DepositReference
                                           };
 
-        public static MerchantCommands.MakeMerchantWithdrawalCommand MakeMerchantWithdrawalCommand =>
-            new(TestData.EstateId,
-                TestData.MerchantId,
-                TestData.MakeMerchantWithdrawalRequest);
+        
 
         public static MakeMerchantWithdrawalRequest MakeMerchantWithdrawalRequest =>
             new MakeMerchantWithdrawalRequest{
@@ -1539,14 +1498,6 @@
 
         public static ReconciliationHasStartedEvent ReconciliationHasStartedEvent => new ReconciliationHasStartedEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.TransactionDateTime);
 
-        public static MerchantCommands.RemoveMerchantContractCommand RemoveMerchantContractCommand =>
-            new MerchantCommands.RemoveMerchantContractCommand(TestData.EstateId,
-                                                               TestData.MerchantId,
-                                                               TestData.ContractId);
-
-        public static EstateCommands.RemoveOperatorFromEstateCommand RemoveOperatorFromEstateCommand => new (TestData.EstateId, TestData.OperatorId);
-        public static MerchantCommands.RemoveOperatorFromMerchantCommand RemoveOperatorFromMerchantCommand => new MerchantCommands.RemoveOperatorFromMerchantCommand(TestData.EstateId, TestData.MerchantId, TestData.OperatorId);
-
         public static SettledFee SettledFee1 =>
             new SettledFee{
                               Amount = TestData.SettledFeeAmount1,
@@ -1636,7 +1587,7 @@
 
         public static StatementGeneratedEvent StatementGeneratedEvent => new StatementGeneratedEvent(TestData.MerchantStatementId, TestData.EstateId, TestData.MerchantId, TestData.StatementGeneratedDate);
 
-        public static MerchantCommands.SwapMerchantDeviceCommand SwapMerchantDeviceCommand => new MerchantCommands.SwapMerchantDeviceCommand(TestData.EstateId, TestData.MerchantId, TestData.DeviceIdentifier, TestData.SwapMerchantDeviceRequest);
+        
 
         public static SwapMerchantDeviceRequest SwapMerchantDeviceRequest =>
             new SwapMerchantDeviceRequest{
@@ -1744,19 +1695,7 @@
         public static TransactionSourceAddedToTransactionEvent TransactionSourceAddedToTransactionEvent => new TransactionSourceAddedToTransactionEvent(TestData.TransactionId, TestData.EstateId, TestData.MerchantId, TestData.TransactionSource,
             TestData.TransactionDateTime);
 
-        public static MerchantCommands.UpdateMerchantAddressCommand UpdateMerchantAddressCommand =>
-            new MerchantCommands.UpdateMerchantAddressCommand(TestData.EstateId,
-                                                              TestData.MerchantId,
-                                                              Guid.NewGuid(),
-                                                              TestData.Address);
-
-        public static MerchantCommands.UpdateMerchantCommand UpdateMerchantCommand => new(TestData.EstateId, TestData.MerchantId, TestData.UpdateMerchantRequest);
-
-        public static MerchantCommands.UpdateMerchantContactCommand UpdateMerchantContactCommand =>
-            new MerchantCommands.UpdateMerchantContactCommand(TestData.EstateId,
-                                                              TestData.MerchantId,
-                                                              Guid.NewGuid(),
-                                                              TestData.Contact);
+        
         public static UpdateMerchantRequest UpdateMerchantRequest =>
             new UpdateMerchantRequest{
                                          Name = TestData.MerchantNameUpdated,
@@ -1792,197 +1731,9 @@
 
         #region Methods
 
-        public static ContractAggregate CreatedContractAggregate(){
-            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+        
 
-            contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-
-            return contractAggregate;
-        }
-
-        public static ContractAggregate CreatedContractAggregateWithAProduct(){
-            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
-
-            contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            contractAggregate.AddFixedValueProduct(TestData.ContractProductId,
-                                                   TestData.ProductName,
-                                                   TestData.ProductDisplayText,
-                                                   TestData.ProductFixedValue,
-                                                   TestData.ProductTypeMobileTopup);
-
-            return contractAggregate;
-        }
-
-        public static ContractAggregate CreatedContractAggregateWithAProductAndTransactionFee(CalculationType calculationType, FeeType feeType){
-            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
-
-            contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
-            contractAggregate.AddFixedValueProduct(TestData.ContractProductId,
-                                                   TestData.ProductName,
-                                                   TestData.ProductDisplayText,
-                                                   TestData.ProductFixedValue,
-                                                   TestData.ProductTypeMobileTopup);
-
-            Product product = contractAggregate.GetProducts().Single(p => p.ContractProductId == TestData.ContractProductId);
-            contractAggregate.AddTransactionFee(product,
-                                                TestData.TransactionFeeId,
-                                                TestData.TransactionFeeDescription,
-                                                calculationType,
-                                                feeType,
-                                                TestData.TransactionFeeValue);
-
-            return contractAggregate;
-        }
-
-        public static OperatorAggregate CreatedOperatorAggregate(){
-            OperatorAggregate operatorAggregate = OperatorAggregate.Create(TestData.OperatorId);
-            operatorAggregate.Create(TestData.EstateId, TestData.OperatorName, TestData.RequireCustomMerchantNumber, TestData.RequireCustomTerminalNumber);
-            return operatorAggregate;
-        }
-
-        public static EstateAggregate CreatedEstateAggregate(){
-            EstateAggregate estateAggregate = EstateAggregate.Create(TestData.EstateId);
-
-            estateAggregate.Create(TestData.EstateName);
-
-            return estateAggregate;
-        }
-
-        public static MerchantAggregate CreatedMerchantAggregate(){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-
-            return merchantAggregate;
-        }
-
-        public static MerchantDepositListAggregate CreatedMerchantDepositListAggregate(){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-
-            MerchantDepositListAggregate merchantDepositListAggregate = MerchantDepositListAggregate.Create(TestData.MerchantId);
-            merchantDepositListAggregate.Create(merchantAggregate, TestData.DateMerchantCreated);
-
-            return merchantDepositListAggregate;
-        }
-
-        public static ContractAggregate EmptyContractAggregate(){
-            ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
-
-            return contractAggregate;
-        }
-
-        public static MerchantAggregate EmptyMerchantAggregate(){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            return merchantAggregate;
-        }
-
-        public static EstateAggregate EstateAggregateWithOperator(){
-            EstateAggregate estateAggregate = EstateAggregate.Create(TestData.EstateId);
-
-            estateAggregate.Create(TestData.EstateName);
-            estateAggregate.AddOperator(TestData.OperatorId);
-
-            return estateAggregate;
-        }
-
-        public static MerchantStatementAggregate GeneratedMerchantStatementAggregate(){
-            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-
-            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
-                                                                 TestData.EventId1,
-                                                                 TestData.StatementCreateDate,
-                                                                 TestData.EstateId,
-                                                                 TestData.MerchantId,
-                                                                 new Models.MerchantStatement.Transaction{
-                                                                                                             Amount = TestData.TransactionAmount1.Value,
-                                                                                                             DateTime = TestData.TransactionDateTime1,
-                                                                                                             TransactionId = TestData.TransactionId1
-                                                                                                         });
-            merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
-                                                                TestData.EventId1,
-                                                                TestData.StatementCreateDate,
-                                                                TestData.EstateId,
-                                                                TestData.MerchantId,
-                                                                new SettledFee{
-                                                                                  Amount = TestData.SettledFeeAmount1,
-                                                                                  DateTime = TestData.SettledFeeDateTime1,
-                                                                                  SettledFeeId = TestData.SettledFeeId1,
-                                                                                  TransactionId = TestData.TransactionId1
-                                                                              });
-            merchantStatementAggregate.GenerateStatement(TestData.StatementGeneratedDate);
-
-            return merchantStatementAggregate;
-        }
-
-        public static MerchantAggregate MerchantAggregateWithAddress(){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddAddress(TestData.MerchantAddressLine1,
-                                         TestData.MerchantAddressLine2,
-                                         TestData.MerchantAddressLine3,
-                                         TestData.MerchantAddressLine4,
-                                         TestData.MerchantTown,
-                                         TestData.MerchantRegion,
-                                         TestData.MerchantPostalCode,
-                                         TestData.MerchantCountry);
-
-            return merchantAggregate;
-        }
-
-        public static MerchantAggregate MerchantAggregateWithContact(){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddContact(TestData.MerchantContactName,
-                                         TestData.MerchantContactPhoneNumber,
-                                         TestData.MerchantContactEmailAddress);
-
-            return merchantAggregate;
-        }
-
-        public static MerchantAggregate MerchantAggregateWithDevice(){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
-
-            return merchantAggregate;
-        }
-
-        public static MerchantAggregate MerchantAggregateWithEverything(SettlementSchedule settlementSchedule){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AddContact(TestData.MerchantContactName,
-                                         TestData.MerchantContactPhoneNumber,
-                                         TestData.MerchantContactEmailAddress);
-            merchantAggregate.AddAddress(TestData.MerchantAddressLine1,
-                                         TestData.MerchantAddressLine2,
-                                         TestData.MerchantAddressLine3,
-                                         TestData.MerchantAddressLine4,
-                                         TestData.MerchantTown,
-                                         TestData.MerchantRegion,
-                                         TestData.MerchantPostalCode,
-                                         TestData.MerchantCountry);
-            merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
-            merchantAggregate.SetSettlementSchedule(settlementSchedule);
-            merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
-            merchantAggregate.AddContract(TestData.CreatedContractAggregate());
-            return merchantAggregate;
-        }
-
-        public static MerchantAggregate MerchantAggregateWithOperator(){
-            MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
-
-            merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
-
-            return merchantAggregate;
-        }
+        
 
         public static Models.Merchant.Merchant MerchantModelWithAddressesContactsDevicesAndOperatorsAndContracts(SettlementSchedule settlementSchedule = SettlementSchedule.Immediate) =>
             new Models.Merchant.Merchant{
@@ -2035,56 +1786,12 @@
                                                                                                                           }
                                                                                           }
                                         };
-
-        public static MerchantStatementAggregate MerchantStatementAggregateWithTransactionLineAdded(){
-            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-
-            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
-                                                                 TestData.EventId1,
-                                                                 TestData.StatementCreateDate,
-                                                                 TestData.EstateId,
-                                                                 TestData.MerchantId,
-                                                                 new Models.MerchantStatement.Transaction{
-                                                                                                             Amount = TestData.TransactionAmount1.Value,
-                                                                                                             DateTime = TestData.TransactionDateTime1,
-                                                                                                             TransactionId = TestData.TransactionId1
-                                                                                                         });
-
-            return merchantStatementAggregate;
-        }
-
-        public static MerchantStatementAggregate MerchantStatementAggregateWithTransactionLineAndSettledFeeAdded(){
-            MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
-            merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
-                                                                 TestData.EventId1,
-                                                                 TestData.StatementCreateDate,
-                                                                 TestData.EstateId,
-                                                                 TestData.MerchantId,
-                                                                 new Models.MerchantStatement.Transaction{
-                                                                                                             Amount = TestData.TransactionAmount1.Value,
-                                                                                                             DateTime = TestData.TransactionDateTime1,
-                                                                                                             TransactionId = TestData.TransactionId1
-                                                                                                         });
-            merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
-                                                                TestData.EventId1,
-                                                                TestData.StatementCreateDate,
-                                                                TestData.EstateId,
-                                                                TestData.MerchantId,
-                                                                new SettledFee{
-                                                                                  Amount = TestData.SettledFeeAmount1,
-                                                                                  DateTime = TestData.SettledFeeDateTime1,
-                                                                                  SettledFeeId = TestData.SettledFeeId1,
-                                                                                  TransactionId = TestData.TransactionId1
-                                                                              });
-
-            return merchantStatementAggregate;
-        }
-
+        
         public static TokenResponse TokenResponse(){
             return SecurityService.DataTransferObjects.Responses.TokenResponse.Create("AccessToken", String.Empty, 100);
         }
 
-        public static EstateCommands.AddOperatorToEstateCommand AddOperatorToEstateCommand => new EstateCommands.AddOperatorToEstateCommand(TestData.EstateId, TestData.AssignOperatorRequestToEstate);
+        
         public static DataTransferObjects.Requests.Estate.AssignOperatorRequest AssignOperatorRequestToEstate =>
             new(){
                      OperatorId = TestData.OperatorId
@@ -2100,10 +1807,405 @@
                                               Name = TestData.OperatorName
                                           };
 
-        public static OperatorAggregate EmptyOperatorAggregate(){
-            OperatorAggregate operatorAggregate = OperatorAggregate.Create(TestData.OperatorId);
+        
 
-            return operatorAggregate;
+        public static class Aggregates {
+
+            public static ContractAggregate CreatedContractAggregate()
+            {
+                ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+                contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+
+                return contractAggregate;
+            }
+
+            public static ContractAggregate CreatedContractAggregateWithAProduct()
+            {
+                ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+                contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+                contractAggregate.AddFixedValueProduct(TestData.ContractProductId,
+                                                       TestData.ProductName,
+                                                       TestData.ProductDisplayText,
+                                                       TestData.ProductFixedValue,
+                                                       TestData.ProductTypeMobileTopup);
+
+                return contractAggregate;
+            }
+
+            public static ContractAggregate CreatedContractAggregateWithAProductAndTransactionFee(CalculationType calculationType, FeeType feeType)
+            {
+                ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+                contractAggregate.Create(TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
+                contractAggregate.AddFixedValueProduct(TestData.ContractProductId,
+                                                       TestData.ProductName,
+                                                       TestData.ProductDisplayText,
+                                                       TestData.ProductFixedValue,
+                                                       TestData.ProductTypeMobileTopup);
+
+                Product product = contractAggregate.GetProducts().Single(p => p.ContractProductId == TestData.ContractProductId);
+                contractAggregate.AddTransactionFee(product,
+                                                    TestData.TransactionFeeId,
+                                                    TestData.TransactionFeeDescription,
+                                                    calculationType,
+                                                    feeType,
+                                                    TestData.TransactionFeeValue);
+
+                return contractAggregate;
+            }
+
+            public static OperatorAggregate CreatedOperatorAggregate()
+            {
+                OperatorAggregate operatorAggregate = OperatorAggregate.Create(TestData.OperatorId);
+                operatorAggregate.Create(TestData.EstateId, TestData.OperatorName, TestData.RequireCustomMerchantNumber, TestData.RequireCustomTerminalNumber);
+                return operatorAggregate;
+            }
+
+            public static EstateAggregate CreatedEstateAggregate()
+            {
+                EstateAggregate estateAggregate = EstateAggregate.Create(TestData.EstateId);
+
+                estateAggregate.Create(TestData.EstateName);
+
+                return estateAggregate;
+            }
+
+            public static MerchantAggregate CreatedMerchantAggregate()
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+                return merchantAggregate;
+            }
+
+            public static MerchantDepositListAggregate CreatedMerchantDepositListAggregate()
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+
+                MerchantDepositListAggregate merchantDepositListAggregate = MerchantDepositListAggregate.Create(TestData.MerchantId);
+                merchantDepositListAggregate.Create(merchantAggregate, TestData.DateMerchantCreated);
+
+                return merchantDepositListAggregate;
+            }
+
+            public static ContractAggregate EmptyContractAggregate()
+            {
+                ContractAggregate contractAggregate = ContractAggregate.Create(TestData.ContractId);
+
+                return contractAggregate;
+            }
+
+            public static MerchantAggregate EmptyMerchantAggregate()
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                return merchantAggregate;
+            }
+
+            public static EstateAggregate EstateAggregateWithOperator()
+            {
+                EstateAggregate estateAggregate = EstateAggregate.Create(TestData.EstateId);
+
+                estateAggregate.Create(TestData.EstateName);
+                estateAggregate.AddOperator(TestData.OperatorId);
+
+                return estateAggregate;
+            }
+
+            public static MerchantStatementAggregate GeneratedMerchantStatementAggregate()
+            {
+                MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+
+                merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                     TestData.EventId1,
+                                                                     TestData.StatementCreateDate,
+                                                                     TestData.EstateId,
+                                                                     TestData.MerchantId,
+                                                                     new Models.MerchantStatement.Transaction
+                                                                     {
+                                                                         Amount = TestData.TransactionAmount1.Value,
+                                                                         DateTime = TestData.TransactionDateTime1,
+                                                                         TransactionId = TestData.TransactionId1
+                                                                     });
+                merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                    TestData.EventId1,
+                                                                    TestData.StatementCreateDate,
+                                                                    TestData.EstateId,
+                                                                    TestData.MerchantId,
+                                                                    new SettledFee
+                                                                    {
+                                                                        Amount = TestData.SettledFeeAmount1,
+                                                                        DateTime = TestData.SettledFeeDateTime1,
+                                                                        SettledFeeId = TestData.SettledFeeId1,
+                                                                        TransactionId = TestData.TransactionId1
+                                                                    });
+                merchantStatementAggregate.GenerateStatement(TestData.StatementGeneratedDate);
+
+                return merchantStatementAggregate;
+            }
+
+            public static MerchantAggregate MerchantAggregateWithAddress()
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+                merchantAggregate.AddAddress(TestData.MerchantAddressLine1,
+                                             TestData.MerchantAddressLine2,
+                                             TestData.MerchantAddressLine3,
+                                             TestData.MerchantAddressLine4,
+                                             TestData.MerchantTown,
+                                             TestData.MerchantRegion,
+                                             TestData.MerchantPostalCode,
+                                             TestData.MerchantCountry);
+
+                return merchantAggregate;
+            }
+
+            public static MerchantAggregate MerchantAggregateWithContact()
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+                merchantAggregate.AddContact(TestData.MerchantContactName,
+                                             TestData.MerchantContactPhoneNumber,
+                                             TestData.MerchantContactEmailAddress);
+
+                return merchantAggregate;
+            }
+
+            public static MerchantAggregate MerchantAggregateWithDevice()
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+                merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+
+                return merchantAggregate;
+            }
+
+            public static MerchantAggregate MerchantAggregateWithEverything(SettlementSchedule settlementSchedule)
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+                merchantAggregate.AddContact(TestData.MerchantContactName,
+                                             TestData.MerchantContactPhoneNumber,
+                                             TestData.MerchantContactEmailAddress);
+                merchantAggregate.AddAddress(TestData.MerchantAddressLine1,
+                                             TestData.MerchantAddressLine2,
+                                             TestData.MerchantAddressLine3,
+                                             TestData.MerchantAddressLine4,
+                                             TestData.MerchantTown,
+                                             TestData.MerchantRegion,
+                                             TestData.MerchantPostalCode,
+                                             TestData.MerchantCountry);
+                merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+                merchantAggregate.SetSettlementSchedule(settlementSchedule);
+                merchantAggregate.AddDevice(TestData.DeviceId, TestData.DeviceIdentifier);
+                merchantAggregate.AddContract(TestData.Aggregates.CreatedContractAggregate());
+                return merchantAggregate;
+            }
+
+            public static MerchantAggregate MerchantAggregateWithOperator()
+            {
+                MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
+
+                merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
+                merchantAggregate.AssignOperator(TestData.OperatorId, TestData.OperatorName, TestData.OperatorMerchantNumber, TestData.OperatorTerminalNumber);
+
+                return merchantAggregate;
+            }
+            public static OperatorAggregate EmptyOperatorAggregate()
+            {
+                OperatorAggregate operatorAggregate = OperatorAggregate.Create(TestData.OperatorId);
+
+                return operatorAggregate;
+            }
+
+            public static MerchantStatementAggregate MerchantStatementAggregateWithTransactionLineAdded()
+            {
+                MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+
+                merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                     TestData.EventId1,
+                                                                     TestData.StatementCreateDate,
+                                                                     TestData.EstateId,
+                                                                     TestData.MerchantId,
+                                                                     new Models.MerchantStatement.Transaction
+                                                                     {
+                                                                         Amount = TestData.TransactionAmount1.Value,
+                                                                         DateTime = TestData.TransactionDateTime1,
+                                                                         TransactionId = TestData.TransactionId1
+                                                                     });
+
+                return merchantStatementAggregate;
+            }
+
+            public static MerchantStatementAggregate MerchantStatementAggregateWithTransactionLineAndSettledFeeAdded()
+            {
+                MerchantStatementAggregate merchantStatementAggregate = MerchantStatementAggregate.Create(TestData.MerchantStatementId);
+                merchantStatementAggregate.AddTransactionToStatement(TestData.MerchantStatementId,
+                                                                     TestData.EventId1,
+                                                                     TestData.StatementCreateDate,
+                                                                     TestData.EstateId,
+                                                                     TestData.MerchantId,
+                                                                     new Models.MerchantStatement.Transaction
+                                                                     {
+                                                                         Amount = TestData.TransactionAmount1.Value,
+                                                                         DateTime = TestData.TransactionDateTime1,
+                                                                         TransactionId = TestData.TransactionId1
+                                                                     });
+                merchantStatementAggregate.AddSettledFeeToStatement(TestData.MerchantStatementId,
+                                                                    TestData.EventId1,
+                                                                    TestData.StatementCreateDate,
+                                                                    TestData.EstateId,
+                                                                    TestData.MerchantId,
+                                                                    new SettledFee
+                                                                    {
+                                                                        Amount = TestData.SettledFeeAmount1,
+                                                                        DateTime = TestData.SettledFeeDateTime1,
+                                                                        SettledFeeId = TestData.SettledFeeId1,
+                                                                        TransactionId = TestData.TransactionId1
+                                                                    });
+
+                return merchantStatementAggregate;
+            }
+
+            public static EstateAggregate EmptyEstateAggregate = EstateAggregate.Create(TestData.EstateId);
+            public static MerchantDepositListAggregate EmptyMerchantDepositListAggregate = new MerchantDepositListAggregate();
+        }
+
+
+        public static class Queries {
+            public static MerchantQueries.GetMerchantContractsQuery GetMerchantContractsQuery => new MerchantQueries.GetMerchantContractsQuery(TestData.EstateId, TestData.MerchantId);
+            public static MerchantQueries.GetMerchantQuery GetMerchantQuery => new MerchantQueries.GetMerchantQuery(TestData.EstateId, TestData.MerchantId);
+
+            public static MerchantQueries.GetMerchantsQuery GetMerchantsQuery => new MerchantQueries.GetMerchantsQuery(TestData.EstateId);
+
+            public static EstateQueries.GetEstateQuery GetEstateQuery => new(TestData.EstateId);
+
+            public static OperatorQueries.GetOperatorQuery GetOperatorQuery => new(TestData.EstateId, TestData.OperatorId);
+            public static OperatorQueries.GetOperatorsQuery GetOperatorsQuery => new(TestData.EstateId);
+            public static EstateQueries.GetEstatesQuery GetEstatesQuery => new(TestData.EstateId);
+
+            public static MerchantQueries.GetTransactionFeesForProductQuery GetTransactionFeesForProductQuery =>
+                new MerchantQueries.GetTransactionFeesForProductQuery(TestData.EstateId,
+                    TestData.MerchantId,
+                    TestData.ContractId,
+                    TestData.ContractProductId);
+
+            public static ContractQueries.GetContractQuery GetContractQuery => new(EstateId, ContractId);
+            public static ContractQueries.GetContractsQuery GetContractsQuery => new(EstateId);
+
+            public static SettlementQueries.GetSettlementQuery GetSettlementQuery =>
+                new SettlementQueries.GetSettlementQuery(EstateId, MerchantId, SettlementId);
+
+            public static SettlementQueries.GetSettlementsQuery GetSettlementsQuery =>
+                new SettlementQueries.GetSettlementsQuery(EstateId, MerchantId, StartDate, EndDate);
+        }
+
+        public static class Commands {
+            public static MerchantCommands.AssignOperatorToMerchantCommand AssignOperatorToMerchantCommand =>
+                new MerchantCommands.AssignOperatorToMerchantCommand(TestData.EstateId,
+                    TestData.MerchantId,
+                    TestData.AssignOperatorRequestToMerchant);
+            public static MerchantCommands.SwapMerchantDeviceCommand SwapMerchantDeviceCommand => new MerchantCommands.SwapMerchantDeviceCommand(TestData.EstateId, TestData.MerchantId, TestData.DeviceIdentifier, TestData.SwapMerchantDeviceRequest);
+
+            public static MerchantCommands.RemoveMerchantContractCommand RemoveMerchantContractCommand =>
+                new MerchantCommands.RemoveMerchantContractCommand(TestData.EstateId,
+                    TestData.MerchantId,
+                    TestData.ContractId);
+
+            public static EstateCommands.RemoveOperatorFromEstateCommand RemoveOperatorFromEstateCommand => new(TestData.EstateId, TestData.OperatorId);
+            public static MerchantCommands.RemoveOperatorFromMerchantCommand RemoveOperatorFromMerchantCommand => new MerchantCommands.RemoveOperatorFromMerchantCommand(TestData.EstateId, TestData.MerchantId, TestData.OperatorId);
+
+            public static MerchantCommands.MakeMerchantWithdrawalCommand MakeMerchantWithdrawalCommand =>
+                new(TestData.EstateId,
+                    TestData.MerchantId,
+                    TestData.MakeMerchantWithdrawalRequest);
+
+            public static MerchantCommands.MakeMerchantDepositCommand MakeMerchantDepositCommand =>
+                new(TestData.EstateId,
+                    TestData.MerchantId,
+                    TestData.MerchantDepositSourceManual,
+                    TestData.MakeMerchantDepositRequest);
+
+            public static EstateCommands.AddOperatorToEstateCommand AddOperatorToEstateCommand => new EstateCommands.AddOperatorToEstateCommand(TestData.EstateId, TestData.AssignOperatorRequestToEstate);
+
+            public static MerchantCommands.UpdateMerchantAddressCommand UpdateMerchantAddressCommand =>
+                new MerchantCommands.UpdateMerchantAddressCommand(TestData.EstateId,
+                    TestData.MerchantId,
+                    Guid.NewGuid(),
+                    TestData.Address);
+
+            public static MerchantCommands.UpdateMerchantCommand UpdateMerchantCommand => new(TestData.EstateId, TestData.MerchantId, TestData.UpdateMerchantRequest);
+
+            public static MerchantCommands.UpdateMerchantContactCommand UpdateMerchantContactCommand =>
+                new MerchantCommands.UpdateMerchantContactCommand(TestData.EstateId,
+                    TestData.MerchantId,
+                    Guid.NewGuid(),
+                    TestData.Contact);
+
+            public static MerchantCommands.AddMerchantAddressCommand AddMerchantAddressCommand =>
+                new MerchantCommands.AddMerchantAddressCommand(TestData.EstateId,
+                    TestData.MerchantId,
+                    TestData.Address);
+
+            public static MerchantCommands.AddMerchantContactCommand AddMerchantContactCommand =>
+                new MerchantCommands.AddMerchantContactCommand(TestData.EstateId,
+                    TestData.MerchantId,
+                    TestData.Contact);
+
+            public static MerchantCommands.AddMerchantContractCommand AddMerchantContractCommand => new(TestData.EstateId, TestData.MerchantId, TestData.AddMerchantContractRequest);
+
+            public static MerchantCommands.AddMerchantDeviceCommand AddMerchantDeviceCommand => new(TestData.EstateId, TestData.MerchantId, TestData.AddMerchantDeviceRequest);
+
+            public static MerchantCommands.CreateMerchantUserCommand CreateMerchantUserCommand => new(TestData.EstateId, TestData.MerchantId, TestData.CreateMerchantUserRequest);
+
+            public static MerchantCommands.CreateMerchantCommand CreateMerchantCommand => new(TestData.EstateId, TestData.CreateMerchantRequest);
+
+            public static OperatorCommands.CreateOperatorCommand CreateOperatorCommand => new(TestData.EstateId, TestData.CreateOperatorRequest);
+
+            public static OperatorCommands.UpdateOperatorCommand UpdateOperatorCommand => new(TestData.EstateId, TestData.OperatorId, TestData.UpdateOperatorRequest);
+
+            public static EstateCommands.CreateEstateUserCommand CreateEstateUserCommand => new EstateCommands.CreateEstateUserCommand(TestData.EstateId, TestData.CreateEstateUserRequest);
+            
+            public static EstateCommands.CreateEstateCommand CreateEstateCommand => new EstateCommands.CreateEstateCommand(TestData.CreateEstateRequest);
+
+            public static ContractCommands.DisableTransactionFeeForProductCommand DisableTransactionFeeForProductCommand =
+                new ContractCommands.DisableTransactionFeeForProductCommand(TestData.EstateId, TestData.ContractId,
+                    TestData.ContractProductId, TestData.TransactionFeeId);
+            
+            public static ContractCommands.AddProductToContractCommand AddProductToContractCommand_FixedValue =>
+                new(EstateId, ContractId, ContractProductId, TestData.AddProductToContractRequest_FixedValue);
+
+            public static ContractCommands.AddProductToContractCommand AddProductToContractCommand_VariableValue =>
+                new(EstateId, ContractId, ContractProductId, TestData.AddProductToContractRequest_VariableValue);
+
+            public static ContractCommands.CreateContractCommand CreateContractCommand =>
+                new ContractCommands.CreateContractCommand(EstateId, ContractId, CreateContractRequest);
+
+            public static ContractCommands.AddTransactionFeeForProductToContractCommand
+                AddTransactionFeeForProductToContractCommand(
+                    DataTransferObjects.Responses.Contract.CalculationType calculationType,
+                    DataTransferObjects.Responses.Contract.FeeType feeType) {
+                DataTransferObjects.Requests.Contract.AddTransactionFeeForProductToContractRequest x =
+                    AddTransactionFeeForProductToContractRequest;
+                x.CalculationType = calculationType;
+                x.FeeType = feeType;
+
+                ContractCommands.AddTransactionFeeForProductToContractCommand cmd = new(EstateId, ContractId,
+                    ContractProductId, TransactionFeeId, x);
+                return cmd;
+            }
+
+
+
         }
     }
 }

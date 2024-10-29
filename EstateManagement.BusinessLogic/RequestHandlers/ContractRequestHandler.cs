@@ -1,4 +1,10 @@
-﻿namespace EstateManagement.BusinessLogic.RequestHandlers
+﻿using System;
+using System.Collections.Generic;
+using EstateManagement.BusinessLogic.Manger;
+using EstateManagement.DataTransferObjects.Requests.Contract;
+using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.RequestHandlers
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -9,68 +15,70 @@
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.CreateContractRequest, System.String}" />
-    /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AddProductToContractRequest, System.String}" />
-    /// <seealso cref="MediatR.IRequestHandler{EstateManagement.BusinessLogic.Requests.AddTransactionFeeForProductToContractRequest, System.String}" />
-    public class ContractRequestHandler : IRequestHandler<CreateContractRequest>,
-                                          IRequestHandler<AddProductToContractRequest>,
-                                          IRequestHandler<AddTransactionFeeForProductToContractRequest>,
-                                          IRequestHandler<DisableTransactionFeeForProductRequest>
+    /// <seealso cref="CreateContractRequest.String}" />
+    /// <seealso cref="AddProductToContractRequest.String}" />
+    /// <seealso cref="AddTransactionFeeForProductToContractRequest.String}" />
+    public class ContractRequestHandler : IRequestHandler<ContractCommands.CreateContractCommand, Result>,
+                                          IRequestHandler<ContractCommands.AddProductToContractCommand, Result>,
+                                          IRequestHandler<ContractCommands.AddTransactionFeeForProductToContractCommand, Result>,
+                                          IRequestHandler<ContractCommands.DisableTransactionFeeForProductCommand, Result>,
+                                          IRequestHandler<ContractQueries.GetContractQuery, Result<Models.Contract.Contract>>,
+                                          IRequestHandler<ContractQueries.GetContractsQuery, Result<List<Models.Contract.Contract>>>
     {
         #region Fields
 
         private readonly IContractDomainService ContractDomainService;
+        private readonly IEstateManagementManager EstateManagementManager;
 
         #endregion
 
         #region Constructors
 
-        public ContractRequestHandler(IContractDomainService contractDomainService)
-        {
+        public ContractRequestHandler(IContractDomainService contractDomainService, IEstateManagementManager estateManagementManager) {
             this.ContractDomainService = contractDomainService;
+            this.EstateManagementManager = estateManagementManager;
         }
 
         #endregion
 
         #region Methods
 
-        public async Task Handle(CreateContractRequest request,
-                                         CancellationToken cancellationToken)
+        public async Task<Result> Handle(ContractCommands.CreateContractCommand command,
+                                 CancellationToken cancellationToken)
         {
-            await this.ContractDomainService.CreateContract(request.ContractId, request.EstateId, request.OperatorId, request.Description, cancellationToken);
+            return await this.ContractDomainService.CreateContract(command, cancellationToken);
         }
         
-        public async Task Handle(AddProductToContractRequest request,
+        public async Task<Result> Handle(ContractCommands.AddProductToContractCommand command,
                                          CancellationToken cancellationToken)
         {
-            await this.ContractDomainService.AddProductToContract(request.ProductId,
-                                                                  request.ContractId,
-                                                                  request.ProductName,
-                                                                  request.DisplayText,
-                                                                  request.Value,
-                                                                  request.ProductType,
-                                                                  cancellationToken);
+            return await this.ContractDomainService.AddProductToContract(command, cancellationToken);
         }
         
-        public async Task Handle(AddTransactionFeeForProductToContractRequest request,
-                                         CancellationToken cancellationToken)
+        public async Task<Result> Handle(ContractCommands.AddTransactionFeeForProductToContractCommand command,
+                                 CancellationToken cancellationToken)
         {
-            await this.ContractDomainService.AddTransactionFeeForProductToContract(request.TransactionFeeId,
-                                                                                   request.ContractId,
-                                                                                   request.ProductId,
-                                                                                   request.Description,
-                                                                                   request.CalculationType,
-                                                                                   request.FeeType,
-                                                                                   request.Value,
-                                                                                   cancellationToken);
+            return await this.ContractDomainService.AddTransactionFeeForProductToContract(command, cancellationToken);
         }
 
         #endregion
 
-        public async Task Handle(DisableTransactionFeeForProductRequest request,
-                                         CancellationToken cancellationToken)
+        public async Task<Result> Handle(ContractCommands.DisableTransactionFeeForProductCommand command, CancellationToken cancellationToken)
         {
-            await this.ContractDomainService.DisableTransactionFeeForProduct(request.TransactionFeeId, request.ContractId, request.ProductId, cancellationToken);
+            return await this.ContractDomainService.DisableTransactionFeeForProduct(command, cancellationToken);
+        }
+
+        public async Task<Result<Models.Contract.Contract>> Handle(ContractQueries.GetContractQuery query,
+                                                                   CancellationToken cancellationToken) {
+            Result<Models.Contract.Contract> result =
+                await this.EstateManagementManager.GetContract(query.EstateId, query.ContractId, cancellationToken);
+            return result;
+        }
+
+        public async Task<Result<List<Models.Contract.Contract>>> Handle(ContractQueries.GetContractsQuery query,
+                                                                         CancellationToken cancellationToken) {
+            Result<List<Models.Contract.Contract>> result = await this.EstateManagementManager.GetContracts(query.EstateId, cancellationToken);
+            return result;
         }
     }
 }

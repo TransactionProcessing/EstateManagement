@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleResults;
 
 namespace EstateManagement.Tests.Factories{
     using System.Linq;
@@ -390,14 +391,14 @@ namespace EstateManagement.Tests.Factories{
                                                                  TestData.ContractModel
                                                              };
 
-            var contractResponses = ModelFactory.ConvertFrom(contractModel);
-
-            contractResponses.ShouldNotBeNull();
-            contractResponses.ShouldHaveSingleItem();
-            contractResponses.Single().OperatorId.ShouldBe(contractModel.Single().OperatorId);
-            contractResponses.Single().ContractId.ShouldBe(contractModel.Single().ContractId);
-            contractResponses.Single().Description.ShouldBe(contractModel.Single().Description);
-            contractResponses.Single().Products.ShouldBeNull();
+            Result<List<ContractResponse>> contractResponses = ModelFactory.ConvertFrom(contractModel);
+            contractResponses.IsSuccess.ShouldBeTrue();
+            contractResponses.Data.ShouldNotBeNull();
+            contractResponses.Data.ShouldHaveSingleItem();
+            contractResponses.Data.Single().OperatorId.ShouldBe(contractModel.Single().OperatorId);
+            contractResponses.Data.Single().ContractId.ShouldBe(contractModel.Single().ContractId);
+            contractResponses.Data.Single().Description.ShouldBe(contractModel.Single().Description);
+            contractResponses.Data.Single().Products.ShouldBeNull();
         }
 
         [Fact]
@@ -420,33 +421,6 @@ namespace EstateManagement.Tests.Factories{
             SettlementFeeResponse response = ModelFactory.ConvertFrom(model);
 
             response.ShouldBeNull();
-        }
-
-        [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ModelConverted(){
-            var response = ModelFactory.ConvertFrom(TestData.SettlementFeeModels);
-
-            response.ShouldNotBeNull();
-            response.ShouldNotBeEmpty();
-            response.Count.ShouldBe(TestData.SettlementFeeModels.Count);
-        }
-
-        [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ListIsNull_ModelConverted(){
-            List<SettlementFeeModel> modelList = null;
-            List<SettlementFeeResponse> response = ModelFactory.ConvertFrom(modelList);
-
-            response.ShouldNotBeNull();
-            response.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public void ModelFactory_ConvertFrom_SettlementFeeModelList_ListIsEmpty_ModelConverted(){
-            List<SettlementFeeModel> modelList = new List<SettlementFeeModel>();
-            List<SettlementFeeResponse> response = ModelFactory.ConvertFrom(modelList);
-
-            response.ShouldNotBeNull();
-            response.ShouldBeEmpty();
         }
 
         [Fact]
@@ -481,10 +455,8 @@ namespace EstateManagement.Tests.Factories{
         [Fact]
         public void ModelFactory_ConvertFrom_SettlementModelList_ListIsNull_ModelConverted(){
             List<SettlementModel> settlementModeList = null;
-            List<SettlementResponse> response = ModelFactory.ConvertFrom(settlementModeList);
-
-            response.ShouldNotBeNull();
-            response.ShouldBeEmpty();
+            Result<List<SettlementResponse>> result = ModelFactory.ConvertFrom(settlementModeList);
+            result.IsSuccess.ShouldBeFalse();
         }
 
         [Fact]

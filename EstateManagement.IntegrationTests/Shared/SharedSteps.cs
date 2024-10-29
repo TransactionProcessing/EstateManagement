@@ -326,6 +326,11 @@ namespace EstateManagement.IntegrationTests.Shared
         public async Task GivenICreateAContractWithTheFollowingValues(DataTable table) {
             List<(EstateDetails, CreateContractRequest)> requests = table.Rows.ToCreateContractRequests(this.TestingContext.Estates);
             List<ContractResponse> responses = await this.EstateManagementSteps.GivenICreateAContractWithTheFollowingValues(this.TestingContext.AccessToken, requests);
+
+            foreach (ContractResponse contractResponse in responses) {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(contractResponse.EstateId);
+                estateDetails.AddContract(contractResponse.ContractId, contractResponse.Description, contractResponse.OperatorId);
+            }
         }
 
         [When(@"I create the following Products")]

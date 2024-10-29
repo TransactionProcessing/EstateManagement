@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Services
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Services
 {
     using System;
     using System.Threading;
@@ -12,28 +14,13 @@
     {
         #region Methods
 
-        Task AddTransactionToStatement(Guid estateId,
-                                       Guid merchantId,
-                                       DateTime transactionDateTime,
-                                       Decimal? transactionAmount,
-                                       Boolean isAuthorised,
-                                       Guid transactionId,
-                                       CancellationToken cancellationToken);
+        Task<Result> AddTransactionToStatement(AddTransactionToMerchantStatementRequest command, CancellationToken cancellationToken);
 
-        Task AddSettledFeeToStatement(Guid estateId,
-                                       Guid merchantId,
-                                       DateTime settledDateTime,
-                                       Decimal settledAmount,
-                                       Guid transactionId,
-                                       Guid settledFeeId,
-                                       CancellationToken cancellationToken);
+        Task<Result> AddSettledFeeToStatement(AddSettledFeeToMerchantStatementRequest command, CancellationToken cancellationToken);
 
-        Task<Guid> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken);
+        Task<Result> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken);
 
-        Task EmailStatement(Guid estateId,
-                            Guid merchantId,
-                            Guid merchantStatementId,
-                            CancellationToken cancellationToken);
+        Task<Result> EmailStatement(EmailMerchantStatementRequest command, CancellationToken cancellationToken);
 
         #endregion
     }

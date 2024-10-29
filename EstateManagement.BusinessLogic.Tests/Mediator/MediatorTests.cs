@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EstateManagement.DataTransferObjects.Responses.Contract;
 
 namespace EstateManagement.BusinessLogic.Tests.Mediator
 {
@@ -27,38 +28,46 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
         private IMediator mediator;
 
         public MediatorTests() {
-            this.Requests.Add(TestData.AddMerchantDeviceCommand);
-            this.Requests.Add(TestData.CreateMerchantCommand);
-            this.Requests.Add(TestData.AssignOperatorToMerchantCommand);
-            this.Requests.Add(TestData.AddMerchantContractCommand);
-            this.Requests.Add(TestData.CreateMerchantUserCommand);
-            this.Requests.Add(TestData.MakeMerchantDepositCommand);
-            this.Requests.Add(TestData.MakeMerchantWithdrawalCommand);
-            this.Requests.Add(TestData.SwapMerchantDeviceCommand);
+            this.Requests.Add(TestData.Commands.AddMerchantDeviceCommand);
+            this.Requests.Add(TestData.Commands.CreateMerchantCommand);
+            this.Requests.Add(TestData.Commands.AssignOperatorToMerchantCommand);
+            this.Requests.Add(TestData.Commands.AddMerchantContractCommand);
+            this.Requests.Add(TestData.Commands.CreateMerchantUserCommand);
+            this.Requests.Add(TestData.Commands.MakeMerchantDepositCommand);
+            this.Requests.Add(TestData.Commands.MakeMerchantWithdrawalCommand);
+            this.Requests.Add(TestData.Commands.SwapMerchantDeviceCommand);
             this.Requests.Add(TestData.GenerateMerchantStatementCommand);
-            this.Requests.Add(TestData.UpdateMerchantCommand);
-            this.Requests.Add(TestData.AddMerchantAddressCommand);
-            this.Requests.Add(TestData.UpdateMerchantAddressCommand);
-            this.Requests.Add(TestData.AddMerchantContactCommand);
-            this.Requests.Add(TestData.UpdateMerchantContactCommand);
-            this.Requests.Add(TestData.RemoveOperatorFromMerchantCommand);
-            this.Requests.Add(TestData.RemoveMerchantContractCommand);
-            this.Requests.Add(TestData.CreateEstateCommand);
-            this.Requests.Add(TestData.CreateEstateUserCommand);
-            this.Requests.Add(TestData.CreateOperatorCommand);
-            this.Requests.Add(TestData.RemoveOperatorFromEstateCommand);
-            this.Requests.Add(TestData.AddOperatorToEstateCommand);
-            this.Requests.Add(TestData.UpdateOperatorCommand);
+            this.Requests.Add(TestData.Commands.UpdateMerchantCommand);
+            this.Requests.Add(TestData.Commands.AddMerchantAddressCommand);
+            this.Requests.Add(TestData.Commands.UpdateMerchantAddressCommand);
+            this.Requests.Add(TestData.Commands.AddMerchantContactCommand);
+            this.Requests.Add(TestData.Commands.UpdateMerchantContactCommand);
+            this.Requests.Add(TestData.Commands.RemoveOperatorFromMerchantCommand);
+            this.Requests.Add(TestData.Commands.RemoveMerchantContractCommand);
+            this.Requests.Add(TestData.Commands.CreateEstateCommand);
+            this.Requests.Add(TestData.Commands.CreateEstateUserCommand);
+            this.Requests.Add(TestData.Commands.CreateOperatorCommand);
+            this.Requests.Add(TestData.Commands.RemoveOperatorFromEstateCommand);
+            this.Requests.Add(TestData.Commands.AddOperatorToEstateCommand);
+            this.Requests.Add(TestData.Commands.UpdateOperatorCommand);
+            this.Requests.Add(TestData.Commands.CreateContractCommand);
+            this.Requests.Add(TestData.Commands.AddProductToContractCommand_VariableValue);
+            this.Requests.Add(TestData.Commands.AddProductToContractCommand_FixedValue);
+            this.Requests.Add(TestData.Commands.AddTransactionFeeForProductToContractCommand(CalculationType.Fixed, FeeType.Merchant));
+            this.Requests.Add(TestData.Commands.DisableTransactionFeeForProductCommand);
 
-            this.Requests.Add(TestData.GetMerchantsQuery);
-            this.Requests.Add(TestData.GetMerchantQuery);
-            this.Requests.Add(TestData.GetMerchantContractsQuery);
-            this.Requests.Add(TestData.GetTransactionFeesForProductQuery);
-            this.Requests.Add(TestData.GetEstateQuery);
-            this.Requests.Add(TestData.GetEstatesQuery);
-            this.Requests.Add(TestData.GetOperatorQuery);
-            this.Requests.Add(TestData.GetOperatorsQuery);
-
+            this.Requests.Add(TestData.Queries.GetMerchantsQuery);
+            this.Requests.Add(TestData.Queries.GetMerchantQuery);
+            this.Requests.Add(TestData.Queries.GetMerchantContractsQuery);
+            this.Requests.Add(TestData.Queries.GetTransactionFeesForProductQuery);
+            this.Requests.Add(TestData.Queries.GetEstateQuery);
+            this.Requests.Add(TestData.Queries.GetEstatesQuery);
+            this.Requests.Add(TestData.Queries.GetOperatorQuery);
+            this.Requests.Add(TestData.Queries.GetOperatorsQuery);
+            this.Requests.Add(TestData.Queries.GetContractQuery);
+            this.Requests.Add(TestData.Queries.GetContractsQuery);
+            this.Requests.Add(TestData.Queries.GetSettlementQuery);
+            this.Requests.Add(TestData.Queries.GetSettlementsQuery);
 
             //this.Requests.Add(TestData.AddProductToContractRequest);
             //this.Requests.Add(TestData.AddSettledFeeToMerchantStatementRequest);
@@ -124,7 +133,8 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             configuration.Add("AppSettings:MessagingServiceApi", "http://127.0.0.1");
             configuration.Add("AppSettings:TransactionProcessorApi", "http://127.0.0.1");
             configuration.Add("AppSettings:DatabaseEngine", "SqlServer");
-
+            configuration.Add("ConnectionStrings:EstateReportingReadModel", "");
+            
             builder.AddInMemoryCollection(configuration);
 
             return builder.Build();
@@ -148,6 +158,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
                                           s.AddSingleton<IMerchantStatementDomainService, DummyMerchantStatementDomainService>();
                                           s.AddSingleton<IEstateManagementManager, DummyEstateManagementManager>();
                                           s.AddSingleton<IOperatorDomainService, DummyOperatorDomainService>();
+                                          s.AddSingleton<IReportingManager, DummyReportingManager>();
             });
         }
     }

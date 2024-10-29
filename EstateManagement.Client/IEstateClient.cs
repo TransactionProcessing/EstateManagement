@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Client{
+﻿using SimpleResults;
+
+namespace EstateManagement.Client{
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -20,219 +22,219 @@
     public interface IEstateClient{
         #region Methods
 
-        Task AddContractToMerchant(String accessToken,
+        Task<Result> AddContractToMerchant(String accessToken,
                                    Guid estateId,
                                    Guid merchantId,
                                    AddMerchantContractRequest request,
                                    CancellationToken cancellationToken);
 
-        Task AddDeviceToMerchant(String accessToken,
-                                 Guid estateId,
-                                 Guid merchantId,
-                                 AddMerchantDeviceRequest request,
-                                 CancellationToken cancellationToken);
+        Task<Result> AddDeviceToMerchant(String accessToken,
+                                         Guid estateId,
+                                         Guid merchantId,
+                                         AddMerchantDeviceRequest request,
+                                         CancellationToken cancellationToken);
 
-        Task AddMerchantAddress(String accessToken,
-                                Guid estateId,
-                                Guid merchantId,
-                                Address newAddressRequest,
-                                CancellationToken cancellationToken);
+        Task<Result> AddMerchantAddress(String accessToken,
+                                        Guid estateId,
+                                        Guid merchantId,
+                                        Address newAddressRequest,
+                                        CancellationToken cancellationToken);
 
-        Task AddMerchantContact(String accessToken,
-                                Guid estateId,
-                                Guid merchantId,
-                                Contact newContactRequest,
-                                CancellationToken cancellationToken);
+        Task<Result> AddMerchantContact(String accessToken,
+                                        Guid estateId,
+                                        Guid merchantId,
+                                        Contact newContactRequest,
+                                        CancellationToken cancellationToken);
 
-        Task<AddProductToContractResponse> AddProductToContract(String accessToken,
-                                                                Guid estateId,
-                                                                Guid contractId,
-                                                                AddProductToContractRequest addProductToContractRequest,
-                                                                CancellationToken cancellationToken);
+        Task<Result> AddProductToContract(String accessToken,
+                                          Guid estateId,
+                                          Guid contractId,
+                                          AddProductToContractRequest addProductToContractRequest,
+                                          CancellationToken cancellationToken);
 
-        Task<AddTransactionFeeForProductToContractResponse> AddTransactionFeeForProductToContract(String accessToken,
-                                                                                                  Guid estateId,
-                                                                                                  Guid contractId,
-                                                                                                  Guid productId,
-                                                                                                  AddTransactionFeeForProductToContractRequest
-                                                                                                      addTransactionFeeForProductToContractRequest,
-                                                                                                  CancellationToken cancellationToken);
+        Task<Result> AddTransactionFeeForProductToContract(String accessToken,
+                                                           Guid estateId,
+                                                           Guid contractId,
+                                                           Guid productId,
+                                                           AddTransactionFeeForProductToContractRequest
+                                                               addTransactionFeeForProductToContractRequest,
+                                                           CancellationToken cancellationToken);
 
-        Task AssignOperatorToEstate(String accessToken,
+        Task<Result> AssignOperatorToEstate(String accessToken,
+                                            Guid estateId,
+                                            AssignOperatorRequest assignOperatorRequest,
+                                            CancellationToken cancellationToken);
+
+        Task<Result> AssignOperatorToMerchant(String accessToken,
+                                              Guid estateId,
+                                              Guid merchantId,
+                                              DataTransferObjects.Requests.Merchant.AssignOperatorRequest assignOperatorRequest,
+                                              CancellationToken cancellationToken);
+
+        Task<Result> CreateContract(String accessToken,
                                     Guid estateId,
-                                    AssignOperatorRequest assignOperatorRequest,
+                                    CreateContractRequest createContractRequest,
                                     CancellationToken cancellationToken);
 
-        Task AssignOperatorToMerchant(String accessToken,
+        Task<Result> CreateEstate(String accessToken,
+                                  CreateEstateRequest createEstateRequest,
+                                  CancellationToken cancellationToken);
+
+        Task<Result> CreateEstateUser(String accessToken,
                                       Guid estateId,
-                                      Guid merchantId,
-                                      DataTransferObjects.Requests.Merchant.AssignOperatorRequest assignOperatorRequest,
+                                      CreateEstateUserRequest createEstateUserRequest,
                                       CancellationToken cancellationToken);
 
-        Task<CreateContractResponse> CreateContract(String accessToken,
-                                                    Guid estateId,
-                                                    CreateContractRequest createContractRequest,
-                                                    CancellationToken cancellationToken);
+        Task<Result> CreateMerchant(String accessToken,
+                                    Guid estateId,
+                                    CreateMerchantRequest createMerchantRequest,
+                                    CancellationToken cancellationToken);
 
-        Task<CreateEstateResponse> CreateEstate(String accessToken,
-                                                CreateEstateRequest createEstateRequest,
-                                                CancellationToken cancellationToken);
+        Task<Result> CreateMerchantUser(String accessToken,
+                                        Guid estateId,
+                                        Guid merchantId,
+                                        CreateMerchantUserRequest createMerchantUserRequest,
+                                        CancellationToken cancellationToken);
 
-        Task CreateEstateUser(String accessToken,
-                              Guid estateId,
-                              CreateEstateUserRequest createEstateUserRequest,
-                              CancellationToken cancellationToken);
+        Task<Result> CreateOperator(String accessToken,
+                                    Guid estateId,
+                                    CreateOperatorRequest createOperatorRequest,
+                                    CancellationToken cancellationToken);
 
-        Task<CreateMerchantResponse> CreateMerchant(String accessToken,
-                                                    Guid estateId,
-                                                    CreateMerchantRequest createMerchantRequest,
-                                                    CancellationToken cancellationToken);
+        Task<Result> DisableTransactionFeeForProduct(String accessToken,
+                                                     Guid estateId,
+                                                     Guid contractId,
+                                                     Guid productId,
+                                                     Guid transactionFeeId,
+                                                     CancellationToken cancellationToken);
 
-        Task CreateMerchantUser(String accessToken,
-                                Guid estateId,
-                                Guid merchantId,
-                                CreateMerchantUserRequest createMerchantUserRequest,
-                                CancellationToken cancellationToken);
-
-        Task<CreateOperatorResponse> CreateOperator(String accessToken,
-                                                    Guid estateId,
-                                                    CreateOperatorRequest createOperatorRequest,
-                                                    CancellationToken cancellationToken);
-
-        Task DisableTransactionFeeForProduct(String accessToken,
-                                             Guid estateId,
-                                             Guid contractId,
-                                             Guid productId,
-                                             Guid transactionFeeId,
-                                             CancellationToken cancellationToken);
-
-        Task<ContractResponse> GetContract(String accessToken,
+        Task<Result<ContractResponse>> GetContract(String accessToken,
                                            Guid estateId,
                                            Guid contractId,
                                            CancellationToken cancellationToken);
 
-        Task<List<ContractResponse>> GetContracts(String accessToken,
-                                                  Guid estateId,
-                                                  CancellationToken cancellationToken);
+        Task<Result<List<ContractResponse>>> GetContracts(String accessToken,
+                                                         Guid estateId,
+                                                         CancellationToken cancellationToken);
 
-        Task<EstateResponse> GetEstate(String accessToken,
-                                       Guid estateId,
-                                       CancellationToken cancellationToken);
-
-        Task<List<EstateResponse>> GetEstates(String accessToken,
+        Task<Result<EstateResponse>> GetEstate(String accessToken,
                                               Guid estateId,
                                               CancellationToken cancellationToken);
 
-        Task<MerchantResponse> GetMerchant(String accessToken,
-                                           Guid estateId,
-                                           Guid merchantId,
-                                           CancellationToken cancellationToken);
+        Task<Result<List<EstateResponse>>> GetEstates(String accessToken,
+                                                     Guid estateId,
+                                                     CancellationToken cancellationToken);
 
-        Task<List<ContractResponse>> GetMerchantContracts(String accessToken,
-                                                          Guid estateId,
-                                                          Guid merchantId,
-                                                          CancellationToken cancellationToken);
-
-        Task<List<MerchantResponse>> GetMerchants(String accessToken,
+        Task<Result<MerchantResponse>> GetMerchant(String accessToken,
                                                   Guid estateId,
+                                                  Guid merchantId,
                                                   CancellationToken cancellationToken);
 
-        Task<OperatorResponse> GetOperator(String accessToken,
-                                           Guid estateId,
-                                           Guid operatorId,
-                                           CancellationToken cancellationToken);
+        Task<Result<List<ContractResponse>>> GetMerchantContracts(String accessToken,
+                                                                 Guid estateId,
+                                                                 Guid merchantId,
+                                                                 CancellationToken cancellationToken);
 
-        Task<List<OperatorResponse>> GetOperators(String accessToken,
+        Task<Result<List<MerchantResponse>>> GetMerchants(String accessToken,
+                                                         Guid estateId,
+                                                         CancellationToken cancellationToken);
+
+        Task<Result<OperatorResponse>> GetOperator(String accessToken,
                                                   Guid estateId,
+                                                  Guid operatorId,
                                                   CancellationToken cancellationToken);
 
-        Task<SettlementResponse> GetSettlement(String accessToken,
-                                               Guid estateId,
-                                               Guid? merchantId,
-                                               Guid settlementId,
-                                               CancellationToken cancellationToken);
+        Task<Result<List<OperatorResponse>>> GetOperators(String accessToken,
+                                                         Guid estateId,
+                                                         CancellationToken cancellationToken);
 
-        Task<List<SettlementResponse>> GetSettlements(String accessToken,
+        Task<Result<SettlementResponse>> GetSettlement(String accessToken,
                                                       Guid estateId,
                                                       Guid? merchantId,
-                                                      String startDate,
-                                                      String endDate,
+                                                      Guid settlementId,
                                                       CancellationToken cancellationToken);
 
-        Task<List<ContractProductTransactionFee>> GetTransactionFeesForProduct(String accessToken,
+        Task<Result<List<SettlementResponse>>> GetSettlements(String accessToken,
+                                                             Guid estateId,
+                                                             Guid? merchantId,
+                                                             String startDate,
+                                                             String endDate,
+                                                             CancellationToken cancellationToken);
+
+        Task<Result<List<ContractProductTransactionFee>>> GetTransactionFeesForProduct(String accessToken,
                                                                                Guid estateId,
                                                                                Guid merchantId,
                                                                                Guid contractId,
                                                                                Guid productId,
                                                                                CancellationToken cancellationToken);
 
-        Task<MakeMerchantDepositResponse> MakeMerchantDeposit(String accessToken,
-                                                              Guid estateId,
-                                                              Guid merchantId,
-                                                              MakeMerchantDepositRequest makeMerchantDepositRequest,
-                                                              CancellationToken cancellationToken);
+        Task<Result> MakeMerchantDeposit(String accessToken,
+                                                                     Guid estateId,
+                                                                     Guid merchantId,
+                                                                     MakeMerchantDepositRequest makeMerchantDepositRequest,
+                                                                     CancellationToken cancellationToken);
 
-        Task<MakeMerchantWithdrawalResponse> MakeMerchantWithdrawal(String accessToken,
-                                                                    Guid estateId,
-                                                                    Guid merchantId,
-                                                                    MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
-                                                                    CancellationToken cancellationToken);
+        Task<Result> MakeMerchantWithdrawal(String accessToken,
+                                                                           Guid estateId,
+                                                                           Guid merchantId,
+                                                                           MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
+                                                                           CancellationToken cancellationToken);
 
-        Task RemoveContractFromMerchant(String accessToken,
+        Task<Result> RemoveContractFromMerchant(String accessToken,
                                         Guid estateId,
                                         Guid merchantId,
                                         Guid contractId,
                                         CancellationToken cancellationToken);
 
-        Task RemoveOperatorFromEstate(String accessToken,
-                                      Guid estateId,
-                                      Guid operatorId,
-                                      CancellationToken cancellationToken);
+        Task<Result> RemoveOperatorFromEstate(String accessToken,
+                                              Guid estateId,
+                                              Guid operatorId,
+                                              CancellationToken cancellationToken);
 
-        Task RemoveOperatorFromMerchant(String accessToken,
-                                        Guid estateId,
-                                        Guid merchantId,
-                                        Guid operatorId,
-                                        CancellationToken cancellationToken);
+        Task<Result> RemoveOperatorFromMerchant(String accessToken,
+                                                Guid estateId,
+                                                Guid merchantId,
+                                                Guid operatorId,
+                                                CancellationToken cancellationToken);
 
-        Task SetMerchantSettlementSchedule(String accessToken,
+        Task<Result> SetMerchantSettlementSchedule(String accessToken,
+                                                   Guid estateId,
+                                                   Guid merchantId,
+                                                   SetSettlementScheduleRequest setSettlementScheduleRequest,
+                                                   CancellationToken cancellationToken);
+
+        Task<Result> SwapDeviceForMerchant(String accessToken,
                                            Guid estateId,
                                            Guid merchantId,
-                                           SetSettlementScheduleRequest setSettlementScheduleRequest,
+                                           String deviceIdentifier,
+                                           SwapMerchantDeviceRequest request,
                                            CancellationToken cancellationToken);
 
-        Task SwapDeviceForMerchant(String accessToken,
-                                   Guid estateId,
-                                   Guid merchantId,
-                                   String deviceIdentifier,
-                                   SwapMerchantDeviceRequest request,
-                                   CancellationToken cancellationToken);
+        Task<Result> UpdateMerchant(String accessToken,
+                                    Guid estateId,
+                                    Guid merchantId,
+                                    UpdateMerchantRequest request,
+                                    CancellationToken cancellationToken);
 
-        Task UpdateMerchant(String accessToken,
-                            Guid estateId,
-                            Guid merchantId,
-                            UpdateMerchantRequest request,
-                            CancellationToken cancellationToken);
+        Task<Result> UpdateMerchantAddress(String accessToken,
+                                           Guid estateId,
+                                           Guid merchantId,
+                                           Guid addressId,
+                                           Address updatedAddressRequest,
+                                           CancellationToken cancellationToken);
 
-        Task UpdateMerchantAddress(String accessToken,
-                                   Guid estateId,
-                                   Guid merchantId,
-                                   Guid addressId,
-                                   Address updatedAddressRequest,
-                                   CancellationToken cancellationToken);
+        Task<Result> UpdateMerchantContact(String accessToken,
+                                           Guid estateId,
+                                           Guid merchantId,
+                                           Guid contactId,
+                                           Contact updatedContactRequest,
+                                           CancellationToken cancellationToken);
 
-        Task UpdateMerchantContact(String accessToken,
-                                   Guid estateId,
-                                   Guid merchantId,
-                                   Guid contactId,
-                                   Contact updatedContactRequest,
-                                   CancellationToken cancellationToken);
-
-        Task UpdateOperator(String accessToken,
-                            Guid estateId,
-                            Guid operatorId,
-                            UpdateOperatorRequest updateOperatorRequest,
-                            CancellationToken cancellationToken);
+        Task<Result> UpdateOperator(String accessToken,
+                                    Guid estateId,
+                                    Guid operatorId,
+                                    UpdateOperatorRequest updateOperatorRequest,
+                                    CancellationToken cancellationToken);
 
         #endregion
     }

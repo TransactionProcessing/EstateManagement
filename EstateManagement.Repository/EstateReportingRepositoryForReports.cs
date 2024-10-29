@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Repository;
+﻿using SimpleResults;
+
+namespace EstateManagement.Repository;
 
 using System;
 using System.Collections.Generic;
@@ -40,18 +42,10 @@ public class EstateReportingRepositoryForReports : IEstateReportingRepositoryFor
 
     #region Methods
 
-    /// <summary>
-    /// Gets the settlement.
-    /// </summary>
-    /// <param name="estateId">The estate identifier.</param>
-    /// <param name="merchantId">The merchant identifier.</param>
-    /// <param name="settlementId">The settlement identifier.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
-    public async Task<SettlementModel> GetSettlement(Guid estateId,
-                                                     Guid merchantId,
-                                                     Guid settlementId,
-                                                     CancellationToken cancellationToken)
+    public async Task<Result<SettlementModel>> GetSettlement(Guid estateId,
+                                                             Guid merchantId,
+                                                             Guid settlementId,
+                                                             CancellationToken cancellationToken)
     {
         EstateManagementGenericContext context = await this.DbContextFactory.GetContext(estateId, EstateReportingRepositoryForReports.ConnectionStringIdentifier, cancellationToken);
 
@@ -65,7 +59,7 @@ public class EstateReportingRepositoryForReports : IEstateReportingRepositoryFor
                                                            }).SingleOrDefault();
 
         if (result == null)
-            return null;
+            return Result.NotFound($"Settlement with Id {settlementId} not found");
 
         SettlementModel model = new SettlementModel
                                 {
@@ -89,23 +83,14 @@ public class EstateReportingRepositoryForReports : IEstateReportingRepositoryFor
                                                                   OperatorIdentifier = f.OperatorIdentifier
                                                               }));
 
-        return model;
+        return Result.Success(model);
     }
 
-    /// <summary>
-    /// Gets the settlements.
-    /// </summary>
-    /// <param name="estateId">The estate identifier.</param>
-    /// <param name="merchantId">The merchant identifier.</param>
-    /// <param name="startDate">The start date.</param>
-    /// <param name="endDate">The end date.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
-    public async Task<List<SettlementModel>> GetSettlements(Guid estateId,
-                                                            Guid? merchantId,
-                                                            String startDate,
-                                                            String endDate,
-                                                            CancellationToken cancellationToken)
+    public async Task<Result<List<SettlementModel>>> GetSettlements(Guid estateId,
+                                                                    Guid? merchantId,
+                                                                    String startDate,
+                                                                    String endDate,
+                                                                    CancellationToken cancellationToken)
     {
         EstateManagementGenericContext context = await this.DbContextFactory.GetContext(estateId,EstateReportingRepositoryForReports.ConnectionStringIdentifier, cancellationToken);
 
@@ -136,7 +121,7 @@ public class EstateReportingRepositoryForReports : IEstateReportingRepositoryFor
         }).OrderByDescending(t => t.SettlementDate)
                                                   .ToListAsync(cancellationToken);
         
-        return result;
+        return Result.Success(result);
     }
 
     #endregion

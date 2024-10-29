@@ -21,8 +21,8 @@ namespace EstateManagement.Controllers
     [ExcludeFromCodeCoverage]
     [Route(OperatorController.ControllerRoute)]
     [ApiController]
-    public class OperatorController : ControllerBase
-    {
+    public class OperatorController : ControllerBase {
+        private EstateManagement.Controllers.v2.OperatorController V2OperatorController;
         /// <summary>
         /// The mediator
         /// </summary>
@@ -35,6 +35,7 @@ namespace EstateManagement.Controllers
         public OperatorController(IMediator mediator)
         {
             this.Mediator = mediator;
+            this.V2OperatorController = new v2.OperatorController(mediator);
         }
 
         /// <summary>
@@ -50,19 +51,9 @@ namespace EstateManagement.Controllers
         [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
         public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId,  [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
-            // Create the command
-            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-            
-            // return the result
-            return this.Created($"{OperatorController.ControllerRoute}/{createOperatorRequest.OperatorId}",
-                                new CreateOperatorResponse
-                                {
-                                    EstateId = estateId,
-                                    OperatorId = createOperatorRequest.OperatorId
-                                });
+            this.V2OperatorController.SetContextOverride(this.HttpContext);
+            var result = await this.V2OperatorController.CreateOperator(estateId, createOperatorRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPost]
@@ -70,14 +61,9 @@ namespace EstateManagement.Controllers
         [SwaggerResponse(200, "OK")]
         public async Task<IActionResult> UpdateOperator([FromRoute] Guid estateId, [FromRoute] Guid operatorId, [FromBody] UpdateOperatorRequest updateOperatorRequest, CancellationToken cancellationToken)
         {
-            // Create the command
-            OperatorCommands.UpdateOperatorCommand command = new OperatorCommands.UpdateOperatorCommand(estateId, operatorId, updateOperatorRequest);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2OperatorController.SetContextOverride(this.HttpContext);
+            var result = await this.V2OperatorController.UpdateOperator(estateId, operatorId, updateOperatorRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
 
@@ -89,13 +75,9 @@ namespace EstateManagement.Controllers
                                                      [FromRoute] Guid operatorId,
                                                      CancellationToken cancellationToken)
         {
-            // Create the command
-            OperatorQueries.GetOperatorQuery query = new(estateId, operatorId);
-
-            // Route the command
-            Operator @operator = await this.Mediator.Send(query, cancellationToken);
-
-            return this.Ok(ModelFactory.ConvertFrom(@operator));
+            this.V2OperatorController.SetContextOverride(this.HttpContext);
+            var result = await this.V2OperatorController.GetOperator(estateId, operatorId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpGet]
@@ -105,13 +87,9 @@ namespace EstateManagement.Controllers
         public async Task<IActionResult> GetOperators([FromRoute] Guid estateId,
                                                      CancellationToken cancellationToken)
         {
-            // Create the command
-            OperatorQueries.GetOperatorsQuery query = new(estateId);
-
-            // Route the command
-            List<Operator> @operatorList = await this.Mediator.Send(query, cancellationToken);
-
-            return this.Ok(ModelFactory.ConvertFrom(@operatorList));
+            this.V2OperatorController.SetContextOverride(this.HttpContext);
+            var result = await this.V2OperatorController.GetOperators(estateId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         #region Others

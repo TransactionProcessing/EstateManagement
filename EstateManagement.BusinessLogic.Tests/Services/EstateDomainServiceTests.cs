@@ -1,4 +1,5 @@
 ﻿using System;
+using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
 {
@@ -15,78 +16,68 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using Testing;
     using Xunit;
 
-    public class EstateDomainServiceTests
-    {
-        [Fact]
-        public async Task EstateDomainService_CreateEstate_EstateIsCreated()
-        {
-            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
-            estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(new EstateAggregate());
-            estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
-
-            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
-
-            Should.NotThrow(async () =>
-            {
-                await domainService.CreateEstate(TestData.CreateEstateCommand, CancellationToken.None);
-            });
+    public class EstateDomainServiceTests {
+        private EstateDomainService DomainService;
+        private Mock<IAggregateRepository<EstateAggregate, DomainEvent>> EstateAggregateRepository;
+        private Mock<ISecurityServiceClient> SecurityServiceClient;
+        public EstateDomainServiceTests() {
+            this.EstateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
+            this.SecurityServiceClient = new Mock<ISecurityServiceClient>();
+            this.DomainService = new EstateDomainService(EstateAggregateRepository.Object, this.SecurityServiceClient.Object);
         }
 
+        [Fact]
+        public async Task EstateDomainService_CreateEstate_EstateIsCreated() {
+            
+            this.EstateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success(new EstateAggregate()));
+            this.EstateAggregateRepository
+                .Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success());
+            
+            Result result = await this.DomainService.CreateEstate(TestData.Commands.CreateEstateCommand, CancellationToken.None);
+            result.IsSuccess.ShouldBeTrue();
+        }
+
+        
         [Fact]
         public async Task EstateDomainService_AddOperatorEstate_OperatorIsAdded()
         {
-            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
-            estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.EstateAggregateWithOperator);
-            estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            this.EstateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+            this.EstateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).ReturnsAsync(SimpleResults.Result.Success());
 
-            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
-
-            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
-
-            Should.NotThrow(async () =>
-                            {
-                                await domainService.RemoveOperatorFromEstate(TestData.RemoveOperatorFromEstateCommand, CancellationToken.None);
-                            });
+            Result result = await this.DomainService.AddOperatorToEstate(TestData.Commands.AddOperatorToEstateCommand, CancellationToken.None);
+            result.IsSuccess.ShouldBeTrue();
+        }
+        
+        [Fact]
+        public async Task EstateDomainService_RemoveOperatorFromEstate_OperatorIsRemoved()
+        {
+            this.EstateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EstateAggregateWithOperator()));
+            this.EstateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success);
+            Result result = await this.DomainService.RemoveOperatorFromEstate(TestData.Commands.RemoveOperatorFromEstateCommand, CancellationToken.None);
+            result.IsSuccess.ShouldBeTrue();
         }
 
         [Fact]
-        public async Task EstateDomainService_RemoceOperatorFromEstate_OperatorIsRemoved()
-        {
-            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
-            estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-            estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        public async Task EstateDomainService_CreateEstateUser_EstateUserIsCreated() {
+            this.EstateAggregateRepository
+                .Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+            this.EstateAggregateRepository
+                .Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success());
 
-            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
+            this.SecurityServiceClient
+                .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateUserResponse { UserId = Guid.NewGuid() });
 
-            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
-
-            Should.NotThrow(async () =>
-                            {
-                                await domainService.AddOperatorToEstate(TestData.AddOperatorToEstateCommand, CancellationToken.None);
-                            });
+            Result result = await this.DomainService.CreateEstateUser(TestData.Commands.CreateEstateUserCommand, CancellationToken.None);
+            result.IsSuccess.ShouldBeTrue();
         }
 
-        [Fact]
-        public async Task EstateDomainService_CreateEstateUser_EstateUserIsCreated()
-        {
-            Mock<IAggregateRepository<EstateAggregate, DomainEvent>> estateAggregateRepository = new Mock<IAggregateRepository<EstateAggregate, DomainEvent>>();
-            estateAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(TestData.CreatedEstateAggregate);
-            estateAggregateRepository.Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            
-            Mock<ISecurityServiceClient> securityServiceClient = new Mock<ISecurityServiceClient>();
-            securityServiceClient.Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new CreateUserResponse
-                                                                                                                                      {
-                                                                                                                                          UserId = Guid.NewGuid()
-                                                                                                                                      });
-
-            EstateDomainService domainService = new EstateDomainService(estateAggregateRepository.Object, securityServiceClient.Object);
-
-            Should.NotThrow(async () =>
-                            {
-                                await domainService.CreateEstateUser(TestData.CreateEstateUserCommand, CancellationToken.None);
-                            });
-        }
+        // TODO: EstateDomainServiceTests - CreateEstateUser - failed creating user test
+        // TODO: EstateDomainServiceTests - Estate Not Created tests missing
+        // TODO: EstateDomainServiceTests - Save Changes failed
     }
 }

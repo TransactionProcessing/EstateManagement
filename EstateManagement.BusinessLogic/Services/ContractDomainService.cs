@@ -1,4 +1,8 @@
-﻿using Shared.EventStore.EventStore;
+﻿using EstateManagement.BusinessLogic.Requests;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Shared.EventStore.EventStore;
+using Shared.Exceptions;
+using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Services
 {
@@ -9,14 +13,42 @@ namespace EstateManagement.BusinessLogic.Services
     using System.Threading.Tasks;
     using ContractAggregate;
     using EstateAggregate;
+    using EstateManagement.Database.Entities;
+    using Google.Protobuf.WellKnownTypes;
     using Models.Contract;
     using Models.Estate;
     using Newtonsoft.Json.Linq;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
-    
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
+    public static class DomainServiceHelper {
+        public static Result<T> HandleGetAggregateResult<T>(Result<T> result, Guid aggregateId, bool isNotFoundError = true)
+            where T : Aggregate, new()  // Constraint: T is a subclass of Aggregate and has a parameterless constructor
+        {
+            if (result.IsFailed && result.Status != ResultStatus.NotFound)
+            {
+                return ResultHelpers.CreateFailure(result);
+            }
+
+            if (result.Status == ResultStatus.NotFound && isNotFoundError)
+            {
+                return ResultHelpers.CreateFailure(result);
+            }
+
+            T aggregate = result.Status switch
+            {
+                ResultStatus.NotFound => new T { AggregateId = aggregateId },  // Set AggregateId when creating a new instance
+                _ => result.Data
+            };
+            
+            return Result.Success(aggregate);
+        }
+    }
+
     public class ContractDomainService : IContractDomainService
     {
+
         #region Fields
         
         private readonly IAggregateRepository<ContractAggregate, DomainEvent> ContractAggregateRepository;
@@ -41,132 +73,141 @@ namespace EstateManagement.BusinessLogic.Services
 
         #region Methods
 
-        public async Task AddProductToContract(Guid productId,
-                                               Guid contractId,
-                                               String productName,
-                                               String displayText,
-                                               Decimal? value,
-                                               ProductType productType,
-                                               CancellationToken cancellationToken)
+        private async Task<Result> ApplyUpdates(Func<(EstateAggregate estateAggregate, ContractAggregate contractAggregate), Task<Result>> action, Guid estateId, Guid contractId, CancellationToken cancellationToken, Boolean isNotFoundError = true)
         {
-            // Get the contract aggregate
-            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
-
-            // Check for a duplicate
-            if (contractAggregate.IsCreated == false)
+            try
             {
-                throw new InvalidOperationException($"Contract Id [{contractId}] must be created to add products");
-            }
+                Result<EstateAggregate> getEstateResult = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
+                if (getEstateResult.IsFailed)
+                    return ResultHelpers.CreateFailure(getEstateResult);
+                EstateAggregate estateAggregate = getEstateResult.Data;
 
-            if (value.HasValue)
-            {
-                contractAggregate.AddFixedValueProduct(productId, productName, displayText, value.Value,productType);
-            }
-            else
-            {
-                contractAggregate.AddVariableValueProduct(productId, productName, displayText,productType);
-            }
+                Result<ContractAggregate> getContractResult = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+                Result<ContractAggregate> contractAggregateResult =
+                    DomainServiceHelper.HandleGetAggregateResult(getContractResult, contractId, isNotFoundError);
+                if (contractAggregateResult.IsFailed)
+                    return ResultHelpers.CreateFailure(contractAggregateResult);
 
-            await this.ContractAggregateRepository.SaveChanges(contractAggregate, cancellationToken);
+                ContractAggregate contractAggregate = contractAggregateResult.Data;
+                Result result = await action((estateAggregate, contractAggregate));
+                if (result.IsFailed)
+                    return ResultHelpers.CreateFailure(result);
+
+                Result saveResult = await this.ContractAggregateRepository.SaveChanges(contractAggregate, cancellationToken);
+                if (saveResult.IsFailed)
+                    return ResultHelpers.CreateFailure(saveResult);
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(ex.GetExceptionMessages());
+            }
         }
 
-        public async Task AddTransactionFeeForProductToContract(Guid transactionFeeId,
-                                                                Guid contractId,
-                                                                Guid productId,
-                                                                String description,
-                                                                CalculationType calculationType,
-                                                                FeeType feeType,
-                                                                Decimal value,
-                                                                CancellationToken cancellationToken)
+        public async Task<Result> AddProductToContract(ContractCommands.AddProductToContractCommand command, CancellationToken cancellationToken)
         {
-            // Get the contract aggregate
-            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+            Models.Contract.ProductType productType = (Models.Contract.ProductType)command.RequestDTO.ProductType;
 
-            // Check for a duplicate
-            if (contractAggregate.IsCreated == false)
-            {
-                throw new InvalidOperationException($"Contract Id [{contractId}] must be created to add products");
-            }
-
-            List<Product> products = contractAggregate.GetProducts();
-            Product product = products.SingleOrDefault(p => p.ContractProductId == productId);
-            if (product == null)
-            {
-                throw new InvalidOperationException($"Product Id [{productId}] not added to contract [{contractAggregate.Description}]");
-            }
-
-            contractAggregate.AddTransactionFee(product, transactionFeeId, description, calculationType, feeType, value);
-
-            await this.ContractAggregateRepository.SaveChanges(contractAggregate, cancellationToken);
-        }
-
-        public async Task DisableTransactionFeeForProduct(Guid transactionFeeId,
-                                                          Guid contractId,
-                                                          Guid productId,
-                                                          CancellationToken cancellationToken)
-        {
-            // Get the contract aggregate
-            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
-            
-            contractAggregate.DisableTransactionFee(productId, transactionFeeId);
-
-            await this.ContractAggregateRepository.SaveChanges(contractAggregate, cancellationToken);
-        }
-        
-        public async Task CreateContract(Guid contractId,
-                                         Guid estateId,
-                                         Guid operatorId,
-                                         String description,
-                                         CancellationToken cancellationToken)
-        {
-            // Validate the estate
-            EstateAggregate estateAggregate = await this.EstateAggregateRepository.GetLatestVersion(estateId, cancellationToken);
-
-            if (estateAggregate.IsCreated == false)
-            {
-                throw new InvalidOperationException("Unable to create a contract for an estate that is not created");
-            }
-
-            // Validate the operator
-            Estate estate = estateAggregate.GetEstate();
-            if (estate.Operators == null || estate.Operators.Any(o => o.OperatorId == operatorId) == false)
-            {
-                throw new InvalidOperationException($"Unable to create a contract for an operator that is not setup on estate [{estate.Name}]");
-            }
-
-            // Validate a duplicate name
-            String projection =
-                $"fromCategory(\"ContractAggregate\")\n.when({{\n    $init: function (s, e) {{\n                        return {{\n                            total: 0,\n                            contractId: 0\n                        }};\n                    }},\n    'ContractCreatedEvent': function(s,e){{\n        // Check if it matches\n        if (e.data.description === '{description}' \n            && e.data.operatorId === '{operatorId}'){{\n            s.total += 1;\n            s.contractId = e.data.contractId\n        }}\n    }}\n}})";
-            
-            var resultString = await this.Context.RunTransientQuery(projection, cancellationToken);
-            
-            if (String.IsNullOrEmpty(resultString) == false)
-            {
-                JObject jsonResult = JObject.Parse(resultString);
-
-                String contractIdString = jsonResult.Property("contractId").Values<String>().Single();
-
-                Guid.TryParse(contractIdString, out Guid contractIdResult);
-
-                if (contractIdResult != Guid.Empty)
-                {
-                    throw new InvalidOperationException(
-                        $"Contract Description {description} already in use for operator {operatorId}");
+            Result result = await ApplyUpdates(async ((EstateAggregate estateAggregate, ContractAggregate contractAggregate) aggregates) => {
+                if (aggregates.estateAggregate.IsCreated == false) {
+                    return Result.Forbidden($"Estate with Id {command.EstateId} not created");
                 }
-            }
 
-            // Get the contract aggregate
-            ContractAggregate contractAggregate = await this.ContractAggregateRepository.GetLatestVersion(contractId, cancellationToken);
+                if (aggregates.contractAggregate.IsCreated == false) {
+                    return Result.Forbidden($"Contract Id [{command.ContractId}] must be created to add products");
+                }
 
-            // Check for a duplicate
-            if (contractAggregate.IsCreated)
-            {
-                throw new InvalidOperationException($"Contract Id [{contractId}] already created for estate [{estate.Name}]");
-            }
+                if (command.RequestDTO.Value.HasValue) {
+                    aggregates.contractAggregate.AddFixedValueProduct(command.ProductId, command.RequestDTO.ProductName,
+                        command.RequestDTO.DisplayText, command.RequestDTO.Value.Value, productType);
+                }
+                else {
+                    aggregates.contractAggregate.AddVariableValueProduct(command.ProductId, command.RequestDTO.ProductName,
+                        command.RequestDTO.DisplayText, productType);
+                }
 
-            contractAggregate.Create(estateId, operatorId, description);
+                return Result.Success();
+            }, command.EstateId, command.ContractId, cancellationToken);
+            return result;
+        }
 
-            await this.ContractAggregateRepository.SaveChanges(contractAggregate, cancellationToken);
+        public async Task<Result> AddTransactionFeeForProductToContract(ContractCommands.AddTransactionFeeForProductToContractCommand command, CancellationToken cancellationToken)
+        {
+            Models.Contract.CalculationType calculationType = (Models.Contract.CalculationType)command.RequestDTO.CalculationType;
+            Models.Contract.FeeType feeType = (Models.Contract.FeeType)command.RequestDTO.FeeType;
+
+            Result result = await ApplyUpdates(async ((EstateAggregate estateAggregate, ContractAggregate contractAggregate) aggregates) => {
+
+                if (aggregates.contractAggregate.IsCreated == false)
+                {
+                    return Result.Forbidden($"Contract Id [{command.ContractId}] must be created to add transaction fees");
+                }
+
+                List<Product> products = aggregates.contractAggregate.GetProducts();
+                Product product = products.SingleOrDefault(p => p.ContractProductId == command.ProductId);
+                if (product == null)
+                {
+                    throw new InvalidOperationException($"Product Id [{command.ProductId}] not added to contract [{aggregates.contractAggregate.Description}]");
+                }
+
+                aggregates.contractAggregate.AddTransactionFee(product, command.TransactionFeeId, command.RequestDTO.Description, calculationType, feeType, command.RequestDTO.Value);
+
+                return Result.Success();
+            }, command.EstateId, command.ContractId, cancellationToken);
+            return result;
+
+        }
+
+        public async Task<Result> DisableTransactionFeeForProduct(ContractCommands.DisableTransactionFeeForProductCommand command, CancellationToken cancellationToken)
+        {
+            Result result = await ApplyUpdates(async ((EstateAggregate estateAggregate, ContractAggregate contractAggregate) aggregates) => {
+
+                aggregates.contractAggregate.DisableTransactionFee(command.ProductId, command.TransactionFeeId);
+                return Result.Success();
+            }, command.EstateId, command.ContractId, cancellationToken);
+            return result;
+        }
+
+        public async Task<Result> CreateContract(ContractCommands.CreateContractCommand command, CancellationToken cancellationToken)
+        {
+            Result result = await ApplyUpdates(async ((EstateAggregate estateAggregate, ContractAggregate contractAggregate) aggregates) => {
+
+                Models.Estate.Estate estate = aggregates.estateAggregate.GetEstate();
+                if (estate.Operators == null || estate.Operators.Any(o => o.OperatorId == command.RequestDTO.OperatorId) == false)
+                {
+                    throw new InvalidOperationException($"Unable to create a contract for an operator that is not setup on estate [{estate.Name}]");
+                }
+
+                // Validate a duplicate name
+                String projection =
+                    $"fromCategory(\"ContractAggregate\")\n.when({{\n    $init: function (s, e) {{\n                        return {{\n                            total: 0,\n                            contractId: 0\n                        }};\n                    }},\n    'ContractCreatedEvent': function(s,e){{\n        // Check if it matches\n        if (e.data.description === '{command.RequestDTO.Description}' \n            && e.data.operatorId === '{command.RequestDTO.OperatorId}'){{\n            s.total += 1;\n            s.contractId = e.data.contractId\n        }}\n    }}\n}})";
+
+                Result<String> resultString = await this.Context.RunTransientQuery(projection, cancellationToken);
+
+                if (String.IsNullOrEmpty(resultString) == false)
+                {
+                    JObject jsonResult = JObject.Parse(resultString);
+
+                    String contractIdString = jsonResult.Property("contractId").Values<String>().Single();
+
+                    Guid.TryParse(contractIdString, out Guid contractIdResult);
+
+                    if (contractIdResult != Guid.Empty) {
+                        return Result.Conflict(
+                            $"Contract Description {command.RequestDTO.Description} already in use for operator {command.RequestDTO.OperatorId}");
+                    }
+                }
+
+                if (aggregates.contractAggregate.IsCreated)
+                {
+                    return Result.Forbidden($"Contract Id [{command.ContractId}] already created for estate [{estate.Name}]");
+                }
+                aggregates.contractAggregate.Create(command.EstateId, command.RequestDTO.OperatorId, command.RequestDTO.Description);
+
+                return Result.Success();
+            }, command.EstateId, command.ContractId, cancellationToken, false);
+            return result;
         }
 
         #endregion

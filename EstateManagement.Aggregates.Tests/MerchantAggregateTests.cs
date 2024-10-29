@@ -410,7 +410,7 @@
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            ContractAggregate contractAggregate = TestData.CreatedContractAggregateWithAProduct();
+            ContractAggregate contractAggregate = TestData.Aggregates.CreatedContractAggregateWithAProduct();
 
             merchantAggregate.AddContract(contractAggregate);
 
@@ -426,7 +426,7 @@
         public void MerchantAggregate_AddContract_MerchantNotCreated_ErrorThrown(){
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
 
-            ContractAggregate contractAggregate = TestData.CreatedContractAggregateWithAProduct();
+            ContractAggregate contractAggregate = TestData.Aggregates.CreatedContractAggregateWithAProduct();
             Should.Throw<InvalidOperationException>(() => { merchantAggregate.AddContract(contractAggregate); });
         }
 
@@ -435,7 +435,7 @@
             MerchantAggregate merchantAggregate = MerchantAggregate.Create(TestData.MerchantId);
             merchantAggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
 
-            ContractAggregate contractAggregate = TestData.CreatedContractAggregateWithAProduct();
+            ContractAggregate contractAggregate = TestData.Aggregates.CreatedContractAggregateWithAProduct();
             merchantAggregate.AddContract(contractAggregate);
 
             Should.Throw<InvalidOperationException>(() => { merchantAggregate.AddContract(contractAggregate); });
@@ -681,7 +681,7 @@
         {
             MerchantAggregate aggregate = MerchantAggregate.Create(TestData.MerchantId);
             aggregate.Create(TestData.EstateId, TestData.MerchantName, TestData.DateMerchantCreated);
-            aggregate.AddContract(TestData.CreatedContractAggregate());
+            aggregate.AddContract(TestData.Aggregates.CreatedContractAggregate());
             aggregate.RemoveContract(TestData.ContractId);
 
             Merchant merchantModel = aggregate.GetMerchant();
