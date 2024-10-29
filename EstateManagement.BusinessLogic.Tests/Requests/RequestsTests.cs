@@ -12,41 +12,6 @@
         #region Methods
         
         [Fact]
-        public void AddProductToContractRequest_WithFixedValue_CanBeCreated_IsCreated() {
-            AddProductToContractRequest addProductToContractRequest =
-                AddProductToContractRequest.Create(TestData.ContractId,
-                                                   TestData.EstateId,
-                                                   TestData.ContractProductId,
-                                                   TestData.ProductName,
-                                                   TestData.ProductDisplayText,
-                                                   TestData.ProductFixedValue, TestData.ProductTypeMobileTopup);
-
-            addProductToContractRequest.ShouldNotBeNull();
-            addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
-            addProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
-            addProductToContractRequest.ProductId.ShouldBe(TestData.ContractProductId);
-            addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
-            addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
-            addProductToContractRequest.Value.ShouldBe(TestData.ProductFixedValue);
-            addProductToContractRequest.ProductType.ShouldBe(TestData.ProductTypeMobileTopup);
-        }
-
-        [Fact]
-        public void AddProductToContractRequest_WithVariableValue_CanBeCreated_IsCreated() {
-            AddProductToContractRequest addProductToContractRequest =
-                AddProductToContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ContractProductId, TestData.ProductName, TestData.ProductDisplayText, null, TestData.ProductTypeMobileTopup);
-
-            addProductToContractRequest.ShouldNotBeNull();
-            addProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
-            addProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
-            addProductToContractRequest.ProductId.ShouldBe(TestData.ContractProductId);
-            addProductToContractRequest.ProductName.ShouldBe(TestData.ProductName);
-            addProductToContractRequest.DisplayText.ShouldBe(TestData.ProductDisplayText);
-            addProductToContractRequest.Value.ShouldBeNull();
-            addProductToContractRequest.ProductType.ShouldBe(TestData.ProductTypeMobileTopup);
-        }
-
-        [Fact]
         public void AddSettledFeeToMerchantStatementRequest_CanBeCreated_IsCreated() {
             AddSettledFeeToMerchantStatementRequest addSettledFeeToMerchantStatementRequest =
                 AddSettledFeeToMerchantStatementRequest.Create(TestData.EstateId,
@@ -65,33 +30,7 @@
             addSettledFeeToMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
         }
 
-        [Theory]
-        [InlineData(CalculationType.Percentage, FeeType.Merchant)]
-        [InlineData(CalculationType.Fixed, FeeType.Merchant)]
-        [InlineData(CalculationType.Percentage, FeeType.ServiceProvider)]
-        [InlineData(CalculationType.Fixed, FeeType.ServiceProvider)]
-        public void AddTransactionFeeForProductToContractRequest_CanBeCreated_IsCreated(CalculationType calculationType,
-                                                                                        FeeType feeType) {
-            AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest =
-                AddTransactionFeeForProductToContractRequest.Create(TestData.ContractId,
-                                                                    TestData.EstateId,
-                                                                    TestData.ContractProductId,
-                                                                    TestData.TransactionFeeId,
-                                                                    TestData.TransactionFeeDescription,
-                                                                    calculationType,
-                                                                    feeType,
-                                                                    TestData.TransactionFeeValue);
-
-            addTransactionFeeForProductToContractRequest.ShouldNotBeNull();
-            addTransactionFeeForProductToContractRequest.ContractId.ShouldBe(TestData.ContractId);
-            addTransactionFeeForProductToContractRequest.EstateId.ShouldBe(TestData.EstateId);
-            addTransactionFeeForProductToContractRequest.ProductId.ShouldBe(TestData.ContractProductId);
-            addTransactionFeeForProductToContractRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
-            addTransactionFeeForProductToContractRequest.Description.ShouldBe(TestData.TransactionFeeDescription);
-            addTransactionFeeForProductToContractRequest.CalculationType.ShouldBe(calculationType);
-            addTransactionFeeForProductToContractRequest.FeeType.ShouldBe(feeType);
-            addTransactionFeeForProductToContractRequest.Value.ShouldBe(TestData.TransactionFeeValue);
-        }
+        
 
         [Fact]
         public void AddTransactionToMerchantStatementRequest_CanBeCreated_IsCreated() {
@@ -111,30 +50,7 @@
             addTransactionToMerchantStatementRequest.EstateId.ShouldBe(TestData.EstateId);
             addTransactionToMerchantStatementRequest.MerchantId.ShouldBe(TestData.MerchantId);
         }
-        
-        [Fact]
-        public void CreateContractRequest_CanBeCreated_IsCreated() {
-            CreateContractRequest createContractRequest =
-                CreateContractRequest.Create(TestData.ContractId, TestData.EstateId, TestData.OperatorId, TestData.ContractDescription);
 
-            createContractRequest.ShouldNotBeNull();
-            createContractRequest.ContractId.ShouldBe(TestData.ContractId);
-            createContractRequest.EstateId.ShouldBe(TestData.EstateId);
-            createContractRequest.OperatorId.ShouldBe(TestData.OperatorId);
-            createContractRequest.Description.ShouldBe(TestData.ContractDescription);
-        }
-        
-        [Fact]
-        public void DisableTransactionFeeForProductRequest_CanBeCreated_IsCreated() {
-            DisableTransactionFeeForProductRequest disableTransactionFeeForProductRequest =
-                DisableTransactionFeeForProductRequest.Create(TestData.ContractId, TestData.EstateId, TestData.ContractProductId, TestData.TransactionFeeId);
-
-            disableTransactionFeeForProductRequest.ShouldNotBeNull();
-            disableTransactionFeeForProductRequest.ContractId.ShouldBe(TestData.ContractId);
-            disableTransactionFeeForProductRequest.EstateId.ShouldBe(TestData.EstateId);
-            disableTransactionFeeForProductRequest.ProductId.ShouldBe(TestData.ContractProductId);
-            disableTransactionFeeForProductRequest.TransactionFeeId.ShouldBe(TestData.TransactionFeeId);
-        }
         
         [Fact]
         public void EmailMerchantStatementRequest_CanBeCreated_IsCreated(){

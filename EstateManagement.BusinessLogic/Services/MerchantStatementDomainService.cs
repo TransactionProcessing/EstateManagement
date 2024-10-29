@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Services
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Services
 {
     using System;
     using System.Collections.Generic;
@@ -20,8 +22,10 @@
     using SecurityService.DataTransferObjects.Responses;
     using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.EventStore.Aggregate;
+    using Shared.Exceptions;
     using Shared.General;
     using Shared.Logger;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
     /// <summary>
     /// 
@@ -93,14 +97,43 @@
 
         #region Methods
 
-        private async Task<MerchantStatementAggregate> GetLatestVersion(Guid statementId, CancellationToken cancellationToken){
+        private async Task<Result> ApplyUpdates(Func<MerchantStatementAggregate, Task<Result>> action, Guid estateId, Guid statementId, CancellationToken cancellationToken, Boolean isNotFoundError=true)
+        {
+            try
+            {
+                Result<MerchantStatementAggregate> getMerchantStatementResult = await this.GetLatestVersion(statementId, cancellationToken);
+                
+                Result<MerchantStatementAggregate> merchantStatementAggregateResult =
+                    DomainServiceHelper.HandleGetAggregateResult(getMerchantStatementResult, statementId, isNotFoundError);
+                if (merchantStatementAggregateResult.IsFailed)
+                    return ResultHelpers.CreateFailure(merchantStatementAggregateResult);
+
+                MerchantStatementAggregate merchantStatementAggregate = merchantStatementAggregateResult.Data;
+
+                Result result = await action(merchantStatementAggregate);
+                if (result.IsFailed)
+                    return ResultHelpers.CreateFailure(result);
+
+                Result saveResult = await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+                if (saveResult.IsFailed)
+                    return ResultHelpers.CreateFailure(saveResult);
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(ex.GetExceptionMessages());
+            }
+        }
+
+        private async Task<Result<MerchantStatementAggregate>> GetLatestVersion(Guid statementId, CancellationToken cancellationToken){
             Stopwatch sw = Stopwatch.StartNew();
             
-            MerchantStatementAggregate merchantStatementAggregate =
+            Result<MerchantStatementAggregate> merchantStatementAggregate =
                 await this.MerchantStatementAggregateRepository.GetLatestVersion(statementId, cancellationToken);
 
             sw.Stop();
-            var elapsedTime = sw.ElapsedMilliseconds;
+            Int64 elapsedTime = sw.ElapsedMilliseconds;
 
             if (elapsedTime > 1000){
                 Logger.LogWarning($"Rehydration of MerchantStatementAggregate Id [{statementId}] took {elapsedTime} ms");
@@ -109,51 +142,44 @@
             return merchantStatementAggregate;
         }
 
-        /// <summary>
-        /// Adds the settled fee to statement.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="settledDateTime">The settled date time.</param>
-        /// <param name="settledAmount">The settled amount.</param>
-        /// <param name="transactionId">The transaction identifier.</param>
-        /// <param name="settledFeeId">The settled fee identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task AddSettledFeeToStatement(Guid estateId,
-                                                   Guid merchantId,
-                                                   DateTime settledDateTime,
-                                                   Decimal settledAmount,
-                                                   Guid transactionId,
-                                                   Guid settledFeeId,
-                                                   CancellationToken cancellationToken)
+        public async Task<Result> AddSettledFeeToStatement(AddSettledFeeToMerchantStatementRequest command,
+                                                           CancellationToken cancellationToken)
         {
             // Work out the next statement date
-            DateTime nextStatementDate = CalculateStatementDate(settledDateTime);
+            DateTime nextStatementDate = CalculateStatementDate(command.SettledDateTime);
 
-            Guid statementId = GuidCalculator.Combine(merchantId, nextStatementDate.ToGuid());
-            Guid settlementFeeId = GuidCalculator.Combine(transactionId, settledFeeId);
-            MerchantStatementAggregate merchantStatementAggregate =
-                await GetLatestVersion(statementId, cancellationToken);
+            Guid statementId = GuidCalculator.Combine(command.MerchantId, nextStatementDate.ToGuid());
+            Guid settlementFeeId = GuidCalculator.Combine(command.TransactionId, command.SettledFeeId);
             
-            // Add settled fee to statement
-            SettledFee settledFee = new SettledFee
-                                    {
-                                        DateTime = settledDateTime,
-                                        Amount = settledAmount,
-                                        TransactionId = transactionId,
-                                        SettledFeeId = settlementFeeId
-            };
+            Result result = await ApplyUpdates(
+                async (MerchantStatementAggregate merchantStatementAggregate) => {
 
-            Guid eventId = IdGenerationService.GenerateEventId(new {
-                                                                       transactionId,
-                                                                       settlementFeeId,
-                                                                       settledFee,
-                                                                       settledDateTime,
-                                                                   });
-            
-            merchantStatementAggregate.AddSettledFeeToStatement(statementId, eventId, nextStatementDate, estateId, merchantId, settledFee);
+                    SettledFee settledFee = new SettledFee
+                    {
+                        DateTime = command.SettledDateTime,
+                        Amount = command.SettledAmount,
+                        TransactionId = command.TransactionId,
+                        SettledFeeId = settlementFeeId
+                    };
 
-            await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+                    Guid eventId = IdGenerationService.GenerateEventId(new
+                    {
+                        command.TransactionId,
+                        settlementFeeId,
+                        settledFee,
+                        command.SettledDateTime,
+                    });
+
+                    merchantStatementAggregate.AddSettledFeeToStatement(statementId, eventId, nextStatementDate, command.EstateId, command.MerchantId, settledFee);
+
+                    return Result.Success();
+                },
+                command.EstateId, statementId, cancellationToken);
+
+            if (result.IsFailed)
+                return ResultHelpers.CreateFailure(result);
+
+            return Result.Success();
         }
 
         /// <summary>
@@ -176,64 +202,74 @@
         /// <param name="statementDate">The statement date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<Guid> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken)
+        public async Task<Result> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken)
         {
             Guid statementId = GuidCalculator.Combine(command.MerchantId, command.RequestDto.MerchantStatementDate.ToGuid());
-            MerchantStatementAggregate merchantStatementAggregate =
-                await GetLatestVersion(statementId, cancellationToken);
+            
+            Result result = await ApplyUpdates(
+                async (MerchantStatementAggregate merchantStatementAggregate) => {
 
-            merchantStatementAggregate.GenerateStatement(DateTime.Now);
+                    merchantStatementAggregate.GenerateStatement(DateTime.Now);
 
-            await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+                    return Result.Success();
+                },
+                command.EstateId, statementId, cancellationToken, false);
 
-            return merchantStatementAggregate.AggregateId;
+            if (result.IsFailed)
+                return ResultHelpers.CreateFailure(result);
+
+            return Result.Success();
         }
 
-        public async Task EmailStatement(Guid estateId,
-                                         Guid merchantId,
-                                         Guid statementId,
-                                         CancellationToken cancellationToken)
+        public async Task<Result> EmailStatement(EmailMerchantStatementRequest command,
+                                                 CancellationToken cancellationToken)
         {
-            StatementHeader statementHeader = await this.EstateManagementRepository.GetStatement(estateId, statementId, cancellationToken);
-            
-            String html = await this.StatementBuilder.GetStatementHtml(statementHeader, cancellationToken);
+            Result result = await ApplyUpdates(
+                async (MerchantStatementAggregate merchantStatementAggregate) => {
 
-            String base64 = await this.PdfGenerator.CreatePDF(html, cancellationToken);
+                    StatementHeader statementHeader = await this.EstateManagementRepository.GetStatement(command.EstateId, command.MerchantStatementId, cancellationToken);
 
-            SendEmailRequest sendEmailRequest = new SendEmailRequest
-            {
-                Body = "<html><body>Please find attached this months statement.</body></html>",
-                ConnectionIdentifier = estateId,
-                FromAddress = "golfhandicapping@btinternet.com", // TODO: lookup from config
-                IsHtml = true,
-                Subject = $"Merchant Statement for {statementHeader.StatementDate}",
-                MessageId = statementId,
-                ToAddresses = new List<String>
-                              {
-                                  statementHeader.MerchantEmail
-                              },
-                EmailAttachments = new List<EmailAttachment>
-                                   {
-                                       new EmailAttachment
-                                       {
-                                           FileData = base64,
-                                           FileType = FileType.PDF,
-                                           Filename = $"merchantstatement{statementHeader.StatementDate}.pdf"
-                                       }
-                                   }
-            };
+                    String html = await this.StatementBuilder.GetStatementHtml(statementHeader, cancellationToken);
 
-            this.TokenResponse = await Helpers.GetToken(this.TokenResponse, this.SecurityServiceClient, cancellationToken);
+                    String base64 = await this.PdfGenerator.CreatePDF(html, cancellationToken);
 
-            SendEmailResponse sendEmailResponse = await this.MessagingServiceClient.SendEmail(this.TokenResponse.AccessToken, sendEmailRequest, cancellationToken);
+                    SendEmailRequest sendEmailRequest = new SendEmailRequest
+                    {
+                        Body = "<html><body>Please find attached this months statement.</body></html>",
+                        ConnectionIdentifier = command.EstateId,
+                        FromAddress = "golfhandicapping@btinternet.com", // TODO: lookup from config
+                        IsHtml = true,
+                        Subject = $"Merchant Statement for {statementHeader.StatementDate}",
+                        MessageId = command.MerchantStatementId,
+                        ToAddresses = new List<String>
+                        {
+                            statementHeader.MerchantEmail
+                        },
+                        EmailAttachments = new List<EmailAttachment>
+                        {
+                            new EmailAttachment
+                            {
+                                FileData = base64,
+                                FileType = FileType.PDF,
+                                Filename = $"merchantstatement{statementHeader.StatementDate}.pdf"
+                            }
+                        }
+                    };
 
-            // record email getting sent in statement aggregate
-            MerchantStatementAggregate merchantStatementAggregate =
-                await GetLatestVersion(statementId, cancellationToken);
+                    this.TokenResponse = await Helpers.GetToken(this.TokenResponse, this.SecurityServiceClient, cancellationToken);
 
-            merchantStatementAggregate.EmailStatement(DateTime.Now, sendEmailResponse.MessageId);
+                    SendEmailResponse sendEmailResponse = await this.MessagingServiceClient.SendEmail(this.TokenResponse.AccessToken, sendEmailRequest, cancellationToken);
 
-            await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+                    merchantStatementAggregate.EmailStatement(DateTime.Now, sendEmailResponse.MessageId);
+
+                    return Result.Success();
+                },
+                command.EstateId, command.MerchantStatementId, cancellationToken);
+
+            if (result.IsFailed)
+                return ResultHelpers.CreateFailure(result);
+
+            return Result.Success();
         }
 
         /// <summary>
@@ -241,58 +277,51 @@
         /// </summary>
         private TokenResponse TokenResponse;
 
-        /// <summary>
-        /// Adds the transaction to statement.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="transactionDateTime">The transaction date time.</param>
-        /// <param name="transactionAmount">The transaction amount.</param>
-        /// <param name="isAuthorised">if set to <c>true</c> [is authorised].</param>
-        /// <param name="transactionId">The transaction identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task AddTransactionToStatement(Guid estateId,
-                                                    Guid merchantId,
-                                                    DateTime transactionDateTime,
-                                                    Decimal? transactionAmount,
-                                                    Boolean isAuthorised,
-                                                    Guid transactionId,
-                                                    CancellationToken cancellationToken)
+        public async Task<Result> AddTransactionToStatement(AddTransactionToMerchantStatementRequest command,
+                                                            CancellationToken cancellationToken)
         {
             // Transaction Completed arrives(if this is a logon transaction or failed then return)
-            if (isAuthorised == false)
-                return;
-            if (transactionAmount.HasValue == false)
-                return;
+            if (command.IsAuthorised == false)
+                return Result.Success();
+            if (command.TransactionAmount.HasValue == false)
+                return Result.Success();
 
             // Work out the next statement date
-            DateTime nextStatementDate = CalculateStatementDate(transactionDateTime);
+            DateTime nextStatementDate = CalculateStatementDate(command.TransactionDateTime);
 
-            Guid statementId = GuidCalculator.Combine(merchantId, nextStatementDate.ToGuid());
-
-            MerchantStatementAggregate merchantStatementAggregate =
-                await GetLatestVersion(statementId, cancellationToken);
-
-            // Add transaction to statement
-            Transaction transaction = new Transaction
-            {
-                DateTime = transactionDateTime,
-                Amount = transactionAmount.Value,
-                TransactionId = transactionId
-            };
-
-            Guid eventId = IdGenerationService.GenerateEventId(new
-                                                               {
-                                                                   transactionId,
-                                                                   transactionAmount.Value,
-                                                                   transactionDateTime,
-                                                               });
+            Guid statementId = GuidCalculator.Combine(command.MerchantId, nextStatementDate.ToGuid());
             
-            merchantStatementAggregate.AddTransactionToStatement(statementId,eventId, nextStatementDate, estateId, merchantId, transaction);
+            Result result = await ApplyUpdates(
+                async (MerchantStatementAggregate merchantStatementAggregate) => {
 
-            await this.MerchantStatementAggregateRepository.SaveChanges(merchantStatementAggregate, cancellationToken);
+                    // Add transaction to statement
+                    Models.MerchantStatement.Transaction transaction = new() {
+                        DateTime = command.TransactionDateTime,
+                        Amount = command.TransactionAmount.GetValueOrDefault(0),
+                        TransactionId = command.TransactionId
+                    };
+
+                    Guid eventId = IdGenerationService.GenerateEventId(new
+                    {
+                        command.TransactionId,
+                        TransactionAmount = command.TransactionAmount.GetValueOrDefault(0),
+                        command.TransactionDateTime,
+                    });
+
+                    merchantStatementAggregate.AddTransactionToStatement(statementId, eventId, nextStatementDate, command.EstateId, command.MerchantId, transaction);
+
+                    return Result.Success();
+                },
+                command.EstateId, statementId, cancellationToken);
+
+            if (result.IsFailed)
+                return ResultHelpers.CreateFailure(result);
+
+            return Result.Success();
         }
 
         #endregion
     }
+
+    // TODO: Should the estate and merchant be validated also....
 }

@@ -126,6 +126,7 @@ namespace EstateManagement
             app.UseEndpoints(endpoints =>
                              {
                                  endpoints.MapControllers();
+                                 // Add filter for all controllers.
                                  endpoints.MapHealthChecks("health", new HealthCheckOptions()
                                                                       {
                                                                           Predicate = _ => true,

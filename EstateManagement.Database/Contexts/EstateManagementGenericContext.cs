@@ -1,8 +1,13 @@
 ﻿using EstateManagement.Database.Entities.Summary;
+using Shared.DomainDrivenDesign.EventSourcing;
+using Shared.Exceptions;
+using SimpleResults;
 
 namespace EstateManagement.Database.Contexts;
 
+using System.Diagnostics.Contracts;
 using System.Reflection;
+using Azure;
 using Entities;
 using EntityFramework.Exceptions.Common;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +48,7 @@ public abstract class EstateManagementGenericContext : DbContext
 
     public DbSet<ContractProductTransactionFee> ContractProductTransactionFees { get; set; }
 
-    public DbSet<Contract> Contracts { get; set; }
+    public DbSet<Entities.Contract> Contracts { get; set; }
 
     public DbSet<Operator> Operators { get; set; }
 
@@ -267,20 +272,297 @@ public abstract class EstateManagementGenericContext : DbContext
                                                                                   };
     }
 
-    public virtual async Task SaveChangesWithDuplicateHandling(CancellationToken cancellationToken)
-    {
-        try
-        {
-            await this.SaveChangesAsync(cancellationToken);
+    public new async Task<Result> SaveChangesAsync(CancellationToken cancellationToken) {
+        try {
+            await base.SaveChangesAsync(cancellationToken);
+            return Result.Success();
         }
-        catch (UniqueConstraintException uex)
-        {
-            // Swallow the error
-            // TODO: handle PK exceptions uex.ConstraintName and uex.ConstraintProperties are both null
-            //Logger.LogWarning($"Unique Constraint Exception. Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
+        catch (Exception ex) {
+            return Result.Failure(ex.GetExceptionMessages());
         }
     }
 
+    //public virtual async Task SaveChangesWithDuplicateHandling(CancellationToken cancellationToken)
+    //{
+    //    try
+    //    {
+    //        await this.SaveChangesAsync(cancellationToken);
+    //    }
+    //    catch (UniqueConstraintException uex)
+    //    {
+    //        // Swallow the error
+    //        // TODO: handle PK exceptions uex.ConstraintName and uex.ConstraintProperties are both null
+    //        //Logger.LogWarning($"Unique Constraint Exception. Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
+    //    }
+    //}
+
+
+    #endregion
+}
+
+public static class EstateManagementGenericContextExtensions {
+    public static async Task<Result<Estate>> LoadEstate(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid estateId = DomainEventHelper.GetEstateId(domainEvent);
+        Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken);
+        return estate switch
+        {
+            null => Result.NotFound($"Estate not found with Id {estateId}"),
+            _ => Result.Success(estate)
+        };
+    }
+
+    public static async Task<Result<Operator>> LoadOperator(this EstateManagementGenericContext context, Guid operatorId, CancellationToken cancellationToken)
+    {
+        Operator @operator = await context.Operators.SingleOrDefaultAsync(e => e.OperatorId == operatorId, cancellationToken);
+
+        return @operator switch
+        {
+            null => Result.NotFound($"Operator not found with Id {operatorId}"),
+            _ => Result.Success(@operator)
+        };
+    }
+
+    public static async Task<Result<Database.Entities.Operator>> LoadOperator(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid operatorId = DomainEventHelper.GetOperatorId(domainEvent);
+        Result<Operator> loadOperatorResult = await context.LoadOperator(operatorId, cancellationToken);
+
+        return loadOperatorResult;
+    }
+
+    public static async Task<Result<MerchantDevice>> LoadMerchantDevice(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid merchantId = DomainEventHelper.GetMerchantId(domainEvent);
+        Guid deviceId = DomainEventHelper.GetDeviceId(domainEvent);
+        MerchantDevice device = await context.MerchantDevices.SingleOrDefaultAsync(d => d.DeviceId == deviceId &&
+            d.MerchantId == merchantId, cancellationToken);
+
+        return device switch
+        {
+            null => Result.NotFound($"Device Id {deviceId} not found for Merchant {merchantId}"),
+            _ => Result.Success(device)
+        };
+    }
+
+    public static async Task<Result<File>> LoadFile(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid fileId = DomainEventHelper.GetFileId(domainEvent);
+        File file = await context.Files.SingleOrDefaultAsync(e => e.FileId == fileId, cancellationToken: cancellationToken);
+
+        return file switch
+        {
+            null => Result.NotFound($"File not found with Id {fileId}"),
+            _ => Result.Success(file)
+        };
+    }
+
+    public static async Task<Result<Merchant>> LoadMerchant(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid merchantId = DomainEventHelper.GetMerchantId(domainEvent);
+        Merchant merchant = await context.Merchants.SingleOrDefaultAsync(e => e.MerchantId == merchantId, cancellationToken: cancellationToken);
+        return merchant switch
+        {
+            null => Result.NotFound($"Merchant not found with Id {merchantId}"),
+            _ => Result.Success(merchant)
+        };
+    }
+
+    public static async Task<Result<MerchantAddress>> LoadMerchantAddress(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid merchantId = DomainEventHelper.GetMerchantId(domainEvent);
+        Guid addressId = DomainEventHelper.GetAddressId(domainEvent);
+
+        MerchantAddress merchantAddress = await context.MerchantAddresses.SingleOrDefaultAsync(e => e.MerchantId == merchantId &&
+                                                                                                    e.AddressId == addressId, cancellationToken: cancellationToken);
+
+        return merchantAddress switch
+        {
+            null => Result.NotFound($"Merchant Address {addressId} not found with merchant Id {merchantId}"),
+            _ => Result.Success(merchantAddress)
+        };
+    }
+
+    public static async Task<Result<MerchantContact>> LoadMerchantContact(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid merchantId = DomainEventHelper.GetMerchantId(domainEvent);
+
+        Guid contactId = DomainEventHelper.GetContactId(domainEvent);
+        MerchantContact merchantContact = await context.MerchantContacts.SingleOrDefaultAsync(e => e.MerchantId == merchantId &&
+                                                                                                    e.ContactId == contactId, cancellationToken: cancellationToken);
+        return merchantContact switch
+        {
+            null => Result.NotFound($"Merchant Contact {contactId} not found with merchant Id {merchantId}"),
+            _ => Result.Success(merchantContact)
+        };
+    }
+
+    public static async Task<Result<Reconciliation>> LoadReconcilation(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid transactionId = DomainEventHelper.GetTransactionId(domainEvent);
+        Reconciliation reconciliation =
+            await context.Reconciliations.SingleOrDefaultAsync(t => t.TransactionId == transactionId, cancellationToken: cancellationToken);
+        return reconciliation switch
+        {
+            null => Result.NotFound($"Reconciliation not found with Id {transactionId}"),
+            _ => Result.Success(reconciliation)
+        };
+    }
+
+    public static async Task<Result<Settlement>> LoadSettlement(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid settlementId = DomainEventHelper.GetSettlementId(domainEvent);
+        Settlement settlement = await context.Settlements.SingleOrDefaultAsync(e => e.SettlementId == settlementId, cancellationToken: cancellationToken);
+
+        return settlement switch
+        {
+            null => Result.NotFound($"Settlement not found with Id {settlementId}"),
+            _ => Result.Success(settlement)
+        };
+    }
+
+    public static async Task<Result<StatementHeader>> LoadStatementHeader(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid statementHeaderId = DomainEventHelper.GetStatementHeaderId(domainEvent);
+        StatementHeader statementHeader = await context.StatementHeaders.SingleOrDefaultAsync(e => e.StatementId == statementHeaderId, cancellationToken: cancellationToken);
+
+        return statementHeader switch
+        {
+            null => Result.NotFound($"Statement Header not found with Id {statementHeaderId}"),
+            _ => Result.Success(statementHeader)
+        };
+    }
+
+    public static async Task<Result<Transaction>> LoadTransaction(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid transactionId = DomainEventHelper.GetTransactionId(domainEvent);
+        Transaction transaction = await context.Transactions.SingleOrDefaultAsync(e => e.TransactionId == transactionId, cancellationToken: cancellationToken);
+
+        return transaction switch
+        {
+            null => Result.NotFound($"Transaction not found with Id {transactionId}"),
+            _ => Result.Success(transaction)
+        };
+    }
+
+    public static async Task<Result<Voucher>> LoadVoucher(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid voucherId = DomainEventHelper.GetVoucherId(domainEvent);
+        Voucher voucher = await context.Vouchers.SingleOrDefaultAsync(v => v.VoucherId == voucherId, cancellationToken);
+
+        return voucher switch
+        {
+            null => Result.NotFound($"Voucher not found with Id {voucherId}"),
+            _ => Result.Success(voucher)
+        };
+    }
+
+    public static async Task<Result<Entities.Contract>> LoadContract(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid contractId = Database.Contexts.DomainEventHelper.GetContractId(domainEvent);
+        Entities.Contract contract = await context.Contracts.SingleOrDefaultAsync(e => e.ContractId == contractId, cancellationToken: cancellationToken);
+        
+        return contract switch
+        {
+            null => Result.NotFound($"Contract not found with Id {contractId}"),
+            _ => Result.Success(contract)
+        };
+    }
+
+    public static async Task<Result<ContractProductTransactionFee>> LoadContractProductTransactionFee(this EstateManagementGenericContext context, IDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        Guid contractProductTransactionFeeId = Database.Contexts.DomainEventHelper.GetContractProductTransactionFeeId(domainEvent);
+        ContractProductTransactionFee contractProductTransactionFee = await context.ContractProductTransactionFees.SingleOrDefaultAsync(e => e.ContractProductTransactionFeeId == contractProductTransactionFeeId, cancellationToken: cancellationToken);
+
+        return contractProductTransactionFee switch
+        {
+            null => Result.NotFound($"Contract Product Transaction Fee not found with Id {contractProductTransactionFeeId}"),
+            _ => Result.Success(contractProductTransactionFee)
+        };
+    }
+}
+
+public static class DomainEventHelper
+{
+    #region Methods
+
+    public static Guid GetContractId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "ContractId");
+
+    public static Guid GetContractProductId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "ProductId");
+
+    public static Guid GetContractProductTransactionFeeId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FeeId");
+
+    public static Guid GetEstateId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "EstateId");
+    public static Guid GetOperatorId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "OperatorId");
+
+    public static Guid GetFileId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FileId");
+
+    public static Guid GetFileImportLogId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "FileImportLogId");
+    public static Guid GetDeviceId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "DeviceId");
+    public static Guid GetMerchantId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "MerchantId");
+    public static Guid GetAddressId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "AddressId");
+
+    public static Guid GetContactId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "ContactId");
+
+    public static T GetProperty<T>(IDomainEvent domainEvent, String propertyName)
+    {
+        try
+        {
+            var f = domainEvent.GetType()
+                               .GetProperties()
+                               .SingleOrDefault(p => p.Name == propertyName);
+
+            if (f != null)
+            {
+                return (T)f.GetValue(domainEvent);
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return default(T);
+    }
+
+    public static T GetPropertyIgnoreCase<T>(IDomainEvent domainEvent, String propertyName)
+    {
+        try
+        {
+            var f = domainEvent.GetType()
+                               .GetProperties()
+                               .SingleOrDefault(p => String.Compare(p.Name, propertyName, StringComparison.CurrentCultureIgnoreCase) == 0);
+
+            if (f != null)
+            {
+                return (T)f.GetValue(domainEvent);
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return default(T);
+    }
+
+    public static Guid GetSettlementId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "SettlementId");
+
+    public static Guid GetStatementHeaderId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "MerchantStatementId");
+
+    public static Guid GetTransactionId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "TransactionId");
+
+    public static Guid GetVoucherId(IDomainEvent domainEvent) => DomainEventHelper.GetProperty<Guid>(domainEvent, "VoucherId");
+
+    public static Boolean HasProperty(IDomainEvent domainEvent,
+                                      String propertyName)
+    {
+        PropertyInfo propertyInfo = domainEvent.GetType()
+                                               .GetProperties()
+                                               .SingleOrDefault(p => p.Name == propertyName);
+
+        return propertyInfo != null;
+    }
 
     #endregion
 }

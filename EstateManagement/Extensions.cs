@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading;
 using EventStore.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.EventStore.Aggregate;
@@ -83,5 +84,15 @@ public static class Extensions
                                                         eventHandlerResolvers,
                                                         Extensions.log,
                                                         subscriptionRepositoryResolver).Wait(CancellationToken.None);
+    }
+
+    public static bool IsSuccess(this ActionResult result)
+    {
+        return result switch
+        {
+            StatusCodeResult statusCodeResult => statusCodeResult.StatusCode is >= 200 and < 300,
+            ObjectResult objectResult => objectResult.StatusCode is >= 200 and < 300,
+            _ => false
+        };
     }
 }

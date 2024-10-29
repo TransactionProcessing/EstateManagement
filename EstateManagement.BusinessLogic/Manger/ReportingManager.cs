@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Manger;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Manger;
 
 using System;
 using System.Collections.Generic;
@@ -41,25 +43,21 @@ public class ReportingManager : IReportingManager
 
     #region Methods
 
-    public async Task<SettlementModel> GetSettlement(Guid estateId,
-                                                     Guid merchantId,
-                                                     Guid settlementId,
-                                                     CancellationToken cancellationToken)
+    public async Task<Result<SettlementModel>> GetSettlement(Guid estateId,
+                                                             Guid merchantId,
+                                                             Guid settlementId,
+                                                             CancellationToken cancellationToken)
     {
-        SettlementModel model = await this.RepositoryForReports.GetSettlement(estateId, merchantId, settlementId, cancellationToken);
-
-        return model;
+        return await this.RepositoryForReports.GetSettlement(estateId, merchantId, settlementId, cancellationToken);
     }
 
-    public async Task<List<SettlementModel>> GetSettlements(Guid estateId,
+    public async Task<Result<List<SettlementModel>>> GetSettlements(Guid estateId,
                                                             Guid? merchantId,
                                                             String startDate,
                                                             String endDate,
                                                             CancellationToken cancellationToken)
     {
-        List<SettlementModel> model = await this.RepositoryForReports.GetSettlements(estateId, merchantId, startDate, endDate, cancellationToken);
-
-        return model;
+        return await this.RepositoryForReports.GetSettlements(estateId, merchantId, startDate, endDate, cancellationToken);
     }
 
     #endregion

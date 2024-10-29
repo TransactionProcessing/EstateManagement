@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Repository{
+﻿using SimpleResults;
+
+namespace EstateManagement.Repository{
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -44,38 +46,9 @@
 
         #region Methods
 
-        public async Task<ContractModel> GetContract(Guid estateId,
-                                                     Guid contractId,
-                                                     Boolean includeProducts,
-                                                     Boolean includeProductsWithFees,
-                                                     CancellationToken cancellationToken){
-            EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
-
-            Contract contract = await context.Contracts.SingleOrDefaultAsync(c => c.ContractId == contractId, cancellationToken);
-
-            if (contract == null){
-                throw new NotFoundException($"No contract found in read model with Id [{contractId}]");
-            }
-            
-            List<ContractProduct> contractProducts = null;
-            List<Database.Entities.ContractProductTransactionFee> contractProductFees = null;
-
-            if (includeProducts || includeProductsWithFees){
-                contractProducts = await context.ContractProducts.Where(cp => cp.ContractId == contract.ContractId).ToListAsync(cancellationToken);
-            }
-
-            if (includeProductsWithFees){
-                contractProductFees = await (from cptf in context.ContractProductTransactionFees
-                                             join cp in context.ContractProducts on cptf.ContractProductId equals cp.ContractProductId
-                                             where cp.ContractId == contract.ContractId
-                                             select cptf).ToListAsync(cancellationToken);
-            }
-
-            return this.ModelFactory.ConvertFrom(estateId, contract, contractProducts, contractProductFees);
-        }
-
-        public async Task<List<ContractModel>> GetContracts(Guid estateId,
-                                                            CancellationToken cancellationToken){
+        public async Task<Result<List<ContractModel>>> GetContracts(Guid estateId,
+                                                            CancellationToken cancellationToken)
+        {
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             var query = await (from c in context.Contracts
@@ -83,32 +56,36 @@
                                from contractprouduct in cps.DefaultIfEmpty()
                                join eo in context.Operators on c.OperatorId equals eo.OperatorId
                                join e in context.Estates on eo.EstateId equals e.EstateId
-                               select new{
-                                             Estate = e,
-                                             Contract = c,
-                                             Product = contractprouduct,
-                                             Operator = eo
-                                         }).ToListAsync(cancellationToken);
-
+                               select new
+                               {
+                                   Estate = e,
+                                   Contract = c,
+                                   Product = contractprouduct,
+                                   Operator = eo
+                               }).ToListAsync(cancellationToken);
+            
             List<ContractModel> contracts = new List<ContractModel>();
 
-            foreach (var contractData in query){
+            foreach (var contractData in query)
+            {
                 // attempt to find the contract
                 ContractModel contract = contracts.SingleOrDefault(c => c.ContractId == contractData.Contract.ContractId);
 
-                if (contract == null){
+                if (contract == null)
+                {
                     // create the contract
-                    contract = new ContractModel{
-                                                    EstateReportingId = contractData.Estate.EstateReportingId,
-                                                    EstateId = contractData.Estate.EstateId,
-                                                    OperatorId = contractData.Contract.OperatorId,
-                                                    OperatorName = contractData.Operator.Name,
-                                                    Products = new List<Product>(),
-                                                    Description = contractData.Contract.Description,
-                                                    IsCreated = true,
-                                                    ContractId = contractData.Contract.ContractId,
-                                                    ContractReportingId = contractData.Contract.ContractReportingId
-                                                };
+                    contract = new ContractModel
+                    {
+                        EstateReportingId = contractData.Estate.EstateReportingId,
+                        EstateId = contractData.Estate.EstateId,
+                        OperatorId = contractData.Contract.OperatorId,
+                        OperatorName = contractData.Operator.Name,
+                        Products = new List<Product>(),
+                        Description = contractData.Contract.Description,
+                        IsCreated = true,
+                        ContractId = contractData.Contract.ContractId,
+                        ContractReportingId = contractData.Contract.ContractReportingId
+                    };
 
                     contracts.Add(contract);
                 }
@@ -116,43 +93,46 @@
                 // Now add the product if not already added
                 Boolean productFound = contract.Products.Any(p => p.ContractProductId == contractData.Product.ContractProductId);
 
-                if (productFound == false){
-                    if (contractData.Product != null){
+                if (productFound == false)
+                {
+                    if (contractData.Product != null)
+                    {
                         // Not already there so need to add it
-                        contract.Products.Add(new Product{
-                                                             ContractProductId = contractData.Product.ContractProductId,
-                                                             TransactionFees = null,
-                                                             Value = contractData.Product.Value,
-                                                             Name = contractData.Product.ProductName,
-                                                             DisplayText = contractData.Product.DisplayText,
-                                                             ContractProductReportingId = contractData.Product.ContractProductReportingId
-                                                         });
+                        contract.Products.Add(new Product
+                        {
+                            ContractProductId = contractData.Product.ContractProductId,
+                            TransactionFees = null,
+                            Value = contractData.Product.Value,
+                            Name = contractData.Product.ProductName,
+                            DisplayText = contractData.Product.DisplayText,
+                            ContractProductReportingId = contractData.Product.ContractProductReportingId
+                        });
                     }
                 }
             }
 
-            return contracts;
+            return Result.Success(contracts);
         }
 
-        public async Task<EstateModel> GetEstate(Guid estateId,
-                                                 CancellationToken cancellationToken){
+        public async Task<Result<EstateModel>> GetEstate(Guid estateId,
+                                                         CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken);
 
             if (estate == null){
-                throw new NotFoundException($"No estate found in read model with Id [{estateId}]");
+                return Result.NotFound($"No estate found in read model with Id [{estateId}]");
             }
 
             List<EstateSecurityUser> estateSecurityUsers = await context.EstateSecurityUsers.Where(esu => esu.EstateId == estate.EstateId).ToListAsync(cancellationToken);
             List<Operator> operators = await context.Operators.Where(eo => eo.EstateId == estate.EstateId).ToListAsync(cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(estate, estateSecurityUsers, operators);
+            return Result.Success(this.ModelFactory.ConvertFrom(estate, estateSecurityUsers, operators));
         }
 
-        public async Task<List<ContractModel>> GetMerchantContracts(Guid estateId,
-                                                                    Guid merchantId,
-                                                                    CancellationToken cancellationToken){
+        public async Task<Result<List<ContractModel>>> GetMerchantContracts(Guid estateId,
+                                                                          Guid merchantId,
+                                                                          CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             var x = await (from c in context.Contracts
@@ -206,16 +186,16 @@
                 }
             }
 
-            return contracts;
+            return Result.Success(contracts);
         }
 
-        public async Task<MerchantModel> GetMerchant(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
+        public async Task<Result<MerchantModel>> GetMerchant(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Merchant merchant = await (from m in context.Merchants where m.MerchantId == merchantId select m).SingleOrDefaultAsync(cancellationToken);
 
             if (merchant == null){
-                throw new NotFoundException($"Merchant with Id {merchantId} not found for Estate {estateId}");
+                return Result.NotFound($"Merchant with Id {merchantId} not found for Estate {estateId}");
             }
 
             List<MerchantAddress> merchantAddresses = await (from a in context.MerchantAddresses where a.MerchantId == merchantId select a).ToListAsync(cancellationToken);
@@ -224,21 +204,24 @@
             List<MerchantSecurityUser> merchantSecurityUsers = await (from u in context.MerchantSecurityUsers where u.MerchantId == merchantId select u).ToListAsync(cancellationToken);
             List<MerchantDevice> merchantDevices = await (from d in context.MerchantDevices where d.MerchantId == merchantId select d).ToListAsync(cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(estateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers);
+            return Result.Success(this.ModelFactory.ConvertFrom(estateId, merchant, merchantAddresses, merchantContacts, merchantOperators, merchantDevices, merchantSecurityUsers));
         }
 
-        public async Task<MerchantModel> GetMerchantFromReference(Guid estateId,
-                                                                  String reference,
-                                                                  CancellationToken cancellationToken){
+        public async Task<Result<MerchantModel>> GetMerchantFromReference(Guid estateId,
+                                                                        String reference,
+                                                                        CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Merchant merchant = await (from m in context.Merchants where m.Reference == reference select m).SingleOrDefaultAsync(cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(estateId,merchant, null, null, null, null, null);
+            if (merchant == null)
+                return Result.NotFound($"No merchant found with reference {reference}");
+
+            return Result.Success(this.ModelFactory.ConvertFrom(estateId,merchant, null, null, null, null, null));
         }
 
-        public async Task<List<MerchantModel>> GetMerchants(Guid estateId,
-                                                            CancellationToken cancellationToken){
+        public async Task<Result<List<MerchantModel>>> GetMerchants(Guid estateId,
+                                                                  CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken:cancellationToken);
@@ -250,7 +233,7 @@
             List<MerchantDevice> merchantDevices = await (from d in context.MerchantDevices where merchants.Select(m => m.MerchantId).Contains(d.MerchantId) select d).ToListAsync(cancellationToken);
 
             if (merchants.Any() == false){
-                return null;
+                return Result.NotFound($"No merchants found for estate {estateId}");
             }
 
             List<MerchantModel> models = new List<MerchantModel>();
@@ -265,12 +248,12 @@
                 models.Add(this.ModelFactory.ConvertFrom(estateId, m, a, c, o, d, u));
             }
 
-            return models;
+            return Result.Success(models);
         }
 
-        public async Task<StatementHeader> GetStatement(Guid estateId,
-                                                        Guid merchantStatementId,
-                                                        CancellationToken cancellationToken){
+        public async Task<Result<StatementHeader>> GetStatement(Guid estateId,
+                                                              Guid merchantStatementId,
+                                                              CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Database.Entities.StatementHeader statement = await context.StatementHeaders.Where(sl => sl.StatementId == merchantStatementId).SingleOrDefaultAsync(cancellationToken);
@@ -325,17 +308,17 @@
             header.TransactionsValue = $"{transactionsTotal} KES";
             header.TransactionFeesValue = $"{feesTotal} KES";
 
-            return header;
+            return Result.Success(header);
         }
 
-        public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){
+        public async Task<Result<File>> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){
 
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Database.Entities.File file = await context.Files.SingleOrDefaultAsync(f => f.FileId == fileId, cancellationToken);
 
             if (file == null){
-                throw new NotFoundException($"File with Id [{fileId}] not found");
+                return Result.NotFound($"File with Id [{fileId}] not found");
             }
 
             // Now get all the lines
@@ -379,10 +362,10 @@
                 result.FileLineDetails.Add(fileLineDetails);
             }
 
-            return result;
+            return Result.Success(result);
         }
 
-        public async Task<List<Models.Operator.Operator>> GetOperators(Guid estateId, CancellationToken cancellationToken){
+        public async Task<Result<List<Models.Operator.Operator>>> GetOperators(Guid estateId, CancellationToken cancellationToken){
             EstateManagementGenericContext context = await this.ContextFactory.GetContext(estateId, EstateManagementRepository.ConnectionStringIdentifier, cancellationToken);
 
             Estate estate = await context.Estates.SingleOrDefaultAsync(e => e.EstateId == estateId, cancellationToken: cancellationToken);
@@ -399,7 +382,7 @@
                                                        });
             }
 
-            return models;
+            return Result.Success(models);
         }
 
         #endregion

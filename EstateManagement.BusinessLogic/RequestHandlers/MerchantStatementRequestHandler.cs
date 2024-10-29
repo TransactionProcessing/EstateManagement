@@ -6,6 +6,8 @@
     using MediatR;
     using Requests;
     using Services;
+    using SimpleResults;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
     /// <summary>
     /// 
@@ -15,7 +17,7 @@
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddTransactionToMerchantStatementRequest&gt;" />
     public class MerchantStatementRequestHandler : IRequestHandler<AddTransactionToMerchantStatementRequest>, 
                                                    IRequestHandler<AddSettledFeeToMerchantStatementRequest>,
-                                                   IRequestHandler<MerchantCommands.GenerateMerchantStatementCommand, Guid>,
+                                                   IRequestHandler<MerchantCommands.GenerateMerchantStatementCommand, Result>,
                                                    IRequestHandler<EmailMerchantStatementRequest>
     {
         #region Fields
@@ -48,15 +50,10 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task Handle(AddTransactionToMerchantStatementRequest request,
+        public async Task Handle(AddTransactionToMerchantStatementRequest command,
                                        CancellationToken cancellationToken)
         {
-            await this.MerchantStatementDomainService.AddTransactionToStatement(request.EstateId,
-                                                                                request.MerchantId,
-                                                                                request.TransactionDateTime,
-                                                                                request.TransactionAmount,
-                                                                                request.IsAuthorised,
-                                                                                request.TransactionId,
+            await this.MerchantStatementDomainService.AddTransactionToStatement(command,
                                                                                 cancellationToken);
         }
 
@@ -66,29 +63,24 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task Handle(AddSettledFeeToMerchantStatementRequest request,
+        public async Task Handle(AddSettledFeeToMerchantStatementRequest command,
                                        CancellationToken cancellationToken)
         {
-            await this.MerchantStatementDomainService.AddSettledFeeToStatement(request.EstateId,
-                                                                               request.MerchantId,
-                                                                               request.SettledDateTime,
-                                                                               request.SettledAmount,
-                                                                               request.TransactionId,
-                                                                               request.SettledFeeId,
+            await this.MerchantStatementDomainService.AddSettledFeeToStatement(command,
                                                                                cancellationToken);
         }
 
         #endregion
 
-        public async Task<Guid> Handle(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken)
         {
             return await this.MerchantStatementDomainService.GenerateStatement(command, cancellationToken);
         }
 
-        public async Task Handle(EmailMerchantStatementRequest request,
+        public async Task Handle(EmailMerchantStatementRequest command,
                                        CancellationToken cancellationToken)
         {
-            await this.MerchantStatementDomainService.EmailStatement(request.EstateId, request.MerchantId, request.MerchantStatementId, cancellationToken);
+            await this.MerchantStatementDomainService.EmailStatement(command, cancellationToken);
         }
     }
 }

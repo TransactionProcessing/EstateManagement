@@ -483,7 +483,8 @@ public static class ReqnrollExtensions
                                                                                 ReqnrollTableHelper.GetStringRowValue(tableRow,
                                                                                                                       "Country")
                                                                         },
-                                                              SettlementSchedule = schedule
+                                                              SettlementSchedule = schedule,
+                                                              MerchantId = Guid.NewGuid()
                                                           };
             requests.Add((estateDetails, createMerchantRequest));
         }

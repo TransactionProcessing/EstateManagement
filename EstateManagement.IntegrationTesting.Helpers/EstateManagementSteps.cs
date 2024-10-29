@@ -1,6 +1,10 @@
-﻿namespace EstateManagement.IntegrationTesting.Helpers;
+﻿using System.Net.WebSockets;
+using SimpleResults;
+
+namespace EstateManagement.IntegrationTesting.Helpers;
 
 using System.Text;
+using Azure;
 using Client;
 using DataTransferObjects;
 using DataTransferObjects.Requests.Contract;
@@ -51,16 +55,14 @@ public class EstateManagementSteps{
     public async Task WhenIMakeTheFollowingMerchantWithdrawals(String accessToken, List<(EstateDetails, Guid, MakeMerchantWithdrawalRequest)> requests){
         foreach ((EstateDetails, Guid, MakeMerchantWithdrawalRequest) makeMerchantWithdrawalRequest in requests){
 
-            MakeMerchantWithdrawalResponse makeMerchantWithdrawalResponse = await this.EstateClient
+            var result = await this.EstateClient
                                                                                       .MakeMerchantWithdrawal(accessToken,
                                                                                                               makeMerchantWithdrawalRequest.Item1.EstateId,
                                                                                                               makeMerchantWithdrawalRequest.Item2,
                                                                                                               makeMerchantWithdrawalRequest.Item3,
                                                                                                               CancellationToken.None).ConfigureAwait(false);
 
-            makeMerchantWithdrawalResponse.EstateId.ShouldBe(makeMerchantWithdrawalRequest.Item1.EstateId);
-            makeMerchantWithdrawalResponse.MerchantId.ShouldBe(makeMerchantWithdrawalRequest.Item2);
-            makeMerchantWithdrawalResponse.WithdrawalId.ShouldNotBe(Guid.Empty);
+            result.IsSuccess.ShouldBeTrue();
         }
     }
 
@@ -113,12 +115,11 @@ public class EstateManagementSteps{
 
     public async Task<List<EstateResponse>> WhenICreateTheFollowingEstates(String accessToken, List<CreateEstateRequest> requests){
         foreach (CreateEstateRequest createEstateRequest in requests){
-            CreateEstateResponse response = await this.EstateClient
+            Result? result = await this.EstateClient
                                                       .CreateEstate(accessToken, createEstateRequest, CancellationToken.None)
                                                       .ConfigureAwait(false);
 
-            response.ShouldNotBeNull();
-            response.EstateId.ShouldNotBe(Guid.Empty);
+            result.IsSuccess.ShouldBeTrue();
         }
 
         List<EstateResponse> results = new List<EstateResponse>();
@@ -166,23 +167,31 @@ public class EstateManagementSteps{
     public async Task<List<(Guid, EstateOperatorResponse)>> WhenICreateTheFollowingOperators(String accessToken, List<(EstateDetails estate, CreateOperatorRequest request)> requests){
         List<(Guid, EstateOperatorResponse)> results = new List<(Guid, EstateOperatorResponse)>();
         foreach ((EstateDetails estate, CreateOperatorRequest request) request in requests){
-            CreateOperatorResponse response = await this.EstateClient
+            Result? result = await this.EstateClient
                                                         .CreateOperator(accessToken,
                                                                         request.estate.EstateId,
                                                                         request.request,
                                                                         CancellationToken.None).ConfigureAwait(false);
 
-            response.ShouldNotBeNull();
-            response.EstateId.ShouldNotBe(Guid.Empty);
-            response.OperatorId.ShouldNotBe(Guid.Empty);
+            result.IsSuccess.ShouldBeTrue();
+        }
 
-            request.estate.AddOperator(response.OperatorId, request.request.Name);
-            results.Add((request.estate.EstateId, new EstateOperatorResponse{
-                                                                                OperatorId = request.request.OperatorId,
-                                                                                Name = request.request.Name,
-                                                                                RequireCustomMerchantNumber = request.request.RequireCustomMerchantNumber.GetValueOrDefault(),
-                                                                                RequireCustomTerminalNumber = request.request.RequireCustomTerminalNumber.GetValueOrDefault()
-            }));
+        foreach ((EstateDetails estate, CreateOperatorRequest request) request in requests) {
+            await Retry.For(async () => {
+                Result<List<OperatorResponse>>? operators = await this.EstateClient
+                    .GetOperators(accessToken, request.estate.EstateId, CancellationToken.None).ConfigureAwait(false);
+                operators.IsSuccess.ShouldBeTrue();
+                var @operator = operators.Data.SingleOrDefault(o => o.Name == request.request.Name);
+                @operator.ShouldNotBeNull();
+                request.estate.AddOperator(@operator.OperatorId, request.request.Name);
+                results.Add((request.estate.EstateId,
+                    new EstateOperatorResponse {
+                        OperatorId = @operator.OperatorId,
+                        Name = request.request.Name,
+                        RequireCustomMerchantNumber = request.request.RequireCustomMerchantNumber.GetValueOrDefault(),
+                        RequireCustomTerminalNumber = request.request.RequireCustomTerminalNumber.GetValueOrDefault()
+                    }));
+            });
         }
 
         return results;
@@ -212,15 +221,13 @@ public class EstateManagementSteps{
 
         foreach ((EstateDetails estate, CreateMerchantRequest request) request in requests){
 
-            CreateMerchantResponse response = await this.EstateClient
+            Result? result = await this.EstateClient
                                                         .CreateMerchant(accessToken, request.estate.EstateId, request.request, CancellationToken.None)
                                                         .ConfigureAwait(false);
 
-            response.ShouldNotBeNull();
-            response.EstateId.ShouldBe(request.estate.EstateId);
-            response.MerchantId.ShouldNotBe(Guid.Empty);
+            result.IsSuccess.ShouldBeTrue();
 
-            merchants.Add((response.EstateId, response.MerchantId, request.request.Name));
+            merchants.Add((request.estate.EstateId, request.request.MerchantId.Value, request.request.Name));
         }
 
         foreach ((Guid, Guid, String) m in merchants){
@@ -287,64 +294,60 @@ public class EstateManagementSteps{
     }
 
     public async Task<List<ContractResponse>> GivenICreateAContractWithTheFollowingValues(string accessToken, List<(EstateDetails, CreateContractRequest)> requests){
-        List<ContractResponse> result = new List<ContractResponse>();
+        List<ContractResponse> contractList = new List<ContractResponse>();
 
-        List<(EstateDetails, Guid)> estateContracts = new List<(EstateDetails, Guid)>();
+        foreach ((EstateDetails, CreateContractRequest) request in requests) {
+            Result? result = await this.EstateClient.CreateContract(accessToken, request.Item1.EstateId, request.Item2,
+                CancellationToken.None);
+            result.IsSuccess.ShouldBeTrue();
+        }
 
         foreach ((EstateDetails, CreateContractRequest) request in requests){
-            CreateContractResponse contractResponse =
-                await this.EstateClient.CreateContract(accessToken, request.Item1.EstateId, request.Item2, CancellationToken.None);
-            estateContracts.Add((request.Item1, contractResponse.ContractId));
-        }
-
-        foreach ((EstateDetails, Guid) estateContract in estateContracts){
 
             await Retry.For(async () => {
-                                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContract.Item1.EstateId, estateContract.Item2, CancellationToken.None).ConfigureAwait(false);
-                                contract.ShouldNotBeNull();
-                                result.Add(contract);
-                                estateContract.Item1.AddContract(contract.ContractId, contract.Description, contract.OperatorId);
-                            });
+                                Result<List<ContractResponse>> getContractsResult = await this.EstateClient.GetContracts(accessToken, request.Item1.EstateId, CancellationToken.None).ConfigureAwait(false);
+                                getContractsResult.Data.ShouldNotBeNull();
+                                ContractResponse contract = getContractsResult.Data.Single(c => c.Description == request.Item2.Description);
+                                contractList.Add(contract);
+                                });
         }
 
-        return result;
+        return contractList;
     }
 
     public async Task WhenICreateAnotherContractWithTheSameValuesItShouldBeRejected(string accessToken, List<(EstateDetails, CreateContractRequest)> requests)
     {
         var createContractRequest = requests.Single();
 
-        var ex = Should.Throw<Exception>(async () =>
-        {
-            await this.EstateClient.CreateContract(accessToken, createContractRequest.Item1.EstateId,
+        var result = await this.EstateClient.CreateContract(accessToken, createContractRequest.Item1.EstateId,
                 createContractRequest.Item2, CancellationToken.None);
-        });
-
-        ex.InnerException.ShouldBeOfType(typeof(InvalidOperationException));
+        
+        result.IsFailed.ShouldBeTrue();
+        result.Status.ShouldBe(ResultStatus.Conflict);
+        
     }
 
     public async Task WhenICreateTheFollowingProducts(String accessToken, List<(EstateDetails, Contract, AddProductToContractRequest)> requests){
-        List<(EstateDetails, Contract, AddProductToContractRequest, AddProductToContractResponse)> estateContractProducts = new();
+        List<(EstateDetails, Contract, AddProductToContractRequest)> estateContractProducts = new();
         foreach ((EstateDetails, Contract, AddProductToContractRequest) request in requests){
-            AddProductToContractResponse addProductToContractResponse =
-                await this.EstateClient.AddProductToContract(accessToken,
+            var result= await this.EstateClient.AddProductToContract(accessToken,
                                                              request.Item1.EstateId,
                                                              request.Item2.ContractId,
                                                              request.Item3,
                                                              CancellationToken.None);
-            estateContractProducts.Add((request.Item1, request.Item2, request.Item3, addProductToContractResponse));
+            estateContractProducts.Add((request.Item1, request.Item2, request.Item3));
         }
 
-        foreach ((EstateDetails, Contract, AddProductToContractRequest, AddProductToContractResponse) estateContractProduct in estateContractProducts){
+        foreach ((EstateDetails, Contract, AddProductToContractRequest) estateContractProduct in estateContractProducts){
 
             await Retry.For(async () => {
                                 ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContractProduct.Item1.EstateId, estateContractProduct.Item2.ContractId, CancellationToken.None).ConfigureAwait(false);
                                 contract.ShouldNotBeNull();
 
-                                ContractProduct product = contract.Products.SingleOrDefault(c => c.ProductId == estateContractProduct.Item4.ProductId);
+                                ContractProduct product = contract.Products.SingleOrDefault(c => c.Name == estateContractProduct.Item3.ProductName);
                                 product.ShouldNotBeNull();
 
-                                estateContractProduct.Item2.AddProduct(estateContractProduct.Item4.ProductId,
+                                estateContractProduct.Item2.AddProduct(product.ProductId,
                                                                        estateContractProduct.Item3.ProductName,
                                                                        estateContractProduct.Item3.DisplayText,
                                                                        estateContractProduct.Item3.Value);
@@ -363,10 +366,9 @@ public class EstateManagementSteps{
     }
 
     public async Task WhenIAddTheFollowingTransactionFees(String accessToken, List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest)> requests){
-        List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest, AddTransactionFeeForProductToContractResponse)> estateContractProductsFees = new();
+        List<(EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest)> estateContractProductsFees = new();
         foreach ((EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest) request in requests){
-            AddTransactionFeeForProductToContractResponse addTransactionFeeForProductToContractResponse =
-                await this.EstateClient.AddTransactionFeeForProductToContract(accessToken,
+                var result = await this.EstateClient.AddTransactionFeeForProductToContract(accessToken,
                                                                               request.Item1.EstateId,
                                                                               request.Item2.ContractId,
                                                                               request.Item3.ProductId,
@@ -374,7 +376,7 @@ public class EstateManagementSteps{
                                                                               CancellationToken.None);
         }
 
-        foreach ((EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest, AddTransactionFeeForProductToContractResponse) estateContractProductsFee in estateContractProductsFees){
+        foreach ((EstateDetails, Contract, Product, AddTransactionFeeForProductToContractRequest) estateContractProductsFee in estateContractProductsFees){
             await Retry.For(async () => {
                                 ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateContractProductsFee.Item1.EstateId, estateContractProductsFee.Item2.ContractId, CancellationToken.None).ConfigureAwait(false);
                                 contract.ShouldNotBeNull();
@@ -382,10 +384,10 @@ public class EstateManagementSteps{
                                 ContractProduct product = contract.Products.SingleOrDefault(c => c.ProductId == estateContractProductsFee.Item3.ProductId);
                                 product.ShouldNotBeNull();
 
-                                var transactionFee = product.TransactionFees.SingleOrDefault(f => f.TransactionFeeId == estateContractProductsFee.Item5.TransactionFeeId);
+                                var transactionFee = product.TransactionFees.SingleOrDefault(f => f.Description == estateContractProductsFee.Item4.Description);
                                 transactionFee.ShouldNotBeNull();
 
-                                estateContractProductsFee.Item3.AddTransactionFee(estateContractProductsFee.Item5.TransactionFeeId,
+                                estateContractProductsFee.Item3.AddTransactionFee(transactionFee.TransactionFeeId,
                                                                                   estateContractProductsFee.Item4.CalculationType,
                                                                                   estateContractProductsFee.Item4.FeeType,
                                                                                   estateContractProductsFee.Item4.Description,
@@ -397,36 +399,22 @@ public class EstateManagementSteps{
                                                                                                                                  contract.ContractId,
                                                                                                                                  product.ProductId,
                                                                                                                                  CancellationToken.None);
-                                var fee = fees.SingleOrDefault(f => f.TransactionFeeId == estateContractProductsFee.Item5.TransactionFeeId);
+                                var fee = fees.SingleOrDefault(f => f.TransactionFeeId == transactionFee.TransactionFeeId);
                                 fee.ShouldNotBeNull();
             });
         }
     }
 
     public async Task GivenIMakeTheFollowingManualMerchantDeposits(String accessToken, (EstateDetails, Guid, MakeMerchantDepositRequest) request){
-        MakeMerchantDepositResponse makeMerchantDepositResponse = await this.EstateClient.MakeMerchantDeposit(accessToken, request.Item1.EstateId, request.Item2, request.Item3, CancellationToken.None).ConfigureAwait(false);
-
-        makeMerchantDepositResponse.EstateId.ShouldBe(request.Item1.EstateId);
-        makeMerchantDepositResponse.MerchantId.ShouldBe(request.Item2);
-        makeMerchantDepositResponse.DepositId.ShouldNotBe(Guid.Empty);
-
+        var result = await this.EstateClient.MakeMerchantDeposit(accessToken, request.Item1.EstateId, request.Item2, request.Item3, CancellationToken.None).ConfigureAwait(false);
+        result.IsSuccess.ShouldBeTrue();
     }
 
     public async Task WhenIGetTheEstateAnErrorIsReturned(String accessToken, String estateName, List<EstateDetails> estateDetailsList){
         Guid estateId = Guid.NewGuid();
-        //EstateDetails estateDetails = estateDetailsList.SingleOrDefault(e => e.EstateName == estateName);
-        //estateDetails.ShouldNotBeNull();
-
-        //String token = accessToken;
-        //if (estateDetails != null){
-        //    estateId = estateDetails.EstateId;
-        //    if (String.IsNullOrEmpty(estateDetails.AccessToken) == false){
-        //        token = estateDetails.AccessToken;
-        //    }
-        //}
-
-        Exception exception = Should.Throw<Exception>(async () => { await this.EstateClient.GetEstate(accessToken, estateId, CancellationToken.None).ConfigureAwait(false); });
-        exception.InnerException.ShouldBeOfType<KeyNotFoundException>();
+        var result = await this.EstateClient.GetEstate(accessToken, estateId, CancellationToken.None).ConfigureAwait(false);
+        result.IsSuccess.ShouldBeFalse();
+        result.Status.ShouldBe(ResultStatus.NotFound);
     }
 
     public async Task WhenIGetTheEstateTheEstateSecurityUserDetailsAreReturnedAsFollows(String accessToken, String estateName, List<EstateDetails> estateDetailsList, List<String> expectedSecurityUsers){
@@ -464,9 +452,10 @@ public class EstateManagementSteps{
             }
         }
 
-        var estates = await this.EstateClient.GetEstates(token, estateId, CancellationToken.None).ConfigureAwait(false);
-        estates.ShouldNotBeEmpty();
-        var estate = estates.Single();
+        Result<List<EstateResponse>>? getEstatesResult = await this.EstateClient.GetEstates(token, estateId, CancellationToken.None).ConfigureAwait(false);
+        getEstatesResult.IsSuccess.ShouldBeTrue();
+        getEstatesResult.Data.ShouldNotBeEmpty();
+        var estate = getEstatesResult.Data.Single();
         foreach (String expectedOperator in expectedOperators){
             EstateOperatorResponse? op = estate.Operators.SingleOrDefault(o => o.Name == expectedOperator);
             op.ShouldNotBeNull();
@@ -604,17 +593,12 @@ public class EstateManagementSteps{
 
     public async Task WhenIMakeTheFollowingMerchantDepositsTheDepositIsRejected(String accessToken, List<(EstateDetails, Guid, MakeMerchantDepositRequest)> makeDepositRequests)
     {
-        foreach ((EstateDetails, Guid, MakeMerchantDepositRequest) makeDepositRequest in makeDepositRequests){
-            Exception exception = Should.Throw<Exception>(async () =>
-                                                          {
-                                                              await this.EstateClient
-                                                                        .MakeMerchantDeposit(accessToken,
-                                                                                             makeDepositRequest.Item1.EstateId,
-                                                                                             makeDepositRequest.Item2,
-                                                                                             makeDepositRequest.Item3,
-                                                                                             CancellationToken.None).ConfigureAwait(false);
-                                                          });
-            exception.InnerException.GetType().ShouldBe(typeof(InvalidOperationException));
+        foreach ((EstateDetails, Guid, MakeMerchantDepositRequest) makeDepositRequest in makeDepositRequests) {
+
+            var result = await this.EstateClient.MakeMerchantDeposit(accessToken, makeDepositRequest.Item1.EstateId,
+                makeDepositRequest.Item2, makeDepositRequest.Item3, CancellationToken.None).ConfigureAwait(false);
+
+            result.IsFailed.ShouldBeTrue();
         }
     }
 
@@ -633,12 +617,11 @@ public class EstateManagementSteps{
 
         Guid merchantId = Guid.NewGuid();
             
-        Exception exception = Should.Throw<Exception>(async () => {
-                                                          await this.EstateClient
+        var result = await this.EstateClient
                                                                     .GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None)
                                                                     .ConfigureAwait(false);
-                                                      });
-        exception.InnerException.ShouldBeOfType<KeyNotFoundException>();
+        result.IsFailed.ShouldBeTrue();
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(String accessToken, List<(EstateDetails, Guid,String, SwapMerchantDeviceRequest)> requests){

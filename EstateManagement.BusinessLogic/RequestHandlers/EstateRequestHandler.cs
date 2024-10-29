@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.RequestHandlers
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.RequestHandlers
 {
     using System;
     using System.Collections.Generic;
@@ -19,12 +21,12 @@
     /// <seealso cref="Guid" />
     /// <seealso cref="DataTransferObjects.Requests.Estate.CreateEstateRequest.String}" />
     /// <seealso cref="AddOperatorToEstateRequest.String}" />
-    public class EstateRequestHandler : IRequestHandler<EstateCommands.CreateEstateCommand>,
-                                        IRequestHandler<EstateCommands.AddOperatorToEstateCommand>,
-                                        IRequestHandler<EstateCommands.RemoveOperatorFromEstateCommand>,
-                                        IRequestHandler<EstateCommands.CreateEstateUserCommand>,
-                                        IRequestHandler<EstateQueries.GetEstateQuery, Estate>,
-                                        IRequestHandler<EstateQueries.GetEstatesQuery, List<Estate>>
+    public class EstateRequestHandler : IRequestHandler<EstateCommands.CreateEstateCommand, Result>,
+                                        IRequestHandler<EstateCommands.AddOperatorToEstateCommand, Result>,
+                                        IRequestHandler<EstateCommands.RemoveOperatorFromEstateCommand, Result>,
+                                        IRequestHandler<EstateCommands.CreateEstateUserCommand, Result>,
+                                        IRequestHandler<EstateQueries.GetEstateQuery, Result<Estate>>,
+                                        IRequestHandler<EstateQueries.GetEstatesQuery, Result<List<Estate>>>
     {
         #region Fields
 
@@ -53,36 +55,34 @@
 
         #region Methods
 
-        public async Task Handle(EstateCommands.CreateEstateCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(EstateCommands.CreateEstateCommand command, CancellationToken cancellationToken)
         {
-            await this.EstateDomainService.CreateEstate(command, cancellationToken);
+            return await this.EstateDomainService.CreateEstate(command, cancellationToken);
         }
 
-        public async Task Handle(EstateCommands.CreateEstateUserCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(EstateCommands.CreateEstateUserCommand command, CancellationToken cancellationToken)
         {
-            await this.EstateDomainService.CreateEstateUser(command, cancellationToken);
+            return await this.EstateDomainService.CreateEstateUser(command, cancellationToken);
         }
 
-        public async Task Handle(EstateCommands.AddOperatorToEstateCommand command,
+        public async Task<Result> Handle(EstateCommands.AddOperatorToEstateCommand command,
                                          CancellationToken cancellationToken)
         {
-            await this.EstateDomainService.AddOperatorToEstate(command, cancellationToken);
+            return await this.EstateDomainService.AddOperatorToEstate(command, cancellationToken);
         }
 
         #endregion
 
-        public async Task<Estate> Handle(EstateQueries.GetEstateQuery query, CancellationToken cancellationToken){
-            Estate estate = await this.EstateManagementManager.GetEstate(query.EstateId, cancellationToken);
-            return estate;
+        public async Task<Result<Estate>> Handle(EstateQueries.GetEstateQuery query, CancellationToken cancellationToken){
+            return await this.EstateManagementManager.GetEstate(query.EstateId, cancellationToken);
         }
 
-        public async Task<List<Estate>> Handle(EstateQueries.GetEstatesQuery query, CancellationToken cancellationToken){
-            List<Estate> estates = await this.EstateManagementManager.GetEstates(query.EstateId, cancellationToken);
-            return estates;
+        public async Task<Result<List<Estate>>> Handle(EstateQueries.GetEstatesQuery query, CancellationToken cancellationToken){
+            return await this.EstateManagementManager.GetEstates(query.EstateId, cancellationToken);
         }
 
-        public async Task Handle(EstateCommands.RemoveOperatorFromEstateCommand command, CancellationToken cancellationToken){
-            await this.EstateDomainService.RemoveOperatorFromEstate(command, cancellationToken);
+        public async Task<Result> Handle(EstateCommands.RemoveOperatorFromEstateCommand command, CancellationToken cancellationToken){
+            return await this.EstateDomainService.RemoveOperatorFromEstate(command, cancellationToken);
         }
     }
 }

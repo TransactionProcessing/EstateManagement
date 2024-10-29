@@ -26,8 +26,9 @@
     [Route(MerchantController.ControllerRoute)]
     [ApiController]
     [Authorize]
-    public class MerchantController : ControllerBase
-    {
+    public class MerchantController : ControllerBase {
+        public EstateManagement.Controllers.v2.MerchantController V2MerchantController;
+
         #region Fields
 
         /// <summary>
@@ -47,6 +48,7 @@
         public MerchantController(IMediator mediator)
         {
             this.Mediator = mediator;
+            this.V2MerchantController = new v2.MerchantController(mediator);
         }
 
         #endregion
@@ -61,24 +63,9 @@
                                                         [FromBody] CreateMerchantRequest createMerchantRequest,
                                                         CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.CreateMerchantCommand command = new(estateId, createMerchantRequest);
-
-            // Route the command
-            Guid merchantId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{command.RequestDto}",
-                                new CreateMerchantResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId
-                                });
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.CreateMerchant(estateId, createMerchantRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
 
         }
 
@@ -92,25 +79,11 @@
                                                         AssignOperatorRequest assignOperatorRequest,
                                                         CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.AssignOperatorToMerchantCommand command = new(estateId, merchantId, assignOperatorRequest);
-
-            // Route the command
-            Guid operatorId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new AssignOperatorResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    OperatorId = operatorId
-                                });
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result =
+                await this.V2MerchantController.AssignOperator(estateId, merchantId, assignOperatorRequest,
+                    cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpDelete]
@@ -120,19 +93,9 @@
                                                         [FromRoute] Guid operatorId,
                                                         CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.RemoveOperatorFromMerchantCommand command = new(estateId, merchantId, operatorId);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.RemoveOperator(estateId, merchantId, operatorId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPatch]
@@ -144,25 +107,9 @@
                                                    [FromBody] AddMerchantDeviceRequest addMerchantDeviceRequest,
                                                    CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.AddMerchantDeviceCommand command = new(estateId, merchantId, addMerchantDeviceRequest);
-
-            // Route the command
-            Guid deviceId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new AddMerchantDeviceResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    DeviceId = deviceId
-                                });
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.AddDevice(estateId, merchantId, addMerchantDeviceRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPatch]
@@ -172,19 +119,9 @@
                                                      [FromBody] AddMerchantContractRequest addMerchantContractRequest,
                                                      CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.AddMerchantContractCommand command = new(estateId, merchantId, addMerchantContractRequest);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.AddContract(estateId, merchantId, addMerchantContractRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpDelete]
@@ -194,19 +131,9 @@
                                                      [FromRoute] Guid contractId,
                                                      CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.RemoveMerchantContractCommand command = new(estateId, merchantId, contractId);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.RemoveContract(estateId, merchantId, contractId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPatch]
@@ -218,18 +145,9 @@
                                                             [FromBody] CreateMerchantUserRequest createMerchantUserRequest,
                                                             CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.CreateMerchantUserCommand command = new(estateId, merchantId, createMerchantUserRequest);
-
-            // Route the command
-            await this.Mediator.Send(command, cancellationToken);
-
-            return this.Ok();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.CreateMerchantUser(estateId, merchantId, createMerchantUserRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPost]
@@ -241,25 +159,9 @@
                                                      [FromBody] MakeMerchantDepositRequest makeMerchantDepositRequest,
                                                      CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            // This will always be a manual deposit as auto ones come in via another route
-            MerchantCommands.MakeMerchantDepositCommand command = new(estateId, merchantId, Models.MerchantDepositSource.Manual, makeMerchantDepositRequest);
-
-            Guid depositId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new MakeMerchantDepositResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    DepositId = depositId
-                                });
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.MakeDeposit(estateId, merchantId, makeMerchantDepositRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPost]
@@ -271,25 +173,9 @@
                                                         [FromBody] MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
                                                         CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.MakeMerchantWithdrawalCommand command = new(estateId, merchantId, makeMerchantWithdrawalRequest);
-
-            // Route the command
-            Guid withdrawalId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new MakeMerchantWithdrawalResponse()
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    WithdrawalId = withdrawalId
-                                });
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.MakeWithdrawal(estateId, merchantId, makeMerchantWithdrawalRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
 
         }
 
@@ -303,18 +189,9 @@
                                                             [FromBody] SwapMerchantDeviceRequest swapMerchantDeviceRequest,
                                                             CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.SwapMerchantDeviceCommand command = new(estateId, merchantId, deviceIdentifier, swapMerchantDeviceRequest);
-
-            await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Ok();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.SwapMerchantDevice(estateId, merchantId, deviceIdentifier, swapMerchantDeviceRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpPost]
@@ -326,25 +203,9 @@
                                                                    [FromBody] GenerateMerchantStatementRequest generateMerchantStatementRequest,
                                                                    CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.GenerateMerchantStatementCommand command = new(estateId, merchantId, generateMerchantStatementRequest);
-
-            // Route the command
-            Guid merchantStatementId = await this.Mediator.Send(command, cancellationToken);
-
-            // return the result
-            return this.Created($"{MerchantController.ControllerRoute}/{merchantId}",
-                                new GenerateMerchantStatementResponse
-                                {
-                                    EstateId = estateId,
-                                    MerchantId = merchantId,
-                                    MerchantStatementId = merchantStatementId
-                                });
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.GenerateMerchantStatement(estateId, merchantId, generateMerchantStatementRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpGet]
@@ -355,18 +216,9 @@
                                                       [FromRoute] Guid merchantId,
                                                       CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformMerchantUserChecks(estateId, merchantId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantQueries.GetMerchantQuery query = new (estateId, merchantId);
-
-            // Route the query
-            Merchant merchant = await this.Mediator.Send(query, cancellationToken);
-
-            return this.Ok(ModelFactory.ConvertFrom(merchant));
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.GetMerchant(estateId, merchantId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [Route("{merchantId}/contracts")]
@@ -377,17 +229,9 @@
                                                               [FromRoute] Guid merchantId,
                                                               CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformMerchantUserChecks(estateId, merchantId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantQueries.GetMerchantContractsQuery query = new (estateId, merchantId);
-
-            List<Models.Contract.Contract> contracts = await this.Mediator.Send(query, cancellationToken);
-
-            return this.Ok(ModelFactory.ConvertFrom(contracts));
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.GetMerchantContracts(estateId, merchantId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [HttpGet]
@@ -397,17 +241,9 @@
         public async Task<IActionResult> GetMerchants([FromRoute] Guid estateId,
                                                       CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantQueries.GetMerchantsQuery query = new (estateId);
-
-            List<Merchant> merchants = await this.Mediator.Send(query, cancellationToken);
-
-            return this.Ok(ModelFactory.ConvertFrom(merchants));
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.GetMerchants(estateId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [Route("{merchantId}/contracts/{contractId}/products/{productId}/transactionFees")]
@@ -421,17 +257,9 @@
                                                                       [FromRoute] Guid productId,
                                                                       CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformMerchantUserChecks(estateId, merchantId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantQueries.GetTransactionFeesForProductQuery query = new (estateId, merchantId, contractId, productId);
-
-            List<Models.Contract.ContractProductTransactionFee> transactionFees = await this.Mediator.Send(query, cancellationToken);
-
-            return this.Ok(ModelFactory.ConvertFrom(transactionFees));
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.GetTransactionFeesForProduct(estateId, merchantId, contractId, productId, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
 
@@ -487,22 +315,14 @@
         [HttpPatch]
         [Route("{merchantId}")]
         [SwaggerResponse(204, "No Content")]
-        public async Task<ActionResult> UpdateMerchant([FromRoute] Guid estateId,
+        public async Task<IActionResult> UpdateMerchant([FromRoute] Guid estateId,
                                                        [FromRoute] Guid merchantId,
                                                        [FromBody] UpdateMerchantRequest updateMerchantRequest,
                                                        CancellationToken cancellationToken){
 
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.UpdateMerchantCommand command = new (estateId, merchantId, updateMerchantRequest);
-            
-            await this.Mediator.Send(command, cancellationToken);
-
-            return this.NoContent();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.UpdateMerchant(estateId, merchantId, updateMerchantRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [Route("{merchantId}/addresses")]
@@ -513,17 +333,9 @@
                                                             [FromRoute] Guid merchantId,
                                                             [FromBody] DataTransferObjects.Requests.Merchant.Address addAddressRequest,
                                                             CancellationToken cancellationToken){
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.AddMerchantAddressCommand command = new (estateId,merchantId, addAddressRequest);
-
-            await this.Mediator.Send(command, cancellationToken);
-
-            return this.NoContent();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.AddMerchantAddress(estateId, merchantId, addAddressRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [Route("{merchantId}/addresses/{addressId}")]
@@ -536,17 +348,9 @@
                                                             [FromBody] DataTransferObjects.Requests.Merchant.Address updateAddressRequest,
                                                             CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.UpdateMerchantAddressCommand command = new(estateId, merchantId, addressId, updateAddressRequest);
-
-            await this.Mediator.Send(command, cancellationToken);
-
-            return this.NoContent();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.UpdateMerchantAddress(estateId, merchantId, addressId, updateAddressRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [Route("{merchantId}/contacts")]
@@ -558,17 +362,9 @@
                                                             [FromBody] DataTransferObjects.Requests.Merchant.Contact addContactRrequest,
                                                             CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.AddMerchantContactCommand command = new(estateId, merchantId, addContactRrequest);
-
-            await this.Mediator.Send(command, cancellationToken);
-
-            return this.NoContent();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.AddMerchantContact(estateId, merchantId, addContactRrequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         [Route("{merchantId}/contacts/{contactId}")]
@@ -581,17 +377,9 @@
                                                                [FromBody] DataTransferObjects.Requests.Merchant.Contact updateContactRequest,
                                                                CancellationToken cancellationToken)
         {
-            Boolean isRequestAllowed = this.PerformStandardChecks(estateId);
-            if (isRequestAllowed == false)
-            {
-                return this.Forbid();
-            }
-
-            MerchantCommands.UpdateMerchantContactCommand command = new(estateId, merchantId, contactId,updateContactRequest);
-
-            await this.Mediator.Send(command, cancellationToken);
-
-            return this.NoContent();
+            this.V2MerchantController.SetContextOverride(this.HttpContext);
+            var result = await this.V2MerchantController.UpdateMerchantContact(estateId, merchantId, contactId, updateContactRequest, cancellationToken);
+            return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
         #endregion

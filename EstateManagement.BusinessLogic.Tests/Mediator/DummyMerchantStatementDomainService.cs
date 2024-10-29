@@ -1,4 +1,7 @@
-﻿namespace EstateManagement.BusinessLogic.Tests.Mediator;
+﻿using EstateManagement.Models;
+using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Tests.Mediator;
 
 using System;
 using System.Collections.Generic;
@@ -15,79 +18,85 @@ using Contract = Models.Contract.Contract;
 using Operator = Models.Operator.Operator;
 
 public class DummyMerchantStatementDomainService : IMerchantStatementDomainService{
-    public async Task AddTransactionToStatement(Guid estateId,
-                                                Guid merchantId,
-                                                DateTime transactionDateTime,
-                                                Decimal? transactionAmount,
-                                                Boolean isAuthorised,
-                                                Guid transactionId,
-                                                CancellationToken cancellationToken) {
-    }
+    public async Task<Result> AddTransactionToStatement(AddTransactionToMerchantStatementRequest command,
+                                                        CancellationToken cancellationToken) => Result.Success();
 
-    public async Task AddSettledFeeToStatement(Guid estateId,
-                                               Guid merchantId,
-                                               DateTime settledDateTime,
-                                               Decimal settledAmount,
-                                               Guid transactionId,
-                                               Guid settledFeeId,
-                                               CancellationToken cancellationToken) {
-    }
+    public async Task<Result> AddSettledFeeToStatement(AddSettledFeeToMerchantStatementRequest command,
+                                                       CancellationToken cancellationToken) => Result.Success();
 
-    public async Task<Guid> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken){
-        return Guid.NewGuid();
-    }
-    
-    public async Task EmailStatement(Guid estateId,
-                                     Guid merchantId,
-                                     Guid merchantStatementId,
-                                     CancellationToken cancellationToken) {
-    }
+    public async Task<Result> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken) => Result.Success();
+
+    public async Task<Result> EmailStatement(EmailMerchantStatementRequest command,
+                                             CancellationToken cancellationToken) => Result.Success();
 }
 
-public class DummyEstateManagementManager : IEstateManagementManager{
-    public async Task<List<Contract>> GetMerchantContracts(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
-        return new List<Contract>();
+public class DummyEstateManagementManager : IEstateManagementManager {
+    public async Task<Result<List<Contract>>> GetMerchantContracts(Guid estateId,
+                                                                   Guid merchantId,
+                                                                   CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<List<Contract>>> GetContracts(Guid estateId,
+                                                           CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<Contract>> GetContract(Guid estateId,
+                                                    Guid contractId,
+                                                    CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<Estate>> GetEstate(Guid estateId,
+                                                CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<List<Estate>>> GetEstates(Guid estateId,
+                                                       CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<Merchant>> GetMerchant(Guid estateId,
+                                                    Guid merchantId,
+                                                    CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<List<Merchant>>> GetMerchants(Guid estateId,
+                                                           CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<List<ContractProductTransactionFee>>> GetTransactionFeesForProduct(Guid estateId,
+                                                                                                Guid merchantId,
+                                                                                                Guid contractId,
+                                                                                                Guid productId,
+                                                                                                CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<File>> GetFileDetails(Guid estateId,
+                                                   Guid fileId,
+                                                   CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<Operator>> GetOperator(Guid estateId,
+                                                    Guid operatorId,
+                                                    CancellationToken cancellationToken) =>
+        Result.Success();
+
+    public async Task<Result<List<Operator>>> GetOperators(Guid estateId,
+                                                           CancellationToken cancellationToken) =>
+        Result.Success();
+}
+
+public class DummyReportingManager : IReportingManager {
+    public async Task<Result<SettlementModel>> GetSettlement(Guid estateId,
+                                                             Guid merchantId,
+                                                             Guid settlementId,
+                                                             CancellationToken cancellationToken) {
+        return Result.Success();
     }
 
-    public async Task<List<Contract>> GetContracts(Guid estateId, CancellationToken cancellationToken){
-        return new List<Contract>();
-    }
-
-    public async Task<Contract> GetContract(Guid estateId, Guid contractId, CancellationToken cancellationToken){
-        return new Contract();
-    }
-
-    public async Task<Estate> GetEstate(Guid estateId, CancellationToken cancellationToken){
-        return new Estate();
-    }
-
-    public async Task<List<Estate>> GetEstates(Guid estateId, CancellationToken cancellationToken){
-        return new List<Estate>();
-    }
-
-    public async Task<Merchant> GetMerchant(Guid estateId, Guid merchantId, CancellationToken cancellationToken){
-        return new Merchant();
-    }
-
-    public async Task<List<Merchant>> GetMerchants(Guid estateId, CancellationToken cancellationToken){
-        return new List<Merchant>{
-                                     new Merchant()
-                                 };
-    }
-
-    public async Task<List<ContractProductTransactionFee>> GetTransactionFeesForProduct(Guid estateId, Guid merchantId, Guid contractId, Guid productId, CancellationToken cancellationToken){
-        return new List<ContractProductTransactionFee>();
-    }
-
-    public async Task<File> GetFileDetails(Guid estateId, Guid fileId, CancellationToken cancellationToken){
-        return new File();
-    }
-
-    public async Task<Operator> GetOperator(Guid estateId, Guid operatorId, CancellationToken cancellationToken){
-        return new Operator();
-    }
-
-    public async Task<List<Operator>> GetOperators(Guid estateId, CancellationToken cancellationToken){
-        return new List<Operator>();
+    public async Task<Result<List<SettlementModel>>> GetSettlements(Guid estateId,
+                                                                    Guid? merchantId,
+                                                                    String startDate,
+                                                                    String endDate,
+                                                                    CancellationToken cancellationToken) {
+        return Result.Success();
     }
 }

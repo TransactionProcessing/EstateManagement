@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Requests
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Requests
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -8,36 +10,36 @@
     [ExcludeFromCodeCoverage]
     public class MerchantCommands{
 
-        public record CreateMerchantCommand(Guid EstateId, CreateMerchantRequest RequestDto) : IRequest<Guid>;
+        public record CreateMerchantCommand(Guid EstateId, CreateMerchantRequest RequestDto) : IRequest<Result>;
 
-        public record AssignOperatorToMerchantCommand(Guid EstateId, Guid MerchantId, AssignOperatorRequest RequestDto) : IRequest<Guid>;
+        public record AssignOperatorToMerchantCommand(Guid EstateId, Guid MerchantId, AssignOperatorRequest RequestDto) : IRequest<Result>;
 
-        public record RemoveOperatorFromMerchantCommand(Guid EstateId, Guid MerchantId, Guid OperatorId) : IRequest;
+        public record RemoveOperatorFromMerchantCommand(Guid EstateId, Guid MerchantId, Guid OperatorId) : IRequest<Result>;
 
-        public record AddMerchantDeviceCommand(Guid EstateId, Guid MerchantId, AddMerchantDeviceRequest RequestDto) : IRequest<Guid>;
+        public record AddMerchantDeviceCommand(Guid EstateId, Guid MerchantId, AddMerchantDeviceRequest RequestDto) : IRequest<Result>;
 
-        public record AddMerchantContractCommand(Guid EstateId, Guid MerchantId, AddMerchantContractRequest RequestDto) : IRequest;
+        public record AddMerchantContractCommand(Guid EstateId, Guid MerchantId, AddMerchantContractRequest RequestDto) : IRequest<Result>;
 
-        public record RemoveMerchantContractCommand(Guid EstateId, Guid MerchantId, Guid ContractId) : IRequest;
+        public record RemoveMerchantContractCommand(Guid EstateId, Guid MerchantId, Guid ContractId) : IRequest<Result>;
 
-        public record CreateMerchantUserCommand(Guid EstateId, Guid MerchantId, CreateMerchantUserRequest RequestDto) : IRequest<Guid>;
+        public record CreateMerchantUserCommand(Guid EstateId, Guid MerchantId, CreateMerchantUserRequest RequestDto) : IRequest<Result>;
 
-        public record MakeMerchantDepositCommand(Guid EstateId, Guid MerchantId, Models.MerchantDepositSource DepositSource, MakeMerchantDepositRequest RequestDto) : IRequest<Guid>;
+        public record MakeMerchantDepositCommand(Guid EstateId, Guid MerchantId, Models.MerchantDepositSource DepositSource, MakeMerchantDepositRequest RequestDto) : IRequest<Result>;
 
-        public record MakeMerchantWithdrawalCommand(Guid EstateId, Guid MerchantId, MakeMerchantWithdrawalRequest RequestDto) : IRequest<Guid>;
+        public record MakeMerchantWithdrawalCommand(Guid EstateId, Guid MerchantId, MakeMerchantWithdrawalRequest RequestDto) : IRequest<Result>;
 
-        public record SwapMerchantDeviceCommand(Guid EstateId, Guid MerchantId, String DeviceIdentifier, SwapMerchantDeviceRequest RequestDto): IRequest;
+        public record SwapMerchantDeviceCommand(Guid EstateId, Guid MerchantId, String DeviceIdentifier, SwapMerchantDeviceRequest RequestDto): IRequest<Result>;
 
-        public record GenerateMerchantStatementCommand(Guid EstateId, Guid MerchantId, GenerateMerchantStatementRequest RequestDto) : IRequest<Guid>;
+        public record GenerateMerchantStatementCommand(Guid EstateId, Guid MerchantId, GenerateMerchantStatementRequest RequestDto) : IRequest<Result>;
         
-        public record UpdateMerchantCommand(Guid EstateId, Guid MerchantId, UpdateMerchantRequest RequestDto) : IRequest;
+        public record UpdateMerchantCommand(Guid EstateId, Guid MerchantId, UpdateMerchantRequest RequestDto) : IRequest<Result>;
 
-        public record AddMerchantAddressCommand(Guid EstateId, Guid MerchantId,  Address RequestDto) : IRequest;
-        public record UpdateMerchantAddressCommand(Guid EstateId, Guid MerchantId, Guid AddressId, Address RequestDto) : IRequest;
+        public record AddMerchantAddressCommand(Guid EstateId, Guid MerchantId,  Address RequestDto) : IRequest<Result>;
+        public record UpdateMerchantAddressCommand(Guid EstateId, Guid MerchantId, Guid AddressId, Address RequestDto) : IRequest<Result>;
 
-        public record AddMerchantContactCommand(Guid EstateId, Guid MerchantId, Contact RequestDto) : IRequest;
+        public record AddMerchantContactCommand(Guid EstateId, Guid MerchantId, Contact RequestDto) : IRequest<Result>;
 
-        public record UpdateMerchantContactCommand(Guid EstateId, Guid MerchantId, Guid ContactId, Contact RequestDto) : IRequest;
+        public record UpdateMerchantContactCommand(Guid EstateId, Guid MerchantId, Guid ContactId, Contact RequestDto) : IRequest<Result>;
     }
 
     

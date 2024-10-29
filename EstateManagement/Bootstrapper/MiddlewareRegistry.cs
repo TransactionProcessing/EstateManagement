@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Bootstrapper
+﻿using SimpleResults;
+
+namespace EstateManagement.Bootstrapper
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -109,7 +111,10 @@
                                                        options.IncludeErrorDetails = true;
                                                    });
 
-            this.AddControllers().AddNewtonsoftJson(options =>
+            this.AddControllers(options => {
+                // Add filter for all controllers.
+                options.Filters.Add<TranslateResultToActionResultAttribute>();
+            }).AddNewtonsoftJson(options =>
                                                     {
                                                         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                                                         options.SerializerSettings.TypeNameHandling = TypeNameHandling.None;
