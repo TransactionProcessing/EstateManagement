@@ -666,8 +666,8 @@ namespace EstateManagement.Testing{
                                   TestData.PostCode,
                                   TestData.Country);
 
-        public static AddSettledFeeToMerchantStatementRequest AddSettledFeeToMerchantStatementRequest =>
-            AddSettledFeeToMerchantStatementRequest.Create(TestData.EstateId,
+        public static  MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand AddSettledFeeToMerchantStatementCommand =>
+            new(TestData.EstateId,
                                                            TestData.MerchantId,
                                                            TestData.SettledFeeDateTime1,
                                                            TestData.SettledFeeAmount1,
@@ -684,8 +684,8 @@ namespace EstateManagement.Testing{
                 FeeType = DataTransferObjects.Responses.Contract.FeeType.Merchant
             };
 
-        public static AddTransactionToMerchantStatementRequest AddTransactionToMerchantStatementRequest =>
-            AddTransactionToMerchantStatementRequest.Create(TestData.EstateId,
+        public static MerchantStatementCommands.AddTransactionToMerchantStatementCommand AddTransactionToMerchantStatementCommand =>
+            new(TestData.EstateId,
                                                             TestData.MerchantId,
                                                             TestData.TransactionDateTime1,
                                                             TestData.TransactionAmount1,
@@ -932,7 +932,7 @@ namespace EstateManagement.Testing{
                                               TestData.DeviceIdentifier,
                                               TestData.NewDeviceIdentifier);
         
-        public static EmailMerchantStatementRequest EmailMerchantStatementRequest => EmailMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId, TestData.MerchantStatementId);
+        public static MerchantStatementCommands.EmailMerchantStatementCommand EmailMerchantStatementCommand => new(TestData.EstateId, TestData.MerchantId, TestData.MerchantStatementId);
 
         /// <summary>
         /// The estate created event

@@ -14,13 +14,13 @@ namespace EstateManagement.BusinessLogic.Services
     {
         #region Methods
 
-        Task<Result> AddTransactionToStatement(AddTransactionToMerchantStatementRequest command, CancellationToken cancellationToken);
+        Task<Result> AddTransactionToStatement(MerchantStatementCommands.AddTransactionToMerchantStatementCommand command, CancellationToken cancellationToken);
 
-        Task<Result> AddSettledFeeToStatement(AddSettledFeeToMerchantStatementRequest command, CancellationToken cancellationToken);
+        Task<Result> AddSettledFeeToStatement(MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand command, CancellationToken cancellationToken);
 
         Task<Result> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken);
 
-        Task<Result> EmailStatement(EmailMerchantStatementRequest command, CancellationToken cancellationToken);
+        Task<Result> EmailStatement(MerchantStatementCommands.EmailMerchantStatementCommand command, CancellationToken cancellationToken);
 
         #endregion
     }

@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,28 +22,30 @@ public class MerchantSettlementDomainEventHandler : IDomainEventHandler
         this.Mediator = mediator;
     }
 
-    public async Task Handle(IDomainEvent domainEvent,
+    public async Task<Result>  Handle(IDomainEvent domainEvent,
                              CancellationToken cancellationToken)
     {
-        Task t = domainEvent switch
+        Task<Result> t = domainEvent switch
         {
             MerchantFeeSettledEvent mfse => this.HandleSpecificDomainEvent(mfse, cancellationToken),
             _ => null
         };
         if (t != null)
-            await t;
+            return await t;
+
+        return Result.Success();
     }
 
-    private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        AddSettledFeeToMerchantStatementRequest addSettledFeeToMerchantStatementRequest = AddSettledFeeToMerchantStatementRequest.Create(domainEvent.EstateId,
+        MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand  command = new(domainEvent.EstateId,
             domainEvent.MerchantId,
             domainEvent.FeeCalculatedDateTime,
             domainEvent.CalculatedValue,
             domainEvent.TransactionId,
             domainEvent.FeeId);
 
-        await this.Mediator.Send(addSettledFeeToMerchantStatementRequest, cancellationToken);
+        return await this.Mediator.Send(command, cancellationToken);
     }
 }

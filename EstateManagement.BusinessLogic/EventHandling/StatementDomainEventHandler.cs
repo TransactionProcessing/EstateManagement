@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -33,34 +35,34 @@
 
         #region Methods
 
-        public async Task Handle(IDomainEvent domainEvent,
-                                 CancellationToken cancellationToken)
+        public async Task<Result> Handle(IDomainEvent domainEvent,
+                                         CancellationToken cancellationToken)
         {
-            await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+            return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(StatementCreatedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(StatementCreatedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.CreateStatement(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.CreateStatement(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(TransactionAddedToStatementEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(TransactionAddedToStatementEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.AddTransactionToStatement(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.AddTransactionToStatement(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(SettledFeeAddedToStatementEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(SettledFeeAddedToStatementEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.AddSettledFeeToStatement(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.AddSettledFeeToStatement(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(StatementGeneratedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(StatementGeneratedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.MarkStatementAsGenerated(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.MarkStatementAsGenerated(domainEvent, cancellationToken);
         }
         #endregion
     }

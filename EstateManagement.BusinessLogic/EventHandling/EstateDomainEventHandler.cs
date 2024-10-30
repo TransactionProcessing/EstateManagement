@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,10 +40,10 @@ public class EstateDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    public async Task Handle(IDomainEvent domainEvent,
-                             CancellationToken cancellationToken)
+    public async Task<Result> Handle(IDomainEvent domainEvent,
+                                     CancellationToken cancellationToken)
     {
-        await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+        return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -49,12 +51,14 @@ public class EstateDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(EstateCreatedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(EstateCreatedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.CreateReadModel(domainEvent, cancellationToken);
+        Result createResult = await this.EstateReportingRepository.CreateReadModel(domainEvent, cancellationToken);
+        if (createResult.IsFailed)
+            return createResult;
 
-        await this.EstateReportingRepository.AddEstate(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddEstate(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -62,10 +66,10 @@ public class EstateDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(SecurityUserAddedToEstateEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(SecurityUserAddedToEstateEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddEstateSecurityUser(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddEstateSecurityUser(domainEvent, cancellationToken);
     }
 
     ///// <summary>
@@ -80,10 +84,10 @@ public class EstateDomainEventHandler : IDomainEventHandler
     //}
 
 
-    private async Task HandleSpecificDomainEvent(EstateReferenceAllocatedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(EstateReferenceAllocatedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.UpdateEstate(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.UpdateEstate(domainEvent, cancellationToken);
     }
 
     #endregion

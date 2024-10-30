@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,10 +40,10 @@ public class ContractDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    public async Task Handle(IDomainEvent domainEvent,
-                             CancellationToken cancellationToken)
+    public async Task<Result> Handle(IDomainEvent domainEvent,
+                                     CancellationToken cancellationToken)
     {
-        await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+        return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -49,10 +51,10 @@ public class ContractDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(ContractCreatedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(ContractCreatedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddContract(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddContract(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -60,10 +62,10 @@ public class ContractDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FixedValueProductAddedToContractEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FixedValueProductAddedToContractEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddContractProduct(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddContractProduct(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -71,10 +73,10 @@ public class ContractDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(VariableValueProductAddedToContractEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(VariableValueProductAddedToContractEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddContractProduct(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddContractProduct(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -82,10 +84,10 @@ public class ContractDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(TransactionFeeForProductAddedToContractEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(TransactionFeeForProductAddedToContractEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddContractProductTransactionFee(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddContractProductTransactionFee(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -93,10 +95,10 @@ public class ContractDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(TransactionFeeForProductDisabledEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(TransactionFeeForProductDisabledEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.DisableContractProductTransactionFee(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.DisableContractProductTransactionFee(domainEvent, cancellationToken);
     }
 
     #endregion

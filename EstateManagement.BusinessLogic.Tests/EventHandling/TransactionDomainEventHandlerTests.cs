@@ -7,6 +7,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
     using MediatR;
     using Moq;
     using Repository;
+    using Shared.DomainDrivenDesign.EventSourcing;
     using Shared.Logger;
     using Shouldly;
     using Testing;
@@ -46,6 +47,10 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
             AdditionalRequestDataRecordedEvent additionalRequestDataRecordedEvent = TestData.AdditionalRequestDataRecordedEvent;
 
             Logger.Initialise(NullLogger.Instance);
+
+            this.EstateReportingRepository
+                .Setup(r => r.RecordTransactionAdditionalRequestData(It.IsAny<AdditionalRequestDataRecordedEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success);
 
             Should.NotThrow(async () => { await this.DomainEventHandler.Handle(additionalRequestDataRecordedEvent, CancellationToken.None); });
         }

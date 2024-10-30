@@ -142,7 +142,7 @@ namespace EstateManagement.BusinessLogic.Services
             return merchantStatementAggregate;
         }
 
-        public async Task<Result> AddSettledFeeToStatement(AddSettledFeeToMerchantStatementRequest command,
+        public async Task<Result> AddSettledFeeToStatement(MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand command,
                                                            CancellationToken cancellationToken)
         {
             // Work out the next statement date
@@ -221,7 +221,7 @@ namespace EstateManagement.BusinessLogic.Services
             return Result.Success();
         }
 
-        public async Task<Result> EmailStatement(EmailMerchantStatementRequest command,
+        public async Task<Result> EmailStatement(MerchantStatementCommands.EmailMerchantStatementCommand command,
                                                  CancellationToken cancellationToken)
         {
             Result result = await ApplyUpdates(
@@ -277,7 +277,7 @@ namespace EstateManagement.BusinessLogic.Services
         /// </summary>
         private TokenResponse TokenResponse;
 
-        public async Task<Result> AddTransactionToStatement(AddTransactionToMerchantStatementRequest command,
+        public async Task<Result> AddTransactionToStatement(MerchantStatementCommands.AddTransactionToMerchantStatementCommand command,
                                                             CancellationToken cancellationToken)
         {
             // Transaction Completed arrives(if this is a logon transaction or failed then return)

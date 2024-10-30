@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -40,10 +42,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task Handle(IDomainEvent domainEvent,
-                                 CancellationToken cancellationToken)
+        public async Task<Result> Handle(IDomainEvent domainEvent,
+                                         CancellationToken cancellationToken)
         {
-            await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+            return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -51,40 +53,40 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
+        private async Task<Result> HandleSpecificDomainEvent(MerchantFeeSettledEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.MarkMerchantFeeAsSettled(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(SettlementProcessingStartedEvent domainEvent,
+        private async Task<Result> HandleSpecificDomainEvent(SettlementProcessingStartedEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.MarkSettlementAsProcessingStarted(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.MarkSettlementAsProcessingStarted(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(SettlementCreatedForDateEvent domainEvent,
+        private async Task<Result> HandleSpecificDomainEvent(SettlementCreatedForDateEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.CreateSettlement(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.CreateSettlement(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(SettledMerchantFeeAddedToTransactionEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(SettledMerchantFeeAddedToTransactionEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.AddSettledMerchantFeeToSettlement(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.AddSettledMerchantFeeToSettlement(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(MerchantFeeAddedPendingSettlementEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(MerchantFeeAddedPendingSettlementEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.AddPendingMerchantFeeToSettlement(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.AddPendingMerchantFeeToSettlement(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(SettlementCompletedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(SettlementCompletedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.MarkSettlementAsCompleted(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.MarkSettlementAsCompleted(domainEvent, cancellationToken);
         }
        
         #endregion

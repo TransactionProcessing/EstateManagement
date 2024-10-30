@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Tests.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Tests.EventHandling;
 
 using System.Threading;
 using BusinessLogic.EventHandling;
@@ -28,6 +30,9 @@ public class EstateDomainEventHandlerTests
     public void EstateDomainEventHandler_EstateCreatedEvent_EventIsHandled()
     {
         EstateCreatedEvent estateCreatedEvent = TestData.EstateCreatedEvent;
+        this.EstateReportingRepository
+            .Setup(r => r.CreateReadModel(It.IsAny<EstateCreatedEvent>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
     
         Should.NotThrow(async () => { await this.DomainEventHandler.Handle(estateCreatedEvent, CancellationToken.None); });
     }

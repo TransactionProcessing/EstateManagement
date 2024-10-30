@@ -75,10 +75,10 @@ namespace EstateManagement.Bootstrapper
             this.AddSingleton<IRequestHandler<ContractQueries.GetContractQuery, Result<Models.Contract.Contract>>, ContractRequestHandler>();
             this.AddSingleton<IRequestHandler<ContractQueries.GetContractsQuery, Result<List<Models.Contract.Contract>>>, ContractRequestHandler>();
 
-            this.AddSingleton<IRequestHandler<AddTransactionToMerchantStatementRequest>, MerchantStatementRequestHandler>();
-            this.AddSingleton<IRequestHandler<AddSettledFeeToMerchantStatementRequest>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantStatementCommands.AddTransactionToMerchantStatementCommand, Result>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand, Result>, MerchantStatementRequestHandler>();
             this.AddSingleton<IRequestHandler<MerchantCommands.GenerateMerchantStatementCommand, Result>, MerchantStatementRequestHandler>();
-            this.AddSingleton<IRequestHandler<EmailMerchantStatementRequest>, MerchantStatementRequestHandler>();
+            this.AddSingleton<IRequestHandler<MerchantStatementCommands.EmailMerchantStatementCommand, Result>, MerchantStatementRequestHandler>();
 
             this.AddSingleton<IRequestHandler<SettlementQueries.GetSettlementQuery, Result<SettlementModel>>,
                 SettlementRequestHandler>();
