@@ -18,15 +18,15 @@ using Contract = Models.Contract.Contract;
 using Operator = Models.Operator.Operator;
 
 public class DummyMerchantStatementDomainService : IMerchantStatementDomainService{
-    public async Task<Result> AddTransactionToStatement(AddTransactionToMerchantStatementRequest command,
+    public async Task<Result> AddTransactionToStatement(MerchantStatementCommands.AddTransactionToMerchantStatementCommand command,
                                                         CancellationToken cancellationToken) => Result.Success();
 
-    public async Task<Result> AddSettledFeeToStatement(AddSettledFeeToMerchantStatementRequest command,
+    public async Task<Result> AddSettledFeeToStatement(MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand command,
                                                        CancellationToken cancellationToken) => Result.Success();
 
     public async Task<Result> GenerateStatement(MerchantCommands.GenerateMerchantStatementCommand command, CancellationToken cancellationToken) => Result.Success();
 
-    public async Task<Result> EmailStatement(EmailMerchantStatementRequest command,
+    public async Task<Result> EmailStatement(MerchantStatementCommands.EmailMerchantStatementCommand command,
                                              CancellationToken cancellationToken) => Result.Success();
 }
 

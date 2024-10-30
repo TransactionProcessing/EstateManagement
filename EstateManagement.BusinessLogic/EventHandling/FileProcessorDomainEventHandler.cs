@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,10 +39,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    public async Task Handle(IDomainEvent domainEvent,
-                             CancellationToken cancellationToken)
+    public async Task<Result> Handle(IDomainEvent domainEvent,
+                                     CancellationToken cancellationToken)
     {
-        await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+        return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -48,10 +50,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(ImportLogCreatedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(ImportLogCreatedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddFileImportLog(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddFileImportLog(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -59,10 +61,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FileAddedToImportLogEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FileAddedToImportLogEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddFileToImportLog(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddFileToImportLog(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -70,10 +72,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FileCreatedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FileCreatedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddFile(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddFile(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -81,10 +83,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FileLineAddedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FileLineAddedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.AddFileLineToFile(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.AddFileLineToFile(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -92,10 +94,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FileLineProcessingSuccessfulEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FileLineProcessingSuccessfulEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.UpdateFileLine(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.UpdateFileLine(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -103,10 +105,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FileLineProcessingFailedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FileLineProcessingFailedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.UpdateFileLine(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.UpdateFileLine(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -114,10 +116,10 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FileLineProcessingIgnoredEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FileLineProcessingIgnoredEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.UpdateFileLine(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.UpdateFileLine(domainEvent, cancellationToken);
     }
 
     /// <summary>
@@ -125,9 +127,9 @@ public class FileProcessorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    private async Task HandleSpecificDomainEvent(FileProcessingCompletedEvent domainEvent,
-                                                 CancellationToken cancellationToken)
+    private async Task<Result> HandleSpecificDomainEvent(FileProcessingCompletedEvent domainEvent,
+                                                         CancellationToken cancellationToken)
     {
-        await this.EstateReportingRepository.UpdateFileAsComplete(domainEvent, cancellationToken);
+        return await this.EstateReportingRepository.UpdateFileAsComplete(domainEvent, cancellationToken);
     }
 }

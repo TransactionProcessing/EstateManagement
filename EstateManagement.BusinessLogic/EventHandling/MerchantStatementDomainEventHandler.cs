@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -40,10 +42,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task Handle(IDomainEvent domainEvent,
-                                 CancellationToken cancellationToken)
+        public async Task<Result> Handle(IDomainEvent domainEvent,
+                                         CancellationToken cancellationToken)
         {
-            await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+            return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -51,26 +53,24 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(StatementGeneratedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
-        {
-            EmailMerchantStatementRequest emailMerchantStatementRequest = EmailMerchantStatementRequest.Create(domainEvent.EstateId,
-                                                                                                               domainEvent.MerchantId,
-                                                                                                               domainEvent.MerchantStatementId);
+        private async Task<Result> HandleSpecificDomainEvent(StatementGeneratedEvent domainEvent,
+                                                             CancellationToken cancellationToken) {
+            MerchantStatementCommands.EmailMerchantStatementCommand command = new(domainEvent.EstateId,
+                domainEvent.MerchantId, domainEvent.MerchantStatementId);
             
-            await this.Mediator.Send(emailMerchantStatementRequest, cancellationToken);
+            return await this.Mediator.Send(command, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
-                                                      CancellationToken cancellationToken) {
-            AddTransactionToMerchantStatementRequest addTransactionToMerchantStatementRequest = AddTransactionToMerchantStatementRequest.Create(domainEvent.EstateId,
+        private async Task<Result> HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
+                                                             CancellationToken cancellationToken) {
+            MerchantStatementCommands.AddTransactionToMerchantStatementCommand command = new(domainEvent.EstateId,
                 domainEvent.MerchantId,
                 domainEvent.CompletedDateTime,
                 domainEvent.TransactionAmount,
                 domainEvent.IsAuthorised,
                 domainEvent.TransactionId);
 
-            await this.Mediator.Send(addTransactionToMerchantStatementRequest, cancellationToken);
+            return await this.Mediator.Send(command, cancellationToken);
         }
 
         #endregion

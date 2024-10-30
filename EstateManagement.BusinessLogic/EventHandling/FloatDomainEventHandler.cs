@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling{
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling{
     using System.Threading;
     using System.Threading.Tasks;
     using Repository;
@@ -23,24 +25,24 @@
 
         #region Methods
 
-        public async Task Handle(IDomainEvent domainEvent,
-                                 CancellationToken cancellationToken){
-            await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+        public async Task<Result> Handle(IDomainEvent domainEvent,
+                                         CancellationToken cancellationToken){
+            return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(FloatCreatedForContractProductEvent domainEvent,
-                                                     CancellationToken cancellationToken){
-            await this.EstateReportingRepository.CreateFloat(domainEvent, cancellationToken);
+        private async Task<Result> HandleSpecificDomainEvent(FloatCreatedForContractProductEvent domainEvent,
+                                                             CancellationToken cancellationToken){
+            return await this.EstateReportingRepository.CreateFloat(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(FloatCreditPurchasedEvent domainEvent,
-                                                     CancellationToken cancellationToken){
-            await this.EstateReportingRepository.CreateFloatActivity(domainEvent, cancellationToken);
+        private async Task<Result> HandleSpecificDomainEvent(FloatCreditPurchasedEvent domainEvent,
+                                                             CancellationToken cancellationToken){
+            return await this.EstateReportingRepository.CreateFloatActivity(domainEvent, cancellationToken);
         }
 
-        private async Task HandleSpecificDomainEvent(FloatDecreasedByTransactionEvent domainEvent,
-                                                     CancellationToken cancellationToken){
-            await this.EstateReportingRepository.CreateFloatActivity(domainEvent, cancellationToken);
+        private async Task<Result> HandleSpecificDomainEvent(FloatDecreasedByTransactionEvent domainEvent,
+                                                             CancellationToken cancellationToken){
+            return await this.EstateReportingRepository.CreateFloatActivity(domainEvent, cancellationToken);
         }
 
         #endregion

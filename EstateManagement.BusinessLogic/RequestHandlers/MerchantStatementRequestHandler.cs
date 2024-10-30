@@ -15,10 +15,10 @@
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddTransactionToMerchantStatementRequest&gt;" />
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddSettledFeeToMerchantStatementRequest&gt;" />
     /// <seealso cref="MediatR.IRequestHandler&lt;EstateManagement.BusinessLogic.Requests.AddTransactionToMerchantStatementRequest&gt;" />
-    public class MerchantStatementRequestHandler : IRequestHandler<AddTransactionToMerchantStatementRequest>, 
-                                                   IRequestHandler<AddSettledFeeToMerchantStatementRequest>,
+    public class MerchantStatementRequestHandler : IRequestHandler<MerchantStatementCommands.AddTransactionToMerchantStatementCommand, Result>, 
+                                                   IRequestHandler<MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand,Result>,
                                                    IRequestHandler<MerchantCommands.GenerateMerchantStatementCommand, Result>,
-                                                   IRequestHandler<EmailMerchantStatementRequest>
+                                                   IRequestHandler<MerchantStatementCommands.EmailMerchantStatementCommand, Result>
     {
         #region Fields
 
@@ -50,10 +50,10 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task Handle(AddTransactionToMerchantStatementRequest command,
-                                       CancellationToken cancellationToken)
+        public async Task<Result> Handle(MerchantStatementCommands.AddTransactionToMerchantStatementCommand command,
+                                         CancellationToken cancellationToken)
         {
-            await this.MerchantStatementDomainService.AddTransactionToStatement(command,
+            return await this.MerchantStatementDomainService.AddTransactionToStatement(command,
                                                                                 cancellationToken);
         }
 
@@ -63,10 +63,10 @@
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task Handle(AddSettledFeeToMerchantStatementRequest command,
-                                       CancellationToken cancellationToken)
+        public async Task<Result> Handle(MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand command,
+                                         CancellationToken cancellationToken)
         {
-            await this.MerchantStatementDomainService.AddSettledFeeToStatement(command,
+            return await this.MerchantStatementDomainService.AddSettledFeeToStatement(command,
                                                                                cancellationToken);
         }
 
@@ -77,10 +77,10 @@
             return await this.MerchantStatementDomainService.GenerateStatement(command, cancellationToken);
         }
 
-        public async Task Handle(EmailMerchantStatementRequest command,
-                                       CancellationToken cancellationToken)
+        public async Task<Result> Handle(MerchantStatementCommands.EmailMerchantStatementCommand command,
+                                         CancellationToken cancellationToken)
         {
-            await this.MerchantStatementDomainService.EmailStatement(command, cancellationToken);
+            return await this.MerchantStatementDomainService.EmailStatement(command, cancellationToken);
         }
     }
 }

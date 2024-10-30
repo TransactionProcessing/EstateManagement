@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Tests.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Tests.EventHandling;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,22 +27,22 @@ public class MerchantStatementDomainEventHandlerTests
     [Fact]
     public async Task MerchantStatementDomainEventHandler_Handle_StatementGeneratedEvent_EventIsHandled()
     {
-        this.Mediator.Setup(m => m.Send(It.IsAny<IRequest>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        this.Mediator.Setup(m => m.Send(It.IsAny<IRequest<Result>>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success());
         Should.NotThrow(async () =>
                         {
                             await this.DomainEventHandler.Handle(TestData.StatementGeneratedEvent, CancellationToken.None);
                         });
-        this.Mediator.Verify(m=> m.Send(It.IsAny<IRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+        this.Mediator.Verify(m=> m.Send(It.IsAny<IRequest<Result>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task MerchantStatementDomainEventHandler_Handle_TransactionHasBeenCompletedEvent_EventIsHandled()
     {
-        this.Mediator.Setup(m => m.Send(It.IsAny<IRequest>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        this.Mediator.Setup(m => m.Send(It.IsAny<IRequest<Result>>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success());
         Should.NotThrow(async () =>
                         {
                             await this.DomainEventHandler.Handle(TestData.TransactionHasBeenCompletedEvent, CancellationToken.None);
                         });
-        this.Mediator.Verify(m => m.Send(It.IsAny<IRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+        this.Mediator.Verify(m => m.Send(It.IsAny<IRequest<Result>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

@@ -64,7 +64,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(Result.Success(merchantStatementAggregate));
             
-            AddTransactionToMerchantStatementRequest command = AddTransactionToMerchantStatementRequest.Create(TestData.EstateId,
+            MerchantStatementCommands.AddTransactionToMerchantStatementCommand command = new(TestData.EstateId,
                 TestData.MerchantId,
                 TestData.TransactionDateTime1,
                 TestData.TransactionAmount1,
@@ -89,8 +89,8 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                                 .ReturnsAsync(Result.Success(merchantStatementAggregate));
-            
-            AddTransactionToMerchantStatementRequest command = AddTransactionToMerchantStatementRequest.Create(TestData.EstateId,
+
+            MerchantStatementCommands.AddTransactionToMerchantStatementCommand command = new(TestData.EstateId,
                 TestData.MerchantId,
                 TestData.TransactionDateTime1,
                 TestData.TransactionAmount1,
@@ -115,8 +115,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersionFromLastEvent(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Result.Success(merchantStatementAggregate));
 
-            AddTransactionToMerchantStatementRequest command =
-                AddTransactionToMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId,
+            MerchantStatementCommands.AddTransactionToMerchantStatementCommand command = new(TestData.EstateId, TestData.MerchantId,
                     TestData.TransactionDateTime1, null, TestData.IsAuthorisedTrue, TestData.TransactionId1);
 
             var result = await merchantStatementDomainService.AddTransactionToStatement(command, CancellationToken.None);
@@ -137,7 +136,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Result.Success(merchantStatementAggregate));
 
-            AddTransactionToMerchantStatementRequest command = AddTransactionToMerchantStatementRequest.Create(TestData.EstateId,
+            MerchantStatementCommands.AddTransactionToMerchantStatementCommand command = new(TestData.EstateId,
                 TestData.MerchantId,
                 TestData.TransactionDateTime1,
                 TestData.TransactionAmount1,
@@ -163,7 +162,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantStatementAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Result.Success(merchantStatementAggregate));
 
-            AddSettledFeeToMerchantStatementRequest command = AddSettledFeeToMerchantStatementRequest.Create(TestData.EstateId,
+            MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand command = new(TestData.EstateId,
                 TestData.MerchantId,
                 TestData.SettledFeeDateTime1,
                 TestData.SettledFeeAmount1,
@@ -227,7 +226,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
                 .Setup(m => m.SendEmail(It.IsAny<String>(), It.IsAny<SendEmailRequest>(),
                     It.IsAny<CancellationToken>())).ReturnsAsync(new SendEmailResponse { MessageId = Guid.NewGuid() });
 
-            EmailMerchantStatementRequest command = EmailMerchantStatementRequest.Create(TestData.EstateId, TestData.MerchantId,
+            MerchantStatementCommands.EmailMerchantStatementCommand command = new(TestData.EstateId, TestData.MerchantId,
                 TestData.MerchantStatementId);
 
             var result = await merchantStatementDomainService.EmailStatement(command, CancellationToken.None);

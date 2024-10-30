@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -50,10 +52,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task Handle(IDomainEvent domainEvent,
-                                 CancellationToken cancellationToken)
+        public async Task<Result> Handle(IDomainEvent domainEvent,
+                                         CancellationToken cancellationToken)
         {
-            await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
+            return await this.HandleSpecificDomainEvent((dynamic)domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -61,10 +63,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(TransactionHasBeenCompletedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.CompleteTransaction(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.CompleteTransaction(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -75,10 +77,10 @@
         [ExcludeFromCodeCoverage]
         internal static String HexStringFromBytes(Byte[] bytes)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             foreach (Byte b in bytes)
             {
-                var hex = b.ToString("x2");
+                String hex = b.ToString("x2");
                 sb.Append(hex);
             }
 
@@ -90,10 +92,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(TransactionHasStartedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(TransactionHasStartedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.StartTransaction(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.StartTransaction(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -101,11 +103,13 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(AdditionalRequestDataRecordedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(AdditionalRequestDataRecordedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.RecordTransactionAdditionalRequestData(domainEvent, cancellationToken);
-            await this.EstateReportingRepository.SetTransactionAmount(domainEvent, cancellationToken);
+            var result = await this.EstateReportingRepository.RecordTransactionAdditionalRequestData(domainEvent, cancellationToken);
+            if (result.IsFailed)
+                return result;
+            return await this.EstateReportingRepository.SetTransactionAmount(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -113,10 +117,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(AdditionalResponseDataRecordedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(AdditionalResponseDataRecordedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.RecordTransactionAdditionalResponseData(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.RecordTransactionAdditionalResponseData(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -124,10 +128,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(TransactionHasBeenLocallyAuthorisedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(TransactionHasBeenLocallyAuthorisedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -135,10 +139,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(TransactionHasBeenLocallyDeclinedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(TransactionHasBeenLocallyDeclinedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -146,10 +150,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(TransactionAuthorisedByOperatorEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(TransactionAuthorisedByOperatorEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -157,16 +161,16 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(TransactionDeclinedByOperatorEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(TransactionDeclinedByOperatorEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateTransactionAuthorisation(domainEvent, cancellationToken);
         }
         
-        private async Task HandleSpecificDomainEvent(TransactionSourceAddedToTransactionEvent domainEvent,
+        private async Task<Result> HandleSpecificDomainEvent(TransactionSourceAddedToTransactionEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.AddSourceDetailsToTransaction(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.AddSourceDetailsToTransaction(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -174,10 +178,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(ProductDetailsAddedToTransactionEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(ProductDetailsAddedToTransactionEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.AddProductDetailsToTransaction(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.AddProductDetailsToTransaction(domainEvent, cancellationToken);
         }
         
         /// <summary>
@@ -185,10 +189,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(ReconciliationHasStartedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(ReconciliationHasStartedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.StartReconciliation(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.StartReconciliation(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -196,10 +200,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(OverallTotalsRecordedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(OverallTotalsRecordedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateReconciliationOverallTotals(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateReconciliationOverallTotals(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -207,10 +211,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(ReconciliationHasBeenLocallyAuthorisedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(ReconciliationHasBeenLocallyAuthorisedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateReconciliationStatus(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateReconciliationStatus(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -218,10 +222,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(ReconciliationHasBeenLocallyDeclinedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(ReconciliationHasBeenLocallyDeclinedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateReconciliationStatus(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateReconciliationStatus(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -229,10 +233,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(ReconciliationHasCompletedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(ReconciliationHasCompletedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.CompleteReconciliation(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.CompleteReconciliation(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -240,10 +244,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(VoucherGeneratedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(VoucherGeneratedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.AddGeneratedVoucher(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.AddGeneratedVoucher(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -251,10 +255,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(VoucherIssuedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(VoucherIssuedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateVoucherIssueDetails(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateVoucherIssueDetails(domainEvent, cancellationToken);
         }
 
         /// <summary>
@@ -262,10 +266,10 @@
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private async Task HandleSpecificDomainEvent(VoucherFullyRedeemedEvent domainEvent,
-                                                     CancellationToken cancellationToken)
+        private async Task<Result> HandleSpecificDomainEvent(VoucherFullyRedeemedEvent domainEvent,
+                                                             CancellationToken cancellationToken)
         {
-            await this.EstateReportingRepository.UpdateVoucherRedemptionDetails(domainEvent, cancellationToken);
+            return await this.EstateReportingRepository.UpdateVoucherRedemptionDetails(domainEvent, cancellationToken);
         }
 
         #endregion

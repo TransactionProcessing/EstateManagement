@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,9 +42,9 @@ public class OperatorDomainEventHandler : IDomainEventHandler
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    public async Task Handle(IDomainEvent domainEvent,
-                             CancellationToken cancellationToken){
-        Task t = domainEvent switch{
+    public async Task<Result> Handle(IDomainEvent domainEvent,
+                                     CancellationToken cancellationToken){
+        Task<Result> t = domainEvent switch{
             OperatorCreatedEvent oce => this.EstateReportingRepository.AddOperator(oce, cancellationToken),
             OperatorNameUpdatedEvent onue => this.EstateReportingRepository.UpdateOperator(onue, cancellationToken),
             OperatorRequireCustomMerchantNumberChangedEvent oprcmnce => this.EstateReportingRepository.UpdateOperator(oprcmnce, cancellationToken),
@@ -50,7 +52,9 @@ public class OperatorDomainEventHandler : IDomainEventHandler
             _ => null
         };
         if (t != null)
-            await t;
+            return await t;
+
+        return Result.Success();
     }
     
     #endregion

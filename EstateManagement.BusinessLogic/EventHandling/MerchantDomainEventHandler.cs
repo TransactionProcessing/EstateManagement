@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.EventHandling
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.EventHandling
 {
     using System;
     using System.Threading;
@@ -50,10 +52,10 @@
 
         #region Methods
 
-        public async Task Handle(IDomainEvent domainEvent,
+        public async Task<Result> Handle(IDomainEvent domainEvent,
                                  CancellationToken cancellationToken)
         {
-            Task t = domainEvent switch{
+            Task<Result> t = domainEvent switch{
                 MerchantCreatedEvent de => this.EstateReportingRepository.AddMerchant(de, cancellationToken),
                 MerchantNameUpdatedEvent de => this.EstateReportingRepository.UpdateMerchant(de, cancellationToken),
                 AddressAddedEvent de => this.EstateReportingRepository.AddMerchantAddress(de, cancellationToken),
@@ -83,10 +85,12 @@
                 _ => null
             };
             if (t != null)
-                await t;
+                return await t;
+
+            return Result.Success();
         }
 
-        private async Task HandleSpecificDomainEvent(CallbackReceivedEnrichedEvent domainEvent,
+        private async Task<Result> HandleSpecificDomainEvent(CallbackReceivedEnrichedEvent domainEvent,
                                                      CancellationToken cancellationToken)
         {
             if (domainEvent.TypeString == typeof(Deposit).ToString())
@@ -94,21 +98,24 @@
                 // Work out the merchant id from the reference field (second part, split on hyphen)
                 String merchantReference = domainEvent.Reference.Split("-")[1];
 
-                Merchant merchant = await this.EstateManagementRepository.GetMerchantFromReference(domainEvent.EstateId, merchantReference, cancellationToken);
+                Result<Merchant> result = await this.EstateManagementRepository.GetMerchantFromReference(domainEvent.EstateId, merchantReference, cancellationToken);
+                if (result.IsFailed)
+                    return ResultHelpers.CreateFailure(result);
 
                 // We now need to deserialise the message from the callback
                 Deposit callbackMessage = JsonConvert.DeserializeObject<Deposit>(domainEvent.CallbackMessage);
 
                 MerchantCommands.MakeMerchantDepositCommand command = new(domainEvent.EstateId,
-                                                                          merchant.MerchantId,
+                                                                          result.Data.MerchantId,
                                                                           MerchantDepositSource.Automatic,
                                                                           new MakeMerchantDepositRequest{
                                                                                                             DepositDateTime = callbackMessage.DateTime,
                                                                                                             Reference = callbackMessage.Reference,
                                                                                                             Amount = callbackMessage.Amount,
                                                                                                         });
-                await this.Mediator.Send(command, cancellationToken);
+                return await this.Mediator.Send(command, cancellationToken);
             }
+            return Result.Success();
         }
         
         

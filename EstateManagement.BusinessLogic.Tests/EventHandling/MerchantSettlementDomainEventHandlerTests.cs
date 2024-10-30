@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.BusinessLogic.Tests.EventHandling;
+﻿using SimpleResults;
+
+namespace EstateManagement.BusinessLogic.Tests.EventHandling;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,12 +26,12 @@ public class MerchantSettlementDomainEventHandlerTests{
     [Fact]
     public async Task MerchantSettlementDomainEventHandler_Handle_MerchantFeeSettledEvent_EventIsHandled()
     {
-        this.Mediator.Setup(m => m.Send(It.IsAny<IRequest>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        this.Mediator.Setup(m => m.Send(It.IsAny<IRequest<Result>>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success);
         Should.NotThrow(async () =>
                         {
                             await this.DomainEventHandler.Handle(TestData.MerchantFeeSettledEvent, CancellationToken.None);
                         });
-        this.Mediator.Verify(m => m.Send(It.IsAny<IRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+        this.Mediator.Verify(m => m.Send(It.IsAny<IRequest<Result>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

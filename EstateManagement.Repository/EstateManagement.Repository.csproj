@@ -2,15 +2,15 @@
 
   <PropertyGroup>
 	  <TargetFramework>net8.0</TargetFramework>
-	  <DebugType>None</DebugType>
+	  <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.3" />
-    <PackageReference Include="Shared" Version="2024.10.3" />
-    <PackageReference Include="Shared.EventStore" Version="2024.10.3" />
+    <PackageReference Include="Shared" Version="2024.10.4" />
+    <PackageReference Include="Shared.EventStore" Version="2024.10.4" />
     <PackageReference Include="TransactionProcessor.Float.DomainEvents" Version="2024.6.2" />
     <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="2024.6.2" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="2024.6.2" />
