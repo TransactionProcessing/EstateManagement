@@ -64,7 +64,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -99,7 +99,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -130,7 +130,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -161,7 +161,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -196,7 +196,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -233,7 +233,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -271,7 +271,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -299,7 +299,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.DeleteAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -329,7 +329,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.DeleteAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -359,7 +359,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.DeleteAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -397,7 +397,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -431,7 +431,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -464,7 +464,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -498,7 +498,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -533,7 +533,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -568,7 +568,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -602,7 +602,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -611,7 +611,7 @@ namespace EstateManagement.Client{
             }
             catch(Exception ex){
                 // An exception has occurred, add some additional information to the message
-                Exception exception = new Exception($"Error addign new operator {assignOperatorRequest.OperatorId} to estate {estateId}.", ex);
+                Exception exception = new Exception($"Error adding new operator {assignOperatorRequest.OperatorId} to estate {estateId}.", ex);
 
                 throw exception;
             }
@@ -633,7 +633,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.DeleteAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -666,14 +666,14 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 // call was successful so now deserialise the body to the response object
                 ResponseData<ContractResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<ContractResponse>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<ContractResponse>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -702,13 +702,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<ContractResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<ContractResponse>>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<List<ContractResponse>>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -737,14 +737,14 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 // call was successful so now deserialise the body to the response object
                 ResponseData<EstateResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<EstateResponse>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<EstateResponse>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -773,13 +773,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<EstateResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<EstateResponse>>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<List<EstateResponse>>>(result.Data.StringData);
                 
                 return Result.Success(responseData.Data);
             }
@@ -809,13 +809,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<MerchantResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<MerchantResponse>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<MerchantResponse>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -845,13 +845,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<ContractResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<ContractResponse>>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<List<ContractResponse>>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -880,13 +880,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<MerchantResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<MerchantResponse>>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<List<MerchantResponse>>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -917,13 +917,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<SettlementResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<SettlementResponse>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<SettlementResponse>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -955,13 +955,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<SettlementResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<SettlementResponse>>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<List<SettlementResponse>>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -993,14 +993,14 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 // call was successful so now deserialise the body to the response object
                 ResponseData<List<ContractProductTransactionFee>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<ContractProductTransactionFee>>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<List<ContractProductTransactionFee>>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -1034,7 +1034,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1070,7 +1070,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1107,7 +1107,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.SendAsync(requestMessage, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1143,7 +1143,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1173,7 +1173,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1204,7 +1204,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1235,7 +1235,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PatchAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1267,7 +1267,7 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.PostAsync(requestUri, httpContent, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
@@ -1297,13 +1297,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<OperatorResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<OperatorResponse>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<OperatorResponse>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
@@ -1332,13 +1332,13 @@ namespace EstateManagement.Client{
                 HttpResponseMessage httpResponse = await this.HttpClient.GetAsync(requestUri, cancellationToken);
 
                 // Process the response
-                Result<String> result = await this.HandleResponseX(httpResponse, cancellationToken);
+                Result<StringResult> result = await this.HandleResponseX(httpResponse, cancellationToken);
 
                 if (result.IsFailed)
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<OperatorResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<OperatorResponse>>>(result.Data);
+                    JsonConvert.DeserializeObject<ResponseData<List<OperatorResponse>>>(result.Data.StringData);
 
                 return Result.Success(responseData.Data);
             }
