@@ -80,7 +80,7 @@ namespace EstateManagement.Controllers
                                                      [FromRoute] Guid contractId,
                                                      CancellationToken cancellationToken) {
             this.V2ContractController.SetContextOverride(this.HttpContext);
-            ActionResult<Result<ContractResponse>> result = await this.V2ContractController.GetContract(estateId, contractId, cancellationToken);
+            var result = await this.V2ContractController.GetContract(estateId, contractId, cancellationToken);
 
             return ActionResultHelpers.HandleResult(result, $"Contract not found with estate Id {estateId} and contract Id {contractId}");
         }
@@ -99,7 +99,7 @@ namespace EstateManagement.Controllers
                                                      CancellationToken cancellationToken)
         {
             this.V2ContractController.SetContextOverride(this.HttpContext);
-            ActionResult<Result<List<ContractResponse>>> result = await this.V2ContractController.GetContracts(estateId, cancellationToken);
+            var result = await this.V2ContractController.GetContracts(estateId, cancellationToken);
 
             return ActionResultHelpers.HandleResult(result, String.Empty);
 
@@ -123,7 +123,7 @@ namespace EstateManagement.Controllers
                                                               CancellationToken cancellationToken)
         {
             this.V2ContractController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2ContractController.AddProductToContract(estateId, contractId, addProductToContractRequest, cancellationToken);
+            var result = await this.V2ContractController.AddProductToContract(estateId, contractId, addProductToContractRequest, cancellationToken);
 
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
@@ -148,7 +148,7 @@ namespace EstateManagement.Controllers
                                                                                CancellationToken cancellationToken)
         {
             this.V2ContractController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2ContractController.AddTransactionFeeForProductToContract(
+            var result = await this.V2ContractController.AddTransactionFeeForProductToContract(
                 estateId, contractId, productId, addTransactionFeeForProductToContractRequest, cancellationToken);
 
             return ActionResultHelpers.HandleResult(result, String.Empty);
@@ -172,7 +172,7 @@ namespace EstateManagement.Controllers
                                                                                CancellationToken cancellationToken)
         {
             this.V2ContractController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2ContractController.DisableTransactionFeeForProduct(estateId, contractId, productId, transactionFeeId, cancellationToken);
+            var result = await this.V2ContractController.DisableTransactionFeeForProduct(estateId, contractId, productId, transactionFeeId, cancellationToken);
 
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
@@ -192,7 +192,7 @@ namespace EstateManagement.Controllers
                                                         CancellationToken cancellationToken)
         {
             this.V2ContractController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2ContractController.CreateContract(estateId, createContractRequest, cancellationToken);
+            var result = await this.V2ContractController.CreateContract(estateId, createContractRequest, cancellationToken);
 
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
@@ -215,45 +215,66 @@ namespace EstateManagement.Controllers
     }
 
     public static class ActionResultHelpers{
-        public static IActionResult HandleResult<T>(ActionResult<Result<T>> result, String notFoundMessage)
-        {
-            if (result.Result.IsSuccess())
-            {
-                OkObjectResult ok = result.Result as OkObjectResult;
-                Result<T> x = ok.Value as Result<T>;
+        //public static IActionResult HandleResult<T>(ActionResult<Result<T>> result, String notFoundMessage)
+        //{
+        //    if (result.Result.IsSuccess())
+        //    {
+        //        OkObjectResult ok = result.Result as OkObjectResult;
+        //        Result<T> x = ok.Value as Result<T>;
                 
-                return  new OkObjectResult(x.Data);
+        //        return  new OkObjectResult(x.Data);
+        //    }
+
+        //    if (result.Result is NotFoundObjectResult)
+        //    {
+        //        throw new NotFoundException(notFoundMessage);
+        //    }
+
+        //    ObjectResult r = result.Result as ObjectResult;
+        //    if (r.StatusCode == 403)
+        //        return new ForbidResult();
+
+        //    return new BadRequestResult();
+        //}
+
+        public static IActionResult HandleResult(IActionResult result, String notFoundMessage) {
+
+            if (result.GetType().Name == nameof(OkObjectResult)) {
+                OkObjectResult ok = result as OkObjectResult;
+                Type type = ok.Value.GetType();
+                dynamic convertedObj = Convert.ChangeType(ok.Value, ok.Value.GetType());
+
+                //Result x = ok.Value as Result;
+                return  new OkObjectResult(convertedObj.Data);
             }
 
-            if (result.Result is NotFoundObjectResult)
-            {
-                throw new NotFoundException(notFoundMessage);
-            }
+            IActionResult x = result.GetType().Name switch {
+                nameof(BadRequestObjectResult) => new BadRequestResult(),
+                nameof(NotFoundObjectResult) => throw new NotFoundException(notFoundMessage),
+                nameof(UnauthorizedObjectResult) => new UnauthorizedResult(),
+                nameof(ConflictObjectResult) => new ConflictResult(),
+                nameof(ForbidResult) => new ForbidResult(),
+                //nameof(OkObjectResult) => new OkObjectResult(result.)
+                _ => result
+            };
+            return x;
 
-            ObjectResult r = result.Result as ObjectResult;
-            if (r.StatusCode == 403)
-                return new ForbidResult();
 
-            return new BadRequestResult();
-        }
+            //if (result.Result.IsSuccess())
+            //{
+            //    return new OkResult();
+            //}
 
-        public static IActionResult HandleResult(ActionResult<Result> result, String notFoundMessage)
-        {
-            if (result.Result.IsSuccess())
-            {
-                return new OkResult();
-            }
+            //if (result.Result is NotFoundObjectResult)
+            //{
+            //    throw new NotFoundException(notFoundMessage);
+            //}
 
-            if (result.Result is NotFoundObjectResult)
-            {
-                throw new NotFoundException(notFoundMessage);
-            }
+            //ObjectResult r = result.Result as ObjectResult;
+            //if (r.StatusCode == 403)
+            //    return new ForbidResult();
 
-            ObjectResult r = result.Result as ObjectResult;
-            if (r.StatusCode == 403)
-                return new ForbidResult();
-
-            return new BadRequestResult();
+            //return new BadRequestResult();
         }
     }
 }

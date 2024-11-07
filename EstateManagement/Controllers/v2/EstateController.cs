@@ -75,7 +75,7 @@ namespace EstateManagement.Controllers.v2
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateEstateResponse))]
         [SwaggerResponseExample(201, typeof(CreateEstateResponseExample))]
-        public async Task<ActionResult<Result>> CreateEstate([FromBody] CreateEstateRequest createEstateRequest,
+        public async Task<IActionResult> CreateEstate([FromBody] CreateEstateRequest createEstateRequest,
                                                       CancellationToken cancellationToken)
         {
             // Reject password tokens
@@ -90,7 +90,7 @@ namespace EstateManagement.Controllers.v2
             // Route the command
             Result result = await Mediator.Send(command, cancellationToken);
 
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         /// <summary>
@@ -104,8 +104,8 @@ namespace EstateManagement.Controllers.v2
         [Route("{estateId}")]
         [SwaggerResponse(200, "OK", typeof(EstateResponse))]
         [SwaggerResponseExample(200, typeof(EstateResponseExample))]
-        public async Task<ActionResult<Result<EstateResponse>>> GetEstate([FromRoute] Guid estateId,
-                                                                               CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEstate([FromRoute] Guid estateId,
+                                                   CancellationToken cancellationToken)
         {
             // Get the Estate Id claim from the user
             Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.GetUser(), "EstateId", estateId.ToString());
@@ -126,18 +126,18 @@ namespace EstateManagement.Controllers.v2
             Result<Estate> result = await Mediator.Send(query, cancellationToken);
             if (result.IsFailed)
             {
-                return result.ToActionResult().Result;
+                return result.ToActionResultX();
             }
 
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
 
         [HttpGet]
         [Route("{estateId}/all")]
         [SwaggerResponse(200, "OK", typeof(List<EstateResponse>))]
         [SwaggerResponseExample(200, typeof(EstatesResponseExample))]
-        public async Task<ActionResult<Result<List<EstateResponse>>>> GetEstates([FromRoute] Guid estateId,
-                                                   CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEstates([FromRoute] Guid estateId,
+                                                    CancellationToken cancellationToken)
         {
             // Get the Estate Id claim from the user
             Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.GetUser(), "EstateId", estateId.ToString());
@@ -158,10 +158,10 @@ namespace EstateManagement.Controllers.v2
             Result<List<Estate>> result = await Mediator.Send(query, cancellationToken);
             if (result.IsFailed)
             {
-                return result.ToActionResult().Result;
+                return result.ToActionResultX();
             }
 
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
 
         /// <summary>
@@ -174,9 +174,9 @@ namespace EstateManagement.Controllers.v2
         [Route("{estateId}/users")]
         [SwaggerResponse(201, "Created", typeof(CreateEstateUserResponse))]
         [SwaggerResponseExample(201, typeof(CreateEstateUserResponseExample))]
-        public async Task<ActionResult<Result>> CreateEstateUser([FromRoute] Guid estateId,
-                                                                 [FromBody] CreateEstateUserRequest createEstateUserRequest,
-                                                                 CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateEstateUser([FromRoute] Guid estateId,
+                                                          [FromBody] CreateEstateUserRequest createEstateUserRequest,
+                                                          CancellationToken cancellationToken)
         {
             // Reject password tokens
             if (ClaimsHelper.IsPasswordToken(this.GetUser()))
@@ -191,12 +191,12 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPatch]
         [Route("{estateId}/operators")]
-        public async Task<ActionResult<Result>> AssignOperator([FromRoute] Guid estateId, [FromBody] AssignOperatorRequest assignOperatorRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId, [FromBody] AssignOperatorRequest assignOperatorRequest, CancellationToken cancellationToken)
         {
             // Reject password tokens
             if (ClaimsHelper.IsPasswordToken(this.GetUser()))
@@ -211,12 +211,12 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpDelete]
         [Route("{estateId}/operators/{operatorId}")]
-        public async Task<ActionResult<Result>> RemoveOperator([FromRoute] Guid estateId,
+        public async Task<IActionResult> RemoveOperator([FromRoute] Guid estateId,
                                                         [FromRoute] Guid operatorId,
                                                         CancellationToken cancellationToken)
         {
@@ -232,7 +232,7 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         #endregion

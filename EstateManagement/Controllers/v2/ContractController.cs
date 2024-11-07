@@ -109,22 +109,22 @@ namespace EstateManagement.Controllers.v2
         [Route("{contractId}")]
         [SwaggerResponse(200, "OK", typeof(ContractResponse))]
         [SwaggerResponseExample(200, typeof(ContractResponseExample))]
-        public async Task<ActionResult<Result<ContractResponse>>> GetContract([FromRoute] Guid estateId,
+        public async Task<IActionResult> GetContract([FromRoute] Guid estateId,
                                                      [FromRoute] Guid contractId,
                                                      CancellationToken cancellationToken)
         {
             Result securityChecksResult = StandardSecurityChecks(estateId);
             if (securityChecksResult.IsFailed)
-                return securityChecksResult.ToActionResult().Result;
+                return securityChecksResult.ToActionResultX();
 
             ContractQueries.GetContractQuery query = new ContractQueries.GetContractQuery(estateId, contractId);
             Result<Contract> result = await Mediator.Send(query, cancellationToken);
             if (result.IsFailed) {
-                var x = result.ToActionResult().Result;
+                var x = result.ToActionResultX();
                 return x;
             }
 
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
 
         /// <summary>
@@ -137,16 +137,16 @@ namespace EstateManagement.Controllers.v2
         [Route("")]
         [SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         [SwaggerResponseExample(200, typeof(ContractResponseListExample))]
-        public async Task<ActionResult<Result<List<ContractResponse>>>> GetContracts([FromRoute] Guid estateId,
-                                                     CancellationToken cancellationToken)
+        public async Task<IActionResult> GetContracts([FromRoute] Guid estateId,
+                                                      CancellationToken cancellationToken)
         {
             Result securityChecksResult = StandardSecurityChecks(estateId);
             if (securityChecksResult.IsFailed)
-                return securityChecksResult.ToActionResult().Result;
+                return securityChecksResult.ToActionResultX();
             ContractQueries.GetContractsQuery query = new ContractQueries.GetContractsQuery(estateId);
 
             Result<List<Contract>> result = await Mediator.Send(query, cancellationToken);
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
 
         }
 
@@ -162,14 +162,14 @@ namespace EstateManagement.Controllers.v2
         [Route("{contractId}/products")]
         [SwaggerResponse(201, "Created", typeof(AddProductToContractResponse))]
         [SwaggerResponseExample(201, typeof(AddProductToContractResponseExample))]
-        public async Task<ActionResult<Result>> AddProductToContract([FromRoute] Guid estateId,
+        public async Task<IActionResult> AddProductToContract([FromRoute] Guid estateId,
                                                               [FromRoute] Guid contractId,
                                                               [FromBody] AddProductToContractRequestDTO addProductToContractRequest,
                                                               CancellationToken cancellationToken)
         {
             Result securityChecksResult = StandardSecurityChecks(estateId);
             if (securityChecksResult.IsFailed)
-                return securityChecksResult.ToActionResult().Result;
+                return securityChecksResult.ToActionResultX();
 
             Guid productId = Guid.NewGuid();
 
@@ -180,7 +180,7 @@ namespace EstateManagement.Controllers.v2
 
             // Route the command
             Result result = await Mediator.Send(command, cancellationToken);
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace EstateManagement.Controllers.v2
         [Route("{contractId}/products/{productId}/transactionFees")]
         [SwaggerResponse(201, "Created", typeof(AddTransactionFeeForProductToContractResponse))]
         [SwaggerResponseExample(201, typeof(AddTransactionFeeForProductToContractResponseExample))]
-        public async Task<ActionResult<Result>> AddTransactionFeeForProductToContract([FromRoute] Guid estateId,
+        public async Task<IActionResult> AddTransactionFeeForProductToContract([FromRoute] Guid estateId,
                                                                                [FromRoute] Guid contractId,
                                                                                [FromRoute] Guid productId,
                                                                                [FromBody] AddTransactionFeeForProductToContractRequestDTO addTransactionFeeForProductToContractRequest,
@@ -204,7 +204,7 @@ namespace EstateManagement.Controllers.v2
         {
             Result securityChecksResult = StandardSecurityChecks(estateId);
             if (securityChecksResult.IsFailed)
-                return securityChecksResult.ToActionResult().Result;
+                return securityChecksResult.ToActionResultX();
 
             Guid transactionFeeId = Guid.NewGuid();
 
@@ -214,7 +214,7 @@ namespace EstateManagement.Controllers.v2
 
             // Route the command
             Result result = await Mediator.Send(command, cancellationToken);
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         /// <summary>
@@ -229,15 +229,15 @@ namespace EstateManagement.Controllers.v2
         [HttpDelete]
         [Route("{contractId}/products/{productId}/transactionFees/{transactionFeeId}")]
         [SwaggerResponse(200, "OK")]
-        public async Task<ActionResult<Result>> DisableTransactionFeeForProduct([FromRoute] Guid estateId,
-                                                                               [FromRoute] Guid contractId,
-                                                                               [FromRoute] Guid productId,
-                                                                               [FromRoute] Guid transactionFeeId,
-                                                                               CancellationToken cancellationToken)
+        public async Task<IActionResult> DisableTransactionFeeForProduct([FromRoute] Guid estateId,
+                                                                         [FromRoute] Guid contractId,
+                                                                         [FromRoute] Guid productId,
+                                                                         [FromRoute] Guid transactionFeeId,
+                                                                         CancellationToken cancellationToken)
         {
             Result securityChecksResult = StandardSecurityChecks(estateId);
             if (securityChecksResult.IsFailed)
-                return securityChecksResult.ToActionResult().Result;
+                return securityChecksResult.ToActionResultX();
 
             // Create the command
             DisableTransactionFeeForProductCommand command = new(contractId, estateId, productId, transactionFeeId);
@@ -246,7 +246,7 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         /// <summary>
@@ -260,13 +260,13 @@ namespace EstateManagement.Controllers.v2
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateContractResponse))]
         [SwaggerResponseExample(201, typeof(CreateContractResponseExample))]
-        public async Task<ActionResult<Result>> CreateContract([FromRoute] Guid estateId,
+        public async Task<IActionResult> CreateContract([FromRoute] Guid estateId,
                                                         [FromBody] CreateContractRequestDTO createContractRequest,
                                                         CancellationToken cancellationToken)
         {
             Result securityChecksResult = StandardSecurityChecks(estateId);
             if (securityChecksResult.IsFailed)
-                return securityChecksResult.ToActionResult().Result;
+                return securityChecksResult.ToActionResultX();
 
             Guid contractId = Guid.NewGuid();
 
@@ -277,7 +277,7 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         #endregion

@@ -1,4 +1,7 @@
-﻿using SimpleResults;
+﻿using System.Net;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Shared.EventStore.Aggregate;
+using SimpleResults;
 
 namespace EstateManagement.Controllers.v2
 {
@@ -75,7 +78,7 @@ namespace EstateManagement.Controllers.v2
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateMerchantResponse))]
         [SwaggerResponseExample(201, typeof(CreateMerchantResponseExample))]
-        public async Task<ActionResult<Result>> CreateMerchant([FromRoute] Guid estateId,
+        public async Task<IActionResult> CreateMerchant([FromRoute] Guid estateId,
                                                         [FromBody] CreateMerchantRequest createMerchantRequest,
                                                         CancellationToken cancellationToken)
         {
@@ -91,7 +94,7 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
 
         }
 
@@ -100,10 +103,10 @@ namespace EstateManagement.Controllers.v2
         [ProducesResponseType(typeof(AssignOperatorResponse), 201)]
         [SwaggerResponse(201, "Created", typeof(AssignOperatorResponse))]
         [SwaggerResponseExample(201, typeof(AssignOperatorResponseExample))]
-        public async Task<ActionResult<Result>> AssignOperator([FromRoute] Guid estateId,
-                                                               [FromRoute] Guid merchantId,
-                                                               AssignOperatorRequest assignOperatorRequest,
-                                                               CancellationToken cancellationToken)
+        public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        AssignOperatorRequest assignOperatorRequest,
+                                                        CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -117,15 +120,15 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpDelete]
         [Route("{merchantId}/operators/{operatorId}")]
-        public async Task<ActionResult<Result>> RemoveOperator([FromRoute] Guid estateId,
-                                                               [FromRoute] Guid merchantId,
-                                                               [FromRoute] Guid operatorId,
-                                                               CancellationToken cancellationToken)
+        public async Task<IActionResult> RemoveOperator([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        [FromRoute] Guid operatorId,
+                                                        CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -139,17 +142,17 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPatch]
         [Route("{merchantId}/devices")]
         [SwaggerResponse(201, "Created", typeof(AddMerchantDeviceResponse))]
         [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
-        public async Task<ActionResult<Result>> AddDevice([FromRoute] Guid estateId,
-                                                          [FromRoute] Guid merchantId,
-                                                          [FromBody] AddMerchantDeviceRequest addMerchantDeviceRequest,
-                                                          CancellationToken cancellationToken)
+        public async Task<IActionResult> AddDevice([FromRoute] Guid estateId,
+                                                   [FromRoute] Guid merchantId,
+                                                   [FromBody] AddMerchantDeviceRequest addMerchantDeviceRequest,
+                                                   CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -163,15 +166,15 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPatch]
         [Route("{merchantId}/contracts")]
-        public async Task<ActionResult<Result>> AddContract([FromRoute] Guid estateId,
-                                                            [FromRoute] Guid merchantId,
-                                                            [FromBody] AddMerchantContractRequest addMerchantContractRequest,
-                                                            CancellationToken cancellationToken)
+        public async Task<IActionResult> AddContract([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromBody] AddMerchantContractRequest addMerchantContractRequest,
+                                                     CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -185,15 +188,15 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpDelete]
         [Route("{merchantId}/contracts/{contractId}")]
-        public async Task<ActionResult<Result>> RemoveContract([FromRoute] Guid estateId,
-                                                               [FromRoute] Guid merchantId,
-                                                               [FromRoute] Guid contractId,
-                                                               CancellationToken cancellationToken)
+        public async Task<IActionResult> RemoveContract([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        [FromRoute] Guid contractId,
+                                                        CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -207,17 +210,17 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPatch]
         [Route("{merchantId}/users")]
         [SwaggerResponse(201, "Created", typeof(CreateMerchantUserResponse))]
         [SwaggerResponseExample(201, typeof(CreateMerchantUserResponseExample))]
-        public async Task<ActionResult<Result>> CreateMerchantUser([FromRoute] Guid estateId,
-                                                                   [FromRoute] Guid merchantId,
-                                                                   [FromBody] CreateMerchantUserRequest createMerchantUserRequest,
-                                                                   CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateMerchantUser([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromBody] CreateMerchantUserRequest createMerchantUserRequest,
+                                                            CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -231,17 +234,17 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPost]
         [Route("{merchantId}/deposits")]
         [SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
         [SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
-        public async Task<ActionResult<Result>> MakeDeposit([FromRoute] Guid estateId,
-                                                            [FromRoute] Guid merchantId,
-                                                            [FromBody] MakeMerchantDepositRequest makeMerchantDepositRequest,
-                                                            CancellationToken cancellationToken)
+        public async Task<IActionResult> MakeDeposit([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     [FromBody] MakeMerchantDepositRequest makeMerchantDepositRequest,
+                                                     CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -256,17 +259,17 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPost]
         [Route("{merchantId}/withdrawals")]
         //[SwaggerResponse(201, "Created", typeof(MakeMerchantDepositResponse))]
         //[SwaggerResponseExample(201, typeof(MakeMerchantDepositResponseExample))]
-        public async Task<ActionResult<Result>> MakeWithdrawal([FromRoute] Guid estateId,
-                                                               [FromRoute] Guid merchantId,
-                                                               [FromBody] MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
-                                                               CancellationToken cancellationToken)
+        public async Task<IActionResult> MakeWithdrawal([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        [FromBody] MakeMerchantWithdrawalRequest makeMerchantWithdrawalRequest,
+                                                        CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -280,7 +283,7 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
 
         }
 
@@ -288,11 +291,11 @@ namespace EstateManagement.Controllers.v2
         [Route("{merchantId}/devices/{deviceIdentifier}")]
         [SwaggerResponse(201, "Created", typeof(SwapMerchantDeviceResponse))]
         [SwaggerResponseExample(201, typeof(AddMerchantDeviceResponseExample))]
-        public async Task<ActionResult<Result>> SwapMerchantDevice([FromRoute] Guid estateId,
-                                                                   [FromRoute] Guid merchantId,
-                                                                   [FromRoute] string deviceIdentifier,
-                                                                   [FromBody] SwapMerchantDeviceRequest swapMerchantDeviceRequest,
-                                                                   CancellationToken cancellationToken)
+        public async Task<IActionResult> SwapMerchantDevice([FromRoute] Guid estateId,
+                                                            [FromRoute] Guid merchantId,
+                                                            [FromRoute] string deviceIdentifier,
+                                                            [FromBody] SwapMerchantDeviceRequest swapMerchantDeviceRequest,
+                                                            CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -306,17 +309,17 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPost]
         [Route("{merchantId}/statements")]
         [SwaggerResponse(201, "Created", typeof(GenerateMerchantStatementResponse))]
         [SwaggerResponseExample(201, typeof(GenerateMerchantStatementResponseExample))]
-        public async Task<ActionResult<Result>> GenerateMerchantStatement([FromRoute] Guid estateId,
-                                                                          [FromRoute] Guid merchantId,
-                                                                          [FromBody] GenerateMerchantStatementRequest generateMerchantStatementRequest,
-                                                                          CancellationToken cancellationToken)
+        public async Task<IActionResult> GenerateMerchantStatement([FromRoute] Guid estateId,
+                                                                   [FromRoute] Guid merchantId,
+                                                                   [FromBody] GenerateMerchantStatementRequest generateMerchantStatementRequest,
+                                                                   CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -330,16 +333,16 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpGet]
         [Route("{merchantId}")]
         [SwaggerResponse(200, "OK", typeof(MerchantResponse))]
         [SwaggerResponseExample(200, typeof(MerchantResponseExample))]
-        public async Task<ActionResult<Result<MerchantResponse>>> GetMerchant([FromRoute] Guid estateId,
-                                                      [FromRoute] Guid merchantId,
-                                                      CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMerchant([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid merchantId,
+                                                     CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformMerchantUserChecks(estateId, merchantId);
             if (isRequestAllowed == false)
@@ -351,15 +354,16 @@ namespace EstateManagement.Controllers.v2
 
             // Route the query
             Result<Merchant> result = await Mediator.Send(query, cancellationToken);
-
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            if (result.IsFailed)
+                return result.ToActionResultX();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
-
+        
         [Route("{merchantId}/contracts")]
         [HttpGet]
         [SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         [SwaggerResponseExample(200, typeof(ContractResponseListExample))]
-        public async Task<ActionResult<Result<List<ContractResponse>>>> GetMerchantContracts([FromRoute] Guid estateId,
+        public async Task<IActionResult> GetMerchantContracts([FromRoute] Guid estateId,
                                                               [FromRoute] Guid merchantId,
                                                               CancellationToken cancellationToken)
         {
@@ -373,14 +377,14 @@ namespace EstateManagement.Controllers.v2
 
             Result<List<Models.Contract.Contract>> result = await Mediator.Send(query, cancellationToken);
 
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
 
         [HttpGet]
         [Route("")]
         [SwaggerResponse(200, "OK", typeof(List<MerchantResponse>))]
         [SwaggerResponseExample(200, typeof(MerchantResponseListExample))]
-        public async Task<ActionResult<Result<List<MerchantResponse>>>> GetMerchants([FromRoute] Guid estateId,
+        public async Task<IActionResult> GetMerchants([FromRoute] Guid estateId,
                                                       CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
@@ -393,7 +397,7 @@ namespace EstateManagement.Controllers.v2
 
             Result<List<Merchant>> result = await Mediator.Send(query, cancellationToken);
 
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
 
         [Route("{merchantId}/contracts/{contractId}/products/{productId}/transactionFees")]
@@ -401,7 +405,7 @@ namespace EstateManagement.Controllers.v2
         [ProducesResponseType(typeof(List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee>), 200)]
         [SwaggerResponse(200, "OK", typeof(List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee>))]
         [SwaggerResponseExample(200, typeof(ContractProductTransactionFeeResponseListExample))]
-        public async Task<ActionResult<Result<List<DataTransferObjects.Responses.Contract.ContractProductTransactionFee>>>> GetTransactionFeesForProduct([FromRoute] Guid estateId,
+        public async Task<IActionResult> GetTransactionFeesForProduct([FromRoute] Guid estateId,
                                                                       [FromRoute] Guid merchantId,
                                                                       [FromRoute] Guid contractId,
                                                                       [FromRoute] Guid productId,
@@ -417,7 +421,7 @@ namespace EstateManagement.Controllers.v2
 
             List<Models.Contract.ContractProductTransactionFee> transactionFees = await Mediator.Send(query, cancellationToken);
 
-            return ModelFactory.ConvertFrom(transactionFees).ToActionResult();
+            return ModelFactory.ConvertFrom(transactionFees).ToActionResultX();
         }
 
 
@@ -474,10 +478,10 @@ namespace EstateManagement.Controllers.v2
         [HttpPatch]
         [Route("{merchantId}")]
         [SwaggerResponse(204, "No Content")]
-        public async Task<ActionResult<Result>> UpdateMerchant([FromRoute] Guid estateId,
-                                                       [FromRoute] Guid merchantId,
-                                                       [FromBody] UpdateMerchantRequest updateMerchantRequest,
-                                                       CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateMerchant([FromRoute] Guid estateId,
+                                                        [FromRoute] Guid merchantId,
+                                                        [FromBody] UpdateMerchantRequest updateMerchantRequest,
+                                                        CancellationToken cancellationToken)
         {
 
             bool isRequestAllowed = PerformStandardChecks(estateId);
@@ -492,14 +496,14 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [Route("{merchantId}/addresses")]
         [HttpPatch]
         //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
-        public async Task<ActionResult<Result>> AddMerchantAddress([FromRoute] Guid estateId,
+        public async Task<IActionResult> AddMerchantAddress([FromRoute] Guid estateId,
                                                             [FromRoute] Guid merchantId,
                                                             [FromBody] DataTransferObjects.Requests.Merchant.Address addAddressRequest,
                                                             CancellationToken cancellationToken)
@@ -516,18 +520,18 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [Route("{merchantId}/addresses/{addressId}")]
         [HttpPatch]
         //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
-        public async Task<ActionResult<Result>> UpdateMerchantAddress([FromRoute] Guid estateId,
-                                                            [FromRoute] Guid merchantId,
-                                                            [FromRoute] Guid addressId,
-                                                            [FromBody] DataTransferObjects.Requests.Merchant.Address updateAddressRequest,
-                                                            CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateMerchantAddress([FromRoute] Guid estateId,
+                                                               [FromRoute] Guid merchantId,
+                                                               [FromRoute] Guid addressId,
+                                                               [FromBody] DataTransferObjects.Requests.Merchant.Address updateAddressRequest,
+                                                               CancellationToken cancellationToken)
         {
             bool isRequestAllowed = PerformStandardChecks(estateId);
             if (isRequestAllowed == false)
@@ -541,14 +545,14 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [Route("{merchantId}/contacts")]
         [HttpPatch]
         //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
-        public async Task<ActionResult<Result>> AddMerchantContact([FromRoute] Guid estateId,
+        public async Task<IActionResult> AddMerchantContact([FromRoute] Guid estateId,
                                                             [FromRoute] Guid merchantId,
                                                             [FromBody] DataTransferObjects.Requests.Merchant.Contact addContactRrequest,
                                                             CancellationToken cancellationToken)
@@ -565,14 +569,14 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [Route("{merchantId}/contacts/{contactId}")]
         [HttpPatch]
         //[SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         //[SwaggerResponseExample(200, typeof(ContractResponseListExample))]
-        public async Task<ActionResult<Result>> UpdateMerchantContact([FromRoute] Guid estateId,
+        public async Task<IActionResult> UpdateMerchantContact([FromRoute] Guid estateId,
                                                                [FromRoute] Guid merchantId,
                                                                [FromRoute] Guid contactId,
                                                                [FromBody] DataTransferObjects.Requests.Merchant.Contact updateContactRequest,
@@ -590,7 +594,7 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         #endregion
@@ -608,5 +612,61 @@ namespace EstateManagement.Controllers.v2
         private const string ControllerRoute = "api/v2/estates/{estateid}/" + ControllerName;
 
         #endregion
+    }
+
+    public static class ResultExtensions {
+        public static IActionResult ToActionResultX(this Result result)
+        {
+            if (result.IsSuccess)
+                return new OkObjectResult(result);
+
+            return result.Status switch
+            {
+                ResultStatus.Invalid => new BadRequestObjectResult(result),
+                ResultStatus.NotFound => new NotFoundObjectResult(result),
+                ResultStatus.Unauthorized => new UnauthorizedObjectResult(result),
+                ResultStatus.Conflict => new ConflictObjectResult(result),
+                ResultStatus.Failure => CreateObjectResult(result, HttpStatusCode.InternalServerError),
+                ResultStatus.CriticalError => CreateObjectResult(result, HttpStatusCode.InternalServerError),
+                ResultStatus.Forbidden => new ForbidResult(),
+                _ => CreateObjectResult(result, HttpStatusCode.NotImplemented)
+
+            };
+        }
+
+        internal static IActionResult ToActionResultX<T>(this Result<T> result)
+        {
+            if (result.IsSuccess)
+                return new OkObjectResult(result);
+
+            return result.Status switch
+            {
+                ResultStatus.Invalid => new BadRequestObjectResult(result),
+                ResultStatus.NotFound => new NotFoundObjectResult(result),
+                ResultStatus.Unauthorized => new UnauthorizedObjectResult(result),
+                ResultStatus.Conflict => new ConflictObjectResult(result),
+                ResultStatus.Failure => CreateObjectResult(result, HttpStatusCode.InternalServerError),
+                ResultStatus.CriticalError => CreateObjectResult(result, HttpStatusCode.InternalServerError),
+                ResultStatus.Forbidden => new ForbidResult(),
+                _ => CreateObjectResult(result, HttpStatusCode.NotImplemented)
+
+            };
+        }
+
+        internal static ObjectResult CreateObjectResult(Result result,
+                                                        HttpStatusCode statusCode)
+        {
+            ObjectResult or = new ObjectResult(result);
+            or.StatusCode = (Int32)statusCode;
+            return or;
+        }
+
+        internal static ObjectResult CreateObjectResult<T>(Result<T> result,
+                                                           HttpStatusCode statusCode)
+        {
+            ObjectResult or = new ObjectResult(result);
+            or.StatusCode = (Int32)statusCode;
+            return or;
+        }
     }
 }
