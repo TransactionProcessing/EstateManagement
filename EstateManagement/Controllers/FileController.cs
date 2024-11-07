@@ -56,7 +56,7 @@ namespace EstateManagement.Controllers
                                                      CancellationToken cancellationToken)
         {
             this.V2FileController.SetContextOverride(this.HttpContext);
-            ActionResult<Result<FileDetailsResponse>> result = await this.V2FileController.GetFile(estateId, fileId, cancellationToken);
+            var result = await this.V2FileController.GetFile(estateId, fileId, cancellationToken);
 
             return ActionResultHelpers.HandleResult(result, "");
         }

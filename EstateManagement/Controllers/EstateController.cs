@@ -66,7 +66,7 @@ namespace EstateManagement.Controllers
                                                       CancellationToken cancellationToken)
         {   
             this.V2EstateController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2EstateController.CreateEstate(createEstateRequest, cancellationToken);
+            var result = await this.V2EstateController.CreateEstate(createEstateRequest, cancellationToken);
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
@@ -85,7 +85,7 @@ namespace EstateManagement.Controllers
                                                    CancellationToken cancellationToken)
         {
             this.V2EstateController.SetContextOverride(this.HttpContext);
-            ActionResult<Result<EstateResponse>> result = await this.V2EstateController.GetEstate(estateId, cancellationToken);
+            var result = await this.V2EstateController.GetEstate(estateId, cancellationToken);
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
@@ -97,7 +97,7 @@ namespace EstateManagement.Controllers
                                                    CancellationToken cancellationToken)
         {
             this.V2EstateController.SetContextOverride(this.HttpContext);
-            ActionResult<Result<List<EstateResponse>>> result = await this.V2EstateController.GetEstates(estateId, cancellationToken);
+            var result = await this.V2EstateController.GetEstates(estateId, cancellationToken);
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
@@ -116,7 +116,7 @@ namespace EstateManagement.Controllers
                                                           CancellationToken cancellationToken)
         {
             this.V2EstateController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2EstateController.CreateEstateUser(estateId, createEstateUserRequest, cancellationToken);
+            var result = await this.V2EstateController.CreateEstateUser(estateId, createEstateUserRequest, cancellationToken);
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
@@ -125,7 +125,7 @@ namespace EstateManagement.Controllers
         public async Task<IActionResult> AssignOperator([FromRoute] Guid estateId, [FromBody] AssignOperatorRequest assignOperatorRequest, CancellationToken cancellationToken)
         {
             this.V2EstateController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2EstateController.AssignOperator(estateId, assignOperatorRequest, cancellationToken);
+            var result = await this.V2EstateController.AssignOperator(estateId, assignOperatorRequest, cancellationToken);
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 
@@ -136,7 +136,7 @@ namespace EstateManagement.Controllers
                                                         CancellationToken cancellationToken)
         {
             this.V2EstateController.SetContextOverride(this.HttpContext);
-            ActionResult<Result> result = await this.V2EstateController.RemoveOperator(estateId, operatorId, cancellationToken);
+            var result = await this.V2EstateController.RemoveOperator(estateId, operatorId, cancellationToken);
             return ActionResultHelpers.HandleResult(result, String.Empty);
         }
 

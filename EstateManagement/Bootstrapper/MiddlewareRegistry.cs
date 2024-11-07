@@ -113,7 +113,7 @@ namespace EstateManagement.Bootstrapper
 
             this.AddControllers(options => {
                 // Add filter for all controllers.
-                options.Filters.Add<TranslateResultToActionResultAttribute>();
+                //options.Filters.Add<TranslateResultToActionResultAttribute>();
             }).AddNewtonsoftJson(options =>
                                                     {
                                                         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;

@@ -66,7 +66,7 @@ namespace EstateManagement.Controllers.v2
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateOperatorResponse))]
         [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
-        public async Task<ActionResult<Result>> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
             // Create the command
             OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
@@ -75,13 +75,13 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
         [HttpPost]
         [Route("{operatorId}")]
         [SwaggerResponse(200, "OK")]
-        public async Task<ActionResult<Result>> UpdateOperator([FromRoute] Guid estateId, [FromRoute] Guid operatorId, [FromBody] UpdateOperatorRequest updateOperatorRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateOperator([FromRoute] Guid estateId, [FromRoute] Guid operatorId, [FromBody] UpdateOperatorRequest updateOperatorRequest, CancellationToken cancellationToken)
         {
             // Create the command
             OperatorCommands.UpdateOperatorCommand command = new OperatorCommands.UpdateOperatorCommand(estateId, operatorId, updateOperatorRequest);
@@ -90,7 +90,7 @@ namespace EstateManagement.Controllers.v2
             Result result = await Mediator.Send(command, cancellationToken);
 
             // return the result
-            return result.ToActionResult();
+            return result.ToActionResultX();
         }
 
 
@@ -98,9 +98,9 @@ namespace EstateManagement.Controllers.v2
         [Route("{operatorId}")]
         [SwaggerResponse(200, "OK", typeof(OperatorResponse))]
         [SwaggerResponseExample(201, typeof(OperatorResponseExample))]
-        public async Task<ActionResult<Result<OperatorResponse>>> GetOperator([FromRoute] Guid estateId,
-                                                            [FromRoute] Guid operatorId,
-                                                            CancellationToken cancellationToken)
+        public async Task<IActionResult> GetOperator([FromRoute] Guid estateId,
+                                                     [FromRoute] Guid operatorId,
+                                                     CancellationToken cancellationToken)
         {
             // Create the command
             OperatorQueries.GetOperatorQuery query = new(estateId, operatorId);
@@ -108,15 +108,15 @@ namespace EstateManagement.Controllers.v2
             // Route the command
             Operator @operator = await Mediator.Send(query, cancellationToken);
 
-            return ModelFactory.ConvertFrom(@operator).ToActionResult();
+            return ModelFactory.ConvertFrom(@operator).ToActionResultX();
         }
 
         [HttpGet]
         [Route("")]
         [SwaggerResponse(200, "OK", typeof(OperatorResponse))]
         [SwaggerResponseExample(201, typeof(OperatorResponseExample))]
-        public async Task<ActionResult<Result<List<OperatorResponse>>>> GetOperators([FromRoute] Guid estateId,
-                                                                               CancellationToken cancellationToken)
+        public async Task<IActionResult> GetOperators([FromRoute] Guid estateId,
+                                                      CancellationToken cancellationToken)
         {
             // Create the command
             OperatorQueries.GetOperatorsQuery query = new(estateId);
@@ -124,7 +124,7 @@ namespace EstateManagement.Controllers.v2
             // Route the command
             List<Operator> @operatorList = await Mediator.Send(query, cancellationToken);
 
-            return ModelFactory.ConvertFrom(@operatorList).ToActionResult();
+            return ModelFactory.ConvertFrom(@operatorList).ToActionResultX();
         }
 
         #region Others

@@ -66,9 +66,9 @@ namespace EstateManagement.Controllers.v2
         [Route("{fileId}")]
         //[SwaggerResponse(200, "OK", typeof(ContractResponse))]
         //[SwaggerResponseExample(200, typeof(ContractResponseExample))]
-        public async Task<ActionResult<Result<FileDetailsResponse>>> GetFile([FromRoute] Guid estateId,
-                                                     [FromRoute] Guid fileId,
-                                                     CancellationToken cancellationToken)
+        public async Task<IActionResult> GetFile([FromRoute] Guid estateId,
+                                                 [FromRoute] Guid fileId,
+                                                 CancellationToken cancellationToken)
         {
             // Get the Estate Id claim from the user
             Claim estateIdClaim = ClaimsHelper.GetUserClaim(this.GetUser(), "EstateId", estateId.ToString());
@@ -88,7 +88,7 @@ namespace EstateManagement.Controllers.v2
             Result<File> result = await Mediator.Send(query, cancellationToken);
 
 
-            return ModelFactory.ConvertFrom(result.Data).ToActionResult();
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
 
     }
