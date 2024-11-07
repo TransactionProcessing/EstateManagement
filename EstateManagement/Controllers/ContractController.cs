@@ -239,12 +239,22 @@ namespace EstateManagement.Controllers
 
         public static IActionResult HandleResult(IActionResult result, String notFoundMessage) {
 
+            if (result.GetType().Name == nameof(OkObjectResult)) {
+                OkObjectResult ok = result as OkObjectResult;
+                Type type = ok.Value.GetType();
+                dynamic convertedObj = Convert.ChangeType(ok.Value, ok.Value.GetType());
+
+                //Result x = ok.Value as Result;
+                return  new OkObjectResult(convertedObj.Data);
+            }
+
             IActionResult x = result.GetType().Name switch {
                 nameof(BadRequestObjectResult) => new BadRequestResult(),
                 nameof(NotFoundObjectResult) => throw new NotFoundException(notFoundMessage),
                 nameof(UnauthorizedObjectResult) => new UnauthorizedResult(),
                 nameof(ConflictObjectResult) => new ConflictResult(),
                 nameof(ForbidResult) => new ForbidResult(),
+                //nameof(OkObjectResult) => new OkObjectResult(result.)
                 _ => result
             };
             return x;
