@@ -58,7 +58,8 @@ namespace EstateManagement.IntegrationTests.Shared
             this.TestingContext = testingContext;
             this.SecurityServiceSteps = new SecurityServiceSteps(testingContext.DockerHelper.SecurityServiceClient);
             this.EstateManagementSteps = new EstateManagementSteps(testingContext.DockerHelper.EstateClient, this.TestingContext.DockerHelper.TestHostClient);
-            this.TransactionProcessorSteps = new TransactionProcessorSteps(testingContext.DockerHelper.TransactionProcessorClient, testingContext.DockerHelper.TestHostClient);
+            this.TransactionProcessorSteps = new TransactionProcessorSteps(testingContext.DockerHelper.TransactionProcessorClient, testingContext.DockerHelper.TestHostClient,
+                testingContext.DockerHelper.ProjectionManagementClient);
         }
 
         [Given(@"I have created the following estates")]
