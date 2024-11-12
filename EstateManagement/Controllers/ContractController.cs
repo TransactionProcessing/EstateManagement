@@ -244,8 +244,16 @@ namespace EstateManagement.Controllers
                 Type type = ok.Value.GetType();
                 dynamic convertedObj = Convert.ChangeType(ok.Value, ok.Value.GetType());
 
-                //Result x = ok.Value as Result;
-                return  new OkObjectResult(convertedObj.Data);
+                if (convertedObj.GetType().GetProperty("Data") != null)
+                {
+                    // convertedObj has a property named "Data"
+                    return new OkObjectResult(convertedObj.Data);
+                }
+
+                // convertedObj does not have a property named "Data"
+                return new OkResult();
+
+
             }
 
             IActionResult x = result.GetType().Name switch {

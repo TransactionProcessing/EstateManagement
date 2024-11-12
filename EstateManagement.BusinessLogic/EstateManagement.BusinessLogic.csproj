@@ -8,11 +8,11 @@
     <PackageReference Include="CallbackHandler.DataTransferObjects" Version="2024.4.2" />
     <PackageReference Include="MessagingService.Client" Version="2024.4.2" />
     <PackageReference Include="SecurityService.Client" Version="2024.5.1" />
-    <PackageReference Include="Shared.DomainDrivenDesign" Version="2024.11.1" />
+    <PackageReference Include="Shared.DomainDrivenDesign" Version="2024.11.2" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Syncfusion.HtmlToPdfConverter.QtWebKit.Net.Core" Version="25.1.35" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.2" />
-    <PackageReference Include="TransactionProcessor.Client" Version="2024.6.2" />
+    <PackageReference Include="TransactionProcessor.Client" Version="2024.8.2-build118" />
     <PackageReference Include="TransactionProcessor.Float.DomainEvents" Version="2024.6.2" />
     <PackageReference Include="TransactionProcessor.Settlement.DomainEvents" Version="2024.6.2" />
     <PackageReference Include="TransactionProcessor.Transaction.DomainEvents" Version="2024.6.2" />
