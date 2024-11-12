@@ -29,7 +29,7 @@ namespace EstateManagement.BusinessLogic.Services
     using Estate = Models.Estate.Estate;
     using Operator = Models.Estate.Operator;
     using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
-
+    using ResultHelpers = Shared.EventStore.Aggregate.ResultHelpers;
     /// <summary>
     /// 
     /// </summary>
