@@ -621,7 +621,7 @@ public class EstateManagementSteps{
                                                                     .GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None)
                                                                     .ConfigureAwait(false);
         result.IsFailed.ShouldBeTrue();
-        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.NotFound);
     }
 
     public async Task WhenISwapTheMerchantDeviceTheDeviceIsSwapped(String accessToken, List<(EstateDetails, Guid,String, SwapMerchantDeviceRequest)> requests){
