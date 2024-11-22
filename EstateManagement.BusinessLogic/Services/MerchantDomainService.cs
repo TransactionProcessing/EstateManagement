@@ -29,7 +29,6 @@ namespace EstateManagement.BusinessLogic.Services
     using Estate = Models.Estate.Estate;
     using Operator = Models.Estate.Operator;
     using SettlementSchedule = DataTransferObjects.Responses.Merchant.SettlementSchedule;
-    using ResultHelpers = Shared.EventStore.Aggregate.ResultHelpers;
     /// <summary>
     /// 
     /// </summary>
@@ -250,10 +249,20 @@ namespace EstateManagement.BusinessLogic.Services
                     if (result.IsFailed)
                         return ResultHelpers.CreateFailure(result);
 
-                    CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
+                    Result createUserResult = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
+                    if (createUserResult.IsFailed)
+                        return ResultHelpers.CreateFailure(createUserResult);
+
+                    var userDetailsResult = await this.SecurityServiceClient.GetUsers(createUserRequest.EmailAddress, cancellationToken);
+                    if (userDetailsResult.IsFailed)
+                        return ResultHelpers.CreateFailure(userDetailsResult);
+
+                    var user = userDetailsResult.Data.SingleOrDefault();
+                    if (user == null)
+                        return Result.Failure($"Unable to get user details for username {createUserRequest.EmailAddress}");
 
                     // Add the user to the aggregate 
-                    aggregates.merchantAggregate.AddSecurityUser(createUserResponse.UserId,
+                    aggregates.merchantAggregate.AddSecurityUser(user.UserId,
                         command.RequestDto.EmailAddress);
                     
                     // TODO: add a delete user here in case the aggregate add fails...

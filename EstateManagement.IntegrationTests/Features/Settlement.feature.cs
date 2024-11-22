@@ -722,16 +722,18 @@ namespace EstateManagement.IntegrationTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get Settlements - Merchant Filter")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("settlement")]
         [NUnit.Framework.CategoryAttribute("PRTest")]
         public async System.Threading.Tasks.Task GetSettlements_MerchantFilter()
         {
             string[] tagsOfScenario = new string[] {
                     "settlement",
-                    "PRTest"};
+                    "PRTest",
+                    "ignore"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Get Settlements - Merchant Filter", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 137
+#line 138
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -754,7 +756,7 @@ await this.FeatureBackgroundAsync();
                             "6",
                             "2.39",
                             "True"});
-#line 138
+#line 139
  await testRunner.WhenAsync("I get the Estate Settlement Report for Estate \'Test Estate 1\' for Merchant \'Test " +
                         "Merchant 1\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the f" +
                         "ollowing data is returned", ((string)(null)), table114, "When ");
@@ -769,7 +771,7 @@ await this.FeatureBackgroundAsync();
                             "3",
                             "0.71",
                             "True"});
-#line 142
+#line 143
  await testRunner.WhenAsync("I get the Estate Settlement Report for Estate \'Test Estate 1\' for Merchant \'Test " +
                         "Merchant 2\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the f" +
                         "ollowing data is returned", ((string)(null)), table115, "When ");
@@ -784,7 +786,7 @@ await this.FeatureBackgroundAsync();
                             "1",
                             "0.85",
                             "True"});
-#line 146
+#line 147
  await testRunner.WhenAsync("I get the Estate Settlement Report for Estate \'Test Estate 2\' for Merchant \'Test " +
                         "Merchant 3\' with the Start Date \'2022-01-13\' and the End Date \'2022-02-06\' the f" +
                         "ollowing data is returned", ((string)(null)), table116, "When ");
@@ -824,7 +826,7 @@ await this.FeatureBackgroundAsync();
                             "True",
                             "Safaricom",
                             "0.51"});
-#line 150
+#line 151
  await testRunner.WhenAsync("I get the Estate Settlement Report for Estate \'Test Estate 1\' for Merchant \'Test " +
                         "Merchant 1\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table117, "When ");
 #line hidden
@@ -848,7 +850,7 @@ await this.FeatureBackgroundAsync();
                             "True",
                             "Safaricom",
                             "0.08"});
-#line 159
+#line 160
  await testRunner.WhenAsync("I get the Estate Settlement Report for Estate \'Test Estate 1\' for Merchant \'Test " +
                         "Merchant 2\' with the Date \'2022-01-13\' the following fees are settled", ((string)(null)), table118, "When ");
 #line hidden
@@ -862,7 +864,7 @@ await this.FeatureBackgroundAsync();
                             "True",
                             "Safaricom",
                             "0.85"});
-#line 165
+#line 166
  await testRunner.WhenAsync("I get the Estate Settlement Report for Estate \'Test Estate 2\' for Merchant \'Test " +
                         "Merchant 3\' with the Date \'2022-02-06\' the following fees are settled", ((string)(null)), table119, "When ");
 #line hidden

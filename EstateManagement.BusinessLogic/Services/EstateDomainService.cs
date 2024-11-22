@@ -1,9 +1,11 @@
 ﻿using Shared.Exceptions;
+using Shared.Results;
 
 namespace EstateManagement.BusinessLogic.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using EstateAggregate;
@@ -115,11 +117,21 @@ namespace EstateManagement.BusinessLogic.Services
             createUserRequest.Roles.Add(String.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName);
             createUserRequest.Claims.Add("estateId", command.EstateId.ToString());
 
-            CreateUserResponse createUserResponse = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
+            Result createUserResult = await this.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken);
+            if (createUserResult.IsFailed)
+                return ResultHelpers.CreateFailure(createUserResult);
+
+            var userDetailsResult = await this.SecurityServiceClient.GetUsers(createUserRequest.EmailAddress, cancellationToken);
+            if (userDetailsResult.IsFailed)
+                return ResultHelpers.CreateFailure(userDetailsResult);
+
+            var user = userDetailsResult.Data.SingleOrDefault();
+            if (user == null)
+                return Result.Failure($"Unable to get user details for username {createUserRequest.EmailAddress}");
 
             Result result = await ApplyUpdates((estateAggregate) => {
                 // Add the user to the aggregate 
-                estateAggregate.AddSecurityUser(createUserResponse.UserId, command.RequestDto.EmailAddress);
+                estateAggregate.AddSecurityUser(user.UserId, command.RequestDto.EmailAddress);
             }, command.EstateId, cancellationToken);
 
             return result;

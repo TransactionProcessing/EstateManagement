@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Shared.EventStore.EventStore;
 using Shared.Exceptions;
+using Shared.Results;
 using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Services
