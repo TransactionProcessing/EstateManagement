@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using SecurityService.DataTransferObjects.Responses;
 using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Tests.Services;
@@ -269,7 +271,14 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CreateUserResponse { UserId = Guid.NewGuid() });
+            .ReturnsAsync(Result.Success);
+        this.SecurityServiceClient
+            .Setup(s => s.GetUsers(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(new List<UserDetails>() {
+                new UserDetails {
+                    UserId = Guid.Parse("FA077CE3-B915-4048-88E3-9B500699317F")
+                }
+            }));
 
         var result = await this.DomainService.CreateMerchantUser(TestData.Commands.CreateMerchantUserCommand, CancellationToken.None);
         result.IsSuccess.ShouldBeTrue();
@@ -288,7 +297,7 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CreateUserResponse { UserId = Guid.NewGuid() });
+            .ReturnsAsync(Result.Success);
 
         var result = await this.DomainService.CreateMerchantUser(TestData.Commands.CreateMerchantUserCommand, CancellationToken.None);
         result.IsFailed.ShouldBeTrue();
@@ -307,7 +316,7 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CreateUserResponse { UserId = Guid.NewGuid() });
+            .ReturnsAsync(Result.Success);
 
         var result = await this.DomainService.CreateMerchantUser(TestData.Commands.CreateMerchantUserCommand, CancellationToken.None);
         result.IsFailed.ShouldBeTrue();
@@ -516,7 +525,7 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(TestData.TokenResponse);
+            .ReturnsAsync(Result.Success(TestData.TokenResponse()));
 
         this.TransactionProcessorClient
             .Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(),
@@ -546,7 +555,7 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(TestData.TokenResponse);
+            .ReturnsAsync(Result.Success(TestData.TokenResponse()));
 
         this.TransactionProcessorClient
             .Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(),
@@ -576,7 +585,7 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(TestData.TokenResponse);
+            .ReturnsAsync(Result.Success(TestData.TokenResponse()));
 
         this.TransactionProcessorClient
             .Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(),
@@ -606,7 +615,7 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(TestData.TokenResponse);
+            .ReturnsAsync(Result.Success(TestData.TokenResponse()));
 
         this.TransactionProcessorClient
             .Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(),
@@ -636,7 +645,7 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(TestData.TokenResponse);
+            .ReturnsAsync(Result.Success(TestData.TokenResponse()));
 
         this.TransactionProcessorClient
             .Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(),

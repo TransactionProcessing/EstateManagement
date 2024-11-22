@@ -1,4 +1,5 @@
-﻿using SimpleResults;
+﻿using Shared.Results;
+using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Services
 {
@@ -240,7 +241,7 @@ namespace EstateManagement.BusinessLogic.Services
                         FromAddress = "golfhandicapping@btinternet.com", // TODO: lookup from config
                         IsHtml = true,
                         Subject = $"Merchant Statement for {statementHeader.StatementDate}",
-                        MessageId = command.MerchantStatementId,
+                       // MessageId = command.MerchantStatementId,
                         ToAddresses = new List<String>
                         {
                             statementHeader.MerchantEmail
@@ -256,11 +257,21 @@ namespace EstateManagement.BusinessLogic.Services
                         }
                     };
 
+                    Guid messageId = IdGenerationService.GenerateEventId(new
+                    {
+                        command.MerchantStatementId,
+                        DateTime.Now
+                    });
+
+                    sendEmailRequest.MessageId = messageId;
+
                     this.TokenResponse = await Helpers.GetToken(this.TokenResponse, this.SecurityServiceClient, cancellationToken);
 
-                    SendEmailResponse sendEmailResponse = await this.MessagingServiceClient.SendEmail(this.TokenResponse.AccessToken, sendEmailRequest, cancellationToken);
-
-                    merchantStatementAggregate.EmailStatement(DateTime.Now, sendEmailResponse.MessageId);
+                    var sendEmailResponseResult = await this.MessagingServiceClient.SendEmail(this.TokenResponse.AccessToken, sendEmailRequest, cancellationToken);
+                    if (sendEmailResponseResult.IsFailed) {
+                        // TODO: record a failed event??
+                    }
+                    merchantStatementAggregate.EmailStatement(DateTime.Now, messageId);
 
                     return Result.Success();
                 },

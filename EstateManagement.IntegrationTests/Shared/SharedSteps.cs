@@ -221,7 +221,7 @@ namespace EstateManagement.IntegrationTests.Shared
         [Given(@"I create the following identity resources")]
         public async Task GivenICreateTheFollowingIdentityResources(DataTable table) {
             List<CreateIdentityResourceRequest> requests = table.Rows.ToCreateIdentityResourceRequest();
-            List<CreateIdentityResourceResponse> responses = await this.SecurityServiceSteps.GivenICreateTheFollowingIdentityResources(requests, CancellationToken.None);
+            await this.SecurityServiceSteps.GivenICreateTheFollowingIdentityResources(requests, CancellationToken.None);
         }
         
         [Given(@"the following clients exist")]

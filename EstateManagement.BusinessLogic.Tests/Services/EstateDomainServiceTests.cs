@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using SecurityService.DataTransferObjects.Responses;
 using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Tests.Services
@@ -70,7 +72,14 @@ namespace EstateManagement.BusinessLogic.Tests.Services
 
             this.SecurityServiceClient
                 .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new CreateUserResponse { UserId = Guid.NewGuid() });
+                .ReturnsAsync(Result.Success);
+            this.SecurityServiceClient
+                .Setup(s => s.GetUsers(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success(new List<UserDetails>() {
+                    new UserDetails {
+                        UserId = Guid.Parse("FA077CE3-B915-4048-88E3-9B500699317F")
+                    }
+                }));
 
             Result result = await this.DomainService.CreateEstateUser(TestData.Commands.CreateEstateUserCommand, CancellationToken.None);
             result.IsSuccess.ShouldBeTrue();
