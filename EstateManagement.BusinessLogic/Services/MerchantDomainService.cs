@@ -1,4 +1,5 @@
 ﻿using EstateManagement.BusinessLogic.Common;
+using Shared.Results;
 
 namespace EstateManagement.BusinessLogic.Services
 {
