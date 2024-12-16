@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using MediatR;
 using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Requests;
 
+[ExcludeFromCodeCoverage]
 public record MerchantStatementCommands {
     public record AddTransactionToMerchantStatementCommand(Guid EstateId,
                                                            Guid MerchantId,

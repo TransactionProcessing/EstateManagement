@@ -23,30 +23,6 @@ namespace EstateManagement.BusinessLogic.Services
     using Shared.EventStore.Aggregate;
     using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-    public static class DomainServiceHelper {
-        public static Result<T> HandleGetAggregateResult<T>(Result<T> result, Guid aggregateId, bool isNotFoundError = true)
-            where T : Aggregate, new()  // Constraint: T is a subclass of Aggregate and has a parameterless constructor
-        {
-            if (result.IsFailed && result.Status != ResultStatus.NotFound)
-            {
-                return ResultHelpers.CreateFailure(result);
-            }
-
-            if (result.Status == ResultStatus.NotFound && isNotFoundError)
-            {
-                return ResultHelpers.CreateFailure(result);
-            }
-
-            T aggregate = result.Status switch
-            {
-                ResultStatus.NotFound => new T { AggregateId = aggregateId },  // Set AggregateId when creating a new instance
-                _ => result.Data
-            };
-            
-            return Result.Success(aggregate);
-        }
-    }
-
     public class ContractDomainService : IContractDomainService
     {
 
@@ -175,9 +151,9 @@ namespace EstateManagement.BusinessLogic.Services
             Result result = await ApplyUpdates(async ((EstateAggregate estateAggregate, ContractAggregate contractAggregate) aggregates) => {
 
                 Models.Estate.Estate estate = aggregates.estateAggregate.GetEstate();
-                if (estate.Operators == null || estate.Operators.Any(o => o.OperatorId == command.RequestDTO.OperatorId) == false)
+                if (estate.Operators.Any(o => o.OperatorId == command.RequestDTO.OperatorId) == false)
                 {
-                    throw new InvalidOperationException($"Unable to create a contract for an operator that is not setup on estate [{estate.Name}]");
+                    return Result.NotFound($"Unable to create a contract for an operator that is not setup on estate [{estate.Name}]");
                 }
 
                 // Validate a duplicate name

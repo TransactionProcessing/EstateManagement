@@ -35,9 +35,9 @@ namespace EstateManagement.Bootstrapper
             this.AddSingleton<IFileSystem, FileSystem>();
             this.AddSingleton<IPDFGenerator, PDFGenerator>();
 
-            bool logRequests = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogRequests", true);
-            bool logResponses = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogResponses", true);
-            LogLevel middlewareLogLevel = ConfigurationReaderExtensions.GetValueOrDefault<LogLevel>("MiddlewareLogging", "MiddlewareLogLevel", LogLevel.Warning);
+            bool logRequests = ConfigurationReader.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogRequests", true);
+            bool logResponses = ConfigurationReader.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogResponses", true);
+            LogLevel middlewareLogLevel = ConfigurationReader.GetValueOrDefault<LogLevel>("MiddlewareLogging", "MiddlewareLogLevel", LogLevel.Warning);
 
             RequestResponseMiddlewareLoggingConfig config =
                 new RequestResponseMiddlewareLoggingConfig(middlewareLogLevel, logRequests, logResponses);
@@ -46,27 +46,5 @@ namespace EstateManagement.Bootstrapper
         }
         
         #endregion
-    }
-
-    public static class ConfigurationReaderExtensions
-    {
-        public static T GetValueOrDefault<T>(String sectionName, String keyName, T defaultValue)
-        {
-            try
-            {
-                var value = ConfigurationReader.GetValue(sectionName, keyName);
-
-                if (String.IsNullOrEmpty(value))
-                {
-                    return defaultValue;
-                }
-
-                return (T)Convert.ChangeType(value, typeof(T));
-            }
-            catch (KeyNotFoundException kex)
-            {
-                return defaultValue;
-            }
-        }
     }
 }

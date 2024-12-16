@@ -82,7 +82,7 @@
             model.EstateId.ShouldBe(TestData.EstateId);
             model.Name.ShouldBe(TestData.EstateName);
             model.Reference.ShouldBe(TestData.EstateReference);
-            model.Operators.ShouldBeNull();
+            model.Operators.ShouldBeEmpty();
         }
 
         [Fact]
@@ -115,8 +115,8 @@
             model.EstateId.ShouldBe(TestData.EstateId);
             model.Name.ShouldBe(TestData.EstateName);
             model.Reference.ShouldBe(TestData.EstateReference);
-            model.Operators.ShouldBeNull();
-            model.SecurityUsers.ShouldBeNull();
+            model.Operators.ShouldBeEmpty();
+            model.SecurityUsers.ShouldBeEmpty();
         }
 
         [Fact]

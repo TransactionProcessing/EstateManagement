@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using MediatR;
 using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Requests;
 
+[ExcludeFromCodeCoverage]
 public record ContractCommands {
     public record CreateContractCommand(Guid EstateId,
                                         Guid ContractId,

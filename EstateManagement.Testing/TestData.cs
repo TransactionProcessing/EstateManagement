@@ -701,7 +701,7 @@ namespace EstateManagement.Testing{
 
         
 
-        public static CallbackReceivedEnrichedEvent CallbackReceivedEnrichedEvent =>
+        public static CallbackReceivedEnrichedEvent CallbackReceivedEnrichedEventDeposit =>
             new CallbackReceivedEnrichedEvent(TestData.CallbackId){
                                                                       Reference = TestData.CallbackReference,
                                                                       CallbackMessage = JsonConvert.SerializeObject(TestData.Deposit),
@@ -709,6 +709,16 @@ namespace EstateManagement.Testing{
                                                                       MessageFormat = TestData.CallbackMessageFormat,
                                                                       TypeString = TestData.CallbackTypeString
                                                                   };
+
+        public static CallbackReceivedEnrichedEvent CallbackReceivedEnrichedEventOtherType =>
+            new CallbackReceivedEnrichedEvent(TestData.CallbackId)
+            {
+                Reference = TestData.CallbackReference,
+                CallbackMessage = JsonConvert.SerializeObject(TestData.Deposit),
+                EstateId = TestData.EstateId,
+                MessageFormat = TestData.CallbackMessageFormat,
+                TypeString = "OtherType"
+            };
 
         public static Contact Contact =>
             new Contact{
@@ -1177,7 +1187,7 @@ namespace EstateManagement.Testing{
         public static MerchantContactEmailAddressUpdatedEvent MerchantContactEmailAddressUpdatedEvent => new MerchantContactEmailAddressUpdatedEvent(TestData.MerchantId, TestData.EstateId, TestData.ContactId, TestData.ContactEmailUpdate);
         public static MerchantContactNameUpdatedEvent MerchantContactNameUpdatedEvent => new MerchantContactNameUpdatedEvent(TestData.MerchantId, TestData.EstateId, TestData.ContactId, TestData.ContactNameUpdate);
         public static MerchantContactPhoneNumberUpdatedEvent MerchantContactPhoneNumberUpdatedEvent => new MerchantContactPhoneNumberUpdatedEvent(TestData.MerchantId, TestData.EstateId, TestData.ContactId, TestData.ContactPhoneUpdate);
-
+        public static List<Models.Contract.Contract> MerchantContractsEmptyList => new List<Models.Contract.Contract>();
         public static List<Models.Contract.Contract> MerchantContracts =>
             new List<Models.Contract.Contract>{
                                                   new Models.Contract.Contract{
@@ -2107,6 +2117,8 @@ namespace EstateManagement.Testing{
 
             public static SettlementQueries.GetSettlementsQuery GetSettlementsQuery =>
                 new SettlementQueries.GetSettlementsQuery(EstateId, MerchantId, StartDate, EndDate);
+
+            public static FileQueries.GetFileQuery GetFileQuery => new(EstateId, FileId);
         }
 
         public static class Commands {
@@ -2204,6 +2216,10 @@ namespace EstateManagement.Testing{
                 return cmd;
             }
 
+
+            public static MerchantStatementCommands.AddTransactionToMerchantStatementCommand AddTransactionToMerchantStatementCommand => new (EstateId, MerchantId, TransactionDateTime, TransactionAmount, IsAuthorisedTrue, TransactionId);
+            public static MerchantStatementCommands.EmailMerchantStatementCommand EmailMerchantStatementCommand => new(EstateId, MerchantId, MerchantStatementId);
+            public static MerchantStatementCommands.AddSettledFeeToMerchantStatementCommand AddSettledFeeToMerchantStatementCommand => new(EstateId, MerchantId, TransactionDateTime, SettledFeeAmount1, TransactionId, SettledFeeId1);
 
 
         }

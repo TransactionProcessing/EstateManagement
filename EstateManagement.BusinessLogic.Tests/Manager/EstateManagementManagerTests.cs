@@ -78,6 +78,16 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetEstates_RepoCallFails_ResultFailed()
+        {
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            var getEstatesResult = await this.EstateManagementManager.GetEstates(TestData.EstateId, CancellationToken.None);
+            getEstatesResult.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetEstate_EstateIsReturned(){
             this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EstateAggregateWithOperator()));
             this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.EstateModel));
@@ -99,6 +109,16 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         public async Task EstateManagementManager_GetEstate_InvalidEstateId_ErrorIsThrown()
         {
             this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+            this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.EstateModel));
+
+            var getEstateResult = await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
+            getEstateResult.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetEstate_GetLatestFailed_ErrorIsThrown()
+        {
+            this.EstateAggregateRepository.Setup(a => a.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
             this.EstateManagementRepository.Setup(e => e.GetEstate(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.EstateModel));
 
             var getEstateResult = await this.EstateManagementManager.GetEstate(TestData.EstateId, CancellationToken.None);
@@ -214,6 +234,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetMerchant_GetLatestFails_ErrorThrown()
+        {
+            this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            var result = await this.EstateManagementManager.GetMerchant(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetMerchants_MerchantListIsReturned()
         {
             this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(new List<Merchant>
@@ -251,6 +280,16 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetMerchants_RepoCallFails_ExceptionThrown()
+        {
+            List<Merchant> merchants = new List<Merchant>();
+            this.EstateManagementRepository.Setup(e => e.GetMerchants(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            Result<List<Merchant>> getMerchantsResult = await this.EstateManagementManager.GetMerchants(TestData.EstateId, CancellationToken.None);
+            getMerchantsResult.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetContract_ContractIsReturned(){
             this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregateWithAProductAndTransactionFee(CalculationType.Fixed,FeeType.Merchant)));
             
@@ -278,6 +317,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetContract_GetLatestFails_ErrorIsThrown()
+        {
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            Result<Contract> getContractResult = await this.EstateManagementManager.GetContract(TestData.EstateId, TestData.ContractId, CancellationToken.None);
+            getContractResult.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetContracts_ContractAreReturned()
         {
             this.EstateManagementRepository.Setup(e => e.GetContracts(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(new List<Contract>() {TestData.ContractModelWithProductsAndTransactionFees}));
@@ -287,6 +335,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             var contractModelList = getContractsResult.Data;
             contractModelList.ShouldNotBeNull();
             contractModelList.ShouldNotBeEmpty();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetContracts_RepoCallFails_ContractAreReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetContracts(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            var getContractsResult = await this.EstateManagementManager.GetContracts(TestData.EstateId, CancellationToken.None);
+            getContractsResult.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
@@ -321,6 +378,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetTransactionFeesForProduct_GetLatestFails_ErrorThrown()
+        {
+            this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            var result = await this.EstateManagementManager.GetTransactionFeesForProduct(TestData.EstateId, TestData.MerchantId, TestData.ContractId, TestData.ContractProductId, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetMerchantContracts_MerchantContractsReturned()
         {
             this.EstateManagementRepository.Setup(e => e.GetMerchantContracts(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.MerchantContracts));
@@ -334,6 +400,23 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         }
 
         [Fact]
+        public async Task EstateManagementManager_GetMerchantContracts_EmptyListReturned_ResultFailed()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetMerchantContracts(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.MerchantContractsEmptyList));
+
+            var getMerchantContractsResult = await this.EstateManagementManager.GetMerchantContracts(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            getMerchantContractsResult.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact] public async Task EstateManagementManager_GetMerchantContracts_RepoCallFailed_ResultFailed()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetMerchantContracts(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            var getMerchantContractsResult = await this.EstateManagementManager.GetMerchantContracts(TestData.EstateId, TestData.MerchantId, CancellationToken.None);
+            getMerchantContractsResult.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public async Task EstateManagementManager_GetFileDetails_FileDetailsAreReturned()
         {
             this.EstateManagementRepository.Setup(e => e.GetFileDetails(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.FileModel));
@@ -342,6 +425,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
             getFileDetailsResult.IsSuccess.ShouldBeTrue();
             var fileDetails = getFileDetailsResult.Data;
             fileDetails.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetFileDetails_RepoCallFailed_FileDetailsAreReturned()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetFileDetails(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            var getFileDetailsResult = await this.EstateManagementManager.GetFileDetails(TestData.EstateId, TestData.FileId, CancellationToken.None);
+            getFileDetailsResult.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
@@ -359,6 +451,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
         public async Task EstateManagementManager_GetOperator_OperatorNotCreated_ExceptionThrown()
         {
             this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyOperatorAggregate()));
+
+            var getOperatorResult = await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
+            getOperatorResult.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetOperator_GetLatestFails_ExceptionThrown()
+        {
+            this.OperatorAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
 
             var getOperatorResult = await this.EstateManagementManager.GetOperator(TestData.EstateId, TestData.OperatorId, CancellationToken.None);
             getOperatorResult.IsFailed.ShouldBeTrue();
@@ -386,6 +487,15 @@ namespace EstateManagement.BusinessLogic.Tests.Manager
 
             var getOperatorsResult = await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
             getOperatorsResult.IsSuccess.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task EstateManagementManager_GetOperators_RepoCallFails_ExceptionThrown()
+        {
+            this.EstateManagementRepository.Setup(e => e.GetOperators(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure());
+
+            var getOperatorsResult = await this.EstateManagementManager.GetOperators(TestData.EstateId, CancellationToken.None);
+            getOperatorsResult.IsFailed.ShouldBeTrue();
         }
     }
 }

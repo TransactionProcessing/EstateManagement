@@ -80,9 +80,9 @@
             estateModel.Name = aggregate.EstateName;
             estateModel.Reference = aggregate.EstateReference;
 
+            estateModel.Operators = new List<Models.Estate.Operator>();
             if (aggregate.Operators.Any()){
-                estateModel.Operators = new List<Models.Estate.Operator>();
-
+                
                 foreach (KeyValuePair<Guid, Operator> @operator in aggregate.Operators){
                     estateModel.Operators.Add(new Models.Estate.Operator{
                                                                             OperatorId = @operator.Key,
@@ -91,9 +91,9 @@
                 }
             }
 
+            estateModel.SecurityUsers = new List<Models.SecurityUser>();
             if (aggregate.SecurityUsers.Any()){
-                estateModel.SecurityUsers = new List<Models.SecurityUser>();
-
+                
                 foreach (KeyValuePair<Guid, SecurityUser> securityUser in aggregate.SecurityUsers){
                     estateModel.SecurityUsers.Add(new Models.SecurityUser{
                                                                              EmailAddress = securityUser.Value.EmailAddress,
