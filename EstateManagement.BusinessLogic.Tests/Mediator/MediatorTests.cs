@@ -55,6 +55,9 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.Commands.AddProductToContractCommand_FixedValue);
             this.Requests.Add(TestData.Commands.AddTransactionFeeForProductToContractCommand(CalculationType.Fixed, FeeType.Merchant));
             this.Requests.Add(TestData.Commands.DisableTransactionFeeForProductCommand);
+            this.Requests.Add(TestData.Commands.AddTransactionToMerchantStatementCommand);
+            this.Requests.Add(TestData.Commands.EmailMerchantStatementCommand);
+            this.Requests.Add(TestData.Commands.AddSettledFeeToMerchantStatementCommand);
 
             this.Requests.Add(TestData.Queries.GetMerchantsQuery);
             this.Requests.Add(TestData.Queries.GetMerchantQuery);
@@ -68,6 +71,7 @@ namespace EstateManagement.BusinessLogic.Tests.Mediator
             this.Requests.Add(TestData.Queries.GetContractsQuery);
             this.Requests.Add(TestData.Queries.GetSettlementQuery);
             this.Requests.Add(TestData.Queries.GetSettlementsQuery);
+            this.Requests.Add(TestData.Queries.GetFileQuery);
 
             //this.Requests.Add(TestData.AddProductToContractRequest);
             //this.Requests.Add(TestData.AddSettledFeeToMerchantStatementRequest);

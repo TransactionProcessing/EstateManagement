@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EstateManagement.DataTransferObjects.Responses.File;
-using EstateManagement.Models.File;
 using SimpleResults;
 
 namespace EstateManagement.BusinessLogic.Requests
@@ -22,10 +21,5 @@ namespace EstateManagement.BusinessLogic.Requests
         public record AddOperatorToEstateCommand(Guid EstateId, AssignOperatorRequest RequestDto) : IRequest<Result>;
 
         public record RemoveOperatorFromEstateCommand(Guid EstateId, Guid OperatorId) : IRequest<Result>;
-    }
-
-    public record FileQueries {
-        public record GetFileQuery(Guid EstateId, Guid FileId) : IRequest<Result<File>>;
-
     }
 }

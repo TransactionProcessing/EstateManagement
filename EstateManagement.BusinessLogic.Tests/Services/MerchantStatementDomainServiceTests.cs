@@ -194,7 +194,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             merchantStatement.IsGenerated.ShouldBeTrue();
         }
 
-        [Fact(Skip = "Need to change message service to return message id on Send Email/SMS")]
+        [Fact]
         public async Task MerchantStatementDomainService_EmailStatement_StatementGenerated() {
             merchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));

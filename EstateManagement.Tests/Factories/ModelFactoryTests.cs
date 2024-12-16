@@ -84,6 +84,27 @@ namespace EstateManagement.Tests.Factories{
         }
 
         [Fact]
+        public void ModelFactory_EstateList_IsConverted()
+        {
+            List<Estate> estateModel = [TestData.EstateModel];
+
+            Result<List<EstateResponse>> estateResponse = ModelFactory.ConvertFrom(estateModel);
+            estateResponse.IsSuccess.ShouldBeTrue();
+            estateResponse.Data.Count.ShouldBe(1);
+            estateResponse.Data.Single().EstateId.ShouldBe(TestData.EstateModel.EstateId);
+            estateResponse.Data.Single().EstateName.ShouldBe(TestData.EstateModel.Name);
+        }
+
+        [Fact]
+        public void ModelFactory_EstateList_NullModelInList_IsConverted()
+        {
+            List<Estate> estateModel = [null];
+
+            Result<List<EstateResponse>> estateResponse = ModelFactory.ConvertFrom(estateModel);
+            estateResponse.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public void ModelFactory_Estate_NullInput_IsConverted(){
             Estate estateModel = null;
 
@@ -294,6 +315,17 @@ namespace EstateManagement.Tests.Factories{
         }
 
         [Fact]
+        public void ModelFactory_MerchantList_NullModelInList_IsConverted()
+        {
+            List<Merchant> merchantModelList = new List<Merchant>{
+                null
+            };
+
+            var result= ModelFactory.ConvertFrom(merchantModelList);
+            result.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public void ModelFactory_Contract_ContractOnly_IsConverted(){
             Contract contractModel = TestData.ContractModel;
 
@@ -402,6 +434,17 @@ namespace EstateManagement.Tests.Factories{
         }
 
         [Fact]
+        public void ModelFactory_ContractList_ModelInListIsNull_IsConverted()
+        {
+            List<Contract> contractModel = new List<Contract>{
+                null
+            };
+
+            Result<List<ContractResponse>> contractResponses = ModelFactory.ConvertFrom(contractModel);
+            contractResponses.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
         public void ModelFactory_ConvertFrom_SettlementFeeModel_ModelConverted(){
             SettlementFeeResponse response = ModelFactory.ConvertFrom(TestData.SettlementFeeModel);
 
@@ -466,6 +509,17 @@ namespace EstateManagement.Tests.Factories{
 
             response.ShouldNotBeNull();
             response.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_SettlementModelList_NullModelInList_ModelConverted()
+        {
+            List<SettlementModel> settlementModeList = new List<SettlementModel> {
+                null
+            };
+            var result = ModelFactory.ConvertFrom(settlementModeList);
+
+            result.IsFailed.ShouldBeTrue();
         }
 
         [Fact]
@@ -565,6 +619,18 @@ namespace EstateManagement.Tests.Factories{
 
             List<OperatorResponse> operatorResponses = ModelFactory.ConvertFrom(operatorList);
             operatorResponses.ShouldBeEmpty();
+
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_NullModelInList_ModelConverted()
+        {
+            List<Operator> operatorList = new List<Operator> {
+                null
+            };
+
+            var result = ModelFactory.ConvertFrom(operatorList);
+            result.IsFailed.ShouldBeTrue();
 
         }
     }

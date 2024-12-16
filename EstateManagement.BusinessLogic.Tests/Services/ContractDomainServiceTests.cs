@@ -19,6 +19,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
     using Testing;
     using Xunit;
 
+    
     public class ContractDomainServiceTests {
         private ContractDomainService DomainService;
         private Mock<IAggregateRepository<EstateAggregate, DomainEvent>> EstateAggregateRepository;
@@ -83,6 +84,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_CreateContract_EstateNotCreated_ResultFailed()
         {
+            ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
             EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
             EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
@@ -95,6 +97,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_CreateContract_NoOperatorCreatedForEstate_ResultFailed()
         {
+            ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
             EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
             EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
@@ -103,10 +106,11 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Result result = await this.DomainService.CreateContract(command, CancellationToken.None);
             result.IsFailed.ShouldBeTrue();
         }
-
+        
         [Fact]
         public async Task ContractDomainService_CreateContract_OperatorNotFoundForEstate_ResultFailed()
         {
+            ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
             EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
             
             EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
@@ -135,6 +139,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_AddProductToContract_FixedValue_ContractNotCreated_ErrorThrown()
         {
+            EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
             ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
 
             EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
@@ -164,6 +169,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [Fact]
         public async Task ContractDomainService_AddProductToContract_VariableValue_ContractNotCreated_ErrorThrown()
         {
+            EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
             ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
 
             EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
@@ -173,7 +179,35 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             Result result = await this.DomainService.AddProductToContract(command, CancellationToken.None);
             result.IsFailed.ShouldBeTrue();
         }
-        
+
+        [Fact]
+        public async Task ContractDomainService_AddProductToContract_VariableValue_EstateNotCreated_ErrorThrown()
+        {
+            EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+            ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregate()));
+
+            EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractCommands.AddProductToContractCommand command = TestData.Commands.AddProductToContractCommand_VariableValue;
+            Result result = await this.DomainService.AddProductToContract(command, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task ContractDomainService_AddProductToContract_FixedValue_EstateNotCreated_ErrorThrown()
+        {
+            EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+            ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregate()));
+
+            EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");
+
+            ContractCommands.AddProductToContractCommand command = TestData.Commands.AddProductToContractCommand_FixedValue;
+            Result result = await this.DomainService.AddProductToContract(command, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
+        }
+
         [Theory]
         [InlineData(DataTransferObjects.Responses.Contract.CalculationType.Fixed, DataTransferObjects.Responses.Contract.FeeType.Merchant)]
         [InlineData(DataTransferObjects.Responses.Contract.CalculationType.Percentage, DataTransferObjects.Responses.Contract.FeeType.Merchant)]
@@ -203,6 +237,7 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         [InlineData(DataTransferObjects.Responses.Contract.CalculationType.Percentage, DataTransferObjects.Responses.Contract.FeeType.ServiceProvider)]
         public async Task ContractDomainService_AddTransactionFeeForProductToContract_ContractNotCreated_ErrorThrown(DataTransferObjects.Responses.Contract.CalculationType calculationType, DataTransferObjects.Responses.Contract.FeeType feeType)
         {
+            EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
             ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                                        .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyContractAggregate()));
 
@@ -223,8 +258,9 @@ namespace EstateManagement.BusinessLogic.Tests.Services
         public async Task ContractDomainService_AddTransactionFeeForProductToContract_ProductNotFound_ErrorThrown(
             DataTransferObjects.Responses.Contract.CalculationType calculationType,
             DataTransferObjects.Responses.Contract.FeeType feeType) {
+            EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
             ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregateWithAProduct()));
+                .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedContractAggregate()));
 
             EventStoreContext.Setup(c => c.RunTransientQuery(It.IsAny<String>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("{\r\n  \"total\": 0,\r\n  \"contractId\": \"\"\r\n}");

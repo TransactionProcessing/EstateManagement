@@ -335,7 +335,55 @@ public class MerchantDomainServiceTests {
 
         this.SecurityServiceClient
             .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception());
+            .ReturnsAsync(Result.Failure);
+
+        var result = await this.DomainService.CreateMerchantUser(TestData.Commands.CreateMerchantUserCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_CreateMerchantUser_ErrorGettingUsers_ErrorThrown()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        this.SecurityServiceClient
+            .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+        this.SecurityServiceClient
+            .Setup(s => s.GetUsers(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Failure());
+
+        var result = await this.DomainService.CreateMerchantUser(TestData.Commands.CreateMerchantUserCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact] 
+    public async Task MerchantDomainService_CreateMerchantUser_UserInListIsNull_ErrorThrown()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        this.SecurityServiceClient
+            .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+        this.SecurityServiceClient
+            .Setup(s => s.GetUsers(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(new List<UserDetails> {
+                null
+            }));
 
         var result = await this.DomainService.CreateMerchantUser(TestData.Commands.CreateMerchantUserCommand, CancellationToken.None);
         result.IsFailed.ShouldBeTrue();
@@ -406,6 +454,52 @@ public class MerchantDomainServiceTests {
 
         var result = await this.DomainService.MakeMerchantDeposit(TestData.Commands.MakeMerchantDepositCommand, CancellationToken.None);
         result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_MakeMerchantDeposit_GetDepositListFailed_ResultIsFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        this.MerchantDepositListAggregateRepository
+            .Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Failure());
+        this.MerchantDepositListAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success());
+
+        var result = await this.DomainService.MakeMerchantDeposit(TestData.Commands.MakeMerchantDepositCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_MakeMerchantDeposit_DepositListSaveFailed_ResultIsFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        this.MerchantDepositListAggregateRepository
+            .Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantDepositListAggregate()));
+        this.MerchantDepositListAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantDepositListAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Failure);
+
+        var result = await this.DomainService.MakeMerchantDeposit(TestData.Commands.MakeMerchantDepositCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
     }
 
     [Fact]
@@ -533,6 +627,34 @@ public class MerchantDomainServiceTests {
 
         var result = await this.DomainService.MakeMerchantWithdrawal(TestData.Commands.MakeMerchantWithdrawalCommand, CancellationToken.None);
         result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_MakeMerchantWithdrawal_GetDepositListFailed_ResultIsFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        this.MerchantDepositListAggregateRepository
+            .Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Failure());
+        
+        this.SecurityServiceClient
+            .Setup(s => s.GetToken(It.IsAny<String>(), It.IsAny<String>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.TokenResponse()));
+
+        this.TransactionProcessorClient
+            .Setup(t => t.GetMerchantBalance(It.IsAny<String>(), It.IsAny<Guid>(), It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>(), true)).ReturnsAsync(TestData.MerchantBalance);
+
+        var result = await this.DomainService.MakeMerchantWithdrawal(TestData.Commands.MakeMerchantWithdrawalCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
     }
 
     [Fact]
@@ -692,6 +814,24 @@ public class MerchantDomainServiceTests {
     }
 
     [Fact]
+    public async Task MerchantDomainService_AddContractToMerchant_GetContractFailed_ErrorThrown()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+        this.ContractAggregateRepository.Setup(c => c.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Failure());
+
+        var result = await this.DomainService.AddContractToMerchant(TestData.Commands.AddMerchantContractCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task MerchantDomainService_AddContractToMerchant_MerchantNotCreated_ErrorThrown() {
         this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
@@ -755,6 +895,25 @@ public class MerchantDomainServiceTests {
     }
 
     [Fact]
+    public async Task MerchantDomainService_UpdateMerchant_ValidationError_ResultIsFailed()
+    {
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+
+        MerchantCommands.UpdateMerchantCommand command = new(TestData.EstateId, TestData.MerchantId,
+            TestData.UpdateMerchantRequest);
+        
+        var result = await this.DomainService.UpdateMerchant(command, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task MerchantDomainService_AddMerchantAddress_AddressAdded() {
         this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
@@ -767,6 +926,22 @@ public class MerchantDomainServiceTests {
 
         var result = await this.DomainService.AddMerchantAddress(TestData.Commands.AddMerchantAddressCommand, CancellationToken.None);
         result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_AddMerchantAddress_ValidationFailure_ResultIsFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        var result = await this.DomainService.AddMerchantAddress(TestData.Commands.AddMerchantAddressCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
     }
 
     [Fact]
@@ -785,6 +960,22 @@ public class MerchantDomainServiceTests {
     }
 
     [Fact]
+    public async Task MerchantDomainService_UpdateMerchantAddress_ValidationFailed_ResultIsFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        var result = await this.DomainService.UpdateMerchantAddress(TestData.Commands.UpdateMerchantAddressCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task MerchantDomainService_AddMerchantContact_ContactAdded() {
         this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
@@ -797,6 +988,22 @@ public class MerchantDomainServiceTests {
 
         var result = await this.DomainService.AddMerchantContact(TestData.Commands.AddMerchantContactCommand, CancellationToken.None);
         result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_AddMerchantContact_ValidationError_ResultIsFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        var result = await this.DomainService.AddMerchantContact(TestData.Commands.AddMerchantContactCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
     }
 
     [Fact]
@@ -815,6 +1022,22 @@ public class MerchantDomainServiceTests {
     }
 
     [Fact]
+    public async Task MerchantDomainService_UpdateMerchantContact_ValidationError_ResultIsFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedMerchantAggregate()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        var result = await this.DomainService.UpdateMerchantContact(TestData.Commands.UpdateMerchantContactCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task MerchantDomainService_RemoveOperatorFromMerchant_OperatorRemoved() {
         this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
@@ -830,7 +1053,23 @@ public class MerchantDomainServiceTests {
     }
 
     [Fact]
-    public async Task MerchantDomainService_RemoveContractFromMerchant_OperatorRemoved() {
+    public async Task MerchantDomainService_RemoveOperatorFromMerchant_ValidationFailed_ResultFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.MerchantAggregateWithOperator()));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        var result = await this.DomainService.RemoveOperatorFromMerchant(TestData.Commands.RemoveOperatorFromMerchantCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_RemoveContractFromMerchant_ContractRemoved() {
         this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
 
@@ -842,5 +1081,21 @@ public class MerchantDomainServiceTests {
 
         var result = await this.DomainService.RemoveContractFromMerchant(TestData.Commands.RemoveMerchantContractCommand, CancellationToken.None);
         result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MerchantDomainService_RemoveContractFromMerchant_ValidationFailed_ResultFailed()
+    {
+        this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.EmptyEstateAggregate));
+
+        this.MerchantAggregateRepository.Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(TestData.Aggregates.MerchantAggregateWithEverything(SettlementSchedule.Immediate)));
+        this.MerchantAggregateRepository
+            .Setup(m => m.SaveChanges(It.IsAny<MerchantAggregate>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success);
+
+        var result = await this.DomainService.RemoveContractFromMerchant(TestData.Commands.RemoveMerchantContractCommand, CancellationToken.None);
+        result.IsFailed.ShouldBeTrue();
     }
 }

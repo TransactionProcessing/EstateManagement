@@ -42,7 +42,7 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
         }
 
         [Fact]
-        public void TransactionDomainEventHandler_AdditionalRequestDataRecordedEvent_EventIsHandled()
+        public async Task TransactionDomainEventHandler_AdditionalRequestDataRecordedEvent_EventIsHandled()
         {
             AdditionalRequestDataRecordedEvent additionalRequestDataRecordedEvent = TestData.AdditionalRequestDataRecordedEvent;
 
@@ -51,8 +51,27 @@ namespace EstateManagement.BusinessLogic.Tests.EventHandling
             this.EstateReportingRepository
                 .Setup(r => r.RecordTransactionAdditionalRequestData(It.IsAny<AdditionalRequestDataRecordedEvent>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(SimpleResults.Result.Success);
+            this.EstateReportingRepository
+                .Setup(r => r.SetTransactionAmount(It.IsAny<AdditionalRequestDataRecordedEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success);
 
-            Should.NotThrow(async () => { await this.DomainEventHandler.Handle(additionalRequestDataRecordedEvent, CancellationToken.None); });
+            var result = await this.DomainEventHandler.Handle(additionalRequestDataRecordedEvent, CancellationToken.None);
+            result.IsSuccess.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task TransactionDomainEventHandler_AdditionalRequestDataRecordedEvent_RepoCallFails_EventIsHandled()
+        {
+            AdditionalRequestDataRecordedEvent additionalRequestDataRecordedEvent = TestData.AdditionalRequestDataRecordedEvent;
+
+            Logger.Initialise(NullLogger.Instance);
+
+            this.EstateReportingRepository
+                .Setup(r => r.RecordTransactionAdditionalRequestData(It.IsAny<AdditionalRequestDataRecordedEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Failure);
+
+            var result = await this.DomainEventHandler.Handle(additionalRequestDataRecordedEvent, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
         }
 
         [Fact]

@@ -127,6 +127,7 @@ namespace EstateManagement.BusinessLogic.Services
             }
         }
 
+        [ExcludeFromCodeCoverage(Justification = "This will get replaced by metrics soon")]
         private async Task<Result<MerchantStatementAggregate>> GetLatestVersion(Guid statementId, CancellationToken cancellationToken){
             Stopwatch sw = Stopwatch.StartNew();
             
@@ -268,9 +269,9 @@ namespace EstateManagement.BusinessLogic.Services
                     this.TokenResponse = await Helpers.GetToken(this.TokenResponse, this.SecurityServiceClient, cancellationToken);
 
                     var sendEmailResponseResult = await this.MessagingServiceClient.SendEmail(this.TokenResponse.AccessToken, sendEmailRequest, cancellationToken);
-                    if (sendEmailResponseResult.IsFailed) {
-                        // TODO: record a failed event??
-                    }
+                    //if (sendEmailResponseResult.IsFailed) {
+                    //    // TODO: record a failed event??
+                    //}
                     merchantStatementAggregate.EmailStatement(DateTime.Now, messageId);
 
                     return Result.Success();

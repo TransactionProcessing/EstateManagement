@@ -1,4 +1,5 @@
-﻿using SimpleResults;
+﻿using EstateManagement.Models.File;
+using SimpleResults;
 
 namespace EstateManagement.Bootstrapper
 {
@@ -84,6 +85,8 @@ namespace EstateManagement.Bootstrapper
                 SettlementRequestHandler>();
             this.AddSingleton<IRequestHandler<SettlementQueries.GetSettlementsQuery, Result<List<SettlementModel>>>,
                 SettlementRequestHandler>();
+
+            this.AddSingleton<IRequestHandler<FileQueries.GetFileQuery, Result<File>>, FileRequestHandler>();
         }
 
         #endregion

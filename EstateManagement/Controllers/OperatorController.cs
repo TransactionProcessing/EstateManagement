@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Shared.Results;
+using SimpleResults;
 
 namespace EstateManagement.Controllers
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Security.Claims;
     using System.Threading;
     using BusinessLogic.Requests;
     using Common.Examples;
@@ -13,16 +16,17 @@ namespace EstateManagement.Controllers
     using DataTransferObjects.Responses.Operator;
     using Factories;
     using MediatR;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models.Operator;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
 
     [ExcludeFromCodeCoverage]
-    [Route(OperatorController.ControllerRoute)]
+    [Route(ControllerRoute)]
     [ApiController]
-    public class OperatorController : ControllerBase {
-        private EstateManagement.Controllers.v2.OperatorController V2OperatorController;
+    public class OperatorController : ControllerBase
+    {
         /// <summary>
         /// The mediator
         /// </summary>
@@ -34,8 +38,22 @@ namespace EstateManagement.Controllers
         /// <param name="mediator">The mediator.</param>
         public OperatorController(IMediator mediator)
         {
-            this.Mediator = mediator;
-            this.V2OperatorController = new v2.OperatorController(mediator);
+            Mediator = mediator;
+        }
+
+        private ClaimsPrincipal UserOverride;
+        internal void SetContextOverride(HttpContext ctx)
+        {
+            UserOverride = ctx.User;
+        }
+
+        internal ClaimsPrincipal GetUser()
+        {
+            return UserOverride switch
+            {
+                null => HttpContext.User,
+                _ => UserOverride
+            };
         }
 
         /// <summary>
@@ -49,11 +67,16 @@ namespace EstateManagement.Controllers
         [Route("")]
         [SwaggerResponse(201, "Created", typeof(CreateOperatorResponse))]
         [SwaggerResponseExample(201, typeof(CreateOperatorResponseExample))]
-        public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId,  [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOperator([FromRoute] Guid estateId, [FromBody] CreateOperatorRequest createOperatorRequest, CancellationToken cancellationToken)
         {
-            this.V2OperatorController.SetContextOverride(this.HttpContext);
-            var result = await this.V2OperatorController.CreateOperator(estateId, createOperatorRequest, cancellationToken);
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            // Create the command
+            OperatorCommands.CreateOperatorCommand command = new OperatorCommands.CreateOperatorCommand(estateId, createOperatorRequest);
+
+            // Route the command
+            Result result = await Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return result.ToActionResultX();
         }
 
         [HttpPost]
@@ -61,9 +84,14 @@ namespace EstateManagement.Controllers
         [SwaggerResponse(200, "OK")]
         public async Task<IActionResult> UpdateOperator([FromRoute] Guid estateId, [FromRoute] Guid operatorId, [FromBody] UpdateOperatorRequest updateOperatorRequest, CancellationToken cancellationToken)
         {
-            this.V2OperatorController.SetContextOverride(this.HttpContext);
-            var result = await this.V2OperatorController.UpdateOperator(estateId, operatorId, updateOperatorRequest, cancellationToken);
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            // Create the command
+            OperatorCommands.UpdateOperatorCommand command = new OperatorCommands.UpdateOperatorCommand(estateId, operatorId, updateOperatorRequest);
+
+            // Route the command
+            Result result = await Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return result.ToActionResultX();
         }
 
 
@@ -75,9 +103,13 @@ namespace EstateManagement.Controllers
                                                      [FromRoute] Guid operatorId,
                                                      CancellationToken cancellationToken)
         {
-            this.V2OperatorController.SetContextOverride(this.HttpContext);
-            var result = await this.V2OperatorController.GetOperator(estateId, operatorId, cancellationToken);
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            // Create the command
+            OperatorQueries.GetOperatorQuery query = new(estateId, operatorId);
+
+            // Route the command
+            Operator @operator = await Mediator.Send(query, cancellationToken);
+
+            return ModelFactory.ConvertFrom(@operator).ToActionResultX();
         }
 
         [HttpGet]
@@ -85,11 +117,15 @@ namespace EstateManagement.Controllers
         [SwaggerResponse(200, "OK", typeof(OperatorResponse))]
         [SwaggerResponseExample(201, typeof(OperatorResponseExample))]
         public async Task<IActionResult> GetOperators([FromRoute] Guid estateId,
-                                                     CancellationToken cancellationToken)
+                                                      CancellationToken cancellationToken)
         {
-            this.V2OperatorController.SetContextOverride(this.HttpContext);
-            var result = await this.V2OperatorController.GetOperators(estateId, cancellationToken);
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            // Create the command
+            OperatorQueries.GetOperatorsQuery query = new(estateId);
+
+            // Route the command
+            List<Operator> @operatorList = await Mediator.Send(query, cancellationToken);
+
+            return ModelFactory.ConvertFrom(@operatorList).ToActionResultX();
         }
 
         #region Others
@@ -97,12 +133,12 @@ namespace EstateManagement.Controllers
         /// <summary>
         /// The controller name
         /// </summary>
-        public const String ControllerName = "operators";
+        public const string ControllerName = "operators";
 
         /// <summary>
         /// The controller route
         /// </summary>
-        private const String ControllerRoute = "api/estates/{estateid}/" + OperatorController.ControllerName;
+        private const string ControllerRoute = "api/v2/estates/{estateid}/" + ControllerName;
 
         #endregion
     }

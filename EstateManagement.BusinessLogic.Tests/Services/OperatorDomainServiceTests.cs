@@ -46,6 +46,7 @@ public class OperatorDomainServiceTests{
     {
         this.EstateAggregateRepository.Setup(e => e.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(TestData.Aggregates.EmptyEstateAggregate);
+        this.OperatorAggregateRepository.Setup(o => o.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(SimpleResults.Result.Success(TestData.Aggregates.EmptyOperatorAggregate()));
 
         Result result = await this.OperatorDomainService.CreateOperator(TestData.Commands.CreateOperatorCommand, CancellationToken.None);
         result.IsFailed.ShouldBeTrue();

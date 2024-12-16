@@ -85,6 +85,75 @@ namespace EstateManagement.BusinessLogic.Tests.Services
             result.IsSuccess.ShouldBeTrue();
         }
 
+        [Fact]
+        public async Task EstateDomainService_CreateEstateUser_UserCreateFailed_ResultIsFailed()
+        {
+            this.EstateAggregateRepository
+                .Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+            this.EstateAggregateRepository
+                .Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success());
+
+            this.SecurityServiceClient
+                .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Failure);
+            this.SecurityServiceClient
+                .Setup(s => s.GetUsers(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success(new List<UserDetails>() {
+                    new UserDetails {
+                        UserId = Guid.Parse("FA077CE3-B915-4048-88E3-9B500699317F")
+                    }
+                }));
+
+            Result result = await this.DomainService.CreateEstateUser(TestData.Commands.CreateEstateUserCommand, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task EstateDomainService_CreateEstateUser_GetUsersFailed_ResultIsFailed()
+        {
+            this.EstateAggregateRepository
+                .Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+            this.EstateAggregateRepository
+                .Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success());
+
+            this.SecurityServiceClient
+                .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success);
+            this.SecurityServiceClient
+                .Setup(s => s.GetUsers(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Failure());
+
+            Result result = await this.DomainService.CreateEstateUser(TestData.Commands.CreateEstateUserCommand, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task EstateDomainService_CreateEstateUser_NullUserReturned_ResultIsFailed()
+        {
+            this.EstateAggregateRepository
+                .Setup(m => m.GetLatestVersion(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success(TestData.Aggregates.CreatedEstateAggregate()));
+            this.EstateAggregateRepository
+                .Setup(m => m.SaveChanges(It.IsAny<EstateAggregate>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(SimpleResults.Result.Success());
+
+            this.SecurityServiceClient
+                .Setup(s => s.CreateUser(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success);
+            this.SecurityServiceClient
+                .Setup(s => s.GetUsers(It.IsAny<String>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Success(new List<UserDetails>() {
+                    null
+                }));
+
+            Result result = await this.DomainService.CreateEstateUser(TestData.Commands.CreateEstateUserCommand, CancellationToken.None);
+            result.IsFailed.ShouldBeTrue();
+        }
+
         // TODO: EstateDomainServiceTests - CreateEstateUser - failed creating user test
         // TODO: EstateDomainServiceTests - Estate Not Created tests missing
         // TODO: EstateDomainServiceTests - Save Changes failed

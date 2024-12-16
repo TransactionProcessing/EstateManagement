@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using EstateManagement.BusinessLogic.Requests;
 using EstateManagement.DataTransferObjects.Responses.File;
 using MediatR;
+using Shared.Results;
+using SimpleResults;
 
 namespace EstateManagement.Controllers
 {
@@ -14,23 +17,36 @@ namespace EstateManagement.Controllers
     using Factories;
     using Models.File;
     using Shared.General;
-    using SimpleResults;
+    using Microsoft.AspNetCore.Http;
 
     //[Route("api/[controller]")]
     //[ApiController]
     [ExcludeFromCodeCoverage]
-    [Route(FileController.ControllerRoute)]
+    [Route(ControllerRoute)]
     [ApiController]
     [Authorize]
-    public class FileController : ControllerBase {
-        private EstateManagement.Controllers.v2.FileController V2FileController;
+    public class FileController : ControllerBase
+    {
+        private readonly IMediator Mediator;
 
-        private readonly IEstateManagementManager EstateManagementManager;
-
-        public FileController(IEstateManagementManager estateManagementManager, IMediator mediator)
+        public FileController(IMediator mediator)
         {
-            this.EstateManagementManager = estateManagementManager;
-            this.V2FileController = new v2.FileController(mediator);
+            Mediator = mediator;
+        }
+
+        private ClaimsPrincipal UserOverride;
+        internal void SetContextOverride(HttpContext ctx)
+        {
+            UserOverride = ctx.User;
+        }
+
+        internal ClaimsPrincipal GetUser()
+        {
+            return UserOverride switch
+            {
+                null => HttpContext.User,
+                _ => UserOverride
+            };
         }
 
         #region Others
@@ -38,12 +54,12 @@ namespace EstateManagement.Controllers
         /// <summary>
         /// The controller name
         /// </summary>
-        public const String ControllerName = "files";
+        public const string ControllerName = "files";
 
         /// <summary>
         /// The controller route
         /// </summary>
-        private const String ControllerRoute = "api/estates/{estateid}/" + FileController.ControllerName;
+        private const string ControllerRoute = "api/v2/estates/{estateid}/" + ControllerName;
 
         #endregion
 
@@ -52,13 +68,28 @@ namespace EstateManagement.Controllers
         //[SwaggerResponse(200, "OK", typeof(ContractResponse))]
         //[SwaggerResponseExample(200, typeof(ContractResponseExample))]
         public async Task<IActionResult> GetFile([FromRoute] Guid estateId,
-                                                     [FromRoute] Guid fileId,
-                                                     CancellationToken cancellationToken)
+                                                 [FromRoute] Guid fileId,
+                                                 CancellationToken cancellationToken)
         {
-            this.V2FileController.SetContextOverride(this.HttpContext);
-            var result = await this.V2FileController.GetFile(estateId, fileId, cancellationToken);
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(GetUser(), "EstateId", estateId.ToString());
 
-            return ActionResultHelpers.HandleResult(result, "");
+            string estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(GetUser(), new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return Forbid();
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return Forbid();
+            }
+
+            FileQueries.GetFileQuery query = new FileQueries.GetFileQuery(estateId, fileId);
+            Result<File> result = await Mediator.Send(query, cancellationToken);
+
+
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
 
     }

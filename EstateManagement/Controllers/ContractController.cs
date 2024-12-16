@@ -1,6 +1,7 @@
-﻿using EstateManagement.DataTransferObjects.Requests.Contract;
+﻿using System.Net.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Shared.EventStore.Aggregate;
+using Shared.Results;
 using SimpleResults;
 
 namespace EstateManagement.Controllers
@@ -17,6 +18,9 @@ namespace EstateManagement.Controllers
     using DataTransferObjects.Responses.Contract;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using AddProductToContractRequestDTO = DataTransferObjects.Requests.Contract.AddProductToContractRequest;
+    using CreateContractRequestDTO = DataTransferObjects.Requests.Contract.CreateContractRequest;
+    using AddTransactionFeeForProductToContractRequestDTO = DataTransferObjects.Requests.Contract.AddTransactionFeeForProductToContractRequest;
     using EstateManagement.Factories;
     using EstateManagement.BusinessLogic.Manger;
     using Models.Contract;
@@ -25,19 +29,18 @@ namespace EstateManagement.Controllers
     using Swashbuckle.AspNetCore.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Shared.General;
-    using Microsoft.AspNetCore.Components.Forms;
+    using static EstateManagement.BusinessLogic.Requests.ContractCommands;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+    /// <seealso cref="ControllerBase" />
     [ExcludeFromCodeCoverage]
-    [Route(ContractController.ControllerRoute)]
+    [Route(ControllerRoute)]
     [ApiController]
     [Authorize]
-    public class ContractController : ControllerBase {
-        public EstateManagement.Controllers.v2.ContractController V2ContractController;
-
+    public class ContractController : ControllerBase
+    {
         #region Fields
 
         /// <summary>
@@ -45,23 +48,52 @@ namespace EstateManagement.Controllers
         /// </summary>
         private readonly IMediator Mediator;
 
-        private readonly IEstateManagementManager EstateManagementManager;
-
         #endregion
+
+        private ClaimsPrincipal UserOverride;
+        internal void SetContextOverride(HttpContext ctx)
+        {
+            UserOverride = ctx.User;
+        }
 
         #region Constructors
 
-        public ContractController(IMediator mediator,
-                                  IEstateManagementManager estateManagementManager)
+        public ContractController(IMediator mediator)
         {
-            this.Mediator = mediator;
-            this.EstateManagementManager = estateManagementManager;
-            this.V2ContractController = new v2.ContractController(this.Mediator, this.EstateManagementManager);
+            Mediator = mediator;
         }
 
         #endregion
 
+        internal ClaimsPrincipal GetUser()
+        {
+            return UserOverride switch
+            {
+                null => HttpContext.User,
+                _ => UserOverride
+            };
+        }
+
         #region Methods
+
+        private Result StandardSecurityChecks(Guid estateId)
+        {
+            // Get the Estate Id claim from the user
+            Claim estateIdClaim = ClaimsHelper.GetUserClaim(GetUser(), "EstateId", estateId.ToString());
+
+            string estateRoleName = Environment.GetEnvironmentVariable("EstateRoleName");
+            if (ClaimsHelper.IsUserRolesValid(GetUser(), new[] { string.IsNullOrEmpty(estateRoleName) ? "Estate" : estateRoleName }) == false)
+            {
+                return Result.Forbidden("User role is not valid");
+            }
+
+            if (ClaimsHelper.ValidateRouteParameter(estateId, estateIdClaim) == false)
+            {
+                return Result.Forbidden("User estate id claim is not valid");
+            }
+
+            return Result.Success();
+        }
 
         /// <summary>
         /// Gets the contract.
@@ -76,15 +108,25 @@ namespace EstateManagement.Controllers
         [Route("{contractId}")]
         [SwaggerResponse(200, "OK", typeof(ContractResponse))]
         [SwaggerResponseExample(200, typeof(ContractResponseExample))]
-        public async Task<IActionResult> GetContract([FromRoute] Guid estateId, 
+        public async Task<IActionResult> GetContract([FromRoute] Guid estateId,
                                                      [FromRoute] Guid contractId,
-                                                     CancellationToken cancellationToken) {
-            this.V2ContractController.SetContextOverride(this.HttpContext);
-            var result = await this.V2ContractController.GetContract(estateId, contractId, cancellationToken);
+                                                     CancellationToken cancellationToken)
+        {
+            Result securityChecksResult = StandardSecurityChecks(estateId);
+            if (securityChecksResult.IsFailed)
+                return securityChecksResult.ToActionResultX();
 
-            return ActionResultHelpers.HandleResult(result, $"Contract not found with estate Id {estateId} and contract Id {contractId}");
+            ContractQueries.GetContractQuery query = new ContractQueries.GetContractQuery(estateId, contractId);
+            Result<Contract> result = await Mediator.Send(query, cancellationToken);
+            if (result.IsFailed)
+            {
+                var x = result.ToActionResultX();
+                return x;
+            }
+
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
         }
-        
+
         /// <summary>
         /// Gets the contracts.
         /// </summary>
@@ -96,12 +138,15 @@ namespace EstateManagement.Controllers
         [SwaggerResponse(200, "OK", typeof(List<ContractResponse>))]
         [SwaggerResponseExample(200, typeof(ContractResponseListExample))]
         public async Task<IActionResult> GetContracts([FromRoute] Guid estateId,
-                                                     CancellationToken cancellationToken)
+                                                      CancellationToken cancellationToken)
         {
-            this.V2ContractController.SetContextOverride(this.HttpContext);
-            var result = await this.V2ContractController.GetContracts(estateId, cancellationToken);
+            Result securityChecksResult = StandardSecurityChecks(estateId);
+            if (securityChecksResult.IsFailed)
+                return securityChecksResult.ToActionResultX();
+            ContractQueries.GetContractsQuery query = new ContractQueries.GetContractsQuery(estateId);
 
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            Result<List<Contract>> result = await Mediator.Send(query, cancellationToken);
+            return ModelFactory.ConvertFrom(result.Data).ToActionResultX();
 
         }
 
@@ -119,13 +164,23 @@ namespace EstateManagement.Controllers
         [SwaggerResponseExample(201, typeof(AddProductToContractResponseExample))]
         public async Task<IActionResult> AddProductToContract([FromRoute] Guid estateId,
                                                               [FromRoute] Guid contractId,
-                                                              [FromBody] AddProductToContractRequest addProductToContractRequest,
+                                                              [FromBody] AddProductToContractRequestDTO addProductToContractRequest,
                                                               CancellationToken cancellationToken)
         {
-            this.V2ContractController.SetContextOverride(this.HttpContext);
-            var result = await this.V2ContractController.AddProductToContract(estateId, contractId, addProductToContractRequest, cancellationToken);
+            Result securityChecksResult = StandardSecurityChecks(estateId);
+            if (securityChecksResult.IsFailed)
+                return securityChecksResult.ToActionResultX();
 
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            Guid productId = Guid.NewGuid();
+
+            // Create the command
+            AddProductToContractCommand command =
+                new(estateId, contractId, productId,
+                    addProductToContractRequest);
+
+            // Route the command
+            Result result = await Mediator.Send(command, cancellationToken);
+            return result.ToActionResultX();
         }
 
         /// <summary>
@@ -144,15 +199,24 @@ namespace EstateManagement.Controllers
         public async Task<IActionResult> AddTransactionFeeForProductToContract([FromRoute] Guid estateId,
                                                                                [FromRoute] Guid contractId,
                                                                                [FromRoute] Guid productId,
-                                                                               [FromBody] AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest,
+                                                                               [FromBody] AddTransactionFeeForProductToContractRequestDTO addTransactionFeeForProductToContractRequest,
                                                                                CancellationToken cancellationToken)
         {
-            this.V2ContractController.SetContextOverride(this.HttpContext);
-            var result = await this.V2ContractController.AddTransactionFeeForProductToContract(
-                estateId, contractId, productId, addTransactionFeeForProductToContractRequest, cancellationToken);
+            Result securityChecksResult = StandardSecurityChecks(estateId);
+            if (securityChecksResult.IsFailed)
+                return securityChecksResult.ToActionResultX();
 
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            Guid transactionFeeId = Guid.NewGuid();
+
+            // Create the command
+            AddTransactionFeeForProductToContractCommand command =
+                new(estateId, contractId, productId, transactionFeeId, addTransactionFeeForProductToContractRequest);
+
+            // Route the command
+            Result result = await Mediator.Send(command, cancellationToken);
+            return result.ToActionResultX();
         }
+
         /// <summary>
         /// Disables the transaction fee for product.
         /// </summary>
@@ -166,16 +230,25 @@ namespace EstateManagement.Controllers
         [Route("{contractId}/products/{productId}/transactionFees/{transactionFeeId}")]
         [SwaggerResponse(200, "OK")]
         public async Task<IActionResult> DisableTransactionFeeForProduct([FromRoute] Guid estateId,
-                                                                               [FromRoute] Guid contractId,
-                                                                               [FromRoute] Guid productId,
-                                                                               [FromRoute] Guid transactionFeeId,
-                                                                               CancellationToken cancellationToken)
+                                                                         [FromRoute] Guid contractId,
+                                                                         [FromRoute] Guid productId,
+                                                                         [FromRoute] Guid transactionFeeId,
+                                                                         CancellationToken cancellationToken)
         {
-            this.V2ContractController.SetContextOverride(this.HttpContext);
-            var result = await this.V2ContractController.DisableTransactionFeeForProduct(estateId, contractId, productId, transactionFeeId, cancellationToken);
+            Result securityChecksResult = StandardSecurityChecks(estateId);
+            if (securityChecksResult.IsFailed)
+                return securityChecksResult.ToActionResultX();
 
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            // Create the command
+            DisableTransactionFeeForProductCommand command = new(contractId, estateId, productId, transactionFeeId);
+
+            // Route the command
+            Result result = await Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return result.ToActionResultX();
         }
+
         /// <summary>
         /// Creates the contract.
         /// </summary>
@@ -188,13 +261,23 @@ namespace EstateManagement.Controllers
         [SwaggerResponse(201, "Created", typeof(CreateContractResponse))]
         [SwaggerResponseExample(201, typeof(CreateContractResponseExample))]
         public async Task<IActionResult> CreateContract([FromRoute] Guid estateId,
-                                                        [FromBody] CreateContractRequest createContractRequest,
+                                                        [FromBody] CreateContractRequestDTO createContractRequest,
                                                         CancellationToken cancellationToken)
         {
-            this.V2ContractController.SetContextOverride(this.HttpContext);
-            var result = await this.V2ContractController.CreateContract(estateId, createContractRequest, cancellationToken);
+            Result securityChecksResult = StandardSecurityChecks(estateId);
+            if (securityChecksResult.IsFailed)
+                return securityChecksResult.ToActionResultX();
 
-            return ActionResultHelpers.HandleResult(result, String.Empty);
+            Guid contractId = Guid.NewGuid();
+
+            // Create the command
+            CreateContractCommand command = new(estateId, contractId, createContractRequest);
+
+            // Route the command
+            Result result = await Mediator.Send(command, cancellationToken);
+
+            // return the result
+            return result.ToActionResultX();
         }
 
         #endregion
@@ -204,85 +287,13 @@ namespace EstateManagement.Controllers
         /// <summary>
         /// The controller name
         /// </summary>
-        public const String ControllerName = "contracts";
+        public const string ControllerName = "contracts";
 
         /// <summary>
         /// The controller route
         /// </summary>
-        private const String ControllerRoute = "api/estates/{estateid}/" + ContractController.ControllerName;
+        private const string ControllerRoute = "api/v2/estates/{estateid}/" + ControllerName;
 
         #endregion
-    }
-
-    public static class ActionResultHelpers{
-        //public static IActionResult HandleResult<T>(ActionResult<Result<T>> result, String notFoundMessage)
-        //{
-        //    if (result.Result.IsSuccess())
-        //    {
-        //        OkObjectResult ok = result.Result as OkObjectResult;
-        //        Result<T> x = ok.Value as Result<T>;
-                
-        //        return  new OkObjectResult(x.Data);
-        //    }
-
-        //    if (result.Result is NotFoundObjectResult)
-        //    {
-        //        throw new NotFoundException(notFoundMessage);
-        //    }
-
-        //    ObjectResult r = result.Result as ObjectResult;
-        //    if (r.StatusCode == 403)
-        //        return new ForbidResult();
-
-        //    return new BadRequestResult();
-        //}
-
-        public static IActionResult HandleResult(IActionResult result, String notFoundMessage) {
-
-            if (result.GetType().Name == nameof(OkObjectResult)) {
-                OkObjectResult ok = result as OkObjectResult;
-                Type type = ok.Value.GetType();
-                dynamic convertedObj = Convert.ChangeType(ok.Value, ok.Value.GetType());
-
-                if (convertedObj.GetType().GetProperty("Data") != null)
-                {
-                    // convertedObj has a property named "Data"
-                    return new OkObjectResult(convertedObj.Data);
-                }
-
-                // convertedObj does not have a property named "Data"
-                return new OkResult();
-
-
-            }
-
-            IActionResult x = result.GetType().Name switch {
-                nameof(BadRequestObjectResult) => new BadRequestResult(),
-                nameof(NotFoundObjectResult) => throw new NotFoundException(notFoundMessage),
-                nameof(UnauthorizedObjectResult) => new UnauthorizedResult(),
-                nameof(ConflictObjectResult) => new ConflictResult(),
-                nameof(ForbidResult) => new ForbidResult(),
-                //nameof(OkObjectResult) => new OkObjectResult(result.)
-                _ => result
-            };
-            return x;
-
-
-            //if (result.Result.IsSuccess())
-            //{
-            //    return new OkResult();
-            //}
-
-            //if (result.Result is NotFoundObjectResult)
-            //{
-            //    throw new NotFoundException(notFoundMessage);
-            //}
-
-            //ObjectResult r = result.Result as ObjectResult;
-            //if (r.StatusCode == 403)
-            //    return new ForbidResult();
-
-            //return new BadRequestResult();
-        }
     }
 }
