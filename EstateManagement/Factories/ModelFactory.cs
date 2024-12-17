@@ -232,6 +232,9 @@ namespace EstateManagement.Factories{
         public static Result<List<MerchantResponse>> ConvertFrom(List<Models.Merchant.Merchant> merchants){
             List<Result<MerchantResponse>> result = new();
 
+            if (merchants == null)
+                return Result.Success(new List<MerchantResponse>());
+
             merchants.ForEach(c => result.Add(ModelFactory.ConvertFrom(c)));
 
             if (result.Any(c => c.IsFailed))
