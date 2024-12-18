@@ -459,10 +459,20 @@ public class EstateReportingRepository : IEstateReportingRepository
                                           CancellationToken cancellationToken)
     {
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
-        
+        String operatorName = domainEvent.Name;
+        if (String.IsNullOrEmpty(operatorName)) {
+            // Lookup the operator
+            Operator @operator = await context.Operators.SingleOrDefaultAsync(o => o.OperatorId == domainEvent.OperatorId,cancellationToken);
+            operatorName = @operator.Name;
+        }
+
+        if (String.IsNullOrEmpty(operatorName)) {
+            return Result.Failure("Unable to get operator name and this can't be null");
+        }
+
         MerchantOperator merchantOperator = new MerchantOperator
         {
-            Name = domainEvent.Name,
+            Name = operatorName,
             MerchantId = domainEvent.MerchantId,
             MerchantNumber = domainEvent.MerchantNumber,
             OperatorId = domainEvent.OperatorId,

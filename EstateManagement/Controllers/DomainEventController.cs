@@ -77,7 +77,7 @@
                 {
                     tasks.Add(domainEventHandler.Handle(domainEvent, cancellationToken));
                 }
-
+                // TODO: deal with results
                 Task.WaitAll(tasks.ToArray());
 
                 Logger.LogWarning($"Finished processing event - ID [{domainEvent.EventId}]");
