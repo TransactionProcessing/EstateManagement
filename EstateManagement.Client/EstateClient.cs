@@ -673,8 +673,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 // call was successful so now deserialise the body to the response object
-                ResponseData<ContractResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<ContractResponse>>(result.Data);
+                ResponseData<ContractResponse> responseData = this.HandleResponseContent<ContractResponse>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -709,7 +708,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<ContractResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<ContractResponse>>>(result.Data);
+                    HandleResponseContent<List<ContractResponse>>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -745,7 +744,7 @@ namespace EstateManagement.Client{
 
                 // call was successful so now deserialise the body to the response object
                 ResponseData<EstateResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<EstateResponse>>(result.Data);
+                    HandleResponseContent<EstateResponse>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -780,7 +779,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<EstateResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<EstateResponse>>>(result.Data);
+                    HandleResponseContent<List<EstateResponse>>(result.Data);
                 
                 return Result.Success(responseData.Data);
             }
@@ -816,7 +815,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<MerchantResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<MerchantResponse>>(result.Data);
+                    HandleResponseContent<MerchantResponse>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -852,7 +851,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<ContractResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<ContractResponse>>>(result.Data);
+                    HandleResponseContent<List<ContractResponse>>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -887,7 +886,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<MerchantResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<MerchantResponse>>>(result.Data);
+                    HandleResponseContent<List<MerchantResponse>>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -924,7 +923,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<SettlementResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<SettlementResponse>>(result.Data);
+                    HandleResponseContent<SettlementResponse>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -962,7 +961,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<SettlementResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<SettlementResponse>>>(result.Data);
+                    HandleResponseContent<List<SettlementResponse>>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -1001,7 +1000,7 @@ namespace EstateManagement.Client{
 
                 // call was successful so now deserialise the body to the response object
                 ResponseData<List<ContractProductTransactionFee>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<ContractProductTransactionFee>>>(result.Data);
+                    HandleResponseContent<List<ContractProductTransactionFee>>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -1304,7 +1303,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<OperatorResponse> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<OperatorResponse>>(result.Data);
+                    HandleResponseContent<OperatorResponse>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -1339,7 +1338,7 @@ namespace EstateManagement.Client{
                     return ResultHelpers.CreateFailure(result);
 
                 ResponseData<List<OperatorResponse>> responseData =
-                    JsonConvert.DeserializeObject<ResponseData<List<OperatorResponse>>>(result.Data);
+                    HandleResponseContent<List<OperatorResponse>>(result.Data);
 
                 return Result.Success(responseData.Data);
             }
@@ -1371,95 +1370,5 @@ namespace EstateManagement.Client{
         }
 
         #endregion
-    }
-
-    //public static class ResultHelpers
-    //{
-    //    public static Result CreateFailure(Result result)
-    //    {
-    //        if (result.IsFailed)
-    //        {
-    //            return BuildResult(result.Status, result.Message, result.Errors);
-    //        }
-    //        return Result.Failure("Unknown Failure");
-    //    }
-
-    //    public static Result CreateFailure<T>(Result<T> result)
-    //    {
-    //        if (result.IsFailed)
-    //        {
-    //            return BuildResult(result.Status, result.Message, result.Errors);
-    //        }
-    //        return Result.Failure("Unknown Failure");
-    //    }
-
-    //    private static Result BuildResult(ResultStatus status, String messageValue, IEnumerable<String> errorList)
-    //    {
-    //        return (status, messageValue, errorList) switch
-    //        {
-    //            // If the status is NotFound and there are errors, return the errors
-    //            (ResultStatus.NotFound, _, List<string> errors) when errors is { Count: > 0 } =>
-    //                Result.NotFound(errors),
-
-    //            // If the status is NotFound and the message is not null or empty, return the message
-    //            (ResultStatus.NotFound, string message, _) when !string.IsNullOrEmpty(message) =>
-    //                Result.NotFound(message),
-
-    //            // If the status is Failure and there are errors, return the errors
-    //            (ResultStatus.Failure, _, List<string> errors) when errors is { Count: > 0 } =>
-    //                Result.Failure(errors),
-
-    //            // If the status is Failure and the message is not null or empty, return the message
-    //            (ResultStatus.Failure, string message, _) when !string.IsNullOrEmpty(message) =>
-    //                Result.Failure(message),
-
-    //            // If the status is Forbidden and there are errors, return the errors
-    //            (ResultStatus.Forbidden, _, List<string> errors) when errors is { Count: > 0 } =>
-    //                Result.Forbidden(errors),
-
-    //            // If the status is Forbidden and the message is not null or empty, return the message
-    //            (ResultStatus.Forbidden, string message, _) when !string.IsNullOrEmpty(message) =>
-    //                Result.NotFound(message),
-    //            //###
-    //            // If the status is Invalid and there are errors, return the errors
-    //            (ResultStatus.Invalid, _, List<string> errors) when errors is { Count: > 0 } =>
-    //                Result.Invalid(errors),
-
-    //            // If the status is Invalid and the message is not null or empty, return the message
-    //            (ResultStatus.Invalid, string message, _) when !string.IsNullOrEmpty(message) =>
-    //                Result.Invalid(message),
-
-    //            // If the status is Unauthorized and there are errors, return the errors
-    //            (ResultStatus.Unauthorized, _, List<string> errors) when errors is { Count: > 0 } =>
-    //                Result.Unauthorized(errors),
-
-    //            // If the status is Unauthorized and the message is not null or empty, return the message
-    //            (ResultStatus.Unauthorized, string message, _) when !string.IsNullOrEmpty(message) =>
-    //                Result.Unauthorized(message),
-
-    //            // If the status is Conflict and there are errors, return the errors
-    //            (ResultStatus.Conflict, _, List<string> errors) when errors is { Count: > 0 } =>
-    //                Result.Conflict(errors),
-
-    //            // If the status is Conflict and the message is not null or empty, return the message
-    //            (ResultStatus.Conflict, string message, _) when !string.IsNullOrEmpty(message) =>
-    //                Result.Conflict(message),
-
-    //            // If the status is CriticalError and there are errors, return the errors
-    //            (ResultStatus.CriticalError, _, List<string> errors) when errors is { Count: > 0 } =>
-    //                Result.CriticalError(errors),
-
-    //            // If the status is CriticalError and the message is not null or empty, return the message
-    //            (ResultStatus.CriticalError, string message, _) when !string.IsNullOrEmpty(message) =>
-    //                Result.CriticalError(message),
-
-    //            // Default case, return a generic failure message
-    //            _ => Result.Failure("An unexpected error occurred.")
-    //        };
-    //    }
-    //}
-
-    internal class ResponseData<T> {
-        public T Data { get; set; }
     }
 }
