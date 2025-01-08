@@ -282,19 +282,33 @@ public abstract class EstateManagementGenericContext : DbContext
         }
     }
 
-    //public virtual async Task SaveChangesWithDuplicateHandling(CancellationToken cancellationToken)
-    //{
-    //    try
-    //    {
-    //        await this.SaveChangesAsync(cancellationToken);
-    //    }
-    //    catch (UniqueConstraintException uex)
-    //    {
-    //        // Swallow the error
-    //        // TODO: handle PK exceptions uex.ConstraintName and uex.ConstraintProperties are both null
-    //        //Logger.LogWarning($"Unique Constraint Exception. Constraint [{uex.ConstraintName}]. Properties [{String.Join(",", uex.ConstraintProperties)}]  Message [{uex.Message}]");
-    //    }
-    //}
+    public virtual async Task<Result> SaveChangesWithDuplicateHandling(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await base.SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+        catch (UniqueConstraintException uex)
+        {
+            // Swallow the error
+            Logger.LogWarning(BuildUniqueConstraintExceptionLogMessage(uex));
+            return Result.Success();
+        }
+    }
+
+    private static String BuildUniqueConstraintExceptionLogMessage(UniqueConstraintException uex) {
+        String constraintName = "N/A";
+        if (String.IsNullOrEmpty(uex.ConstraintName) == false) {
+            constraintName = uex.ConstraintName;
+        }
+        String constraintProperties = "N/A";
+        if (uex.ConstraintProperties != null) {
+            constraintProperties = String.Join(",", uex.ConstraintProperties);
+        }
+        return $"Unique Constraint Exception. Message [{uex.Message}] Inner Exception [{uex.InnerException.Message}]";
+
+    }
 
 
     #endregion
