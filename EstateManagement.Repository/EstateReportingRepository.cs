@@ -520,7 +520,7 @@ public class EstateReportingRepository : IEstateReportingRepository
 
         await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
-        return await context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
     public async Task<Result> AddProductDetailsToTransaction(ProductDetailsAddedToTransactionEvent domainEvent,
@@ -574,7 +574,7 @@ public class EstateReportingRepository : IEstateReportingRepository
 
         await context.StatementLines.AddAsync(line, cancellationToken);
 
-        return await context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
     public async Task<Result> AddSettledMerchantFeeToSettlement(SettledMerchantFeeAddedToTransactionEvent domainEvent,
@@ -595,7 +595,7 @@ public class EstateReportingRepository : IEstateReportingRepository
         };
         await context.MerchantSettlementFees.AddAsync(merchantSettlementFee, cancellationToken);
 
-        return await context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
     public async Task<Result> AddSourceDetailsToTransaction(TransactionSourceAddedToTransactionEvent domainEvent,

@@ -1,4 +1,6 @@
-﻿namespace EstateManagement.Controllers
+﻿using SimpleResults;
+
+namespace EstateManagement.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -72,7 +74,7 @@
                     return this.Ok();
                 }
 
-                List<Task> tasks = new List<Task>();
+                List<Task<Result>> tasks = new();
                 foreach (IDomainEventHandler domainEventHandler in eventHandlers)
                 {
                     tasks.Add(domainEventHandler.Handle(domainEvent, cancellationToken));
@@ -80,6 +82,13 @@
                 // TODO: deal with results
                 Task.WaitAll(tasks.ToArray());
 
+                // Get the results of each task
+                var failedTasks = tasks.Where(t => t.Result.IsFailed).ToList();
+                if (failedTasks.Any()) {
+                    var errors = failedTasks.Select(t => t.Result.Errors).ToList();
+                    return this.BadRequest(errors);
+                }
+                
                 Logger.LogWarning($"Finished processing event - ID [{domainEvent.EventId}]");
 
                 return this.Ok();
