@@ -176,7 +176,7 @@ namespace EstateManagement.BusinessLogic.Services
 
                     return Result.Success();
                 },
-                command.EstateId, statementId, cancellationToken);
+                command.EstateId, statementId, cancellationToken, false);
 
             if (result.IsFailed)
                 return ResultHelpers.CreateFailure(result);
@@ -324,7 +324,7 @@ namespace EstateManagement.BusinessLogic.Services
 
                     return Result.Success();
                 },
-                command.EstateId, statementId, cancellationToken);
+                command.EstateId, statementId, cancellationToken,false);
 
             if (result.IsFailed)
                 return ResultHelpers.CreateFailure(result);
