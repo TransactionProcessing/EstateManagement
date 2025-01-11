@@ -556,7 +556,7 @@ public class EstateReportingRepository : IEstateReportingRepository
             return ResultHelpers.CreateFailure(getTransactionResult);
         var transaction = getTransactionResult.Data;
 
-        Result<Operator> operatorResult = await context.LoadOperator(domainEvent, cancellationToken);
+        Result<Operator> operatorResult = await context.LoadOperator(transaction.OperatorId, cancellationToken);
         if (operatorResult.IsFailed)
             return ResultHelpers.CreateFailure(operatorResult);
         var @operator = operatorResult.Data;
@@ -643,7 +643,7 @@ public class EstateReportingRepository : IEstateReportingRepository
 
         await context.StatementLines.AddAsync(line, cancellationToken);
 
-        return await context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesWithDuplicateHandling(cancellationToken);
     }
 
     public async Task<Result> CompleteReconciliation(ReconciliationHasCompletedEvent domainEvent,
