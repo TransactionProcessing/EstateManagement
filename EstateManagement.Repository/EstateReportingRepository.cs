@@ -619,10 +619,16 @@ public class EstateReportingRepository : IEstateReportingRepository
         EstateManagementGenericContext context = await this.GetContextFromDomainEvent(domainEvent, cancellationToken);
 
         // Find the corresponding transaction
-        Result<Operator> operatorResult = await context.LoadOperator(domainEvent, cancellationToken);
+        Result<Transaction> transactionResult = await context.LoadTransaction(domainEvent, cancellationToken);
+        if (transactionResult.IsFailed)
+            return ResultHelpers.CreateFailure(transactionResult);
+        
+        Transaction transaction = transactionResult.Data;
+        
+        Result<Operator> operatorResult = await context.LoadOperator(transaction.OperatorId, cancellationToken);
         if (operatorResult.IsFailed)
             return ResultHelpers.CreateFailure(operatorResult);
-        var @operator = operatorResult.Data;
+        Operator @operator = operatorResult.Data;
         
         StatementLine line = new StatementLine
         {
